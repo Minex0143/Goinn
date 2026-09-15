@@ -1052,6 +1052,7 @@ def approve_booking(booking_id):
 
     return redirect(url_for("admin_dashboard"))
 
+
 @app.route("/admin/booking/<int:booking_id>/reject", methods=["POST"])
 @login_required
 def reject_booking(booking_id):
