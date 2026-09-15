@@ -1,10 +1,21 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 
 <head>
 
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>Login - Goinn</title>
+
+
+    <!-- ==================================================
+         GOOGLE IDENTITY SERVICES
+    ================================================== -->
 
     <script
         src="https://accounts.google.com/gsi/client"
@@ -12,35 +23,745 @@
         defer>
     </script>
 
+
+    <style>
+
+        /* ==================================================
+           GLOBAL
+        ================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+        }
+
+
+        body {
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f5f6f7;
+
+            color: #202124;
+
+            min-height: 100vh;
+
+            display: flex;
+
+            flex-direction: column;
+
+        }
+
+
+        /* ==================================================
+           HEADER
+        ================================================== */
+
+        .header {
+
+            height: 72px;
+
+            background: #111;
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 38px;
+
+            box-shadow:
+                0 2px 10px
+                rgba(0, 0, 0, 0.12);
+
+        }
+
+
+        .logo {
+
+            font-size: 26px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.8px;
+
+        }
+
+
+        .header-right {
+
+            color: #cfcfcf;
+
+            font-size: 13px;
+
+        }
+
+
+        /* ==================================================
+           MAIN
+        ================================================== */
+
+        .main {
+
+            flex: 1;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 45px 20px;
+
+        }
+
+
+        /* ==================================================
+           LOGIN CONTAINER
+        ================================================== */
+
+        .login-wrapper {
+
+            width: 100%;
+
+            max-width: 440px;
+
+        }
+
+
+        /* ==================================================
+           LOGIN CARD
+        ================================================== */
+
+        .login-card {
+
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 38px 38px 34px;
+
+            border: 1px solid #e6e8eb;
+
+            box-shadow:
+                0 8px 30px
+                rgba(0, 0, 0, 0.07);
+
+        }
+
+
+        /* ==================================================
+           HEADER
+        ================================================== */
+
+        .login-header {
+
+            text-align: center;
+
+            margin-bottom: 28px;
+
+        }
+
+
+        .logo-circle {
+
+            width: 58px;
+
+            height: 58px;
+
+            background: #111;
+
+            color: white;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            margin: 0 auto 17px;
+
+            font-size: 23px;
+
+            font-weight: 800;
+
+        }
+
+
+        .login-header h1 {
+
+            margin: 0;
+
+            font-size: 27px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.6px;
+
+        }
+
+
+        .login-header p {
+
+            margin: 9px 0 0;
+
+            color: #70757a;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+
+        }
+
+
+        /* ==================================================
+           GOOGLE LOGIN
+        ================================================== */
+
+        .google-section {
+
+            display: flex;
+
+            justify-content: center;
+
+            width: 100%;
+
+        }
+
+
+        .google-button-wrapper {
+
+            width: 100%;
+
+            display: flex;
+
+            justify-content: center;
+
+        }
+
+
+        /*
+           Google renders its own button.
+           We keep the container full width.
+        */
+
+        .g_id_signin {
+
+            width: 100%;
+
+        }
+
+
+        /* ==================================================
+           DIVIDER
+        ================================================== */
+
+        .divider {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            margin: 25px 0;
+
+            color: #999;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+        }
+
+
+        .divider::before,
+        .divider::after {
+
+            content: "";
+
+            height: 1px;
+
+            background: #e5e7eb;
+
+            flex: 1;
+
+        }
+
+
+        /* ==================================================
+           INFORMATION BOX
+        ================================================== */
+
+        .info-box {
+
+            background: #f7f8fa;
+
+            border: 1px solid #e9eaec;
+
+            border-radius: 11px;
+
+            padding: 15px;
+
+            display: flex;
+
+            gap: 11px;
+
+            align-items: flex-start;
+
+        }
+
+
+        .info-icon {
+
+            width: 31px;
+
+            height: 31px;
+
+            background: #111;
+
+            color: white;
+
+            border-radius: 8px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            flex-shrink: 0;
+
+            font-size: 13px;
+
+        }
+
+
+        .info-content {
+
+            flex: 1;
+
+        }
+
+
+        .info-title {
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+            margin-bottom: 4px;
+
+        }
+
+
+        .info-text {
+
+            font-size: 11px;
+
+            color: #777;
+
+            line-height: 1.5;
+
+        }
+
+
+        /* ==================================================
+           TERMS
+        ================================================== */
+
+        .terms {
+
+            text-align: center;
+
+            margin-top: 22px;
+
+            color: #8a8a8a;
+
+            font-size: 11px;
+
+            line-height: 1.5;
+
+        }
+
+
+        .terms a {
+
+            color: #555;
+
+            text-decoration: none;
+
+            font-weight: 700;
+
+        }
+
+
+        .terms a:hover {
+
+            text-decoration: underline;
+
+        }
+
+
+        /* ==================================================
+           BACK HOME
+        ================================================== */
+
+        .back-home {
+
+            text-align: center;
+
+            margin-top: 20px;
+
+        }
+
+
+        .back-home a {
+
+            color: #555;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+        }
+
+
+        .back-home a:hover {
+
+            color: #111;
+
+        }
+
+
+        /* ==================================================
+           FOOTER
+        ================================================== */
+
+        .footer {
+
+            text-align: center;
+
+            padding: 20px;
+
+            color: #888;
+
+            font-size: 11px;
+
+        }
+
+
+        .footer strong {
+
+            color: #555;
+
+        }
+
+
+        /* ==================================================
+           MOBILE
+        ================================================== */
+
+        @media (max-width: 600px) {
+
+            .header {
+
+                height: 64px;
+
+                padding: 0 18px;
+
+            }
+
+
+            .logo {
+
+                font-size: 23px;
+
+            }
+
+
+            .header-right {
+
+                display: none;
+
+            }
+
+
+            .main {
+
+                align-items: flex-start;
+
+                padding: 25px 13px;
+
+            }
+
+
+            .login-wrapper {
+
+                margin-top: 12px;
+
+            }
+
+
+            .login-card {
+
+                padding: 28px 20px 25px;
+
+                border-radius: 15px;
+
+            }
+
+
+            .login-header h1 {
+
+                font-size: 24px;
+
+            }
+
+
+            .login-header p {
+
+                font-size: 13px;
+
+            }
+
+
+            .logo-circle {
+
+                width: 54px;
+
+                height: 54px;
+
+                font-size: 21px;
+
+            }
+
+        }
+
+
+        @media (max-width: 360px) {
+
+            .login-card {
+
+                padding-left: 16px;
+
+                padding-right: 16px;
+
+            }
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
-    <h1>Login to Goinn</h1>
 
-    <div
-        id="g_id_onload"
-        data-client_id="{{ config.GOOGLE_CLIENT_ID }}"
-        data-login_uri="{{ url_for('google_login', _external=True) }}"
-        data-ux_mode="redirect"
-        data-auto_prompt="false">
+<!-- ==================================================
+     HEADER
+================================================== -->
+
+<header class="header">
+
+    <div class="logo">
+        Goinn
     </div>
 
-    <div
-        class="g_id_signin"
-        data-type="standard"
-        data-size="large"
-        data-theme="outline"
-        data-text="continue_with"
-        data-shape="rectangular"
-        data-logo_alignment="left">
+
+    <div class="header-right">
+        Your stay, your way.
     </div>
 
-    <br>
+</header>
 
-    <a href="/">
-        Back to Home
-    </a>
+
+<!-- ==================================================
+     MAIN
+================================================== -->
+
+<main class="main">
+
+
+    <div class="login-wrapper">
+
+
+        <!-- ==================================================
+             LOGIN CARD
+        ================================================== -->
+
+        <div class="login-card">
+
+
+            <!-- HEADER -->
+
+            <div class="login-header">
+
+                <div class="logo-circle">
+                    G
+                </div>
+
+
+                <h1>
+                    Welcome back
+                </h1>
+
+
+                <p>
+                    Sign in to your Goinn account
+                    to continue.
+                </p>
+
+            </div>
+
+
+            <!-- ==================================================
+                 GOOGLE LOGIN
+            ================================================== -->
+
+            <div class="google-section">
+
+                <div
+                    id="g_id_onload"
+                    data-client_id="{{ config.GOOGLE_CLIENT_ID }}"
+                    data-login_uri="{{ url_for('google_login', _external=True) }}"
+                    data-ux_mode="redirect"
+                    data-auto_prompt="false">
+                </div>
+
+
+                <div class="google-button-wrapper">
+
+                    <div
+                        class="g_id_signin"
+                        data-type="standard"
+                        data-size="large"
+                        data-theme="outline"
+                        data-text="continue_with"
+                        data-shape="rectangular"
+                        data-logo_alignment="left"
+                        data-width="360">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================================
+                 DIVIDER
+            ================================================== -->
+
+            <div class="divider">
+
+                OR
+
+            </div>
+
+
+            <!-- ==================================================
+                 INFORMATION
+            ================================================== -->
+
+            <div class="info-box">
+
+
+                <div class="info-icon">
+                    🔐
+                </div>
+
+
+                <div class="info-content">
+
+                    <div class="info-title">
+                        Secure sign-in
+                    </div>
+
+
+                    <div class="info-text">
+
+                        Goinn uses Google authentication
+                        to keep your account secure.
+                        You don't need to remember another
+                        password.
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ==================================================
+                 TERMS
+            ================================================== -->
+
+            <div class="terms">
+
+                By continuing, you agree to Goinn's
+                <a href="#">
+                    Terms of Service
+                </a>
+                and
+                <a href="#">
+                    Privacy Policy
+                </a>.
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ==================================================
+             BACK
+        ================================================== -->
+
+        <div class="back-home">
+
+            <a href="/">
+                ← Back to Goinn
+            </a>
+
+        </div>
+
+
+        <!-- ==================================================
+             FOOTER
+        ================================================== -->
+
+        <div class="footer">
+
+            <strong>Goinn</strong>
+            &nbsp;•&nbsp;
+            Your stay, your way.
+
+        </div>
+
+
+    </div>
+
+</main>
+
 
 </body>
 
