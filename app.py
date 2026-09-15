@@ -1609,9 +1609,12 @@ def add_property():
 # ADMIN DASHBOARD
 # ==================================================
 
-@app.route("/admin/dashboard")
+@app.route("/admin")
 @login_required
 def admin_dashboard():
+
+    if not current_user.is_admin:
+        return "Unauthorized", 403
 
     properties = Property.query.all()
 
@@ -1619,11 +1622,21 @@ def admin_dashboard():
 
     users = User.query.all()
 
+    rejected_properties = Property.query.filter_by(
+        status="rejected"
+    ).all()
+
+    rejected_bookings = Booking.query.filter_by(
+        status="rejected"
+    ).all()
+
     return render_template(
         "admin_dashboard.html",
         properties=properties,
         bookings=bookings,
-        users=users
+        users=users,
+        rejected_properties=rejected_properties,
+        rejected_bookings=rejected_bookings
     )
 
 
