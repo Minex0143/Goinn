@@ -10,228 +10,300 @@
 
     <title>Admin Dashboard - Goinn</title>
 
-
     <style>
 
         * {
             box-sizing: border-box;
         }
 
-
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f5f7fa;
-            color: #222;
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f4f6f8;
+            color: #202124;
         }
 
-
-        /* ==========================================
+        /* ==================================================
            HEADER
-        ========================================== */
+        ================================================== */
 
         .header {
             background: #111;
+
             color: white;
 
-            padding: 18px 30px;
+            padding: 17px 30px;
 
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
 
+            justify-content: space-between;
+
+            align-items: center;
+
+            box-shadow:
+                0 2px 10px rgba(0,0,0,0.15);
+        }
 
         .logo {
             font-size: 25px;
-            font-weight: bold;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
-
 
         .header-right {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 18px;
         }
 
-
-        .header-right span {
+        .admin-name {
             font-size: 14px;
+            color: #ddd;
         }
-
 
         .logout {
-            color: white;
             text-decoration: none;
-            background: #333;
+
+            color: white;
+
+            background: #2c2c2c;
+
             padding: 9px 15px;
-            border-radius: 7px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            font-weight: 600;
         }
 
+        .logout:hover {
+            background: #444;
+        }
 
-        /* ==========================================
+        /* ==================================================
            MAIN
-        ========================================== */
+        ================================================== */
 
         .container {
             max-width: 1200px;
+
             margin: 35px auto;
+
             padding: 0 20px;
         }
 
-
         h1 {
-            margin-bottom: 5px;
-        }
+            margin: 0 0 7px 0;
 
+            font-size: 30px;
+        }
 
         .subtitle {
-            color: #666;
-            margin-bottom: 30px;
+            color: #70757a;
+
+            margin-bottom: 28px;
+
+            font-size: 15px;
         }
 
-
-        /* ==========================================
-           STAT CARDS
-        ========================================== */
+        /* ==================================================
+           STATS
+        ================================================== */
 
         .stats {
             display: grid;
+
             grid-template-columns:
                 repeat(4, 1fr);
 
-            gap: 18px;
+            gap: 17px;
 
-            margin-bottom: 30px;
-        }
-
-
-        .stat-card {
-            background: white;
-            padding: 22px;
-
-            border-radius: 12px;
-
-            box-shadow:
-                0 3px 12px
-                rgba(0,0,0,0.06);
-        }
-
-
-        .stat-title {
-            color: #777;
-            font-size: 14px;
-        }
-
-
-        .stat-number {
-            font-size: 30px;
-            font-weight: bold;
-            margin-top: 8px;
-        }
-
-
-        /* ==========================================
-           SECTION
-        ========================================== */
-
-        .section {
             margin-bottom: 35px;
         }
 
+        .stat-card {
+            background: white;
+
+            padding: 22px;
+
+            border-radius: 13px;
+
+            box-shadow:
+                0 3px 14px rgba(0,0,0,0.06);
+        }
+
+        .stat-title {
+            color: #777;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+        .stat-number {
+            font-size: 30px;
+
+            font-weight: 800;
+
+            margin-top: 8px;
+        }
+
+        /* ==================================================
+           SECTION
+        ================================================== */
+
+        .section {
+            margin-bottom: 40px;
+        }
 
         .section-header {
             display: flex;
+
             justify-content: space-between;
+
             align-items: center;
 
-            margin-bottom: 15px;
+            margin-bottom: 17px;
         }
-
 
         .section-header h2 {
             margin: 0;
+
+            font-size: 22px;
         }
 
-
-        /* ==========================================
+        /* ==================================================
            PROPERTY CARD
-        ========================================== */
+        ================================================== */
 
         .property-card {
             background: white;
 
-            border-radius: 13px;
+            border-radius: 15px;
 
-            padding: 22px;
+            padding: 23px;
 
             margin-bottom: 18px;
 
             box-shadow:
-                0 3px 12px
-                rgba(0,0,0,0.06);
+                0 4px 15px rgba(0,0,0,0.06);
         }
-
 
         .property-top {
             display: flex;
+
             justify-content: space-between;
+
             align-items: flex-start;
 
             gap: 20px;
         }
 
-
         .property-name {
             font-size: 21px;
-            font-weight: bold;
 
-            margin-bottom: 6px;
+            font-weight: 800;
+
+            margin-bottom: 7px;
         }
-
 
         .property-location {
-            color: #666;
+            color: #70757a;
+
+            font-size: 14px;
         }
 
-
-        /* ==========================================
+        /* ==================================================
            STATUS
-        ========================================== */
+        ================================================== */
 
         .status {
             display: inline-block;
 
             padding: 6px 12px;
 
-            border-radius: 20px;
+            border-radius: 30px;
 
-            font-size: 13px;
-            font-weight: bold;
+            font-size: 12px;
+
+            font-weight: 800;
+
+            white-space: nowrap;
         }
-
 
         .status-pending {
             background: #fff3cd;
+
             color: #856404;
         }
 
-
         .status-approved {
-            background: #d4edda;
-            color: #155724;
-        }
+            background: #d8f3dc;
 
+            color: #176b2c;
+        }
 
         .status-rejected {
             background: #f8d7da;
-            color: #721c24;
+
+            color: #842029;
         }
 
+        /* ==================================================
+           OWNER
+        ================================================== */
 
-        /* ==========================================
-           PROPERTY INFORMATION
-        ========================================== */
+        .owner-box {
+            margin-top: 20px;
+
+            background: #f7f8fa;
+
+            padding: 17px;
+
+            border-radius: 11px;
+        }
+
+        .owner-title {
+            font-size: 14px;
+
+            font-weight: 800;
+
+            margin-bottom: 13px;
+        }
+
+        .owner-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+        }
+
+        .info-label {
+            color: #777;
+
+            font-size: 12px;
+
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-weight: 600;
+
+            font-size: 14px;
+
+            word-break: break-word;
+        }
+
+        /* ==================================================
+           PROPERTY INFO
+        ================================================== */
 
         .property-info {
             display: grid;
@@ -241,72 +313,101 @@
 
             gap: 15px;
 
-            margin-top: 20px;
+            margin-top: 18px;
 
-            padding-top: 20px;
+            padding-top: 18px;
 
             border-top: 1px solid #eee;
         }
 
-
         .info-item {
             background: #f8f9fa;
 
-            padding: 13px;
+            padding: 14px;
 
-            border-radius: 8px;
+            border-radius: 9px;
         }
 
+        /* ==================================================
+           PRICING
+        ================================================== */
 
-        .info-label {
-            color: #777;
-            font-size: 13px;
+        .pricing-box {
+            margin-top: 20px;
 
-            margin-bottom: 5px;
-        }
-
-
-        .info-value {
-            font-weight: 600;
-            word-break: break-word;
-        }
-
-
-        /* ==========================================
-           OWNER DETAILS
-        ========================================== */
-
-        .owner-box {
-            margin-top: 18px;
+            padding: 17px;
 
             background: #f7f8fa;
 
-            padding: 18px;
+            border-radius: 11px;
 
-            border-radius: 10px;
+            border: 1px solid #e9eaec;
         }
 
+        .pricing-title {
+            font-size: 15px;
 
-        .owner-title {
-            font-weight: bold;
+            font-weight: 800;
 
             margin-bottom: 12px;
         }
 
+        .pricing-method {
+            display: inline-block;
 
-        .owner-grid {
-            display: grid;
+            background: #111;
 
-            grid-template-columns:
-                repeat(3, 1fr);
+            color: white;
 
-            gap: 12px;
+            padding: 5px 9px;
+
+            border-radius: 6px;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            margin-bottom: 10px;
         }
 
+        .price-table {
+            width: 100%;
 
-        /* ==========================================
-           ACTION BUTTONS
-        ========================================== */
+            border-collapse: collapse;
+
+            background: white;
+
+            border-radius: 8px;
+
+            overflow: hidden;
+        }
+
+        .price-table th,
+        .price-table td {
+            padding: 10px;
+
+            border-bottom: 1px solid #eee;
+
+            text-align: left;
+
+            font-size: 14px;
+        }
+
+        .price-table th {
+            background: #f1f3f4;
+
+            font-size: 12px;
+
+            color: #666;
+        }
+
+        .price-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ==================================================
+           ACTIONS
+        ================================================== */
 
         .actions {
             margin-top: 20px;
@@ -318,7 +419,6 @@
             flex-wrap: wrap;
         }
 
-
         button {
             border: none;
 
@@ -328,97 +428,69 @@
 
             font-size: 14px;
 
-            font-weight: bold;
+            font-weight: 700;
 
             cursor: pointer;
         }
 
-
         .approve-btn {
             background: #111;
+
             color: white;
         }
-
 
         .approve-btn:hover {
             background: #333;
         }
 
-
         .reject-btn {
             background: #dc3545;
+
             color: white;
         }
-
 
         .reject-btn:hover {
             background: #b52a37;
         }
 
-
         .view-btn {
-            background: #eee;
+            background: #ededed;
+
             color: #333;
         }
 
-
-        /* ==========================================
-           PRICING DISPLAY
-        ========================================== */
-
-        .pricing-box {
-            margin-top: 18px;
-
-            padding: 15px;
-
-            background: #f7f8fa;
-
-            border-radius: 10px;
+        .view-btn:hover {
+            background: #ddd;
         }
 
-
-        .pricing-title {
-            font-weight: bold;
-
-            margin-bottom: 10px;
-        }
-
-
-        .price-table {
-            width: 100%;
-
-            border-collapse: collapse;
-        }
-
-
-        .price-table th,
-        .price-table td {
-            padding: 8px;
-
-            border-bottom: 1px solid #ddd;
-
-            text-align: left;
-        }
-
-
-        /* ==========================================
+        /* ==================================================
            BOOKINGS
-        ========================================== */
+        ================================================== */
 
         .booking-card {
             background: white;
 
             padding: 20px;
 
-            border-radius: 12px;
+            border-radius: 13px;
 
             margin-bottom: 15px;
 
             box-shadow:
-                0 3px 12px
-                rgba(0,0,0,0.06);
+                0 3px 12px rgba(0,0,0,0.05);
         }
 
+        .booking-title {
+            font-weight: 800;
+
+            font-size: 16px;
+        }
+
+        .booking-property {
+            color: #666;
+
+            margin-top: 5px;
+        }
 
         .booking-grid {
             display: grid;
@@ -426,32 +498,34 @@
             grid-template-columns:
                 repeat(3, 1fr);
 
-            gap: 12px;
+            gap: 15px;
 
-            margin-top: 15px;
+            margin-top: 17px;
+
+            padding-top: 17px;
+
+            border-top: 1px solid #eee;
         }
 
-
-        /* ==========================================
+        /* ==================================================
            EMPTY
-        ========================================== */
+        ================================================== */
 
         .empty {
             background: white;
 
-            padding: 30px;
+            padding: 35px;
 
             text-align: center;
 
             color: #777;
 
-            border-radius: 12px;
+            border-radius: 13px;
         }
 
-
-        /* ==========================================
+        /* ==================================================
            MODAL
-        ========================================== */
+        ================================================== */
 
         .modal {
             display: none;
@@ -461,34 +535,39 @@
             z-index: 9999;
 
             left: 0;
+
             top: 0;
 
             width: 100%;
+
             height: 100%;
 
             background:
-                rgba(0,0,0,0.65);
+                rgba(0,0,0,0.68);
 
             overflow-y: auto;
 
-            padding: 30px 15px;
+            padding: 25px 15px;
         }
-
 
         .modal-content {
             background: white;
 
-            max-width: 650px;
+            width: 100%;
 
-            margin: 30px auto;
+            max-width: 700px;
 
-            border-radius: 14px;
+            margin: 25px auto;
 
-            padding: 28px;
+            border-radius: 16px;
+
+            padding: 27px;
 
             position: relative;
-        }
 
+            box-shadow:
+                0 15px 50px rgba(0,0,0,0.25);
+        }
 
         .modal-header {
             display: flex;
@@ -497,48 +576,78 @@
 
             align-items: center;
 
+            padding-bottom: 17px;
+
+            border-bottom: 1px solid #eee;
+
             margin-bottom: 20px;
         }
 
-
         .modal-header h2 {
             margin: 0;
+
+            font-size: 21px;
         }
 
-
         .close {
-            font-size: 28px;
+            font-size: 29px;
+
+            line-height: 1;
 
             cursor: pointer;
 
             color: #777;
-
-            line-height: 1;
         }
-
 
         .close:hover {
             color: #111;
         }
 
+        /* ==================================================
+           MODAL PROPERTY SUMMARY
+        ================================================== */
 
-        /* ==========================================
-           FORM
-        ========================================== */
+        .modal-property {
+            background: #f7f8fa;
 
-        .form-group {
-            margin-bottom: 18px;
+            border-radius: 10px;
+
+            padding: 15px;
+
+            margin-bottom: 22px;
         }
 
+        .modal-property-name {
+            font-weight: 800;
+
+            font-size: 17px;
+
+            margin-bottom: 5px;
+        }
+
+        .modal-property-location {
+            color: #777;
+
+            font-size: 13px;
+        }
+
+        /* ==================================================
+           FORM
+        ================================================== */
+
+        .form-group {
+            margin-bottom: 20px;
+        }
 
         label {
             display: block;
 
-            font-weight: 600;
+            font-weight: 700;
 
             margin-bottom: 7px;
-        }
 
+            font-size: 14px;
+        }
 
         input,
         select {
@@ -553,70 +662,110 @@
             font-size: 15px;
 
             outline: none;
-        }
 
+            background: white;
+        }
 
         input:focus,
         select:focus {
             border-color: #555;
+
+            box-shadow:
+                0 0 0 2px rgba(0,0,0,0.05);
         }
 
+        .max-guests-box {
+            background: #f7f8fa;
+
+            padding: 17px;
+
+            border-radius: 10px;
+
+            margin-bottom: 22px;
+        }
+
+        .max-guests-box label {
+            font-size: 15px;
+        }
+
+        .max-guests-help {
+            color: #777;
+
+            font-size: 12px;
+
+            margin-top: 6px;
+
+            line-height: 1.4;
+        }
+
+        /* ==================================================
+           RADIO
+        ================================================== */
 
         .radio-container {
-            display: flex;
+            display: grid;
 
-            gap: 15px;
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 12px;
 
             margin-top: 10px;
         }
 
-
         .radio-option {
-            flex: 1;
-
             border: 1px solid #ddd;
 
             padding: 15px;
 
-            border-radius: 9px;
+            border-radius: 10px;
 
             cursor: pointer;
-        }
 
+            transition: 0.2s;
+        }
 
         .radio-option:hover {
-            border-color: #555;
+            border-color: #888;
         }
-
 
         .radio-option input {
             width: auto;
-            margin-right: 7px;
-        }
 
+            margin-right: 6px;
+        }
 
         .radio-title {
-            font-weight: bold;
-        }
+            display: inline;
 
+            font-weight: 800;
+
+            font-size: 14px;
+        }
 
         .radio-description {
             color: #777;
 
-            font-size: 13px;
+            font-size: 12px;
 
-            margin-top: 5px;
+            line-height: 1.4;
+
+            margin-top: 7px;
         }
 
-
-        /* ==========================================
+        /* ==================================================
            PRICING FIELDS
-        ========================================== */
+        ================================================== */
 
         .price-fields {
-            margin-top: 20px;
+            margin-top: 22px;
         }
 
+        .price-fields h3 {
+            font-size: 16px;
+
+            margin: 0 0 13px 0;
+        }
 
         .price-row {
             display: grid;
@@ -630,79 +779,77 @@
 
             margin-bottom: 10px;
 
-            padding: 10px;
+            padding: 12px;
 
             background: #f8f9fa;
 
-            border-radius: 8px;
+            border-radius: 9px;
+
+            border: 1px solid #eee;
         }
-
-
-        .price-row.group-row {
-            grid-template-columns:
-                1fr 1fr 1fr;
-        }
-
 
         .guest-label {
-            font-weight: 600;
+            font-weight: 700;
+
+            font-size: 14px;
         }
 
+        .guest-label small {
+            display: block;
 
-        .group-controls {
-            display: grid;
+            color: #777;
 
+            font-size: 11px;
+
+            font-weight: normal;
+
+            margin-top: 3px;
+        }
+
+        /* ==================================================
+           GROUP ROW
+        ================================================== */
+
+        .group-row {
             grid-template-columns:
-                1fr 1fr;
+                1fr 1fr 1.2fr;
 
-            gap: 10px;
-
-            margin-bottom: 10px;
+            align-items: end;
         }
 
+        .group-row > div:last-child {
+            grid-column: 1 / -1;
+        }
 
         .add-group-btn {
-            background: #eee;
+            background: #ededed;
 
             color: #333;
 
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
+        .add-group-btn:hover {
+            background: #ddd;
+        }
 
         .remove-group-btn {
             background: #dc3545;
 
             color: white;
 
-            padding: 8px 10px;
+            padding: 8px 12px;
+
+            font-size: 12px;
         }
 
-
-        .modal-footer {
-            margin-top: 25px;
-
-            display: flex;
-
-            justify-content: flex-end;
-
-            gap: 10px;
+        .remove-group-btn:hover {
+            background: #b52a37;
         }
 
-
-        .cancel-modal {
-            background: #eee;
-
-            color: #333;
-        }
-
-
-        .save-price-btn {
-            background: #111;
-
-            color: white;
-        }
-
+        /* ==================================================
+           WARNING
+        ================================================== */
 
         .warning {
             background: #fff8e8;
@@ -711,19 +858,58 @@
 
             padding: 13px;
 
-            border-radius: 8px;
+            border-radius: 9px;
 
             color: #66531d;
 
             margin-top: 15px;
 
+            font-size: 13px;
+
             line-height: 1.5;
         }
 
+        /* ==================================================
+           MODAL FOOTER
+        ================================================== */
 
-        /* ==========================================
+        .modal-footer {
+            margin-top: 25px;
+
+            padding-top: 18px;
+
+            border-top: 1px solid #eee;
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+        }
+
+        .cancel-modal {
+            background: #eee;
+
+            color: #333;
+        }
+
+        .cancel-modal:hover {
+            background: #ddd;
+        }
+
+        .save-price-btn {
+            background: #111;
+
+            color: white;
+        }
+
+        .save-price-btn:hover {
+            background: #333;
+        }
+
+        /* ==================================================
            RESPONSIVE
-        ========================================== */
+        ================================================== */
 
         @media (max-width: 900px) {
 
@@ -732,39 +918,37 @@
                     repeat(2, 1fr);
             }
 
-
             .owner-grid {
                 grid-template-columns:
                     1fr;
             }
 
-
             .booking-grid {
                 grid-template-columns:
-                    1fr;
+                    repeat(2, 1fr);
             }
 
         }
 
-
-        @media (max-width: 600px) {
+        @media (max-width: 650px) {
 
             .header {
-                padding: 15px;
+                padding: 15px 17px;
             }
 
-
-            .header-right span {
+            .admin-name {
                 display: none;
             }
 
-
             .container {
-                padding: 0 12px;
+                margin-top: 22px;
 
-                margin-top: 20px;
+                padding: 0 12px;
             }
 
+            h1 {
+                font-size: 25px;
+            }
 
             .stats {
                 grid-template-columns:
@@ -773,52 +957,72 @@
                 gap: 10px;
             }
 
-
             .stat-card {
-                padding: 15px;
+                padding: 16px;
             }
-
 
             .stat-number {
                 font-size: 24px;
             }
 
+            .property-card {
+                padding: 17px;
+            }
+
+            .property-top {
+                display: block;
+            }
+
+            .property-top .status {
+                margin-top: 10px;
+            }
 
             .property-info {
                 grid-template-columns:
                     1fr;
             }
 
-
-            .property-top {
-                display: block;
-            }
-
-
-            .property-top .status {
-                margin-top: 10px;
-            }
-
-
-            .price-row {
+            .booking-grid {
                 grid-template-columns:
                     1fr;
             }
 
-
-            .price-row.group-row {
-                grid-template-columns:
-                    1fr;
+            .modal {
+                padding: 10px;
             }
 
+            .modal-content {
+                margin: 10px auto;
+
+                padding: 20px;
+
+                border-radius: 13px;
+            }
 
             .radio-container {
-                display: block;
+                grid-template-columns:
+                    1fr;
             }
 
+            .price-row,
+            .group-row {
+                grid-template-columns:
+                    1fr;
+            }
 
-            .radio-option {
-                margin-bottom: 10px;
+            .group-row > div:last-child {
+                grid-column: auto;
+            }
+
+            .modal-footer {
+                display: grid;
+
+                grid-template-columns:
+                    1fr;
+            }
+
+            .modal-footer button {
+                width: 100%;
             }
 
         }
@@ -841,13 +1045,11 @@
         Goinn Admin
     </div>
 
-
     <div class="header-right">
 
-        <span>
+        <span class="admin-name">
             {{ current_user.name }}
         </span>
-
 
         <a
             href="{{ url_for('logout') }}"
@@ -872,9 +1074,9 @@
         Admin Dashboard
     </h1>
 
-
     <div class="subtitle">
-        Manage properties, pricing and bookings.
+        Manage properties, configure pricing and approve
+        property listings.
     </div>
 
 
@@ -889,14 +1091,12 @@
         |length
     %}
 
-
     {% set approved_count =
         properties
         |selectattr("status", "equalto", "approved")
         |list
         |length
     %}
-
 
     {% set rejected_count =
         properties
@@ -993,20 +1193,14 @@
 
                     <div class="property-top">
 
-
                         <div>
 
                             <div class="property-name">
-
                                 {{ property.property_name }}
-
                             </div>
 
-
                             <div class="property-location">
-
                                 📍 {{ property.location }}
-
                             </div>
 
                         </div>
@@ -1032,14 +1226,14 @@
 
                         {% endif %}
 
-
                     </div>
 
 
-                    <!-- OWNER DETAILS -->
+                    <!-- ==================================================
+                         OWNER DETAILS
+                    ================================================== -->
 
                     <div class="owner-box">
-
 
                         <div class="owner-title">
                             Owner Details
@@ -1056,9 +1250,7 @@
                                 </div>
 
                                 <div class="info-value">
-
                                     {{ property.owner.name }}
-
                                 </div>
 
                             </div>
@@ -1094,9 +1286,7 @@
                                 </div>
 
                                 <div class="info-value">
-
                                     {{ property.owner.email }}
-
                                 </div>
 
                             </div>
@@ -1107,7 +1297,9 @@
                     </div>
 
 
-                    <!-- PROPERTY DETAILS -->
+                    <!-- ==================================================
+                         PROPERTY DETAILS
+                    ================================================== -->
 
                     <div class="property-info">
 
@@ -1119,9 +1311,7 @@
                             </div>
 
                             <div class="info-value">
-
                                 {{ property.property_address }}
-
                             </div>
 
                         </div>
@@ -1135,7 +1325,15 @@
 
                             <div class="info-value">
 
-                                {{ property.max_guests }}
+                                {% if property.max_guests and property.max_guests > 0 %}
+
+                                    {{ property.max_guests }}
+
+                                {% else %}
+
+                                    Not configured
+
+                                {% endif %}
 
                             </div>
 
@@ -1149,17 +1347,12 @@
                          PRICING DISPLAY
                     ================================================== -->
 
-                    {% if property.pricing_method
-                          and property.pricing_data %}
-
+                    {% if property.pricing_method and property.pricing_data %}
 
                         <div class="pricing-box">
 
-
                             <div class="pricing-title">
-
                                 Pricing Configuration
-
                             </div>
 
 
@@ -1171,9 +1364,8 @@
 
                             {% if property.pricing_method == "individual" %}
 
-
-                                <div>
-                                    Individual Pricing
+                                <div class="pricing-method">
+                                    INDIVIDUAL PRICING
                                 </div>
 
 
@@ -1203,12 +1395,17 @@
                                             <tr>
 
                                                 <td>
+
                                                     {{ item.guests }}
+
                                                     guest{% if item.guests != 1 %}s{% endif %}
+
                                                 </td>
 
                                                 <td>
-                                                    ₹{{ "%.2f"|format(item.price) }}
+
+                                                    ₹{{ "%.2f"|format(item.price|float) }}
+
                                                 </td>
 
                                             </tr>
@@ -1220,11 +1417,10 @@
                                 </table>
 
 
-                            {% else %}
+                            {% elif property.pricing_method == "group" %}
 
-
-                                <div>
-                                    Group Pricing
+                                <div class="pricing-method">
+                                    GROUP PRICING
                                 </div>
 
 
@@ -1235,7 +1431,7 @@
                                         <tr>
 
                                             <th>
-                                                Guests
+                                                Guest Range
                                             </th>
 
                                             <th>
@@ -1254,14 +1450,19 @@
                                             <tr>
 
                                                 <td>
+
                                                     {{ item.min_guests }}
                                                     -
                                                     {{ item.max_guests }}
+
                                                     guests
+
                                                 </td>
 
                                                 <td>
-                                                    ₹{{ "%.2f"|format(item.price) }}
+
+                                                    ₹{{ "%.2f"|format(item.price|float) }}
+
                                                 </td>
 
                                             </tr>
@@ -1271,13 +1472,11 @@
                                     </tbody>
 
                                 </table>
-
 
                             {% endif %}
 
 
                         </div>
-
 
                     {% endif %}
 
@@ -1297,8 +1496,8 @@
                                 class="approve-btn"
                                 onclick="openPriceModal(
                                     {{ property.id }},
-                                    '{{ property.property_name|replace("'", "\\'") }}',
-                                    {{ property.max_guests }}
+                                    {{ property.property_name|tojson }},
+                                    {{ property.location|tojson }}
                                 )"
                             >
 
@@ -1339,10 +1538,13 @@
                             <button
                                 type="button"
                                 class="view-btn"
-                                onclick="openPriceModal(
+                                onclick="openEditPriceModal(
                                     {{ property.id }},
-                                    '{{ property.property_name|replace("'", "\\'") }}',
-                                    {{ property.max_guests }}
+                                    {{ property.property_name|tojson }},
+                                    {{ property.location|tojson }},
+                                    {{ property.max_guests or 1 }},
+                                    {{ property.pricing_method|tojson if property.pricing_method else 'null' }},
+                                    {{ property.pricing_data|tojson if property.pricing_data else 'null' }}
                                 )"
                             >
 
@@ -1404,15 +1606,13 @@
                 <div class="booking-card">
 
 
-                    <strong>
+                    <div class="booking-title">
                         Booking #{{ booking.id }}
-                    </strong>
+                    </div>
 
 
-                    <div style="margin-top:7px;">
-
+                    <div class="booking-property">
                         {{ booking.property.property_name }}
-
                     </div>
 
 
@@ -1426,9 +1626,7 @@
                             </div>
 
                             <div class="info-value">
-
                                 {{ booking.customer_name }}
-
                             </div>
 
                         </div>
@@ -1441,9 +1639,7 @@
                             </div>
 
                             <div class="info-value">
-
                                 {{ booking.customer_contact }}
-
                             </div>
 
                         </div>
@@ -1456,9 +1652,7 @@
                             </div>
 
                             <div class="info-value">
-
                                 {{ booking.guests }}
-
                             </div>
 
                         </div>
@@ -1552,11 +1746,9 @@
 
         <div class="modal-header">
 
-
             <h2>
                 Configure Property Pricing
             </h2>
-
 
             <span
                 class="close"
@@ -1565,39 +1757,30 @@
                 &times;
             </span>
 
-
         </div>
 
 
-        <div style="margin-bottom:20px;">
+        <!-- PROPERTY -->
 
+        <div class="modal-property">
 
-            <strong>
-                Property:
-            </strong>
+            <div
+                id="modalPropertyName"
+                class="modal-property-name"
+            >
+            </div>
 
-
-            <span id="modalPropertyName">
-            </span>
-
-
-            <br><br>
-
-
-            <strong>
-                Maximum Guests:
-            </strong>
-
-
-            <span id="modalMaxGuests">
-            </span>
-
+            <div
+                id="modalPropertyLocation"
+                class="modal-property-location"
+            >
+            </div>
 
         </div>
 
 
         <!-- ==================================================
-             PRICING FORM
+             FORM
         ================================================== -->
 
         <form
@@ -1606,17 +1789,52 @@
         >
 
 
-            <input
-                type="hidden"
-                id="formMaxGuests"
-                name="max_guests"
-            >
+            <!-- ==================================================
+                 MAXIMUM GUESTS
+            ================================================== -->
+
+            <div class="max-guests-box">
+
+                <div class="form-group"
+                     style="margin-bottom:0;">
+
+                    <label for="formMaxGuests">
+
+                        Maximum Number of Guests
+
+                    </label>
 
 
-            <!-- PRICING METHOD -->
+                    <input
+                        type="number"
+                        id="formMaxGuests"
+                        name="max_guests"
+                        min="1"
+                        max="100"
+                        required
+                        oninput="maximumGuestsChanged()"
+                    >
+
+
+                    <div class="max-guests-help">
+
+                        Admin controls the maximum guest
+                        capacity. Pricing fields below will
+                        automatically be generated based on
+                        this number.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================================
+                 PRICING METHOD
+            ================================================== -->
 
             <div class="form-group">
-
 
                 <label>
                     Pricing Method
@@ -1626,67 +1844,73 @@
                 <div class="radio-container">
 
 
-                    <label
-                        class="radio-option"
-                    >
+                    <label class="radio-option">
 
-                        <input
-                            type="radio"
-                            name="pricing_method"
-                            value="individual"
-                            checked
-                            onchange="changePricingMethod()"
-                        >
+                        <div>
 
+                            <input
+                                type="radio"
+                                name="pricing_method"
+                                value="individual"
+                                checked
+                                onchange="changePricingMethod()"
+                            >
 
-                        <div
-                            class="radio-title"
-                        >
-                            Individual Pricing
+                            <span class="radio-title">
+                                Individual Pricing
+                            </span>
+
                         </div>
 
 
-                        <div
-                            class="radio-description"
-                        >
-                            Set a different price
-                            for every guest count.
+                        <div class="radio-description">
+
+                            Configure a separate price for
+                            every number of guests.
+
+                            <br><br>
+
+                            Example: 1 guest, 2 guests,
+                            3 guests ... up to maximum.
+
                         </div>
 
                     </label>
 
 
-                    <label
-                        class="radio-option"
-                    >
+                    <label class="radio-option">
 
-                        <input
-                            type="radio"
-                            name="pricing_method"
-                            value="group"
-                            onchange="changePricingMethod()"
-                        >
+                        <div>
 
+                            <input
+                                type="radio"
+                                name="pricing_method"
+                                value="group"
+                                onchange="changePricingMethod()"
+                            >
 
-                        <div
-                            class="radio-title"
-                        >
-                            Group Pricing
+                            <span class="radio-title">
+                                Group Pricing
+                            </span>
+
                         </div>
 
 
-                        <div
-                            class="radio-description"
-                        >
-                            Set one price for a
-                            range of guests.
+                        <div class="radio-description">
+
+                            Configure one price for a
+                            guest range.
+
+                            <br><br>
+
+                            Example: 1-3, 4-6 guests.
+
                         </div>
 
                     </label>
 
 
                 </div>
-
 
             </div>
 
@@ -1701,13 +1925,12 @@
             >
 
                 <h3>
-                    Price Per Guest Count
+                    Individual Guest Pricing
                 </h3>
 
 
                 <div id="individualFields">
                 </div>
-
 
             </div>
 
@@ -1727,9 +1950,7 @@
                 </h3>
 
 
-                <div
-                    id="groupFields"
-                >
+                <div id="groupFields">
                 </div>
 
 
@@ -1746,29 +1967,31 @@
 
                 <div class="warning">
 
-                    Guest groups must cover all guest
-                    counts from <strong>1</strong> to
-                    <strong id="warningMaxGuests"></strong>
-                    without gaps.
+                    Guest groups must cover every guest
+                    count from <strong>1</strong> to
+                    <strong id="warningMaxGuests">1</strong>.
 
                     <br><br>
 
-                    Example:
+                    Example for 6 maximum guests:
 
                     <br>
 
-                    1-5 guests → ₹3,000
+                    <strong>1-2 guests</strong> → ₹2,000
 
                     <br>
 
-                    6-8 guests → ₹4,000
+                    <strong>3-4 guests</strong> → ₹3,000
 
                     <br>
 
-                    9-20 guests → ₹6,000
+                    <strong>5-6 guests</strong> → ₹4,000
+
+                    <br><br>
+
+                    No gaps or overlapping ranges are allowed.
 
                 </div>
-
 
             </div>
 
@@ -1794,6 +2017,7 @@
                 <button
                     type="submit"
                     class="save-price-btn"
+                    id="savePriceButton"
                 >
 
                     Save Pricing & Approve
@@ -1818,6 +2042,7 @@
 
 <script>
 
+let currentPropertyId = null;
 
 let currentMaxGuests = 1;
 
@@ -1825,37 +2050,37 @@ let groupCounter = 0;
 
 
 /* ==================================================
-   OPEN MODAL
+   OPEN NEW PRICING MODAL
 ================================================== */
 
 function openPriceModal(
     propertyId,
     propertyName,
-    maxGuests
+    propertyLocation
 ) {
 
+    currentPropertyId = propertyId;
 
-    currentMaxGuests = maxGuests;
-
+    currentMaxGuests = 1;
 
     document.getElementById(
         "modalPropertyName"
     ).textContent = propertyName;
 
-
     document.getElementById(
-        "modalMaxGuests"
-    ).textContent = maxGuests;
+        "modalPropertyLocation"
+    ).textContent =
+        "📍 " + propertyLocation;
 
 
     document.getElementById(
         "formMaxGuests"
-    ).value = maxGuests;
+    ).value = "";
 
 
     document.getElementById(
         "warningMaxGuests"
-    ).textContent = maxGuests;
+    ).textContent = "1";
 
 
     document.getElementById(
@@ -1866,21 +2091,9 @@ function openPriceModal(
         + "/set-price";
 
 
-    /*
-       Reset to Individual pricing
-    */
-
     document.querySelector(
         'input[name="pricing_method"][value="individual"]'
     ).checked = true;
-
-
-    document.querySelector(
-        'input[name="pricing_method"][value="group"]'
-    ).checked = false;
-
-
-    generateIndividualFields();
 
 
     document.getElementById(
@@ -1891,6 +2104,194 @@ function openPriceModal(
     document.getElementById(
         "groupPricing"
     ).style.display = "none";
+
+
+    document.getElementById(
+        "individualFields"
+    ).innerHTML = "";
+
+
+    document.getElementById(
+        "groupFields"
+    ).innerHTML = "";
+
+
+    groupCounter = 0;
+
+
+    document.getElementById(
+        "priceForm"
+    ).dataset.editing = "false";
+
+
+    document.getElementById(
+        "savePriceButton"
+    ).textContent =
+        "Save Pricing & Approve";
+
+
+    document.getElementById(
+        "priceModal"
+    ).style.display = "block";
+
+
+    document.body.style.overflow = "hidden";
+
+}
+
+
+/* ==================================================
+   OPEN EDIT PRICING MODAL
+================================================== */
+
+function openEditPriceModal(
+    propertyId,
+    propertyName,
+    propertyLocation,
+    maxGuests,
+    pricingMethod,
+    pricingData
+) {
+
+    currentPropertyId = propertyId;
+
+    currentMaxGuests =
+        parseInt(maxGuests) || 1;
+
+
+    document.getElementById(
+        "modalPropertyName"
+    ).textContent = propertyName;
+
+
+    document.getElementById(
+        "modalPropertyLocation"
+    ).textContent =
+        "📍 " + propertyLocation;
+
+
+    document.getElementById(
+        "formMaxGuests"
+    ).value = currentMaxGuests;
+
+
+    document.getElementById(
+        "warningMaxGuests"
+    ).textContent =
+        currentMaxGuests;
+
+
+    document.getElementById(
+        "priceForm"
+    ).action =
+        "/admin/property/"
+        + propertyId
+        + "/set-price";
+
+
+    document.getElementById(
+        "priceForm"
+    ).dataset.editing = "true";
+
+
+    document.getElementById(
+        "savePriceButton"
+    ).textContent =
+        "Save Pricing";
+
+
+    let parsedPricing = [];
+
+    if (pricingData) {
+
+        try {
+
+            parsedPricing =
+                JSON.parse(pricingData);
+
+        } catch (error) {
+
+            console.error(
+                "Unable to parse pricing:",
+                error
+            );
+
+        }
+
+    }
+
+
+    if (
+        pricingMethod === "group"
+    ) {
+
+        document.querySelector(
+            'input[name="pricing_method"][value="group"]'
+        ).checked = true;
+
+
+        document.getElementById(
+            "individualPricing"
+        ).style.display = "none";
+
+
+        document.getElementById(
+            "groupPricing"
+        ).style.display = "block";
+
+
+        document.getElementById(
+            "groupFields"
+        ).innerHTML = "";
+
+
+        groupCounter = 0;
+
+
+        if (parsedPricing.length > 0) {
+
+            parsedPricing.forEach(
+                function(item) {
+
+                    addGroup(
+                        item.min_guests,
+                        item.max_guests,
+                        item.price
+                    );
+
+                }
+            );
+
+        } else {
+
+            addGroup();
+
+        }
+
+
+    } else {
+
+
+        document.querySelector(
+            'input[name="pricing_method"][value="individual"]'
+        ).checked = true;
+
+
+        document.getElementById(
+            "individualPricing"
+        ).style.display = "block";
+
+
+        document.getElementById(
+            "groupPricing"
+        ).style.display = "none";
+
+
+        generateIndividualFields(
+            parsedPricing
+        );
+
+    }
 
 
     document.getElementById(
@@ -1909,44 +2310,93 @@ function openPriceModal(
 
 function closePriceModal() {
 
-
     document.getElementById(
         "priceModal"
     ).style.display = "none";
 
-
-    document.body.style.overflow = "auto";
+    document.body.style.overflow =
+        "auto";
 
 }
 
 
 /* ==================================================
-   CLICK OUTSIDE MODAL
+   OUTSIDE CLICK
 ================================================== */
 
-window.onclick = function(event) {
+window.addEventListener(
+    "click",
+    function(event) {
 
+        const modal =
+            document.getElementById(
+                "priceModal"
+            );
 
-    const modal =
-        document.getElementById(
-            "priceModal"
-        );
+        if (
+            event.target === modal
+        ) {
 
+            closePriceModal();
 
-    if (event.target === modal) {
-
-        closePriceModal();
+        }
 
     }
-
-};
+);
 
 
 /* ==================================================
-   PRICING METHOD
+   ESC KEY
 ================================================== */
 
-function changePricingMethod() {
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Escape"
+        ) {
+
+            closePriceModal();
+
+        }
+
+    }
+);
+
+
+/* ==================================================
+   MAXIMUM GUEST CHANGE
+================================================== */
+
+function maximumGuestsChanged() {
+
+    const value =
+        parseInt(
+            document.getElementById(
+                "formMaxGuests"
+            ).value
+        );
+
+
+    if (
+        isNaN(value)
+        ||
+        value < 1
+    ) {
+
+        return;
+
+    }
+
+
+    currentMaxGuests = value;
+
+
+    document.getElementById(
+        "warningMaxGuests"
+    ).textContent =
+        value;
 
 
     const method =
@@ -1955,8 +2405,42 @@ function changePricingMethod() {
         ).value;
 
 
-    if (method === "individual") {
+    if (
+        method === "individual"
+    ) {
 
+        generateIndividualFields();
+
+    } else {
+
+        document.getElementById(
+            "groupFields"
+        ).innerHTML = "";
+
+        groupCounter = 0;
+
+        addGroup();
+
+    }
+
+}
+
+
+/* ==================================================
+   CHANGE PRICING METHOD
+================================================== */
+
+function changePricingMethod() {
+
+    const method =
+        document.querySelector(
+            'input[name="pricing_method"]:checked'
+        ).value;
+
+
+    if (
+        method === "individual"
+    ) {
 
         document.getElementById(
             "individualPricing"
@@ -1973,7 +2457,6 @@ function changePricingMethod() {
 
     } else {
 
-
         document.getElementById(
             "individualPricing"
         ).style.display = "none";
@@ -1984,7 +2467,15 @@ function changePricingMethod() {
         ).style.display = "block";
 
 
-        generateInitialGroup();
+        document.getElementById(
+            "groupFields"
+        ).innerHTML = "";
+
+
+        groupCounter = 0;
+
+
+        addGroup();
 
     }
 
@@ -1992,16 +2483,38 @@ function changePricingMethod() {
 
 
 /* ==================================================
-   INDIVIDUAL PRICE FIELDS
+   GENERATE INDIVIDUAL FIELDS
 ================================================== */
 
-function generateIndividualFields() {
-
+function generateIndividualFields(
+    existingPricing = []
+) {
 
     const container =
         document.getElementById(
             "individualFields"
         );
+
+
+    const existingMap = {};
+
+
+    if (
+        Array.isArray(existingPricing)
+    ) {
+
+        existingPricing.forEach(
+            function(item) {
+
+                existingMap[
+                    parseInt(item.guests)
+                ] =
+                    item.price;
+
+            }
+        );
+
+    }
 
 
     container.innerHTML = "";
@@ -2024,6 +2537,19 @@ function generateIndividualFields() {
             "price-row";
 
 
+        let existingValue = "";
+
+
+        if (
+            existingMap[guest] !== undefined
+        ) {
+
+            existingValue =
+                existingMap[guest];
+
+        }
+
+
         row.innerHTML = `
 
             <div class="guest-label">
@@ -2031,8 +2557,12 @@ function generateIndividualFields() {
                 ${guest}
                 guest${guest !== 1 ? "s" : ""}
 
-            </div>
+                <small>
+                    Price applicable for
+                    exactly ${guest} guest${guest !== 1 ? "s" : ""}
+                </small>
 
+            </div>
 
             <div>
 
@@ -2042,6 +2572,7 @@ function generateIndividualFields() {
                     min="0"
                     step="0.01"
                     placeholder="₹ Price per day"
+                    value="${existingValue}"
                     required
                 >
 
@@ -2060,45 +2591,14 @@ function generateIndividualFields() {
 
 
 /* ==================================================
-   INITIAL GROUP
-================================================== */
-
-function generateInitialGroup() {
-
-
-    const container =
-        document.getElementById(
-            "groupFields"
-        );
-
-
-    /*
-       Don't reset if groups already exist.
-    */
-
-    if (
-        container.children.length > 0
-    ) {
-
-        return;
-
-    }
-
-
-    groupCounter = 0;
-
-
-    addGroup();
-
-}
-
-
-/* ==================================================
    ADD GROUP
 ================================================== */
 
-function addGroup() {
-
+function addGroup(
+    existingMin = "",
+    existingMax = "",
+    existingPrice = ""
+) {
 
     groupCounter++;
 
@@ -2128,14 +2628,16 @@ function addGroup() {
         <div>
 
             <label>
-                From
+                From Guests
             </label>
 
             <input
                 type="number"
+                class="group-min"
                 name="group_${groupCounter}_min"
                 min="1"
                 max="${currentMaxGuests}"
+                value="${existingMin}"
                 placeholder="1"
                 required
             >
@@ -2146,14 +2648,16 @@ function addGroup() {
         <div>
 
             <label>
-                To
+                To Guests
             </label>
 
             <input
                 type="number"
+                class="group-max"
                 name="group_${groupCounter}_max"
                 min="1"
                 max="${currentMaxGuests}"
+                value="${existingMax}"
                 placeholder="${currentMaxGuests}"
                 required
             >
@@ -2169,9 +2673,11 @@ function addGroup() {
 
             <input
                 type="number"
+                class="group-price"
                 name="group_${groupCounter}_price"
                 min="0"
                 step="0.01"
+                value="${existingPrice}"
                 placeholder="₹ Price"
                 required
             >
@@ -2179,7 +2685,7 @@ function addGroup() {
         </div>
 
 
-        <div style="grid-column:1/-1;">
+        <div>
 
             <button
                 type="button"
@@ -2212,7 +2718,6 @@ function addGroup() {
 
 function removeGroup(button) {
 
-
     const row =
         button.closest(
             ".price-row"
@@ -2232,11 +2737,10 @@ function removeGroup(button) {
 
 
 /* ==================================================
-   UPDATE GROUP FIELD NAMES
+   UPDATE GROUP NAMES
 ================================================== */
 
 function updateGroupNames() {
-
 
     const rows =
         document.querySelectorAll(
@@ -2247,39 +2751,56 @@ function updateGroupNames() {
     rows.forEach(
         function(row, index) {
 
-
             const number =
                 index + 1;
 
 
-            const inputs =
-                row.querySelectorAll(
-                    "input"
+            const minInput =
+                row.querySelector(
+                    ".group-min"
                 );
 
 
-            if (inputs.length >= 3) {
+            const maxInput =
+                row.querySelector(
+                    ".group-max"
+                );
 
 
-                inputs[0].name =
+            const priceInput =
+                row.querySelector(
+                    ".group-price"
+                );
+
+
+            if (minInput) {
+
+                minInput.name =
                     "group_"
                     + number
                     + "_min";
 
+            }
 
-                inputs[1].name =
+
+            if (maxInput) {
+
+                maxInput.name =
                     "group_"
                     + number
                     + "_max";
 
+            }
 
-                inputs[2].name =
+
+            if (priceInput) {
+
+                priceInput.name =
                     "group_"
                     + number
                     + "_price";
 
             }
-
 
         }
     );
@@ -2302,11 +2823,44 @@ document.getElementById(
     function(event) {
 
 
+        const maxGuests =
+            parseInt(
+                document.getElementById(
+                    "formMaxGuests"
+                ).value
+            );
+
+
+        if (
+            isNaN(maxGuests)
+            ||
+            maxGuests < 1
+        ) {
+
+            alert(
+                "Please enter a valid maximum number of guests."
+            );
+
+            event.preventDefault();
+
+            return;
+
+        }
+
+
+        currentMaxGuests =
+            maxGuests;
+
+
         const method =
             document.querySelector(
                 'input[name="pricing_method"]:checked'
             ).value;
 
+
+        /* ==================================================
+           INDIVIDUAL
+        ================================================== */
 
         if (
             method === "individual"
@@ -2319,22 +2873,41 @@ document.getElementById(
                 );
 
 
+            if (
+                prices.length !== maxGuests
+            ) {
+
+                generateIndividualFields();
+
+            }
+
+
+            const refreshedPrices =
+                document.querySelectorAll(
+                    "#individualFields input"
+                );
+
+
             for (
-                const input of prices
+                const input of refreshedPrices
             ) {
 
 
                 if (
-                    !input.value
+                    input.value === ""
+                    ||
+                    isNaN(
+                        parseFloat(input.value)
+                    )
                     ||
                     parseFloat(input.value) < 0
                 ) {
 
-
                     alert(
-                        "Please enter a valid price for every guest count."
+                        "Please enter a valid price for every guest count from 1 to "
+                        + maxGuests
+                        + "."
                     );
-
 
                     event.preventDefault();
 
@@ -2345,7 +2918,14 @@ document.getElementById(
             }
 
 
-        } else {
+        }
+
+
+        /* ==================================================
+           GROUP
+        ================================================== */
+
+        else {
 
 
             const rows =
@@ -2354,13 +2934,13 @@ document.getElementById(
                 );
 
 
-            if (rows.length === 0) {
-
+            if (
+                rows.length === 0
+            ) {
 
                 alert(
                     "Please add at least one guest group."
                 );
-
 
                 event.preventDefault();
 
@@ -2379,27 +2959,27 @@ document.getElementById(
             ) {
 
 
-                const inputs =
-                    rows[i].querySelectorAll(
-                        "input"
-                    );
-
-
                 const minimum =
                     parseInt(
-                        inputs[0].value
+                        rows[i].querySelector(
+                            ".group-min"
+                        ).value
                     );
 
 
                 const maximum =
                     parseInt(
-                        inputs[1].value
+                        rows[i].querySelector(
+                            ".group-max"
+                        ).value
                     );
 
 
                 const price =
                     parseFloat(
-                        inputs[2].value
+                        rows[i].querySelector(
+                            ".group-price"
+                        ).value
                     );
 
 
@@ -2411,11 +2991,9 @@ document.getElementById(
                     isNaN(price)
                 ) {
 
-
                     alert(
                         "Please complete every guest group."
                     );
-
 
                     event.preventDefault();
 
@@ -2428,13 +3006,11 @@ document.getElementById(
                     minimum !== expectedStart
                 ) {
 
-
                     alert(
                         "Guest groups must start from "
                         + expectedStart
                         + "."
                     );
-
 
                     event.preventDefault();
 
@@ -2447,11 +3023,9 @@ document.getElementById(
                     maximum < minimum
                 ) {
 
-
                     alert(
-                        "Group maximum cannot be less than minimum."
+                        "Group maximum cannot be less than group minimum."
                     );
-
 
                     event.preventDefault();
 
@@ -2461,14 +3035,16 @@ document.getElementById(
 
 
                 if (
-                    maximum > currentMaxGuests
+                    minimum < 1
+                    ||
+                    maximum > maxGuests
                 ) {
 
-
                     alert(
-                        "A guest group exceeds the property's maximum guests."
+                        "Guest groups must remain between 1 and "
+                        + maxGuests
+                        + "."
                     );
-
 
                     event.preventDefault();
 
@@ -2481,11 +3057,9 @@ document.getElementById(
                     price < 0
                 ) {
 
-
                     alert(
                         "Price cannot be negative."
                     );
-
 
                     event.preventDefault();
 
@@ -2501,18 +3075,14 @@ document.getElementById(
 
 
             if (
-                expectedStart
-                !==
-                currentMaxGuests + 1
+                expectedStart !== maxGuests + 1
             ) {
-
 
                 alert(
                     "Guest groups must cover all guest counts from 1 to "
-                    + currentMaxGuests
-                    + "."
+                    + maxGuests
+                    + " without gaps."
                 );
-
 
                 event.preventDefault();
 
@@ -2522,10 +3092,30 @@ document.getElementById(
 
         }
 
-
     }
 );
 
+
+/* ==================================================
+   PREVENT ENTER FROM ACCIDENTALLY SUBMITTING
+================================================== */
+
+document.getElementById(
+    "formMaxGuests"
+).addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Enter"
+        ) {
+
+            event.preventDefault();
+
+        }
+
+    }
+);
 
 </script>
 
