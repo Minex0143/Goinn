@@ -1149,57 +1149,45 @@
 
                 <div class="capacity-box">
 
+    <div class="capacity-header">
 
-                    <div class="capacity-header">
+        <div>
 
-                        <div>
+            <div class="capacity-title">
+                Maximum Guest Capacity
+            </div>
 
-                            <div class="capacity-title">
+            <div class="admin-note">
+                This value is configured by Goinn Admin.
+                Owners cannot change the maximum guest capacity.
+            </div>
 
-                                Maximum Guest Capacity
-
-                            </div>
-
-
-                            <div class="admin-note">
-
-                                This value is configured
-                                and controlled by Goinn Admin.
-
-                                Owners cannot change the
-                                maximum guest capacity.
-
-                            </div>
-
-                        </div>
+        </div>
 
 
-                        <div class="capacity-number">
+        <div class="capacity-number">
 
-                            {% if property.max_guests
-                                  and property.max_guests > 0 %}
+            {% if property.pricing_method and property.pricing_data %}
 
-                                {{ property.max_guests }}
+                {{ property.max_guests }}
 
-                                {% if property.max_guests == 1 %}
-                                    Guest
-                                {% else %}
-                                    Guests
-                                {% endif %}
+                {% if property.max_guests == 1 %}
+                    Guest
+                {% else %}
+                    Guests
+                {% endif %}
 
-                            {% else %}
+            {% else %}
 
-                                Not configured
+                Not configured
 
-                            {% endif %}
+            {% endif %}
 
-                        </div>
+        </div>
 
+    </div>
 
-                    </div>
-
-
-                </div>
+</div>
 
 
                 <!-- ======================================
