@@ -132,8 +132,8 @@ class User(UserMixin, db.Model):
         nullable=False
     )
     @property
-def is_admin(self):
-    return self.role == "admin"
+    def is_admin(self):
+        return self.role == "admin"
 
 
 # ==================================================
