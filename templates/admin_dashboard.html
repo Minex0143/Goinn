@@ -22,98 +22,156 @@
                 Arial,
                 Helvetica,
                 sans-serif;
-
             background: #f4f6f8;
             color: #202124;
         }
 
-        /* ==================================================
+        /* =====================================================
            HEADER
-        ================================================== */
+        ===================================================== */
 
         .header {
+            height: 68px;
             background: #111;
-
             color: white;
 
-            padding: 17px 30px;
-
             display: flex;
-
+            align-items: center;
             justify-content: space-between;
 
-            align-items: center;
+            padding: 0 30px;
 
             box-shadow:
                 0 2px 10px rgba(0,0,0,0.15);
+
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         .logo {
-            font-size: 25px;
+            font-size: 24px;
             font-weight: 800;
-            letter-spacing: -0.5px;
         }
 
         .header-right {
             display: flex;
             align-items: center;
-            gap: 18px;
+            gap: 15px;
         }
 
         .admin-name {
-            font-size: 14px;
             color: #ddd;
+            font-size: 14px;
         }
 
         .logout {
+            color: white;
             text-decoration: none;
 
-            color: white;
-
-            background: #2c2c2c;
+            background: #2d2d2d;
 
             padding: 9px 15px;
 
             border-radius: 8px;
 
             font-size: 14px;
-
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .logout:hover {
             background: #444;
         }
 
-        /* ==================================================
+        /* =====================================================
            MAIN
-        ================================================== */
+        ===================================================== */
 
         .container {
-            max-width: 1200px;
-
-            margin: 35px auto;
-
+            max-width: 1250px;
+            margin: 30px auto;
             padding: 0 20px;
         }
 
-        h1 {
-            margin: 0 0 7px 0;
+        .page-title {
+            margin-bottom: 25px;
+        }
 
+        .page-title h1 {
+            margin: 0;
             font-size: 30px;
         }
 
-        .subtitle {
+        .page-title p {
+            margin: 7px 0 0;
             color: #70757a;
-
-            margin-bottom: 28px;
-
-            font-size: 15px;
+            font-size: 14px;
         }
 
-        /* ==================================================
-           STATS
-        ================================================== */
+        /* =====================================================
+           TABS
+        ===================================================== */
+
+        .tabs {
+            background: white;
+
+            border-radius: 12px;
+
+            padding: 6px;
+
+            display: flex;
+
+            gap: 5px;
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 3px 14px rgba(0,0,0,0.06);
+
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            border: none;
+
+            background: transparent;
+
+            color: #666;
+
+            padding: 12px 20px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            white-space: nowrap;
+        }
+
+        .tab-button:hover {
+            background: #f1f3f4;
+            color: #111;
+        }
+
+        .tab-button.active {
+            background: #111;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* =====================================================
+           STATISTICS
+        ===================================================== */
 
         .stats {
             display: grid;
@@ -123,7 +181,7 @@
 
             gap: 17px;
 
-            margin-bottom: 35px;
+            margin-bottom: 25px;
         }
 
         .stat-card {
@@ -142,56 +200,76 @@
 
             font-size: 13px;
 
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .stat-number {
+            margin-top: 8px;
+
             font-size: 30px;
 
             font-weight: 800;
-
-            margin-top: 8px;
         }
 
-        /* ==================================================
-           SECTION
-        ================================================== */
+        /* =====================================================
+           SECTION CARD
+        ===================================================== */
 
-        .section {
-            margin-bottom: 40px;
+        .section-card {
+            background: white;
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 3px 14px rgba(0,0,0,0.06);
+
+            overflow: hidden;
         }
 
         .section-header {
+            padding: 20px 22px;
+
+            border-bottom: 1px solid #eee;
+
             display: flex;
 
             justify-content: space-between;
 
             align-items: center;
-
-            margin-bottom: 17px;
         }
 
         .section-header h2 {
             margin: 0;
 
-            font-size: 22px;
+            font-size: 20px;
         }
 
-        /* ==================================================
-           PROPERTY CARD
-        ================================================== */
+        .section-header span {
+            color: #777;
+
+            font-size: 13px;
+        }
+
+        /* =====================================================
+           PROPERTY
+        ===================================================== */
+
+        .property-list {
+            padding: 18px;
+        }
 
         .property-card {
-            background: white;
+            border: 1px solid #e7e7e7;
 
-            border-radius: 15px;
+            border-radius: 13px;
 
-            padding: 23px;
+            padding: 20px;
 
-            margin-bottom: 18px;
+            margin-bottom: 15px;
+        }
 
-            box-shadow:
-                0 4px 15px rgba(0,0,0,0.06);
+        .property-card:last-child {
+            margin-bottom: 0;
         }
 
         .property-top {
@@ -205,22 +283,22 @@
         }
 
         .property-name {
-            font-size: 21px;
+            font-size: 19px;
 
             font-weight: 800;
 
-            margin-bottom: 7px;
+            margin-bottom: 6px;
         }
 
         .property-location {
-            color: #70757a;
+            color: #777;
 
-            font-size: 14px;
+            font-size: 13px;
         }
 
-        /* ==================================================
+        /* =====================================================
            STATUS
-        ================================================== */
+        ===================================================== */
 
         .status {
             display: inline-block;
@@ -229,7 +307,7 @@
 
             border-radius: 30px;
 
-            font-size: 12px;
+            font-size: 11px;
 
             font-weight: 800;
 
@@ -238,34 +316,68 @@
 
         .status-pending {
             background: #fff3cd;
-
             color: #856404;
         }
 
         .status-approved {
             background: #d8f3dc;
-
             color: #176b2c;
         }
 
         .status-rejected {
             background: #f8d7da;
-
             color: #842029;
         }
 
-        /* ==================================================
-           OWNER
-        ================================================== */
+        /* =====================================================
+           PROPERTY DETAILS
+        ===================================================== */
 
-        .owner-box {
-            margin-top: 20px;
+        .property-details {
+            display: grid;
 
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 12px;
+
+            margin-top: 18px;
+        }
+
+        .detail-box {
             background: #f7f8fa;
 
-            padding: 17px;
+            padding: 13px;
 
-            border-radius: 11px;
+            border-radius: 9px;
+        }
+
+        .detail-label {
+            color: #777;
+
+            font-size: 11px;
+
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+
+            font-weight: 700;
+
+            word-break: break-word;
+        }
+
+        /* =====================================================
+           OWNER
+        ===================================================== */
+
+        .owner-section {
+            margin-top: 18px;
+
+            padding-top: 18px;
+
+            border-top: 1px solid #eee;
         }
 
         .owner-title {
@@ -273,7 +385,7 @@
 
             font-weight: 800;
 
-            margin-bottom: 13px;
+            margin-bottom: 12px;
         }
 
         .owner-grid {
@@ -282,74 +394,31 @@
             grid-template-columns:
                 repeat(3, 1fr);
 
-            gap: 15px;
+            gap: 12px;
         }
 
-        .info-label {
-            color: #777;
-
-            font-size: 12px;
-
-            margin-bottom: 5px;
-        }
-
-        .info-value {
-            font-weight: 600;
-
-            font-size: 14px;
-
-            word-break: break-word;
-        }
-
-        /* ==================================================
-           PROPERTY INFO
-        ================================================== */
-
-        .property-info {
-            display: grid;
-
-            grid-template-columns:
-                repeat(2, 1fr);
-
-            gap: 15px;
-
-            margin-top: 18px;
-
-            padding-top: 18px;
-
-            border-top: 1px solid #eee;
-        }
-
-        .info-item {
-            background: #f8f9fa;
-
-            padding: 14px;
-
-            border-radius: 9px;
-        }
-
-        /* ==================================================
+        /* =====================================================
            PRICING
-        ================================================== */
+        ===================================================== */
 
         .pricing-box {
-            margin-top: 20px;
+            margin-top: 18px;
 
-            padding: 17px;
+            padding: 16px;
+
+            border-radius: 10px;
 
             background: #f7f8fa;
 
-            border-radius: 11px;
-
-            border: 1px solid #e9eaec;
+            border: 1px solid #e5e7eb;
         }
 
         .pricing-title {
-            font-size: 15px;
-
             font-weight: 800;
 
-            margin-bottom: 12px;
+            font-size: 14px;
+
+            margin-bottom: 10px;
         }
 
         .pricing-method {
@@ -363,9 +432,9 @@
 
             border-radius: 6px;
 
-            font-size: 11px;
+            font-size: 10px;
 
-            font-weight: 700;
+            font-weight: 800;
 
             margin-bottom: 10px;
         }
@@ -376,66 +445,63 @@
             border-collapse: collapse;
 
             background: white;
-
-            border-radius: 8px;
-
-            overflow: hidden;
         }
 
         .price-table th,
         .price-table td {
-            padding: 10px;
-
-            border-bottom: 1px solid #eee;
+            padding: 9px;
 
             text-align: left;
 
-            font-size: 14px;
+            border-bottom: 1px solid #eee;
+
+            font-size: 13px;
         }
 
         .price-table th {
             background: #f1f3f4;
 
-            font-size: 12px;
-
             color: #666;
+
+            font-size: 11px;
         }
 
-        .price-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        /* ==================================================
+        /* =====================================================
            ACTIONS
-        ================================================== */
+        ===================================================== */
 
         .actions {
-            margin-top: 20px;
-
             display: flex;
 
-            gap: 10px;
-
             flex-wrap: wrap;
+
+            gap: 9px;
+
+            margin-top: 18px;
         }
 
-        button {
+        .btn {
             border: none;
 
-            padding: 11px 17px;
+            padding: 10px 15px;
 
             border-radius: 8px;
 
-            font-size: 14px;
+            font-size: 13px;
 
             font-weight: 700;
 
             cursor: pointer;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
         }
 
         .approve-btn {
             background: #111;
-
             color: white;
         }
 
@@ -445,7 +511,6 @@
 
         .reject-btn {
             background: #dc3545;
-
             color: white;
         }
 
@@ -453,43 +518,59 @@
             background: #b52a37;
         }
 
-        .view-btn {
+        .edit-btn {
             background: #ededed;
-
-            color: #333;
+            color: #222;
         }
 
-        .view-btn:hover {
+        .edit-btn:hover {
             background: #ddd;
         }
 
-        /* ==================================================
+        /* =====================================================
            BOOKINGS
-        ================================================== */
+        ===================================================== */
 
-        .booking-card {
-            background: white;
-
-            padding: 20px;
-
-            border-radius: 13px;
-
-            margin-bottom: 15px;
-
-            box-shadow:
-                0 3px 12px rgba(0,0,0,0.05);
+        .booking-list {
+            padding: 18px;
         }
 
-        .booking-title {
+        .booking-card {
+            border: 1px solid #e7e7e7;
+
+            border-radius: 12px;
+
+            padding: 18px;
+
+            margin-bottom: 14px;
+        }
+
+        .booking-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .booking-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+        .booking-id {
             font-weight: 800;
 
             font-size: 16px;
         }
 
         .booking-property {
+            margin-top: 5px;
+
             color: #666;
 
-            margin-top: 5px;
+            font-size: 13px;
         }
 
         .booking-grid {
@@ -498,7 +579,7 @@
             grid-template-columns:
                 repeat(3, 1fr);
 
-            gap: 15px;
+            gap: 12px;
 
             margin-top: 17px;
 
@@ -507,32 +588,89 @@
             border-top: 1px solid #eee;
         }
 
-        /* ==================================================
+        /* =====================================================
+           USERS
+        ===================================================== */
+
+        .users-wrapper {
+            overflow-x: auto;
+        }
+
+        .users-table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 750px;
+        }
+
+        .users-table th,
+        .users-table td {
+            padding: 14px 16px;
+
+            text-align: left;
+
+            border-bottom: 1px solid #eee;
+
+            font-size: 13px;
+        }
+
+        .users-table th {
+            background: #f7f8fa;
+
+            color: #666;
+
+            font-size: 11px;
+
+            text-transform: uppercase;
+        }
+
+        .users-table tr:hover td {
+            background: #fafafa;
+        }
+
+        .user-name {
+            font-weight: 800;
+        }
+
+        .role-badge {
+            display: inline-block;
+
+            padding: 5px 9px;
+
+            border-radius: 20px;
+
+            background: #ededed;
+
+            font-size: 11px;
+
+            font-weight: 700;
+        }
+
+        /* =====================================================
            EMPTY
-        ================================================== */
+        ===================================================== */
 
         .empty {
-            background: white;
-
-            padding: 35px;
+            padding: 45px 20px;
 
             text-align: center;
 
             color: #777;
 
-            border-radius: 13px;
+            background: white;
         }
 
-        /* ==================================================
+        /* =====================================================
            MODAL
-        ================================================== */
+        ===================================================== */
 
         .modal {
             display: none;
 
             position: fixed;
 
-            z-index: 9999;
+            z-index: 99999;
 
             left: 0;
 
@@ -542,31 +680,31 @@
 
             height: 100%;
 
-            background:
-                rgba(0,0,0,0.68);
+            background: rgba(0,0,0,0.7);
 
             overflow-y: auto;
 
-            padding: 25px 15px;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: block;
         }
 
         .modal-content {
             background: white;
 
-            width: 100%;
-
             max-width: 700px;
 
-            margin: 25px auto;
+            width: 100%;
 
-            border-radius: 16px;
+            margin: 20px auto;
 
-            padding: 27px;
+            border-radius: 15px;
+
+            padding: 25px;
 
             position: relative;
-
-            box-shadow:
-                0 15px 50px rgba(0,0,0,0.25);
         }
 
         .modal-header {
@@ -576,131 +714,98 @@
 
             align-items: center;
 
-            padding-bottom: 17px;
-
             border-bottom: 1px solid #eee;
 
-            margin-bottom: 20px;
+            padding-bottom: 15px;
+
+            margin-bottom: 18px;
         }
 
         .modal-header h2 {
             margin: 0;
 
-            font-size: 21px;
+            font-size: 20px;
         }
 
-        .close {
-            font-size: 29px;
+        .close-modal {
+            border: none;
 
-            line-height: 1;
+            background: transparent;
+
+            font-size: 28px;
+
+            color: #777;
 
             cursor: pointer;
 
-            color: #777;
+            padding: 0;
         }
-
-        .close:hover {
-            color: #111;
-        }
-
-        /* ==================================================
-           MODAL PROPERTY SUMMARY
-        ================================================== */
 
         .modal-property {
             background: #f7f8fa;
 
-            border-radius: 10px;
+            padding: 14px;
 
-            padding: 15px;
+            border-radius: 9px;
 
-            margin-bottom: 22px;
+            margin-bottom: 20px;
         }
 
         .modal-property-name {
             font-weight: 800;
 
-            font-size: 17px;
-
-            margin-bottom: 5px;
+            font-size: 16px;
         }
 
         .modal-property-location {
             color: #777;
 
-            font-size: 13px;
+            font-size: 12px;
+
+            margin-top: 4px;
         }
 
-        /* ==================================================
+        /* =====================================================
            FORM
-        ================================================== */
+        ===================================================== */
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
-        label {
+        .form-label {
             display: block;
 
-            font-weight: 700;
+            font-size: 13px;
+
+            font-weight: 800;
 
             margin-bottom: 7px;
-
-            font-size: 14px;
         }
 
         input,
         select {
             width: 100%;
 
-            padding: 11px 13px;
+            padding: 11px 12px;
 
             border: 1px solid #d5d9df;
 
             border-radius: 8px;
 
-            font-size: 15px;
+            font-size: 14px;
 
             outline: none;
-
-            background: white;
         }
 
         input:focus,
         select:focus {
-            border-color: #555;
-
-            box-shadow:
-                0 0 0 2px rgba(0,0,0,0.05);
+            border-color: #111;
         }
 
-        .max-guests-box {
-            background: #f7f8fa;
-
-            padding: 17px;
-
-            border-radius: 10px;
-
-            margin-bottom: 22px;
-        }
-
-        .max-guests-box label {
-            font-size: 15px;
-        }
-
-        .max-guests-help {
-            color: #777;
-
-            font-size: 12px;
-
-            margin-top: 6px;
-
-            line-height: 1.4;
-        }
-
-        /* ==================================================
+        /* =====================================================
            RADIO
-        ================================================== */
+        ===================================================== */
 
         .radio-container {
             display: grid;
@@ -708,63 +813,53 @@
             grid-template-columns:
                 1fr 1fr;
 
-            gap: 12px;
-
-            margin-top: 10px;
+            gap: 10px;
         }
 
         .radio-option {
             border: 1px solid #ddd;
 
-            padding: 15px;
-
             border-radius: 10px;
 
-            cursor: pointer;
+            padding: 14px;
 
-            transition: 0.2s;
+            cursor: pointer;
         }
 
         .radio-option:hover {
-            border-color: #888;
+            border-color: #999;
         }
 
         .radio-option input {
             width: auto;
 
-            margin-right: 6px;
+            margin-right: 5px;
         }
 
         .radio-title {
-            display: inline;
-
             font-weight: 800;
 
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .radio-description {
             color: #777;
 
-            font-size: 12px;
+            font-size: 11px;
+
+            margin-top: 8px;
 
             line-height: 1.4;
-
-            margin-top: 7px;
         }
 
-        /* ==================================================
-           PRICING FIELDS
-        ================================================== */
-
-        .price-fields {
-            margin-top: 22px;
-        }
+        /* =====================================================
+           PRICE FIELDS
+        ===================================================== */
 
         .price-fields h3 {
-            font-size: 16px;
+            font-size: 15px;
 
-            margin: 0 0 13px 0;
+            margin: 20px 0 12px;
         }
 
         .price-row {
@@ -775,23 +870,23 @@
 
             gap: 12px;
 
-            align-items: center;
-
-            margin-bottom: 10px;
-
-            padding: 12px;
+            align-items: end;
 
             background: #f8f9fa;
 
+            border: 1px solid #eee;
+
             border-radius: 9px;
 
-            border: 1px solid #eee;
+            padding: 12px;
+
+            margin-bottom: 9px;
         }
 
         .guest-label {
-            font-weight: 700;
+            font-weight: 800;
 
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .guest-label small {
@@ -799,38 +894,28 @@
 
             color: #777;
 
-            font-size: 11px;
-
             font-weight: normal;
+
+            font-size: 10px;
 
             margin-top: 3px;
         }
 
-        /* ==================================================
-           GROUP ROW
-        ================================================== */
-
         .group-row {
             grid-template-columns:
                 1fr 1fr 1.2fr;
-
-            align-items: end;
         }
 
-        .group-row > div:last-child {
+        .group-row .remove-area {
             grid-column: 1 / -1;
         }
 
         .add-group-btn {
-            background: #ededed;
+            background: #eee;
 
-            color: #333;
+            color: #222;
 
             margin-top: 5px;
-        }
-
-        .add-group-btn:hover {
-            background: #ddd;
         }
 
         .remove-group-btn {
@@ -840,43 +925,35 @@
 
             padding: 8px 12px;
 
-            font-size: 12px;
+            font-size: 11px;
         }
-
-        .remove-group-btn:hover {
-            background: #b52a37;
-        }
-
-        /* ==================================================
-           WARNING
-        ================================================== */
 
         .warning {
+            margin-top: 15px;
+
+            padding: 12px;
+
             background: #fff8e8;
 
             border: 1px solid #efd58c;
-
-            padding: 13px;
 
             border-radius: 9px;
 
             color: #66531d;
 
-            margin-top: 15px;
-
-            font-size: 13px;
+            font-size: 12px;
 
             line-height: 1.5;
         }
 
-        /* ==================================================
+        /* =====================================================
            MODAL FOOTER
-        ================================================== */
+        ===================================================== */
 
         .modal-footer {
-            margin-top: 25px;
+            margin-top: 22px;
 
-            padding-top: 18px;
+            padding-top: 17px;
 
             border-top: 1px solid #eee;
 
@@ -884,32 +961,24 @@
 
             justify-content: flex-end;
 
-            gap: 10px;
+            gap: 9px;
         }
 
-        .cancel-modal {
+        .cancel-btn {
             background: #eee;
 
             color: #333;
         }
 
-        .cancel-modal:hover {
-            background: #ddd;
-        }
-
-        .save-price-btn {
+        .save-btn {
             background: #111;
 
             color: white;
         }
 
-        .save-price-btn:hover {
-            background: #333;
-        }
-
-        /* ==================================================
-           RESPONSIVE
-        ================================================== */
+        /* =====================================================
+           MOBILE
+        ===================================================== */
 
         @media (max-width: 900px) {
 
@@ -918,11 +987,8 @@
                     repeat(2, 1fr);
             }
 
-            .owner-grid {
-                grid-template-columns:
-                    1fr;
-            }
-
+            .property-details,
+            .owner-grid,
             .booking-grid {
                 grid-template-columns:
                     repeat(2, 1fr);
@@ -933,7 +999,7 @@
         @media (max-width: 650px) {
 
             .header {
-                padding: 15px 17px;
+                padding: 0 15px;
             }
 
             .admin-name {
@@ -941,13 +1007,21 @@
             }
 
             .container {
-                margin-top: 22px;
-
                 padding: 0 12px;
+
+                margin-top: 20px;
             }
 
-            h1 {
+            .page-title h1 {
                 font-size: 25px;
+            }
+
+            .tabs {
+                margin-bottom: 18px;
+            }
+
+            .tab-button {
+                padding: 11px 14px;
             }
 
             .stats {
@@ -965,10 +1039,6 @@
                 font-size: 24px;
             }
 
-            .property-card {
-                padding: 17px;
-            }
-
             .property-top {
                 display: block;
             }
@@ -977,26 +1047,11 @@
                 margin-top: 10px;
             }
 
-            .property-info {
-                grid-template-columns:
-                    1fr;
-            }
-
+            .property-details,
+            .owner-grid,
             .booking-grid {
                 grid-template-columns:
                     1fr;
-            }
-
-            .modal {
-                padding: 10px;
-            }
-
-            .modal-content {
-                margin: 10px auto;
-
-                padding: 20px;
-
-                border-radius: 13px;
             }
 
             .radio-container {
@@ -1010,8 +1065,18 @@
                     1fr;
             }
 
-            .group-row > div:last-child {
+            .group-row .remove-area {
                 grid-column: auto;
+            }
+
+            .modal {
+                padding: 10px;
+            }
+
+            .modal-content {
+                margin: 5px auto;
+
+                padding: 18px;
             }
 
             .modal-footer {
@@ -1035,11 +1100,11 @@
 <body>
 
 
-<!-- ==================================================
+<!-- =========================================================
      HEADER
-================================================== -->
+========================================================= -->
 
-<div class="header">
+<header class="header">
 
     <div class="logo">
         Goinn Admin
@@ -1060,29 +1125,32 @@
 
     </div>
 
-</div>
+</header>
 
 
-<!-- ==================================================
+<!-- =========================================================
      MAIN
-================================================== -->
+========================================================= -->
 
-<div class="container">
+<main class="container">
 
 
-    <h1>
-        Admin Dashboard
-    </h1>
+    <div class="page-title">
 
-    <div class="subtitle">
-        Manage properties, configure pricing and approve
-        property listings.
+        <h1>
+            Admin Dashboard
+        </h1>
+
+        <p>
+            Manage properties, bookings and users from one place.
+        </p>
+
     </div>
 
 
-    <!-- ==================================================
-         STATISTICS
-    ================================================== -->
+    <!-- =====================================================
+         COUNTS
+    ===================================================== -->
 
     {% set pending_count =
         properties
@@ -1106,151 +1174,629 @@
     %}
 
 
-    <div class="stats">
+    <!-- =====================================================
+         TABS
+    ===================================================== -->
 
+    <div class="tabs">
 
-        <div class="stat-card">
+        <button
+            type="button"
+            class="tab-button active"
+            data-tab="overview"
+        >
+            Overview
+        </button>
 
-            <div class="stat-title">
-                Total Properties
-            </div>
+        <button
+            type="button"
+            class="tab-button"
+            data-tab="properties"
+        >
+            Properties
+        </button>
 
-            <div class="stat-number">
-                {{ properties|length }}
-            </div>
+        <button
+            type="button"
+            class="tab-button"
+            data-tab="bookings"
+        >
+            Bookings
+        </button>
 
-        </div>
-
-
-        <div class="stat-card">
-
-            <div class="stat-title">
-                Pending
-            </div>
-
-            <div class="stat-number">
-                {{ pending_count }}
-            </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <div class="stat-title">
-                Approved
-            </div>
-
-            <div class="stat-number">
-                {{ approved_count }}
-            </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <div class="stat-title">
-                Bookings
-            </div>
-
-            <div class="stat-number">
-                {{ bookings|length }}
-            </div>
-
-        </div>
-
+        <button
+            type="button"
+            class="tab-button"
+            data-tab="users"
+        >
+            Users
+        </button>
 
     </div>
 
 
-    <!-- ==================================================
-         PROPERTIES
-    ================================================== -->
+    <!-- =====================================================
+         OVERVIEW TAB
+    ===================================================== -->
 
-    <div class="section">
+    <section
+        id="overview"
+        class="tab-content active"
+    >
+
+        <div class="stats">
 
 
-        <div class="section-header">
+            <div class="stat-card">
 
-            <h2>
-                Properties
-            </h2>
+                <div class="stat-title">
+                    Total Properties
+                </div>
+
+                <div class="stat-number">
+                    {{ properties|length }}
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    Pending Approval
+                </div>
+
+                <div class="stat-number">
+                    {{ pending_count }}
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    Approved Properties
+                </div>
+
+                <div class="stat-number">
+                    {{ approved_count }}
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    Total Bookings
+                </div>
+
+                <div class="stat-number">
+                    {{ bookings|length }}
+                </div>
+
+            </div>
+
 
         </div>
 
 
-        {% if properties %}
+        <div class="section-card">
+
+            <div class="section-header">
+
+                <h2>
+                    Dashboard Summary
+                </h2>
+
+                <span>
+                    Goinn Administration
+                </span>
+
+            </div>
 
 
-            {% for property in properties %}
+            <div style="padding:22px;">
+
+                <p>
+                    Use the tabs above to manage each area separately.
+                </p>
+
+                <ul>
+
+                    <li>
+                        <strong>Properties</strong>
+                        — review, approve, reject and configure pricing.
+                    </li>
+
+                    <li>
+                        <strong>Bookings</strong>
+                        — view customer booking information.
+                    </li>
+
+                    <li>
+                        <strong>Users</strong>
+                        — view registered user information.
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </section>
 
 
-                <div class="property-card">
+    <!-- =====================================================
+         PROPERTIES TAB
+    ===================================================== -->
+
+    <section
+        id="properties"
+        class="tab-content"
+    >
+
+        <div class="section-card">
+
+            <div class="section-header">
+
+                <h2>
+                    Properties
+                </h2>
+
+                <span>
+                    {{ properties|length }} properties
+                </span>
+
+            </div>
 
 
-                    <!-- PROPERTY HEADER -->
+            <div class="property-list">
 
-                    <div class="property-top">
 
-                        <div>
+                {% if properties %}
 
-                            <div class="property-name">
-                                {{ property.property_name }}
+
+                    {% for property in properties %}
+
+                    <div class="property-card">
+
+
+                        <!-- PROPERTY HEADER -->
+
+                        <div class="property-top">
+
+                            <div>
+
+                                <div class="property-name">
+                                    {{ property.property_name }}
+                                </div>
+
+                                <div class="property-location">
+                                    📍 {{ property.location }}
+                                </div>
+
                             </div>
 
-                            <div class="property-location">
-                                📍 {{ property.location }}
+
+                            {% if property.status == "pending" %}
+
+                                <span class="status status-pending">
+                                    Pending
+                                </span>
+
+                            {% elif property.status == "approved" %}
+
+                                <span class="status status-approved">
+                                    Approved
+                                </span>
+
+                            {% elif property.status == "rejected" %}
+
+                                <span class="status status-rejected">
+                                    Rejected
+                                </span>
+
+                            {% else %}
+
+                                <span class="status">
+                                    {{ property.status }}
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- PROPERTY INFORMATION -->
+
+                        <div class="property-details">
+
+
+                            <div class="detail-box">
+
+                                <div class="detail-label">
+                                    Address
+                                </div>
+
+                                <div class="detail-value">
+                                    {{ property.property_address or "Not provided" }}
+                                </div>
+
+                            </div>
+
+
+                            <div class="detail-box">
+
+                                <div class="detail-label">
+                                    Maximum Guests
+                                </div>
+
+                                <div class="detail-value">
+
+                                    {% if property.max_guests and property.max_guests > 0 %}
+                                        {{ property.max_guests }}
+                                    {% else %}
+                                        Not configured
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="detail-box">
+
+                                <div class="detail-label">
+                                    Pricing
+                                </div>
+
+                                <div class="detail-value">
+
+                                    {% if property.pricing_method %}
+                                        {{ property.pricing_method|title }}
+                                    {% else %}
+                                        Not configured
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- OWNER INFORMATION -->
+
+                        <div class="owner-section">
+
+                            <div class="owner-title">
+                                Property Owner
+                            </div>
+
+
+                            <div class="owner-grid">
+
+
+                                <div class="detail-box">
+
+                                    <div class="detail-label">
+                                        Name
+                                    </div>
+
+                                    <div class="detail-value">
+
+                                        {{ property.owner.name }}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="detail-box">
+
+                                    <div class="detail-label">
+                                        Email
+                                    </div>
+
+                                    <div class="detail-value">
+
+                                        {{ property.owner.email }}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="detail-box">
+
+                                    <div class="detail-label">
+                                        Contact
+                                    </div>
+
+                                    <div class="detail-value">
+
+                                        {{ property.owner.contact or "Not provided" }}
+
+                                    </div>
+
+                                </div>
+
+
                             </div>
 
                         </div>
 
 
-                        {% if property.status == "pending" %}
+                        <!-- PRICING DISPLAY -->
 
-                            <span class="status status-pending">
-                                Pending
-                            </span>
+                        {% if property.pricing_method and property.pricing_data %}
 
-                        {% elif property.status == "approved" %}
+                            <div class="pricing-box">
 
-                            <span class="status status-approved">
-                                Approved
-                            </span>
+                                <div class="pricing-title">
+                                    Current Pricing
+                                </div>
 
-                        {% elif property.status == "rejected" %}
 
-                            <span class="status status-rejected">
-                                Rejected
-                            </span>
+                                {% set pricing =
+                                    property.pricing_data|fromjson
+                                %}
+
+
+                                {% if property.pricing_method == "individual" %}
+
+                                    <div class="pricing-method">
+                                        INDIVIDUAL PRICING
+                                    </div>
+
+
+                                    <table class="price-table">
+
+                                        <thead>
+
+                                            <tr>
+
+                                                <th>
+                                                    Guests
+                                                </th>
+
+                                                <th>
+                                                    Price / Day
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+                                        <tbody>
+
+                                            {% for item in pricing %}
+
+                                                <tr>
+
+                                                    <td>
+                                                        {{ item.guests }}
+                                                        guest{% if item.guests != 1 %}s{% endif %}
+                                                    </td>
+
+                                                    <td>
+                                                        ₹{{ "%.2f"|format(item.price|float) }}
+                                                    </td>
+
+                                                </tr>
+
+                                            {% endfor %}
+
+                                        </tbody>
+
+                                    </table>
+
+
+                                {% elif property.pricing_method == "group" %}
+
+                                    <div class="pricing-method">
+                                        GROUP PRICING
+                                    </div>
+
+
+                                    <table class="price-table">
+
+                                        <thead>
+
+                                            <tr>
+
+                                                <th>
+                                                    Guest Range
+                                                </th>
+
+                                                <th>
+                                                    Price / Day
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+                                        <tbody>
+
+                                            {% for item in pricing %}
+
+                                                <tr>
+
+                                                    <td>
+                                                        {{ item.min_guests }}
+                                                        -
+                                                        {{ item.max_guests }}
+                                                        guests
+                                                    </td>
+
+                                                    <td>
+                                                        ₹{{ "%.2f"|format(item.price|float) }}
+                                                    </td>
+
+                                                </tr>
+
+                                            {% endfor %}
+
+                                        </tbody>
+
+                                    </table>
+
+                                {% endif %}
+
+                            </div>
 
                         {% endif %}
 
-                    </div>
+
+                        <!-- ACTIONS -->
+
+                        <div class="actions">
 
 
-                    <!-- ==================================================
-                         OWNER DETAILS
-                    ================================================== -->
+                            {% if property.status == "pending" %}
 
-                    <div class="owner-box">
+                                <button
+                                    type="button"
+                                    class="btn approve-btn js-set-price"
+                                    data-property-id="{{ property.id }}"
+                                    data-property-name="{{ property.property_name|e }}"
+                                    data-property-location="{{ property.location|e }}"
+                                >
+                                    Set Price & Approve
+                                </button>
 
-                        <div class="owner-title">
-                            Owner Details
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'reject_property',
+                                        property_id=property.id
+                                    ) }}"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="btn reject-btn"
+                                        onclick="return confirm(
+                                            'Are you sure you want to reject this property?'
+                                        );"
+                                    >
+                                        Reject
+                                    </button>
+
+                                </form>
+
+
+                            {% elif property.status == "approved" %}
+
+                                <button
+                                    type="button"
+                                    class="btn edit-btn js-edit-price"
+                                    data-property-id="{{ property.id }}"
+                                    data-property-name="{{ property.property_name|e }}"
+                                    data-property-location="{{ property.location|e }}"
+                                    data-max-guests="{{ property.max_guests or 1 }}"
+                                    data-pricing-method="{{ property.pricing_method or '' }}"
+                                    data-pricing-data="{{ property.pricing_data|e if property.pricing_data else '' }}"
+                                >
+                                    Edit Pricing
+                                </button>
+
+                            {% endif %}
+
+
                         </div>
 
 
-                        <div class="owner-grid">
+                    </div>
+
+                    {% endfor %}
+
+
+                {% else %}
+
+                    <div class="empty">
+                        No properties have been created yet.
+                    </div>
+
+                {% endif %}
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         BOOKINGS TAB
+    ===================================================== -->
+
+    <section
+        id="bookings"
+        class="tab-content"
+    >
+
+        <div class="section-card">
+
+            <div class="section-header">
+
+                <h2>
+                    Bookings
+                </h2>
+
+                <span>
+                    {{ bookings|length }} bookings
+                </span>
+
+            </div>
+
+
+            <div class="booking-list">
+
+
+                {% if bookings %}
+
+
+                    {% for booking in bookings %}
+
+                    <div class="booking-card">
+
+
+                        <div class="booking-header">
+
+                            <div>
+
+                                <div class="booking-id">
+                                    Booking #{{ booking.id }}
+                                </div>
+
+                                <div class="booking-property">
+                                    {{ booking.property.property_name }}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="booking-grid">
 
 
                             <div>
 
-                                <div class="info-label">
-                                    Name
+                                <div class="detail-label">
+                                    Customer
                                 </div>
 
-                                <div class="info-value">
-                                    {{ property.owner.name }}
+                                <div class="detail-value">
+                                    {{ booking.customer_name }}
                                 </div>
 
                             </div>
@@ -1258,20 +1804,42 @@
 
                             <div>
 
-                                <div class="info-label">
+                                <div class="detail-label">
                                     Contact
                                 </div>
 
-                                <div class="info-value">
+                                <div class="detail-value">
+                                    {{ booking.customer_contact }}
+                                </div>
 
-                                    {% if property.owner.contact %}
+                            </div>
 
-                                        {{ property.owner.contact }}
 
+                            <div>
+
+                                <div class="detail-label">
+                                    Guests
+                                </div>
+
+                                <div class="detail-value">
+                                    {{ booking.guests }}
+                                </div>
+
+                            </div>
+
+
+                            <div>
+
+                                <div class="detail-label">
+                                    Check-in
+                                </div>
+
+                                <div class="detail-value">
+
+                                    {% if booking.check_in %}
+                                        {{ booking.check_in.strftime("%d-%m-%Y") }}
                                     {% else %}
-
-                                        Not provided
-
+                                        -
                                     {% endif %}
 
                                 </div>
@@ -1281,455 +1849,203 @@
 
                             <div>
 
-                                <div class="info-label">
-                                    Email
+                                <div class="detail-label">
+                                    Check-out
                                 </div>
 
-                                <div class="info-value">
-                                    {{ property.owner.email }}
+                                <div class="detail-value">
+
+                                    {% if booking.check_out %}
+                                        {{ booking.check_out.strftime("%d-%m-%Y") }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+
                                 </div>
 
                             </div>
 
 
-                        </div>
+                            <div>
 
-                    </div>
+                                <div class="detail-label">
+                                    Initial Total
+                                </div>
 
+                                <div class="detail-value">
 
-                    <!-- ==================================================
-                         PROPERTY DETAILS
-                    ================================================== -->
+                                    ₹{{ "%.2f"|format(booking.total_price|float) }}
 
-                    <div class="property-info">
-
-
-                        <div class="info-item">
-
-                            <div class="info-label">
-                                Property Address
-                            </div>
-
-                            <div class="info-value">
-                                {{ property.property_address }}
-                            </div>
-
-                        </div>
-
-
-                        <div class="info-item">
-
-                            <div class="info-label">
-                                Maximum Guests
-                            </div>
-
-                            <div class="info-value">
-
-                                {% if property.max_guests and property.max_guests > 0 %}
-
-                                    {{ property.max_guests }}
-
-                                {% else %}
-
-                                    Not configured
-
-                                {% endif %}
+                                </div>
 
                             </div>
+
 
                         </div>
 
 
                     </div>
 
+                    {% endfor %}
 
-                    <!-- ==================================================
-                         PRICING DISPLAY
-                    ================================================== -->
 
-                    {% if property.pricing_method and property.pricing_data %}
+                {% else %}
 
-                        <div class="pricing-box">
-
-                            <div class="pricing-title">
-                                Pricing Configuration
-                            </div>
-
-
-                            {% set pricing =
-                                property.pricing_data
-                                |fromjson
-                            %}
-
-
-                            {% if property.pricing_method == "individual" %}
-
-                                <div class="pricing-method">
-                                    INDIVIDUAL PRICING
-                                </div>
-
-
-                                <table class="price-table">
-
-                                    <thead>
-
-                                        <tr>
-
-                                            <th>
-                                                Guests
-                                            </th>
-
-                                            <th>
-                                                Price / Day
-                                            </th>
-
-                                        </tr>
-
-                                    </thead>
-
-
-                                    <tbody>
-
-                                        {% for item in pricing %}
-
-                                            <tr>
-
-                                                <td>
-
-                                                    {{ item.guests }}
-
-                                                    guest{% if item.guests != 1 %}s{% endif %}
-
-                                                </td>
-
-                                                <td>
-
-                                                    ₹{{ "%.2f"|format(item.price|float) }}
-
-                                                </td>
-
-                                            </tr>
-
-                                        {% endfor %}
-
-                                    </tbody>
-
-                                </table>
-
-
-                            {% elif property.pricing_method == "group" %}
-
-                                <div class="pricing-method">
-                                    GROUP PRICING
-                                </div>
-
-
-                                <table class="price-table">
-
-                                    <thead>
-
-                                        <tr>
-
-                                            <th>
-                                                Guest Range
-                                            </th>
-
-                                            <th>
-                                                Price / Day
-                                            </th>
-
-                                        </tr>
-
-                                    </thead>
-
-
-                                    <tbody>
-
-                                        {% for item in pricing %}
-
-                                            <tr>
-
-                                                <td>
-
-                                                    {{ item.min_guests }}
-                                                    -
-                                                    {{ item.max_guests }}
-
-                                                    guests
-
-                                                </td>
-
-                                                <td>
-
-                                                    ₹{{ "%.2f"|format(item.price|float) }}
-
-                                                </td>
-
-                                            </tr>
-
-                                        {% endfor %}
-
-                                    </tbody>
-
-                                </table>
-
-                            {% endif %}
-
-
-                        </div>
-
-                    {% endif %}
-
-
-                    <!-- ==================================================
-                         ACTIONS
-                    ================================================== -->
-
-                    <div class="actions">
-
-
-                        {% if property.status == "pending" %}
-
-
-                            <button
-    type="button"
-    class="approve-btn set-price-btn"
-    data-property-id="{{ property.id }}"
-    data-property-name="{{ property.property_name }}"
-    data-property-location="{{ property.location }}"
->
-    Set Price & Approve
-</button>
-
-
-                            <form
-                                method="POST"
-                                action="{{
-                                    url_for(
-                                        'reject_property',
-                                        property_id=property.id
-                                    )
-                                }}"
-                                style="display:inline;"
-                            >
-
-                                <button
-                                    type="submit"
-                                    class="reject-btn"
-                                    onclick="return confirm(
-                                        'Are you sure you want to reject this property?'
-                                    );"
-                                >
-
-                                    Reject
-
-                                </button>
-
-                            </form>
-
-
-                        {% elif property.status == "approved" %}
-
-
-                            <button
-                              type="button"
-                              class="view-btn edit-price-btn"
-                              data-property-id="{{ property.id }}"
-                              data-property-name="{{ property.property_name }}"
-                              data-property-location="{{ property.location }}"
-                              data-max-guests="{{ property.max_guests or 1 }}"
-                              data-pricing-method="{{ property.pricing_method or '' }}"
-                              data-pricing-data="{{ property.pricing_data or '' }}"
-                             >
-                               Edit Pricing
-                             </button>
-
-
-                        {% endif %}
-
-
+                    <div class="empty">
+                        No bookings or inquiries yet.
                     </div>
 
+                {% endif %}
 
-                </div>
-
-
-            {% endfor %}
-
-
-        {% else %}
-
-
-            <div class="empty">
-
-                No properties have been created yet.
 
             </div>
-
-
-        {% endif %}
-
-
-    </div>
-
-
-    <!-- ==================================================
-         BOOKINGS
-    ================================================== -->
-
-    <div class="section">
-
-
-        <div class="section-header">
-
-            <h2>
-                Bookings / Inquiries
-            </h2>
 
         </div>
 
-
-        {% if bookings %}
-
-
-            {% for booking in bookings %}
+    </section>
 
 
-                <div class="booking-card">
+    <!-- =====================================================
+         USERS TAB
+    ===================================================== -->
 
+    <section
+        id="users"
+        class="tab-content"
+    >
 
-                    <div class="booking-title">
-                        Booking #{{ booking.id }}
-                    </div>
+        <div class="section-card">
 
+            <div class="section-header">
 
-                    <div class="booking-property">
-                        {{ booking.property.property_name }}
-                    </div>
+                <h2>
+                    Users
+                </h2>
 
-
-                    <div class="booking-grid">
-
-
-                        <div>
-
-                            <div class="info-label">
-                                Customer
-                            </div>
-
-                            <div class="info-value">
-                                {{ booking.customer_name }}
-                            </div>
-
-                        </div>
-
-
-                        <div>
-
-                            <div class="info-label">
-                                Contact
-                            </div>
-
-                            <div class="info-value">
-                                {{ booking.customer_contact }}
-                            </div>
-
-                        </div>
-
-
-                        <div>
-
-                            <div class="info-label">
-                                Guests
-                            </div>
-
-                            <div class="info-value">
-                                {{ booking.guests }}
-                            </div>
-
-                        </div>
-
-
-                        <div>
-
-                            <div class="info-label">
-                                Check-in
-                            </div>
-
-                            <div class="info-value">
-
-                                {{ booking.check_in.strftime("%d-%m-%Y") }}
-
-                            </div>
-
-                        </div>
-
-
-                        <div>
-
-                            <div class="info-label">
-                                Check-out
-                            </div>
-
-                            <div class="info-value">
-
-                                {{ booking.check_out.strftime("%d-%m-%Y") }}
-
-                            </div>
-
-                        </div>
-
-
-                        <div>
-
-                            <div class="info-label">
-                                Initial Total
-                            </div>
-
-                            <div class="info-value">
-
-                                ₹{{ "%.2f"|format(booking.total_price) }}
-
-                            </div>
-
-                        </div>
-
-
-                    </div>
-
-
-                </div>
-
-
-            {% endfor %}
-
-
-        {% else %}
-
-
-            <div class="empty">
-
-                No bookings or inquiries yet.
+                <span>
+                    {% if users %}
+                        {{ users|length }} users
+                    {% else %}
+                        0 users
+                    {% endif %}
+                </span>
 
             </div>
 
 
-        {% endif %}
+            {% if users %}
+
+            <div class="users-wrapper">
+
+                <table class="users-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                ID
+                            </th>
+
+                            <th>
+                                Name
+                            </th>
+
+                            <th>
+                                Email
+                            </th>
+
+                            <th>
+                                Contact
+                            </th>
+
+                            <th>
+                                Role
+                            </th>
+
+                        </tr>
+
+                    </thead>
 
 
-    </div>
+                    <tbody>
 
 
-</div>
+                        {% for user in users %}
+
+                        <tr>
+
+                            <td>
+                                {{ user.id }}
+                            </td>
+
+                            <td>
+
+                                <div class="user-name">
+                                    {{ user.name or "Not provided" }}
+                                </div>
+
+                            </td>
+
+                            <td>
+                                {{ user.email or "Not provided" }}
+                            </td>
+
+                            <td>
+                                {{ user.contact or "Not provided" }}
+                            </td>
+
+                            <td>
+
+                                <span class="role-badge">
+
+                                    {% if user.is_admin %}
+                                        Admin
+                                    {% else %}
+                                        User
+                                    {% endif %}
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
 
 
-<!-- ==================================================
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            {% else %}
+
+            <div class="empty">
+                No users found.
+            </div>
+
+            {% endif %}
+
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<!-- =========================================================
      PRICE MODAL
-================================================== -->
+========================================================= -->
 
 <div
     id="priceModal"
     class="modal"
+    aria-hidden="true"
 >
 
 
@@ -1742,38 +2058,35 @@
                 Configure Property Pricing
             </h2>
 
-            <span
-                class="close"
-                onclick="closePriceModal()"
+            <button
+                type="button"
+                class="close-modal"
+                id="closeModalButton"
             >
                 &times;
-            </span>
+            </button>
 
         </div>
 
-
-        <!-- PROPERTY -->
 
         <div class="modal-property">
 
             <div
                 id="modalPropertyName"
                 class="modal-property-name"
-            >
-            </div>
+            ></div>
 
             <div
                 id="modalPropertyLocation"
                 class="modal-property-location"
-            >
-            </div>
+            ></div>
 
         </div>
 
 
-        <!-- ==================================================
+        <!-- =================================================
              FORM
-        ================================================== -->
+        ================================================= -->
 
         <form
             id="priceForm"
@@ -1781,54 +2094,34 @@
         >
 
 
-            <!-- ==================================================
-                 MAXIMUM GUESTS
-            ================================================== -->
+            <!-- MAX GUESTS -->
 
-            <div class="max-guests-box">
+            <div class="form-group">
 
-                <div class="form-group"
-                     style="margin-bottom:0;">
+                <label
+                    class="form-label"
+                    for="formMaxGuests"
+                >
+                    Maximum Number of Guests
+                </label>
 
-                    <label for="formMaxGuests">
-
-                        Maximum Number of Guests
-
-                    </label>
-
-
-                    <input
-                        type="number"
-                        id="formMaxGuests"
-                        name="max_guests"
-                        min="1"
-                        max="100"
-                        required
-                        oninput="maximumGuestsChanged()"
-                    >
-
-
-                    <div class="max-guests-help">
-
-                        Admin controls the maximum guest
-                        capacity. Pricing fields below will
-                        automatically be generated based on
-                        this number.
-
-                    </div>
-
-                </div>
+                <input
+                    type="number"
+                    id="formMaxGuests"
+                    name="max_guests"
+                    min="1"
+                    max="100"
+                    required
+                >
 
             </div>
 
 
-            <!-- ==================================================
-                 PRICING METHOD
-            ================================================== -->
+            <!-- PRICING METHOD -->
 
             <div class="form-group">
 
-                <label>
+                <label class="form-label">
                     Pricing Method
                 </label>
 
@@ -1845,7 +2138,6 @@
                                 name="pricing_method"
                                 value="individual"
                                 checked
-                                onchange="changePricingMethod()"
                             >
 
                             <span class="radio-title">
@@ -1854,16 +2146,10 @@
 
                         </div>
 
-
                         <div class="radio-description">
 
-                            Configure a separate price for
-                            every number of guests.
-
-                            <br><br>
-
-                            Example: 1 guest, 2 guests,
-                            3 guests ... up to maximum.
+                            Set a separate price for
+                            every guest count.
 
                         </div>
 
@@ -1878,7 +2164,6 @@
                                 type="radio"
                                 name="pricing_method"
                                 value="group"
-                                onchange="changePricingMethod()"
                             >
 
                             <span class="radio-title">
@@ -1887,15 +2172,10 @@
 
                         </div>
 
-
                         <div class="radio-description">
 
-                            Configure one price for a
-                            guest range.
-
-                            <br><br>
-
-                            Example: 1-3, 4-6 guests.
+                            Set one price for a range
+                            of guests.
 
                         </div>
 
@@ -1907,9 +2187,7 @@
             </div>
 
 
-            <!-- ==================================================
-                 INDIVIDUAL PRICING
-            ================================================== -->
+            <!-- INDIVIDUAL -->
 
             <div
                 id="individualPricing"
@@ -1920,16 +2198,12 @@
                     Individual Guest Pricing
                 </h3>
 
-
-                <div id="individualFields">
-                </div>
+                <div id="individualFields"></div>
 
             </div>
 
 
-            <!-- ==================================================
-                 GROUP PRICING
-            ================================================== -->
+            <!-- GROUP -->
 
             <div
                 id="groupPricing"
@@ -1941,19 +2215,15 @@
                     Guest Groups
                 </h3>
 
-
-                <div id="groupFields">
-                </div>
+                <div id="groupFields"></div>
 
 
                 <button
                     type="button"
-                    class="add-group-btn"
-                    onclick="addGroup()"
+                    class="btn add-group-btn"
+                    id="addGroupButton"
                 >
-
                     + Add Guest Group
-
                 </button>
 
 
@@ -1965,57 +2235,44 @@
 
                     <br><br>
 
-                    Example for 6 maximum guests:
+                    Example:
 
                     <br>
 
-                    <strong>1-2 guests</strong> → ₹2,000
+                    1-2 guests → ₹2,000
 
                     <br>
 
-                    <strong>3-4 guests</strong> → ₹3,000
+                    3-4 guests → ₹3,000
 
                     <br>
 
-                    <strong>5-6 guests</strong> → ₹4,000
-
-                    <br><br>
-
-                    No gaps or overlapping ranges are allowed.
+                    5-6 guests → ₹4,000
 
                 </div>
 
             </div>
 
 
-            <!-- ==================================================
-                 FOOTER
-            ================================================== -->
+            <!-- FOOTER -->
 
             <div class="modal-footer">
 
-
                 <button
                     type="button"
-                    class="cancel-modal"
-                    onclick="closePriceModal()"
+                    class="btn cancel-btn"
+                    id="cancelModalButton"
                 >
-
                     Cancel
-
                 </button>
-
 
                 <button
                     type="submit"
-                    class="save-price-btn"
+                    class="btn save-btn"
                     id="savePriceButton"
                 >
-
                     Save Pricing & Approve
-
                 </button>
-
 
             </div>
 
@@ -2028,30 +2285,138 @@
 </div>
 
 
-<!-- ==================================================
+<!-- =========================================================
      JAVASCRIPT
-================================================== -->
+========================================================= -->
 
 <script>
 
 "use strict";
 
-let currentPropertyId = null;
+
+/* =========================================================
+   GLOBAL VARIABLES
+========================================================= */
+
 let currentMaxGuests = 1;
+
 let groupCounter = 0;
 
 
 /* =========================================================
-   ELEMENT HELPERS
+   ELEMENTS
 ========================================================= */
 
-function getElement(id) {
-    return document.getElementById(id);
+const modal =
+    document.getElementById("priceModal");
+
+const priceForm =
+    document.getElementById("priceForm");
+
+const maxGuestsInput =
+    document.getElementById("formMaxGuests");
+
+const individualFields =
+    document.getElementById("individualFields");
+
+const groupFields =
+    document.getElementById("groupFields");
+
+const individualPricing =
+    document.getElementById("individualPricing");
+
+const groupPricing =
+    document.getElementById("groupPricing");
+
+const warningMaxGuests =
+    document.getElementById("warningMaxGuests");
+
+const savePriceButton =
+    document.getElementById("savePriceButton");
+
+
+/* =========================================================
+   TAB SYSTEM
+========================================================= */
+
+document.querySelectorAll(".tab-button").forEach(function(button) {
+
+    button.addEventListener("click", function() {
+
+        const tabName =
+            this.dataset.tab;
+
+
+        document.querySelectorAll(".tab-button")
+            .forEach(function(btn) {
+
+                btn.classList.remove("active");
+
+            });
+
+
+        document.querySelectorAll(".tab-content")
+            .forEach(function(content) {
+
+                content.classList.remove("active");
+
+            });
+
+
+        this.classList.add("active");
+
+
+        const target =
+            document.getElementById(tabName);
+
+
+        if (target) {
+
+            target.classList.add("active");
+
+        }
+
+    });
+
+});
+
+
+/* =========================================================
+   OPEN MODAL
+========================================================= */
+
+function showModal() {
+
+    modal.classList.add("show");
+
+    modal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+    document.body.style.overflow =
+        "hidden";
+
+}
+
+
+function hideModal() {
+
+    modal.classList.remove("show");
+
+    modal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    document.body.style.overflow =
+        "";
+
 }
 
 
 /* =========================================================
-   OPEN NEW PRICE MODAL
+   NEW PROPERTY
 ========================================================= */
 
 function openPriceModal(
@@ -2060,58 +2425,71 @@ function openPriceModal(
     propertyLocation
 ) {
 
-    currentPropertyId = propertyId;
     currentMaxGuests = 1;
+
     groupCounter = 0;
 
-    getElement("modalPropertyName").textContent =
+
+    document.getElementById(
+        "modalPropertyName"
+    ).textContent =
         propertyName || "";
 
-    getElement("modalPropertyLocation").textContent =
-        "📍 " + (propertyLocation || "");
 
-    getElement("formMaxGuests").value = "";
+    document.getElementById(
+        "modalPropertyLocation"
+    ).textContent =
+        "📍 " +
+        (propertyLocation || "");
 
-    getElement("warningMaxGuests").textContent = "1";
 
-    getElement("priceForm").action =
+    maxGuestsInput.value = "";
+
+
+    warningMaxGuests.textContent =
+        "1";
+
+
+    priceForm.action =
         "/admin/property/" +
         encodeURIComponent(propertyId) +
         "/set-price";
 
-    getElement("priceForm").dataset.editing = "false";
 
-    getElement("savePriceButton").textContent =
+    priceForm.dataset.editing =
+        "false";
+
+
+    savePriceButton.textContent =
         "Save Pricing & Approve";
 
-    /* Individual pricing */
 
     document.querySelector(
         'input[name="pricing_method"][value="individual"]'
     ).checked = true;
 
-    getElement("individualPricing").style.display =
+
+    individualPricing.style.display =
         "block";
 
-    getElement("groupPricing").style.display =
+    groupPricing.style.display =
         "none";
 
-    getElement("individualFields").innerHTML =
+
+    individualFields.innerHTML =
         "";
 
-    getElement("groupFields").innerHTML =
+    groupFields.innerHTML =
         "";
 
-    getElement("priceModal").style.display =
-        "block";
 
-    document.body.style.overflow =
-        "hidden";
+    showModal();
+
 }
 
 
 /* =========================================================
-   OPEN EDIT PRICE MODAL
+   EDIT EXISTING PROPERTY
 ========================================================= */
 
 function openEditPriceModal(
@@ -2123,37 +2501,49 @@ function openEditPriceModal(
     pricingData
 ) {
 
-    currentPropertyId = propertyId;
-
     currentMaxGuests =
         parseInt(maxGuests, 10) || 1;
 
     groupCounter = 0;
 
-    getElement("modalPropertyName").textContent =
+
+    document.getElementById(
+        "modalPropertyName"
+    ).textContent =
         propertyName || "";
 
-    getElement("modalPropertyLocation").textContent =
-        "📍 " + (propertyLocation || "");
 
-    getElement("formMaxGuests").value =
+    document.getElementById(
+        "modalPropertyLocation"
+    ).textContent =
+        "📍 " +
+        (propertyLocation || "");
+
+
+    maxGuestsInput.value =
         currentMaxGuests;
 
-    getElement("warningMaxGuests").textContent =
+
+    warningMaxGuests.textContent =
         currentMaxGuests;
 
-    getElement("priceForm").action =
+
+    priceForm.action =
         "/admin/property/" +
         encodeURIComponent(propertyId) +
         "/set-price";
 
-    getElement("priceForm").dataset.editing =
+
+    priceForm.dataset.editing =
         "true";
 
-    getElement("savePriceButton").textContent =
+
+    savePriceButton.textContent =
         "Save Pricing";
 
+
     let parsedPricing = [];
+
 
     if (pricingData) {
 
@@ -2163,24 +2553,24 @@ function openEditPriceModal(
                 JSON.parse(pricingData);
 
             if (!Array.isArray(parsedPricing)) {
+
                 parsedPricing = [];
+
             }
 
         } catch (error) {
 
             console.error(
-                "Pricing JSON error:",
+                "Unable to parse pricing:",
                 error
             );
 
             parsedPricing = [];
+
         }
+
     }
 
-
-    /* =====================================================
-       GROUP PRICING
-    ===================================================== */
 
     if (pricingMethod === "group") {
 
@@ -2188,218 +2578,225 @@ function openEditPriceModal(
             'input[name="pricing_method"][value="group"]'
         ).checked = true;
 
-        getElement("individualPricing").style.display =
+
+        individualPricing.style.display =
             "none";
 
-        getElement("groupPricing").style.display =
+        groupPricing.style.display =
             "block";
 
-        getElement("groupFields").innerHTML =
+
+        groupFields.innerHTML =
             "";
 
-        groupCounter = 0;
 
         if (parsedPricing.length > 0) {
 
-            parsedPricing.forEach(
-                function(item) {
+            parsedPricing.forEach(function(item) {
 
-                    addGroup(
-                        item.min_guests,
-                        item.max_guests,
-                        item.price
-                    );
+                addGroup(
+                    item.min_guests,
+                    item.max_guests,
+                    item.price
+                );
 
-                }
-            );
+            });
 
         } else {
 
             addGroup();
+
         }
 
-    }
-
-    /* =====================================================
-       INDIVIDUAL PRICING
-    ===================================================== */
-
-    else {
+    } else {
 
         document.querySelector(
             'input[name="pricing_method"][value="individual"]'
         ).checked = true;
 
-        getElement("individualPricing").style.display =
+
+        individualPricing.style.display =
             "block";
 
-        getElement("groupPricing").style.display =
+        groupPricing.style.display =
             "none";
+
 
         generateIndividualFields(
             parsedPricing
         );
+
     }
 
 
-    getElement("priceModal").style.display =
-        "block";
+    showModal();
 
-    document.body.style.overflow =
-        "hidden";
 }
 
 
 /* =========================================================
-   CLOSE MODAL
+   PRICING METHOD
 ========================================================= */
 
-function closePriceModal() {
+document.querySelectorAll(
+    'input[name="pricing_method"]'
+).forEach(function(radio) {
 
-    getElement("priceModal").style.display =
-        "none";
+    radio.addEventListener(
+        "change",
+        function() {
 
-    document.body.style.overflow =
-        "auto";
-}
+            if (this.value === "individual") {
+
+                individualPricing.style.display =
+                    "block";
+
+                groupPricing.style.display =
+                    "none";
+
+
+                generateIndividualFields();
+
+            } else {
+
+                individualPricing.style.display =
+                    "none";
+
+                groupPricing.style.display =
+                    "block";
+
+
+                if (
+                    groupFields.children.length === 0
+                ) {
+
+                    groupCounter = 0;
+
+                    addGroup();
+
+                }
+
+            }
+
+        }
+    );
+
+});
 
 
 /* =========================================================
-   MAXIMUM GUESTS
+   MAX GUESTS
 ========================================================= */
 
-function maximumGuestsChanged() {
+maxGuestsInput.addEventListener(
+    "input",
+    function() {
 
-    const input =
-        getElement("formMaxGuests");
+        let value =
+            parseInt(this.value, 10);
 
-    const value =
-        parseInt(input.value, 10);
 
-    if (
-        isNaN(value) ||
-        value < 1
-    ) {
+        if (isNaN(value)) {
 
-        getElement("warningMaxGuests").textContent =
-            "1";
+            return;
 
-        return;
+        }
+
+
+        if (value < 1) {
+
+            value = 1;
+
+        }
+
+
+        if (value > 100) {
+
+            value = 100;
+
+            this.value = 100;
+
+        }
+
+
+        currentMaxGuests =
+            value;
+
+
+        warningMaxGuests.textContent =
+            currentMaxGuests;
+
+
+        const selected =
+            document.querySelector(
+                'input[name="pricing_method"]:checked'
+            );
+
+
+        if (
+            selected &&
+            selected.value === "individual"
+        ) {
+
+            generateIndividualFields();
+
+        }
+
+
+        if (
+            selected &&
+            selected.value === "group"
+        ) {
+
+            groupFields.innerHTML =
+                "";
+
+            groupCounter = 0;
+
+            addGroup();
+
+        }
+
     }
-
-    if (value > 100) {
-
-        input.value = 100;
-
-        currentMaxGuests = 100;
-
-    } else {
-
-        currentMaxGuests = value;
-    }
-
-    getElement("warningMaxGuests").textContent =
-        currentMaxGuests;
-
-    const selected =
-        document.querySelector(
-            'input[name="pricing_method"]:checked'
-        );
-
-    if (!selected) {
-        return;
-    }
-
-    if (selected.value === "individual") {
-
-        generateIndividualFields();
-
-    } else {
-
-        getElement("groupFields").innerHTML =
-            "";
-
-        groupCounter = 0;
-
-        addGroup();
-    }
-}
+);
 
 
 /* =========================================================
-   CHANGE PRICING METHOD
-========================================================= */
-
-function changePricingMethod() {
-
-    const selected =
-        document.querySelector(
-            'input[name="pricing_method"]:checked'
-        );
-
-    if (!selected) {
-        return;
-    }
-
-    if (selected.value === "individual") {
-
-        getElement("individualPricing").style.display =
-            "block";
-
-        getElement("groupPricing").style.display =
-            "none";
-
-        generateIndividualFields();
-
-    } else {
-
-        getElement("individualPricing").style.display =
-            "none";
-
-        getElement("groupPricing").style.display =
-            "block";
-
-        getElement("groupFields").innerHTML =
-            "";
-
-        groupCounter = 0;
-
-        addGroup();
-    }
-}
-
-
-/* =========================================================
-   INDIVIDUAL PRICING FIELDS
+   INDIVIDUAL PRICE FIELDS
 ========================================================= */
 
 function generateIndividualFields(
     existingPricing = []
 ) {
 
-    const container =
-        getElement("individualFields");
-
     const existingMap = {};
 
-    if (Array.isArray(existingPricing)) {
 
-        existingPricing.forEach(
-            function(item) {
+    if (
+        Array.isArray(existingPricing)
+    ) {
 
-                const guests =
-                    parseInt(item.guests, 10);
+        existingPricing.forEach(function(item) {
 
-                if (!isNaN(guests)) {
+            const guests =
+                parseInt(item.guests, 10);
 
-                    existingMap[guests] =
-                        item.price;
-                }
+
+            if (!isNaN(guests)) {
+
+                existingMap[guests] =
+                    item.price;
+
             }
-        );
+
+        });
+
     }
 
-    container.innerHTML = "";
+
+    individualFields.innerHTML =
+        "";
+
 
     for (
         let guest = 1;
@@ -2410,46 +2807,54 @@ function generateIndividualFields(
         const row =
             document.createElement("div");
 
+
         row.className =
             "price-row";
 
-        let existingValue = "";
 
-        if (
+        const existingValue =
             existingMap[guest] !== undefined
-        ) {
+                ? existingMap[guest]
+                : "";
 
-            existingValue =
-                existingMap[guest];
-        }
 
         row.innerHTML = `
+
             <div class="guest-label">
+
                 ${guest}
                 guest${guest !== 1 ? "s" : ""}
 
                 <small>
-                    Price applicable for exactly
+                    Price for exactly
                     ${guest}
                     guest${guest !== 1 ? "s" : ""}
                 </small>
+
             </div>
 
+
             <div>
+
                 <input
                     type="number"
                     name="price_${guest}"
                     min="0"
                     step="0.01"
-                    placeholder="₹ Price per day"
                     value="${existingValue}"
+                    placeholder="₹ Price per day"
                     required
                 >
+
             </div>
+
         `;
 
-        container.appendChild(row);
+
+        individualFields.appendChild(row);
+
     }
+
 }
 
 
@@ -2465,20 +2870,20 @@ function addGroup(
 
     groupCounter++;
 
-    const container =
-        getElement("groupFields");
 
     const row =
         document.createElement("div");
 
+
     row.className =
         "price-row group-row";
+
 
     row.innerHTML = `
 
         <div>
 
-            <label>
+            <label class="form-label">
                 From Guests
             </label>
 
@@ -2497,7 +2902,7 @@ function addGroup(
 
         <div>
 
-            <label>
+            <label class="form-label">
                 To Guests
             </label>
 
@@ -2516,7 +2921,7 @@ function addGroup(
 
         <div>
 
-            <label>
+            <label class="form-label">
                 Price / Day
             </label>
 
@@ -2533,11 +2938,11 @@ function addGroup(
         </div>
 
 
-        <div>
+        <div class="remove-area">
 
             <button
                 type="button"
-                class="remove-group-btn"
+                class="btn remove-group-btn"
             >
                 Remove Group
             </button>
@@ -2546,100 +2951,168 @@ function addGroup(
 
     `;
 
-    container.appendChild(row);
+
+    groupFields.appendChild(row);
+
+
+    const removeButton =
+        row.querySelector(
+            ".remove-group-btn"
+        );
+
+
+    removeButton.addEventListener(
+        "click",
+        function() {
+
+            row.remove();
+
+            updateGroupNames();
+
+        }
+    );
+
 
     updateGroupNames();
+
 }
 
 
 /* =========================================================
-   REMOVE GROUP
+   ADD GROUP BUTTON
 ========================================================= */
 
-function removeGroup(button) {
+document.getElementById(
+    "addGroupButton"
+).addEventListener(
+    "click",
+    function() {
 
-    const row =
-        button.closest(".price-row");
+        addGroup();
 
-    if (row) {
-
-        row.remove();
     }
-
-    updateGroupNames();
-}
+);
 
 
 /* =========================================================
-   UPDATE GROUP FIELD NAMES
+   UPDATE GROUP NAMES
 ========================================================= */
 
 function updateGroupNames() {
 
     const rows =
-        document.querySelectorAll(
-            "#groupFields .price-row"
+        groupFields.querySelectorAll(
+            ".group-row"
         );
 
-    rows.forEach(
-        function(row, index) {
 
-            const number =
-                index + 1;
+    rows.forEach(function(row, index) {
 
-            const minInput =
-                row.querySelector(".group-min");
+        const number =
+            index + 1;
 
-            const maxInput =
-                row.querySelector(".group-max");
 
-            const priceInput =
-                row.querySelector(".group-price");
+        row.querySelector(
+            ".group-min"
+        ).name =
+            "group_" +
+            number +
+            "_min";
 
-            if (minInput) {
 
-                minInput.name =
-                    "group_" +
-                    number +
-                    "_min";
-            }
+        row.querySelector(
+            ".group-max"
+        ).name =
+            "group_" +
+            number +
+            "_max";
 
-            if (maxInput) {
 
-                maxInput.name =
-                    "group_" +
-                    number +
-                    "_max";
-            }
+        row.querySelector(
+            ".group-price"
+        ).name =
+            "group_" +
+            number +
+            "_price";
 
-            if (priceInput) {
+    });
 
-                priceInput.name =
-                    "group_" +
-                    number +
-                    "_price";
-            }
-        }
-    );
 
     groupCounter =
         rows.length;
+
 }
+
+
+/* =========================================================
+   SET PRICE BUTTONS
+========================================================= */
+
+document.querySelectorAll(
+    ".js-set-price"
+).forEach(function(button) {
+
+    button.addEventListener(
+        "click",
+        function(event) {
+
+            event.preventDefault();
+
+            openPriceModal(
+                this.dataset.propertyId,
+                this.dataset.propertyName,
+                this.dataset.propertyLocation
+            );
+
+        }
+    );
+
+});
+
+
+/* =========================================================
+   EDIT PRICE BUTTONS
+========================================================= */
+
+document.querySelectorAll(
+    ".js-edit-price"
+).forEach(function(button) {
+
+    button.addEventListener(
+        "click",
+        function(event) {
+
+            event.preventDefault();
+
+            openEditPriceModal(
+                this.dataset.propertyId,
+                this.dataset.propertyName,
+                this.dataset.propertyLocation,
+                this.dataset.maxGuests,
+                this.dataset.pricingMethod,
+                this.dataset.pricingData
+            );
+
+        }
+    );
+
+});
 
 
 /* =========================================================
    FORM VALIDATION
 ========================================================= */
 
-getElement("priceForm").addEventListener(
+priceForm.addEventListener(
     "submit",
     function(event) {
 
         const maxGuests =
             parseInt(
-                getElement("formMaxGuests").value,
+                maxGuestsInput.value,
                 10
             );
+
 
         if (
             isNaN(maxGuests) ||
@@ -2647,29 +3120,33 @@ getElement("priceForm").addEventListener(
             maxGuests > 100
         ) {
 
-            alert(
-                "Please enter maximum guests between 1 and 100."
-            );
-
             event.preventDefault();
 
+            alert(
+                "Maximum guests must be between 1 and 100."
+            );
+
             return;
+
         }
+
 
         const selected =
             document.querySelector(
                 'input[name="pricing_method"]:checked'
             );
 
+
         if (!selected) {
+
+            event.preventDefault();
 
             alert(
                 "Please select a pricing method."
             );
 
-            event.preventDefault();
-
             return;
+
         }
 
 
@@ -2677,16 +3154,21 @@ getElement("priceForm").addEventListener(
            INDIVIDUAL
         ================================================= */
 
-        if (selected.value === "individual") {
+        if (
+            selected.value === "individual"
+        ) {
 
-            const prices =
-                document.querySelectorAll(
-                    "#individualFields input"
+            const inputs =
+                individualFields.querySelectorAll(
+                    "input"
                 );
 
+
             if (
-                prices.length !== maxGuests
+                inputs.length !== maxGuests
             ) {
+
+                event.preventDefault();
 
                 currentMaxGuests =
                     maxGuests;
@@ -2694,38 +3176,44 @@ getElement("priceForm").addEventListener(
                 generateIndividualFields();
 
                 alert(
-                    "Please enter a price for every guest count."
+                    "Please enter pricing for every guest count from 1 to " +
+                    maxGuests +
+                    "."
                 );
 
-                event.preventDefault();
-
                 return;
+
             }
 
+
             for (
-                const input of prices
+                const input of inputs
             ) {
 
-                const value =
-                    parseFloat(input.value);
+                const price =
+                    parseFloat(
+                        input.value
+                    );
+
 
                 if (
                     input.value === "" ||
-                    isNaN(value) ||
-                    value < 0
+                    isNaN(price) ||
+                    price < 0
                 ) {
-
-                    alert(
-                        "Please enter a valid price for every guest count from 1 to " +
-                        maxGuests +
-                        "."
-                    );
 
                     event.preventDefault();
 
+                    alert(
+                        "Please enter a valid price for every guest count."
+                    );
+
                     return;
+
                 }
+
             }
+
         }
 
 
@@ -2736,24 +3224,28 @@ getElement("priceForm").addEventListener(
         else {
 
             const rows =
-                document.querySelectorAll(
-                    "#groupFields .price-row"
+                groupFields.querySelectorAll(
+                    ".group-row"
                 );
+
 
             if (
                 rows.length === 0
             ) {
 
+                event.preventDefault();
+
                 alert(
                     "Please add at least one guest group."
                 );
 
-                event.preventDefault();
-
                 return;
+
             }
 
+
             let expectedStart = 1;
+
 
             for (
                 let i = 0;
@@ -2761,7 +3253,7 @@ getElement("priceForm").addEventListener(
                 i++
             ) {
 
-                const minimum =
+                const min =
                     parseInt(
                         rows[i]
                             .querySelector(".group-min")
@@ -2769,13 +3261,15 @@ getElement("priceForm").addEventListener(
                         10
                     );
 
-                const maximum =
+
+                const max =
                     parseInt(
                         rows[i]
                             .querySelector(".group-max")
                             .value,
                         10
                     );
+
 
                 const price =
                     parseFloat(
@@ -2786,24 +3280,27 @@ getElement("priceForm").addEventListener(
 
 
                 if (
-                    isNaN(minimum) ||
-                    isNaN(maximum) ||
+                    isNaN(min) ||
+                    isNaN(max) ||
                     isNaN(price)
                 ) {
+
+                    event.preventDefault();
 
                     alert(
                         "Please complete every guest group."
                     );
 
-                    event.preventDefault();
-
                     return;
+
                 }
 
 
                 if (
-                    minimum !== expectedStart
+                    min !== expectedStart
                 ) {
+
+                    event.preventDefault();
 
                     alert(
                         "Guest groups must start from " +
@@ -2811,30 +3308,32 @@ getElement("priceForm").addEventListener(
                         "."
                     );
 
-                    event.preventDefault();
-
                     return;
+
                 }
 
 
                 if (
-                    maximum < minimum
+                    max < min
                 ) {
+
+                    event.preventDefault();
 
                     alert(
-                        "Group maximum cannot be less than group minimum."
+                        "Group maximum cannot be less than minimum."
                     );
 
-                    event.preventDefault();
-
                     return;
+
                 }
 
 
                 if (
-                    minimum < 1 ||
-                    maximum > maxGuests
+                    min < 1 ||
+                    max > maxGuests
                 ) {
+
+                    event.preventDefault();
 
                     alert(
                         "Guest groups must remain between 1 and " +
@@ -2842,9 +3341,8 @@ getElement("priceForm").addEventListener(
                         "."
                     );
 
-                    event.preventDefault();
-
                     return;
+
                 }
 
 
@@ -2852,17 +3350,20 @@ getElement("priceForm").addEventListener(
                     price < 0
                 ) {
 
+                    event.preventDefault();
+
                     alert(
                         "Price cannot be negative."
                     );
 
-                    event.preventDefault();
-
                     return;
+
                 }
 
+
                 expectedStart =
-                    maximum + 1;
+                    max + 1;
+
             }
 
 
@@ -2870,194 +3371,85 @@ getElement("priceForm").addEventListener(
                 expectedStart !== maxGuests + 1
             ) {
 
+                event.preventDefault();
+
                 alert(
                     "Guest groups must cover all guest counts from 1 to " +
                     maxGuests +
                     " without gaps."
                 );
 
-                event.preventDefault();
-
                 return;
+
             }
+
         }
+
     }
 );
 
 
 /* =========================================================
-   BUTTON EVENT LISTENERS
+   CLOSE BUTTONS
 ========================================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-        /* SET PRICE & APPROVE */
-
-        document.querySelectorAll(
-            ".set-price-btn"
-        ).forEach(
-            function(button) {
-
-                button.addEventListener(
-                    "click",
-                    function() {
-
-                        openPriceModal(
-                            this.dataset.propertyId,
-                            this.dataset.propertyName,
-                            this.dataset.propertyLocation
-                        );
-                    }
-                );
-            }
-        );
+document.getElementById(
+    "closeModalButton"
+).addEventListener(
+    "click",
+    hideModal
+);
 
 
-        /* EDIT PRICING */
-
-        document.querySelectorAll(
-            ".edit-price-btn"
-        ).forEach(
-            function(button) {
-
-                button.addEventListener(
-                    "click",
-                    function() {
-
-                        openEditPriceModal(
-                            this.dataset.propertyId,
-                            this.dataset.propertyName,
-                            this.dataset.propertyLocation,
-                            this.dataset.maxGuests,
-                            this.dataset.pricingMethod,
-                            this.dataset.pricingData
-                        );
-                    }
-                );
-            }
-        );
-
-
-        /* REMOVE GROUP */
-
-        document.querySelectorAll(
-            ".remove-group-btn"
-        ).forEach(
-            function(button) {
-
-                button.addEventListener(
-                    "click",
-                    function() {
-
-                        removeGroup(this);
-                    }
-                );
-            }
-        );
-
-
-        /* PRICING RADIO BUTTONS */
-
-        document.querySelectorAll(
-            'input[name="pricing_method"]'
-        ).forEach(
-            function(radio) {
-
-                radio.addEventListener(
-                    "change",
-                    changePricingMethod
-                );
-            }
-        );
-
-
-        /* MAX GUESTS */
-
-        getElement(
-            "formMaxGuests"
-        ).addEventListener(
-            "input",
-            maximumGuestsChanged
-        );
-    }
+document.getElementById(
+    "cancelModalButton"
+).addEventListener(
+    "click",
+    hideModal
 );
 
 
 /* =========================================================
-   MODAL EVENTS
+   CLICK OUTSIDE MODAL
 ========================================================= */
 
-window.addEventListener(
+modal.addEventListener(
     "click",
     function(event) {
-
-        const modal =
-            getElement("priceModal");
 
         if (
             event.target === modal
         ) {
 
-            closePriceModal();
+            hideModal();
+
         }
+
     }
 );
 
+
+/* =========================================================
+   ESC KEY
+========================================================= */
 
 document.addEventListener(
     "keydown",
     function(event) {
 
         if (
-            event.key === "Escape"
+            event.key === "Escape" &&
+            modal.classList.contains("show")
         ) {
 
-            closePriceModal();
+            hideModal();
+
         }
-    }
-);
 
-
-/* =========================================================
-   ENTER KEY
-========================================================= */
-
-getElement(
-    "formMaxGuests"
-).addEventListener(
-    "keydown",
-    function(event) {
-
-        if (
-            event.key === "Enter"
-        ) {
-
-            event.preventDefault();
-        }
     }
 );
 
 </script>
-        
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 </body>
