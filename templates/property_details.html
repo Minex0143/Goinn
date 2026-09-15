@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {{ property.property_name }} - Goinn
+    </title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7fb;
+            color: #222;
+        }
+
+        .navbar {
+            background: #111827;
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        .image-placeholder {
+            height: 300px;
+            background: #e5e7eb;
+            border-radius: 10px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .location {
+            color: #666;
+            font-size: 17px;
+        }
+
+        .address {
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+
+        .pricing {
+            margin-top: 30px;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px;
+            background: #f8f9fc;
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 25px;
+            text-decoration: none;
+            color: #111827;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<nav class="navbar">
+
+    <div class="logo">
+        Goinn
+    </div>
+
+    <div>
+
+        <a href="{{ url_for('home') }}">
+            Home
+        </a>
+
+        {% if current_user.is_authenticated %}
+
+            <a href="{{ url_for('user_dashboard') }}">
+                Dashboard
+            </a>
+
+        {% else %}
+
+            <a href="{{ url_for('login') }}">
+                Sign in
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+
+    <div class="card">
+
+
+        <div class="image-placeholder">
+
+            Property Images
+            <br>
+
+            <small>
+                Image upload will be added later
+            </small>
+
+        </div>
+
+
+        <h1>
+            {{ property.property_name }}
+        </h1>
+
+
+        <div class="location">
+
+            📍 {{ property.location }}
+
+        </div>
+
+
+        <div class="address">
+
+            <strong>
+                Property Address
+            </strong>
+
+            <br>
+
+            {{ property.property_address }}
+
+        </div>
+
+
+        <div>
+
+            <strong>
+                Maximum Guests:
+            </strong>
+
+            {{ property.max_guests }}
+
+        </div>
+
+
+        <div class="pricing">
+
+            <h2>
+                Daily Pricing
+            </h2>
+
+
+            <div class="price-row">
+
+                <span>
+                    1 Guest
+                </span>
+
+                <strong>
+                    ₹{{ property.price_1_guest }}
+                </strong>
+
+            </div>
+
+
+            {% if property.price_2_guest %}
+
+            <div class="price-row">
+
+                <span>
+                    2 Guests
+                </span>
+
+                <strong>
+                    ₹{{ property.price_2_guest }}
+                </strong>
+
+            </div>
+
+            {% endif %}
+
+
+            {% if property.price_3_guest %}
+
+            <div class="price-row">
+
+                <span>
+                    3 Guests
+                </span>
+
+                <strong>
+                    ₹{{ property.price_3_guest }}
+                </strong>
+
+            </div>
+
+            {% endif %}
+
+
+            {% if property.price_4_guest %}
+
+            <div class="price-row">
+
+                <span>
+                    4 Guests
+                </span>
+
+                <strong>
+                    ₹{{ property.price_4_guest }}
+                </strong>
+
+            </div>
+
+            {% endif %}
+
+
+            {% if property.price_5_guest %}
+
+            <div class="price-row">
+
+                <span>
+                    5 Guests
+                </span>
+
+                <strong>
+                    ₹{{ property.price_5_guest }}
+                </strong>
+
+            </div>
+
+            {% endif %}
+
+
+        </div>
+
+
+        <a
+            href="{{ url_for('home') }}"
+            class="back"
+        >
+            ← Back to Search
+        </a>
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>
