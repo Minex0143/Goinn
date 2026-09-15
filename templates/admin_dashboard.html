@@ -1532,21 +1532,17 @@
 
 
                             <button
-                                type="button"
-                                class="view-btn"
-                                onclick="openEditPriceModal(
-                                    {{ property.id }},
-                                    {{ property.property_name|tojson }},
-                                    {{ property.location|tojson }},
-                                    {{ property.max_guests or 1 }},
-                                    {{ property.pricing_method|tojson if property.pricing_method else 'null' }},
-                                    {{ property.pricing_data|tojson if property.pricing_data else 'null' }}
-                                )"
-                            >
-
-                                Edit Pricing
-
-                            </button>
+                              type="button"
+                              class="view-btn edit-price-btn"
+                              data-property-id="{{ property.id }}"
+                              data-property-name="{{ property.property_name }}"
+                              data-property-location="{{ property.location }}"
+                              data-max-guests="{{ property.max_guests or 1 }}"
+                              data-pricing-method="{{ property.pricing_method or '' }}"
+                              data-pricing-data="{{ property.pricing_data or '' }}"
+                             >
+                               Edit Pricing
+                             </button>
 
 
                         {% endif %}
@@ -2038,16 +2034,25 @@
 
 <script>
 
+"use strict";
+
 let currentPropertyId = null;
-
 let currentMaxGuests = 1;
-
 let groupCounter = 0;
 
 
-/* ==================================================
-   OPEN NEW PRICING MODAL
-================================================== */
+/* =========================================================
+   ELEMENT HELPERS
+========================================================= */
+
+function getElement(id) {
+    return document.getElementById(id);
+}
+
+
+/* =========================================================
+   OPEN NEW PRICE MODAL
+========================================================= */
 
 function openPriceModal(
     propertyId,
@@ -2056,89 +2061,58 @@ function openPriceModal(
 ) {
 
     currentPropertyId = propertyId;
-
     currentMaxGuests = 1;
+    groupCounter = 0;
 
-    document.getElementById(
-        "modalPropertyName"
-    ).textContent = propertyName;
+    getElement("modalPropertyName").textContent =
+        propertyName || "";
 
-    document.getElementById(
-        "modalPropertyLocation"
-    ).textContent =
-        "📍 " + propertyLocation;
+    getElement("modalPropertyLocation").textContent =
+        "📍 " + (propertyLocation || "");
 
+    getElement("formMaxGuests").value = "";
 
-    document.getElementById(
-        "formMaxGuests"
-    ).value = "";
+    getElement("warningMaxGuests").textContent = "1";
 
+    getElement("priceForm").action =
+        "/admin/property/" +
+        encodeURIComponent(propertyId) +
+        "/set-price";
 
-    document.getElementById(
-        "warningMaxGuests"
-    ).textContent = "1";
+    getElement("priceForm").dataset.editing = "false";
 
+    getElement("savePriceButton").textContent =
+        "Save Pricing & Approve";
 
-    document.getElementById(
-        "priceForm"
-    ).action =
-        "/admin/property/"
-        + propertyId
-        + "/set-price";
-
+    /* Individual pricing */
 
     document.querySelector(
         'input[name="pricing_method"][value="individual"]'
     ).checked = true;
 
+    getElement("individualPricing").style.display =
+        "block";
 
-    document.getElementById(
-        "individualPricing"
-    ).style.display = "block";
+    getElement("groupPricing").style.display =
+        "none";
 
+    getElement("individualFields").innerHTML =
+        "";
 
-    document.getElementById(
-        "groupPricing"
-    ).style.display = "none";
+    getElement("groupFields").innerHTML =
+        "";
 
+    getElement("priceModal").style.display =
+        "block";
 
-    document.getElementById(
-        "individualFields"
-    ).innerHTML = "";
-
-
-    document.getElementById(
-        "groupFields"
-    ).innerHTML = "";
-
-
-    groupCounter = 0;
-
-
-    document.getElementById(
-        "priceForm"
-    ).dataset.editing = "false";
-
-
-    document.getElementById(
-        "savePriceButton"
-    ).textContent =
-        "Save Pricing & Approve";
-
-
-    document.getElementById(
-        "priceModal"
-    ).style.display = "block";
-
-
-    document.body.style.overflow = "hidden";
-
+    document.body.style.overflow =
+        "hidden";
 }
 
 
-/* ==================================================
-   OPEN EDIT PRICING MODAL
-================================================== */
+/* =========================================================
+   OPEN EDIT PRICE MODAL
+========================================================= */
 
 function openEditPriceModal(
     propertyId,
@@ -2152,49 +2126,32 @@ function openEditPriceModal(
     currentPropertyId = propertyId;
 
     currentMaxGuests =
-        parseInt(maxGuests) || 1;
+        parseInt(maxGuests, 10) || 1;
 
+    groupCounter = 0;
 
-    document.getElementById(
-        "modalPropertyName"
-    ).textContent = propertyName;
+    getElement("modalPropertyName").textContent =
+        propertyName || "";
 
+    getElement("modalPropertyLocation").textContent =
+        "📍 " + (propertyLocation || "");
 
-    document.getElementById(
-        "modalPropertyLocation"
-    ).textContent =
-        "📍 " + propertyLocation;
-
-
-    document.getElementById(
-        "formMaxGuests"
-    ).value = currentMaxGuests;
-
-
-    document.getElementById(
-        "warningMaxGuests"
-    ).textContent =
+    getElement("formMaxGuests").value =
         currentMaxGuests;
 
+    getElement("warningMaxGuests").textContent =
+        currentMaxGuests;
 
-    document.getElementById(
-        "priceForm"
-    ).action =
-        "/admin/property/"
-        + propertyId
-        + "/set-price";
+    getElement("priceForm").action =
+        "/admin/property/" +
+        encodeURIComponent(propertyId) +
+        "/set-price";
 
+    getElement("priceForm").dataset.editing =
+        "true";
 
-    document.getElementById(
-        "priceForm"
-    ).dataset.editing = "true";
-
-
-    document.getElementById(
-        "savePriceButton"
-    ).textContent =
+    getElement("savePriceButton").textContent =
         "Save Pricing";
-
 
     let parsedPricing = [];
 
@@ -2205,44 +2162,42 @@ function openEditPriceModal(
             parsedPricing =
                 JSON.parse(pricingData);
 
+            if (!Array.isArray(parsedPricing)) {
+                parsedPricing = [];
+            }
+
         } catch (error) {
 
             console.error(
-                "Unable to parse pricing:",
+                "Pricing JSON error:",
                 error
             );
 
+            parsedPricing = [];
         }
-
     }
 
 
-    if (
-        pricingMethod === "group"
-    ) {
+    /* =====================================================
+       GROUP PRICING
+    ===================================================== */
+
+    if (pricingMethod === "group") {
 
         document.querySelector(
             'input[name="pricing_method"][value="group"]'
         ).checked = true;
 
+        getElement("individualPricing").style.display =
+            "none";
 
-        document.getElementById(
-            "individualPricing"
-        ).style.display = "none";
+        getElement("groupPricing").style.display =
+            "block";
 
-
-        document.getElementById(
-            "groupPricing"
-        ).style.display = "block";
-
-
-        document.getElementById(
-            "groupFields"
-        ).innerHTML = "";
-
+        getElement("groupFields").innerHTML =
+            "";
 
         groupCounter = 0;
-
 
         if (parsedPricing.length > 0) {
 
@@ -2261,260 +2216,190 @@ function openEditPriceModal(
         } else {
 
             addGroup();
-
         }
 
+    }
 
-    } else {
+    /* =====================================================
+       INDIVIDUAL PRICING
+    ===================================================== */
 
+    else {
 
         document.querySelector(
             'input[name="pricing_method"][value="individual"]'
         ).checked = true;
 
+        getElement("individualPricing").style.display =
+            "block";
 
-        document.getElementById(
-            "individualPricing"
-        ).style.display = "block";
-
-
-        document.getElementById(
-            "groupPricing"
-        ).style.display = "none";
-
+        getElement("groupPricing").style.display =
+            "none";
 
         generateIndividualFields(
             parsedPricing
         );
-
     }
 
 
-    document.getElementById(
-        "priceModal"
-    ).style.display = "block";
+    getElement("priceModal").style.display =
+        "block";
 
-
-    document.body.style.overflow = "hidden";
-
+    document.body.style.overflow =
+        "hidden";
 }
 
 
-/* ==================================================
+/* =========================================================
    CLOSE MODAL
-================================================== */
+========================================================= */
 
 function closePriceModal() {
 
-    document.getElementById(
-        "priceModal"
-    ).style.display = "none";
+    getElement("priceModal").style.display =
+        "none";
 
     document.body.style.overflow =
         "auto";
-
 }
 
 
-/* ==================================================
-   OUTSIDE CLICK
-================================================== */
-
-window.addEventListener(
-    "click",
-    function(event) {
-
-        const modal =
-            document.getElementById(
-                "priceModal"
-            );
-
-        if (
-            event.target === modal
-        ) {
-
-            closePriceModal();
-
-        }
-
-    }
-);
-
-
-/* ==================================================
-   ESC KEY
-================================================== */
-
-document.addEventListener(
-    "keydown",
-    function(event) {
-
-        if (
-            event.key === "Escape"
-        ) {
-
-            closePriceModal();
-
-        }
-
-    }
-);
-
-
-/* ==================================================
-   MAXIMUM GUEST CHANGE
-================================================== */
+/* =========================================================
+   MAXIMUM GUESTS
+========================================================= */
 
 function maximumGuestsChanged() {
 
-    const value =
-        parseInt(
-            document.getElementById(
-                "formMaxGuests"
-            ).value
-        );
+    const input =
+        getElement("formMaxGuests");
 
+    const value =
+        parseInt(input.value, 10);
 
     if (
-        isNaN(value)
-        ||
+        isNaN(value) ||
         value < 1
     ) {
 
-        return;
+        getElement("warningMaxGuests").textContent =
+            "1";
 
+        return;
     }
 
+    if (value > 100) {
 
-    currentMaxGuests = value;
+        input.value = 100;
 
+        currentMaxGuests = 100;
 
-    document.getElementById(
-        "warningMaxGuests"
-    ).textContent =
-        value;
+    } else {
 
+        currentMaxGuests = value;
+    }
 
-    const method =
+    getElement("warningMaxGuests").textContent =
+        currentMaxGuests;
+
+    const selected =
         document.querySelector(
             'input[name="pricing_method"]:checked'
-        ).value;
+        );
 
+    if (!selected) {
+        return;
+    }
 
-    if (
-        method === "individual"
-    ) {
+    if (selected.value === "individual") {
 
         generateIndividualFields();
 
     } else {
 
-        document.getElementById(
-            "groupFields"
-        ).innerHTML = "";
+        getElement("groupFields").innerHTML =
+            "";
 
         groupCounter = 0;
 
         addGroup();
-
     }
-
 }
 
 
-/* ==================================================
+/* =========================================================
    CHANGE PRICING METHOD
-================================================== */
+========================================================= */
 
 function changePricingMethod() {
 
-    const method =
+    const selected =
         document.querySelector(
             'input[name="pricing_method"]:checked'
-        ).value;
+        );
 
+    if (!selected) {
+        return;
+    }
 
-    if (
-        method === "individual"
-    ) {
+    if (selected.value === "individual") {
 
-        document.getElementById(
-            "individualPricing"
-        ).style.display = "block";
+        getElement("individualPricing").style.display =
+            "block";
 
-
-        document.getElementById(
-            "groupPricing"
-        ).style.display = "none";
-
+        getElement("groupPricing").style.display =
+            "none";
 
         generateIndividualFields();
 
-
     } else {
 
-        document.getElementById(
-            "individualPricing"
-        ).style.display = "none";
+        getElement("individualPricing").style.display =
+            "none";
 
+        getElement("groupPricing").style.display =
+            "block";
 
-        document.getElementById(
-            "groupPricing"
-        ).style.display = "block";
-
-
-        document.getElementById(
-            "groupFields"
-        ).innerHTML = "";
-
+        getElement("groupFields").innerHTML =
+            "";
 
         groupCounter = 0;
 
-
         addGroup();
-
     }
-
 }
 
 
-/* ==================================================
-   GENERATE INDIVIDUAL FIELDS
-================================================== */
+/* =========================================================
+   INDIVIDUAL PRICING FIELDS
+========================================================= */
 
 function generateIndividualFields(
     existingPricing = []
 ) {
 
     const container =
-        document.getElementById(
-            "individualFields"
-        );
-
+        getElement("individualFields");
 
     const existingMap = {};
 
-
-    if (
-        Array.isArray(existingPricing)
-    ) {
+    if (Array.isArray(existingPricing)) {
 
         existingPricing.forEach(
             function(item) {
 
-                existingMap[
-                    parseInt(item.guests)
-                ] =
-                    item.price;
+                const guests =
+                    parseInt(item.guests, 10);
 
+                if (!isNaN(guests)) {
+
+                    existingMap[guests] =
+                        item.price;
+                }
             }
         );
-
     }
 
-
     container.innerHTML = "";
-
 
     for (
         let guest = 1;
@@ -2522,19 +2407,13 @@ function generateIndividualFields(
         guest++
     ) {
 
-
         const row =
-            document.createElement(
-                "div"
-            );
-
+            document.createElement("div");
 
         row.className =
             "price-row";
 
-
         let existingValue = "";
-
 
         if (
             existingMap[guest] !== undefined
@@ -2542,26 +2421,21 @@ function generateIndividualFields(
 
             existingValue =
                 existingMap[guest];
-
         }
 
-
         row.innerHTML = `
-
             <div class="guest-label">
-
                 ${guest}
                 guest${guest !== 1 ? "s" : ""}
 
                 <small>
-                    Price applicable for
-                    exactly ${guest} guest${guest !== 1 ? "s" : ""}
+                    Price applicable for exactly
+                    ${guest}
+                    guest${guest !== 1 ? "s" : ""}
                 </small>
-
             </div>
 
             <div>
-
                 <input
                     type="number"
                     name="price_${guest}"
@@ -2571,24 +2445,17 @@ function generateIndividualFields(
                     value="${existingValue}"
                     required
                 >
-
             </div>
-
         `;
 
-
-        container.appendChild(
-            row
-        );
-
+        container.appendChild(row);
     }
-
 }
 
 
-/* ==================================================
+/* =========================================================
    ADD GROUP
-================================================== */
+========================================================= */
 
 function addGroup(
     existingMin = "",
@@ -2598,26 +2465,14 @@ function addGroup(
 
     groupCounter++;
 
-
     const container =
-        document.getElementById(
-            "groupFields"
-        );
-
+        getElement("groupFields");
 
     const row =
-        document.createElement(
-            "div"
-        );
-
+        document.createElement("div");
 
     row.className =
         "price-row group-row";
-
-
-    row.dataset.group =
-        groupCounter;
-
 
     row.innerHTML = `
 
@@ -2630,7 +2485,6 @@ function addGroup(
             <input
                 type="number"
                 class="group-min"
-                name="group_${groupCounter}_min"
                 min="1"
                 max="${currentMaxGuests}"
                 value="${existingMin}"
@@ -2650,7 +2504,6 @@ function addGroup(
             <input
                 type="number"
                 class="group-max"
-                name="group_${groupCounter}_max"
                 min="1"
                 max="${currentMaxGuests}"
                 value="${existingMax}"
@@ -2670,7 +2523,6 @@ function addGroup(
             <input
                 type="number"
                 class="group-price"
-                name="group_${groupCounter}_price"
                 min="0"
                 step="0.01"
                 value="${existingPrice}"
@@ -2686,55 +2538,41 @@ function addGroup(
             <button
                 type="button"
                 class="remove-group-btn"
-                onclick="removeGroup(this)"
             >
-
                 Remove Group
-
             </button>
 
         </div>
 
     `;
 
-
-    container.appendChild(
-        row
-    );
-
+    container.appendChild(row);
 
     updateGroupNames();
-
 }
 
 
-/* ==================================================
+/* =========================================================
    REMOVE GROUP
-================================================== */
+========================================================= */
 
 function removeGroup(button) {
 
     const row =
-        button.closest(
-            ".price-row"
-        );
-
+        button.closest(".price-row");
 
     if (row) {
 
         row.remove();
-
     }
 
-
     updateGroupNames();
-
 }
 
 
-/* ==================================================
-   UPDATE GROUP NAMES
-================================================== */
+/* =========================================================
+   UPDATE GROUP FIELD NAMES
+========================================================= */
 
 function updateGroupNames() {
 
@@ -2743,192 +2581,164 @@ function updateGroupNames() {
             "#groupFields .price-row"
         );
 
-
     rows.forEach(
         function(row, index) {
 
             const number =
                 index + 1;
 
-
             const minInput =
-                row.querySelector(
-                    ".group-min"
-                );
-
+                row.querySelector(".group-min");
 
             const maxInput =
-                row.querySelector(
-                    ".group-max"
-                );
-
+                row.querySelector(".group-max");
 
             const priceInput =
-                row.querySelector(
-                    ".group-price"
-                );
-
+                row.querySelector(".group-price");
 
             if (minInput) {
 
                 minInput.name =
-                    "group_"
-                    + number
-                    + "_min";
-
+                    "group_" +
+                    number +
+                    "_min";
             }
-
 
             if (maxInput) {
 
                 maxInput.name =
-                    "group_"
-                    + number
-                    + "_max";
-
+                    "group_" +
+                    number +
+                    "_max";
             }
-
 
             if (priceInput) {
 
                 priceInput.name =
-                    "group_"
-                    + number
-                    + "_price";
-
+                    "group_" +
+                    number +
+                    "_price";
             }
-
         }
     );
 
-
     groupCounter =
         rows.length;
-
 }
 
 
-/* ==================================================
+/* =========================================================
    FORM VALIDATION
-================================================== */
+========================================================= */
 
-document.getElementById(
-    "priceForm"
-).addEventListener(
+getElement("priceForm").addEventListener(
     "submit",
     function(event) {
 
-
         const maxGuests =
             parseInt(
-                document.getElementById(
-                    "formMaxGuests"
-                ).value
+                getElement("formMaxGuests").value,
+                10
             );
 
-
         if (
-            isNaN(maxGuests)
-            ||
-            maxGuests < 1
+            isNaN(maxGuests) ||
+            maxGuests < 1 ||
+            maxGuests > 100
         ) {
 
             alert(
-                "Please enter a valid maximum number of guests."
+                "Please enter maximum guests between 1 and 100."
             );
 
             event.preventDefault();
 
             return;
+        }
 
+        const selected =
+            document.querySelector(
+                'input[name="pricing_method"]:checked'
+            );
+
+        if (!selected) {
+
+            alert(
+                "Please select a pricing method."
+            );
+
+            event.preventDefault();
+
+            return;
         }
 
 
-        currentMaxGuests =
-            maxGuests;
-
-
-        const method =
-            document.querySelector(
-                'input[name="pricing_method"]:checked'
-            ).value;
-
-
-        /* ==================================================
+        /* =================================================
            INDIVIDUAL
-        ================================================== */
+        ================================================= */
 
-        if (
-            method === "individual"
-        ) {
-
+        if (selected.value === "individual") {
 
             const prices =
                 document.querySelectorAll(
                     "#individualFields input"
                 );
 
-
             if (
                 prices.length !== maxGuests
             ) {
 
+                currentMaxGuests =
+                    maxGuests;
+
                 generateIndividualFields();
 
-            }
-
-
-            const refreshedPrices =
-                document.querySelectorAll(
-                    "#individualFields input"
+                alert(
+                    "Please enter a price for every guest count."
                 );
 
+                event.preventDefault();
+
+                return;
+            }
 
             for (
-                const input of refreshedPrices
+                const input of prices
             ) {
 
+                const value =
+                    parseFloat(input.value);
 
                 if (
-                    input.value === ""
-                    ||
-                    isNaN(
-                        parseFloat(input.value)
-                    )
-                    ||
-                    parseFloat(input.value) < 0
+                    input.value === "" ||
+                    isNaN(value) ||
+                    value < 0
                 ) {
 
                     alert(
-                        "Please enter a valid price for every guest count from 1 to "
-                        + maxGuests
-                        + "."
+                        "Please enter a valid price for every guest count from 1 to " +
+                        maxGuests +
+                        "."
                     );
 
                     event.preventDefault();
 
                     return;
-
                 }
-
             }
-
-
         }
 
 
-        /* ==================================================
+        /* =================================================
            GROUP
-        ================================================== */
+        ================================================= */
 
         else {
-
 
             const rows =
                 document.querySelectorAll(
                     "#groupFields .price-row"
                 );
-
 
             if (
                 rows.length === 0
@@ -2941,12 +2751,9 @@ document.getElementById(
                 event.preventDefault();
 
                 return;
-
             }
 
-
             let expectedStart = 1;
-
 
             for (
                 let i = 0;
@@ -2954,36 +2761,33 @@ document.getElementById(
                 i++
             ) {
 
-
                 const minimum =
                     parseInt(
-                        rows[i].querySelector(
-                            ".group-min"
-                        ).value
+                        rows[i]
+                            .querySelector(".group-min")
+                            .value,
+                        10
                     );
-
 
                 const maximum =
                     parseInt(
-                        rows[i].querySelector(
-                            ".group-max"
-                        ).value
+                        rows[i]
+                            .querySelector(".group-max")
+                            .value,
+                        10
                     );
-
 
                 const price =
                     parseFloat(
-                        rows[i].querySelector(
-                            ".group-price"
-                        ).value
+                        rows[i]
+                            .querySelector(".group-price")
+                            .value
                     );
 
 
                 if (
-                    isNaN(minimum)
-                    ||
-                    isNaN(maximum)
-                    ||
+                    isNaN(minimum) ||
+                    isNaN(maximum) ||
                     isNaN(price)
                 ) {
 
@@ -2994,7 +2798,6 @@ document.getElementById(
                     event.preventDefault();
 
                     return;
-
                 }
 
 
@@ -3003,15 +2806,14 @@ document.getElementById(
                 ) {
 
                     alert(
-                        "Guest groups must start from "
-                        + expectedStart
-                        + "."
+                        "Guest groups must start from " +
+                        expectedStart +
+                        "."
                     );
 
                     event.preventDefault();
 
                     return;
-
                 }
 
 
@@ -3026,26 +2828,23 @@ document.getElementById(
                     event.preventDefault();
 
                     return;
-
                 }
 
 
                 if (
-                    minimum < 1
-                    ||
+                    minimum < 1 ||
                     maximum > maxGuests
                 ) {
 
                     alert(
-                        "Guest groups must remain between 1 and "
-                        + maxGuests
-                        + "."
+                        "Guest groups must remain between 1 and " +
+                        maxGuests +
+                        "."
                     );
 
                     event.preventDefault();
 
                     return;
-
                 }
 
 
@@ -3060,13 +2859,10 @@ document.getElementById(
                     event.preventDefault();
 
                     return;
-
                 }
-
 
                 expectedStart =
                     maximum + 1;
-
             }
 
 
@@ -3075,28 +2871,160 @@ document.getElementById(
             ) {
 
                 alert(
-                    "Guest groups must cover all guest counts from 1 to "
-                    + maxGuests
-                    + " without gaps."
+                    "Guest groups must cover all guest counts from 1 to " +
+                    maxGuests +
+                    " without gaps."
                 );
 
                 event.preventDefault();
 
                 return;
-
             }
-
         }
-
     }
 );
 
 
-/* ==================================================
-   PREVENT ENTER FROM ACCIDENTALLY SUBMITTING
-================================================== */
+/* =========================================================
+   BUTTON EVENT LISTENERS
+========================================================= */
 
-document.getElementById(
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        /* SET PRICE & APPROVE */
+
+        document.querySelectorAll(
+            ".set-price-btn"
+        ).forEach(
+            function(button) {
+
+                button.addEventListener(
+                    "click",
+                    function() {
+
+                        openPriceModal(
+                            this.dataset.propertyId,
+                            this.dataset.propertyName,
+                            this.dataset.propertyLocation
+                        );
+                    }
+                );
+            }
+        );
+
+
+        /* EDIT PRICING */
+
+        document.querySelectorAll(
+            ".edit-price-btn"
+        ).forEach(
+            function(button) {
+
+                button.addEventListener(
+                    "click",
+                    function() {
+
+                        openEditPriceModal(
+                            this.dataset.propertyId,
+                            this.dataset.propertyName,
+                            this.dataset.propertyLocation,
+                            this.dataset.maxGuests,
+                            this.dataset.pricingMethod,
+                            this.dataset.pricingData
+                        );
+                    }
+                );
+            }
+        );
+
+
+        /* REMOVE GROUP */
+
+        document.querySelectorAll(
+            ".remove-group-btn"
+        ).forEach(
+            function(button) {
+
+                button.addEventListener(
+                    "click",
+                    function() {
+
+                        removeGroup(this);
+                    }
+                );
+            }
+        );
+
+
+        /* PRICING RADIO BUTTONS */
+
+        document.querySelectorAll(
+            'input[name="pricing_method"]'
+        ).forEach(
+            function(radio) {
+
+                radio.addEventListener(
+                    "change",
+                    changePricingMethod
+                );
+            }
+        );
+
+
+        /* MAX GUESTS */
+
+        getElement(
+            "formMaxGuests"
+        ).addEventListener(
+            "input",
+            maximumGuestsChanged
+        );
+    }
+);
+
+
+/* =========================================================
+   MODAL EVENTS
+========================================================= */
+
+window.addEventListener(
+    "click",
+    function(event) {
+
+        const modal =
+            getElement("priceModal");
+
+        if (
+            event.target === modal
+        ) {
+
+            closePriceModal();
+        }
+    }
+);
+
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Escape"
+        ) {
+
+            closePriceModal();
+        }
+    }
+);
+
+
+/* =========================================================
+   ENTER KEY
+========================================================= */
+
+getElement(
     "formMaxGuests"
 ).addEventListener(
     "keydown",
@@ -3107,13 +3035,29 @@ document.getElementById(
         ) {
 
             event.preventDefault();
-
         }
-
     }
 );
 
 </script>
+        
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 </body>
