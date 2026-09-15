@@ -23,9 +23,9 @@ from google.auth.transport import requests
 import os
 
 
-# --------------------------------------------------
+# ==================================================
 # FLASK CONFIGURATION
-# --------------------------------------------------
+# ==================================================
 
 app = Flask(__name__)
 
@@ -37,9 +37,11 @@ app.config["SECRET_KEY"] = os.environ.get(
 app.config["GOOGLE_CLIENT_ID"] = os.environ.get(
     "GOOGLE_CLIENT_ID"
 )
-# --------------------------------------------------
+
+
+# ==================================================
 # DATABASE CONFIGURATION
-# --------------------------------------------------
+# ==================================================
 
 database_url = os.environ.get("DATABASE_URL")
 
@@ -60,9 +62,9 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 
-# --------------------------------------------------
+# ==================================================
 # LOGIN MANAGER
-# --------------------------------------------------
+# ==================================================
 
 login_manager = LoginManager()
 
@@ -71,9 +73,9 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 
 
-# --------------------------------------------------
+# ==================================================
 # USER MODEL
-# --------------------------------------------------
+# ==================================================
 
 class User(UserMixin, db.Model):
 
@@ -111,9 +113,9 @@ class User(UserMixin, db.Model):
     )
 
 
-# --------------------------------------------------
-# LOAD USER
-# --------------------------------------------------
+# ==================================================
+# LOAD LOGGED-IN USER
+# ==================================================
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -124,9 +126,9 @@ def load_user(user_id):
     )
 
 
-# --------------------------------------------------
+# ==================================================
 # HOME
-# --------------------------------------------------
+# ==================================================
 
 @app.route("/")
 def home():
@@ -136,21 +138,28 @@ def home():
     )
 
 
-# --------------------------------------------------
-# LOGIN PAGE
-# --------------------------------------------------
+# ==================================================
+# LOGIN
+# ==================================================
 
 @app.route("/login")
 def login():
+
+    # If already logged in, don't show login page
+    if current_user.is_authenticated:
+
+        return redirect(
+            url_for("user_dashboard")
+        )
 
     return render_template(
         "login.html"
     )
 
 
-# --------------------------------------------------
+# ==================================================
 # GOOGLE LOGIN
-# --------------------------------------------------
+# ==================================================
 
 @app.route(
     "/google-login",
@@ -168,21 +177,30 @@ def google_login():
 
     try:
 
+        # ------------------------------------------
+        # VERIFY GOOGLE TOKEN
+        # ------------------------------------------
+
         google_user = id_token.verify_oauth2_token(
             credential,
             requests.Request(),
-            os.environ["GOOGLE_CLIENT_ID"]
+            app.config["GOOGLE_CLIENT_ID"]
         )
 
-        google_id = google_user["sub"]
+        google_id = google_user.get("sub")
 
-        email = google_user.get(
-            "email"
-        )
+        email = google_user.get("email")
 
-        name = google_user.get(
-            "name"
-        )
+        name = google_user.get("name")
+
+
+        # ------------------------------------------
+        # BASIC VALIDATION
+        # ------------------------------------------
+
+        if not google_id:
+
+            return "Google ID missing", 400
 
         if not email:
 
@@ -199,31 +217,62 @@ def google_login():
 
 
         # ------------------------------------------
-        # CREATE NEW USER
+        # EXISTING USER
         # ------------------------------------------
 
-        if not user:
+        if user:
 
-            user = User(
-                google_id=google_id,
-                name=name or "Goinn User",
-                email=email,
-                role="user"
+            # If contact number already exists,
+            # login directly.
+            if user.contact:
+
+                login_user(user)
+
+                return redirect(
+                    url_for("user_dashboard")
+                )
+
+            # Existing account but profile
+            # is incomplete.
+            session["profile_google_id"] = google_id
+            session["profile_email"] = email
+            session["profile_name"] = name or "Goinn User"
+
+            return redirect(
+                url_for("complete_profile")
             )
 
-            db.session.add(user)
 
-            db.session.commit()
+        # ------------------------------------------
+        # CHECK EMAIL
+        # ------------------------------------------
+
+        # This protects against an email already
+        # existing with a different Google ID.
+        existing_email_user = User.query.filter_by(
+            email=email
+        ).first()
+
+        if existing_email_user:
+
+            return (
+                "An account already exists with this email. "
+                "Please contact Goinn support.",
+                409
+            )
 
 
         # ------------------------------------------
-        # LOGIN
+        # NEW USER
         # ------------------------------------------
 
-        login_user(user)
+        session["profile_google_id"] = google_id
+        session["profile_email"] = email
+        session["profile_name"] = name or "Goinn User"
+
 
         return redirect(
-            url_for("user_dashboard")
+            url_for("complete_profile")
         )
 
 
@@ -231,10 +280,197 @@ def google_login():
 
         return "Invalid Google login token", 400
 
+    except Exception as error:
 
-# --------------------------------------------------
+        print("Google login error:", error)
+
+        return "Unable to complete Google login", 500
+
+
+# ==================================================
+# COMPLETE PROFILE
+# ==================================================
+
+@app.route(
+    "/complete-profile",
+    methods=["GET", "POST"]
+)
+def complete_profile():
+
+    # ------------------------------------------
+    # MAKE SURE GOOGLE LOGIN HAPPENED
+    # ------------------------------------------
+
+    google_id = session.get(
+        "profile_google_id"
+    )
+
+    email = session.get(
+        "profile_email"
+    )
+
+    google_name = session.get(
+        "profile_name"
+    )
+
+
+    if not google_id or not email:
+
+        return redirect(
+            url_for("login")
+        )
+
+
+    # ------------------------------------------
+    # GET
+    # ------------------------------------------
+
+    if request.method == "GET":
+
+        return render_template(
+            "complete_profile.html",
+            name=google_name,
+            email=email
+        )
+
+
+    # ------------------------------------------
+    # POST
+    # ------------------------------------------
+
+    name = request.form.get(
+        "name",
+        ""
+    ).strip()
+
+    contact = request.form.get(
+        "contact",
+        ""
+    ).strip()
+
+
+    # ------------------------------------------
+    # VALIDATION
+    # ------------------------------------------
+
+    if not name:
+
+        return render_template(
+            "complete_profile.html",
+            name=name,
+            email=email,
+            error="Name is required."
+        )
+
+
+    if not contact:
+
+        return render_template(
+            "complete_profile.html",
+            name=name,
+            email=email,
+            error="Contact number is required."
+        )
+
+
+    # Remove spaces and common symbols
+    clean_contact = (
+        contact
+        .replace(" ", "")
+        .replace("-", "")
+        .replace("(", "")
+        .replace(")", "")
+    )
+
+
+    if not clean_contact.isdigit():
+
+        return render_template(
+            "complete_profile.html",
+            name=name,
+            email=email,
+            error="Please enter a valid contact number."
+        )
+
+
+    if len(clean_contact) < 10:
+
+        return render_template(
+            "complete_profile.html",
+            name=name,
+            email=email,
+            error="Contact number must contain at least 10 digits."
+        )
+
+
+    # ------------------------------------------
+    # CHECK AGAIN BEFORE CREATE
+    # ------------------------------------------
+
+    existing_user = User.query.filter_by(
+        google_id=google_id
+    ).first()
+
+
+    if existing_user:
+
+        existing_user.name = name
+        existing_user.contact = clean_contact
+
+        db.session.commit()
+
+        user = existing_user
+
+    else:
+
+        user = User(
+            google_id=google_id,
+            name=name,
+            email=email,
+            contact=clean_contact,
+            role="user"
+        )
+
+        db.session.add(user)
+
+        db.session.commit()
+
+
+    # ------------------------------------------
+    # CLEAR TEMPORARY SESSION DATA
+    # ------------------------------------------
+
+    session.pop(
+        "profile_google_id",
+        None
+    )
+
+    session.pop(
+        "profile_email",
+        None
+    )
+
+    session.pop(
+        "profile_name",
+        None
+    )
+
+
+    # ------------------------------------------
+    # LOGIN USER
+    # ------------------------------------------
+
+    login_user(user)
+
+
+    return redirect(
+        url_for("user_dashboard")
+    )
+
+
+# ==================================================
 # USER DASHBOARD
-# --------------------------------------------------
+# ==================================================
 
 @app.route("/user")
 @login_required
@@ -246,9 +482,9 @@ def user_dashboard():
     )
 
 
-# --------------------------------------------------
+# ==================================================
 # LOGOUT
-# --------------------------------------------------
+# ==================================================
 
 @app.route("/logout")
 @login_required
@@ -261,18 +497,18 @@ def logout():
     )
 
 
-# --------------------------------------------------
-# CREATE DATABASE TABLES
-# --------------------------------------------------
+# ==================================================
+# DATABASE INITIALIZATION
+# ==================================================
 
 with app.app_context():
 
     db.create_all()
 
 
-# --------------------------------------------------
+# ==================================================
 # START APPLICATION
-# --------------------------------------------------
+# ==================================================
 
 if __name__ == "__main__":
 
