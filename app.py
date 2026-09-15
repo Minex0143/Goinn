@@ -1616,27 +1616,42 @@ def admin_dashboard():
     if not current_user.is_admin:
         return "Unauthorized", 403
 
-    properties = Property.query.all()
-
-    bookings = Booking.query.all()
-
-    users = User.query.all()
-
-    rejected_properties = Property.query.filter_by(
-        status="rejected"
+    properties = Property.query.order_by(
+        Property.id.desc()
     ).all()
+
+    bookings = Booking.query.order_by(
+        Booking.id.desc()
+    ).all()
+
+    users = User.query.order_by(
+        User.id.desc()
+    ).all()
+
+    # Booking counts
+    pending_bookings = Booking.query.filter_by(
+        status="inquiry"
+    ).count()
 
     rejected_bookings = Booking.query.filter_by(
         status="rejected"
-    ).all()
+    ).count()
+
+    # Property counts
+    rejected_properties = Property.query.filter_by(
+        status="rejected"
+    ).count()
 
     return render_template(
         "admin_dashboard.html",
         properties=properties,
         bookings=bookings,
         users=users,
-        rejected_properties=rejected_properties,
-        rejected_bookings=rejected_bookings
+
+        pending_bookings=pending_bookings,
+
+        rejected_bookings=rejected_bookings,
+        rejected_properties=rejected_properties
     )
 
 
