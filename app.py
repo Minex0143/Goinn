@@ -111,7 +111,89 @@ class User(UserMixin, db.Model):
         default="user",
         nullable=False
     )
+# ==================================================
+# PROPERTY MODEL
+# ==================================================
 
+class Property(db.Model):
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    # Owner who created this property
+    owner_id = db.Column(
+        db.Integer,
+        db.ForeignKey("user.id"),
+        nullable=False
+    )
+
+    # Property information
+    property_name = db.Column(
+        db.String(200),
+        nullable=False
+    )
+
+    property_address = db.Column(
+        db.Text,
+        nullable=False
+    )
+
+    location = db.Column(
+        db.String(120),
+        nullable=False
+    )
+
+    # Images will initially be stored as
+    # comma-separated URLs
+    images = db.Column(
+        db.Text,
+        nullable=True
+    )
+
+    # Guest pricing
+    price_1_guest = db.Column(
+        db.Float,
+        nullable=False
+    )
+
+    price_2_guest = db.Column(
+        db.Float,
+        nullable=True
+    )
+
+    price_3_guest = db.Column(
+        db.Float,
+        nullable=True
+    )
+
+    price_4_guest = db.Column(
+        db.Float,
+        nullable=True
+    )
+
+    price_5_guest = db.Column(
+        db.Float,
+        nullable=True
+    )
+
+    max_guests = db.Column(
+        db.Integer,
+        nullable=False
+    )
+
+    # Property status
+    status = db.Column(
+        db.String(30),
+        default="pending",
+        nullable=False
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        server_default=db.func.now()
+    )
 
 # ==================================================
 # LOAD LOGGED-IN USER
@@ -481,7 +563,191 @@ def user_dashboard():
         user=current_user
     )
 
+# ==================================================
+# BECOME PROPERTY OWNER
+# ==================================================
 
+@app.route("/become-owner")
+@login_required
+def become_owner():
+
+    current_user.role = "owner"
+
+    db.session.commit()
+
+    return redirect(
+        url_for("owner_dashboard")
+    )
+
+# ==================================================
+# OWNER DASHBOARD
+# ==================================================
+
+@app.route("/owner")
+@login_required
+def owner_dashboard():
+
+    if current_user.role != "owner":
+
+        return "Access denied", 403
+
+    properties = Property.query.filter_by(
+        owner_id=current_user.id
+    ).all()
+
+    return render_template(
+        "owner_dashboard.html",
+        user=current_user,
+        properties=properties
+    )
+
+# ==================================================
+# ADD PROPERTY
+# ==================================================
+
+@app.route(
+    "/owner/add-property",
+    methods=["GET", "POST"]
+)
+@login_required
+def add_property():
+
+    if current_user.role != "owner":
+
+        return "Access denied", 403
+
+
+    if request.method == "POST":
+
+        property_name = request.form.get(
+            "property_name",
+            ""
+        ).strip()
+
+        property_address = request.form.get(
+            "property_address",
+            ""
+        ).strip()
+
+        location = request.form.get(
+            "location",
+            ""
+        ).strip()
+
+        images = request.form.get(
+            "images",
+            ""
+        ).strip()
+
+        price_1_guest = request.form.get(
+            "price_1_guest"
+        )
+
+        price_2_guest = request.form.get(
+            "price_2_guest"
+        )
+
+        price_3_guest = request.form.get(
+            "price_3_guest"
+        )
+
+        price_4_guest = request.form.get(
+            "price_4_guest"
+        )
+
+        price_5_guest = request.form.get(
+            "price_5_guest"
+        )
+
+        max_guests = request.form.get(
+            "max_guests"
+        )
+
+
+        # ------------------------------------------
+        # VALIDATION
+        # ------------------------------------------
+
+        if not property_name:
+
+            return "Property name is required", 400
+
+        if not property_address:
+
+            return "Property address is required", 400
+
+        if not location:
+
+            return "Location is required", 400
+
+        if not price_1_guest:
+
+            return "Price for 1 guest is required", 400
+
+        if not max_guests:
+
+            return "Maximum guests is required", 400
+
+
+        # ------------------------------------------
+        # CREATE PROPERTY
+        # ------------------------------------------
+
+        property_obj = Property(
+
+            owner_id=current_user.id,
+
+            property_name=property_name,
+
+            property_address=property_address,
+
+            location=location,
+
+            images=images,
+
+            price_1_guest=float(
+                price_1_guest
+            ),
+
+            price_2_guest=float(
+                price_2_guest
+            ) if price_2_guest else None,
+
+            price_3_guest=float(
+                price_3_guest
+            ) if price_3_guest else None,
+
+            price_4_guest=float(
+                price_4_guest
+            ) if price_4_guest else None,
+
+            price_5_guest=float(
+                price_5_guest
+            ) if price_5_guest else None,
+
+            max_guests=int(
+                max_guests
+            ),
+
+            status="pending"
+        )
+
+
+        db.session.add(
+            property_obj
+        )
+
+        db.session.commit()
+
+
+        return redirect(
+            url_for("owner_dashboard")
+        )
+
+
+    return render_template(
+        "add_property.html"
+    )
 # ==================================================
 # LOGOUT
 # ==================================================
