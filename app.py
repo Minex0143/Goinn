@@ -1577,29 +1577,21 @@ def add_property():
 # ADMIN DASHBOARD
 # ==================================================
 
-@app.route("/admin")
+@app.route("/admin/dashboard")
 @login_required
 def admin_dashboard():
 
-    if current_user.role != "admin":
+    properties = Property.query.all()
 
-        return (
-            "Access denied",
-            403
-        )
+    bookings = Booking.query.all()
 
-    properties = Property.query.order_by(
-        Property.created_at.desc()
-    ).all()
-
-    bookings = Booking.query.order_by(
-        Booking.created_at.desc()
-    ).all()
+    users = User.query.all()
 
     return render_template(
         "admin_dashboard.html",
         properties=properties,
-        bookings=bookings
+        bookings=bookings,
+        users=users
     )
 
 
