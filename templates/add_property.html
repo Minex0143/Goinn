@@ -1,202 +1,566 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 
 <head>
 
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
     <title>Add Property - Goinn</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1"
-    >
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            color: #222;
+        }
+
+        .header {
+            background: #ffffff;
+            padding: 18px 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            margin-top: 30px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #d5d9df;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #555;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .required {
+            color: red;
+        }
+
+        .owner-info {
+            background: #f7f8fa;
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .owner-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 8px;
+        }
+
+        .owner-label {
+            width: 100px;
+            font-weight: bold;
+        }
+
+        .owner-value {
+            color: #555;
+        }
+
+        .info-box {
+            background: #fff8e8;
+            border: 1px solid #f0d58a;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            color: #66531d;
+            line-height: 1.5;
+        }
+
+        .button-container {
+            margin-top: 35px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        button {
+            border: none;
+            background: #111;
+            color: white;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #333;
+        }
+
+        .cancel-btn {
+            margin-right: 12px;
+            padding: 14px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            background: #eee;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .cancel-btn:hover {
+            background: #ddd;
+        }
+
+        @media (max-width: 600px) {
+
+            .header {
+                padding: 15px 18px;
+            }
+
+            .container {
+                margin: 20px auto;
+                padding: 0 12px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .owner-row {
+                display: block;
+            }
+
+            .owner-label {
+                width: auto;
+                margin-bottom: 3px;
+            }
+
+            .button-container {
+                display: block;
+            }
+
+            button,
+            .cancel-btn {
+                display: block;
+                width: 100%;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
+
 <body>
 
-    <h1>Add Your Property</h1>
 
-    <form
-        method="POST"
-        action="{{ url_for('add_property') }}"
-    >
+<!-- ==================================================
+     HEADER
+================================================== -->
 
-        <label>
-            Property Name *
-        </label>
+<div class="header">
 
-        <br>
+    <div class="logo">
+        Goinn
+    </div>
 
-        <input
-            type="text"
-            name="property_name"
-            required
-        >
+    <a href="{{ url_for('owner_dashboard') }}"
+       class="back-btn">
 
-        <br><br>
+        ← Owner Dashboard
 
-
-        <label>
-            Property Address *
-        </label>
-
-        <br>
-
-        <textarea
-            name="property_address"
-            required
-        ></textarea>
-
-        <br><br>
-
-
-        <label>
-            Location / City *
-        </label>
-
-        <br>
-
-        <input
-            type="text"
-            name="location"
-            placeholder="Example: Hyderabad"
-            required
-        >
-
-        <br><br>
-
-
-        <label>
-            Property Image URLs
-        </label>
-
-        <br>
-
-        <textarea
-            name="images"
-            placeholder="Paste image URLs separated by commas"
-        ></textarea>
-
-        <p>
-            We will replace this with actual
-            image uploading later.
-        </p>
-
-        <br>
-
-
-        <h2>Daily Pricing</h2>
-
-        <label>
-            Price for 1 Guest *
-        </label>
-
-        <br>
-
-        <input
-            type="number"
-            name="price_1_guest"
-            min="0"
-            step="0.01"
-            required
-        >
-
-        <br><br>
-
-
-        <label>
-            Price for 2 Guests
-        </label>
-
-        <br>
-
-        <input
-            type="number"
-            name="price_2_guest"
-            min="0"
-            step="0.01"
-        >
-
-        <br><br>
-
-
-        <label>
-            Price for 3 Guests
-        </label>
-
-        <br>
-
-        <input
-            type="number"
-            name="price_3_guest"
-            min="0"
-            step="0.01"
-        >
-
-        <br><br>
-
-
-        <label>
-            Price for 4 Guests
-        </label>
-
-        <br>
-
-        <input
-            type="number"
-            name="price_4_guest"
-            min="0"
-            step="0.01"
-        >
-
-        <br><br>
-
-
-        <label>
-            Price for 5 Guests
-        </label>
-
-        <br>
-
-        <input
-            type="number"
-            name="price_5_guest"
-            min="0"
-            step="0.01"
-        >
-
-        <br><br>
-
-
-        <label>
-            Maximum Guests *
-        </label>
-
-        <br>
-
-        <input
-            type="number"
-            name="max_guests"
-            min="1"
-            required
-        >
-
-        <br><br>
-
-
-        <button type="submit">
-            Create Property
-        </button>
-
-    </form>
-
-
-    <br>
-
-    <a href="{{ url_for('owner_dashboard') }}">
-        Back to Owner Dashboard
     </a>
+
+</div>
+
+
+<!-- ==================================================
+     MAIN CONTAINER
+================================================== -->
+
+<div class="container">
+
+    <div class="card">
+
+
+        <h1>
+            Add Your Property
+        </h1>
+
+        <div class="subtitle">
+
+            Enter your property information below.
+            Pricing will be configured separately by
+            the Goinn Admin team.
+
+        </div>
+
+
+        <!-- ==================================================
+             FORM
+        ================================================== -->
+
+        <form method="POST"
+              action="{{ url_for('add_property') }}">
+
+
+            <!-- ==================================================
+                 OWNER DETAILS
+            ================================================== -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    Owner Details
+                </div>
+
+
+                <div class="owner-info">
+
+
+                    <div class="owner-row">
+
+                        <div class="owner-label">
+                            Name
+                        </div>
+
+                        <div class="owner-value">
+                            {{ current_user.name }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="owner-row">
+
+                        <div class="owner-label">
+                            Email
+                        </div>
+
+                        <div class="owner-value">
+                            {{ current_user.email }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="owner-row">
+
+                        <div class="owner-label">
+                            Contact
+                        </div>
+
+                        <div class="owner-value">
+
+                            {% if current_user.contact %}
+
+                                {{ current_user.contact }}
+
+                            {% else %}
+
+                                Not provided
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="info-box">
+
+                    These details are taken from your Goinn
+                    account and will be associated with this
+                    property.
+
+                    If your contact number is missing,
+                    please update your profile before
+                    creating the property.
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================================
+                 PROPERTY DETAILS
+            ================================================== -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    Property Details
+                </div>
+
+
+                <!-- PROPERTY NAME -->
+
+                <div class="form-group">
+
+                    <label for="property_name">
+
+                        Property Name
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="property_name"
+                        name="property_name"
+                        placeholder="Example: Green Valley Villa"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- PROPERTY ADDRESS -->
+
+                <div class="form-group">
+
+                    <label for="property_address">
+
+                        Property Address
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <textarea
+                        id="property_address"
+                        name="property_address"
+                        placeholder="Enter complete property address"
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <!-- LOCATION -->
+
+                <div class="form-group">
+
+                    <label for="location">
+
+                        City / Location
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        placeholder="Example: Hyderabad"
+                        required
+                    >
+
+                    <small style="color:#777;">
+
+                        Customers will use this location
+                        when searching for properties.
+
+                    </small>
+
+                </div>
+
+
+                <!-- MAX GUESTS -->
+
+                <div class="form-group">
+
+                    <label for="max_guests">
+
+                        Maximum Number of Guests
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <input
+                        type="number"
+                        id="max_guests"
+                        name="max_guests"
+                        min="1"
+                        max="100"
+                        placeholder="Example: 20"
+                        required
+                    >
+
+                    <small style="color:#777;">
+
+                        Example: If your property can
+                        accommodate 20 guests, enter 20.
+
+                    </small>
+
+                </div>
+
+
+                <!-- ==================================================
+                     IMAGES
+                ================================================== -->
+
+                <div class="form-group">
+
+                    <label for="images">
+
+                        Property Images
+
+                    </label>
+
+                    <textarea
+                        id="images"
+                        name="images"
+                        placeholder="Image information can be added here. File upload will be enabled in the next step."
+                    ></textarea>
+
+                    <small style="color:#777;">
+
+                        Image upload will be implemented
+                        separately so owners can upload
+                        JPG, JPEG, PNG, WEBP and other
+                        supported formats.
+
+                    </small>
+
+                </div>
+
+
+                <!-- ==================================================
+                     PRICING INFORMATION
+                ================================================== -->
+
+                <div class="info-box">
+
+                    <strong>Pricing</strong>
+
+                    <br><br>
+
+                    You do not need to enter pricing here.
+
+                    <br><br>
+
+                    After you create the property, it will
+                    appear in the Admin Dashboard as
+                    <strong>Pending</strong>.
+
+                    <br><br>
+
+                    The Admin will configure the pricing
+                    based on the maximum number of guests
+                    before approving the property.
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ==================================================
+                 BUTTONS
+            ================================================== -->
+
+            <div class="button-container">
+
+                <a
+                    href="{{ url_for('owner_dashboard') }}"
+                    class="cancel-btn"
+                >
+                    Cancel
+                </a>
+
+
+                <button type="submit">
+
+                    Create Property
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
+</div>
+
 
 </body>
 
