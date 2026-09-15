@@ -1553,7 +1553,7 @@ def add_property():
 
         images=images,
 
-        max_guests=None,
+        max_guests=1,
 
         pricing_method=None,
 
