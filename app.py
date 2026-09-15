@@ -1037,6 +1037,37 @@ Thank you.
         whatsapp_url
     )
 
+@app.route("/admin/booking/<int:booking_id>/approve", methods=["POST"])
+@login_required
+def approve_booking(booking_id):
+
+    if not current_user.is_admin:
+        return "Unauthorized", 403
+
+    booking = Booking.query.get_or_404(booking_id)
+
+    booking.status = "approved"
+
+    db.session.commit()
+
+    return redirect(url_for("admin_dashboard"))
+
+@app.route("/admin/booking/<int:booking_id>/reject", methods=["POST"])
+@login_required
+def reject_booking(booking_id):
+
+    if not current_user.is_admin:
+        return "Unauthorized", 403
+
+    booking = Booking.query.get_or_404(booking_id)
+
+    booking.status = "rejected"
+
+    db.session.commit()
+
+    return redirect(url_for("admin_dashboard"))
+
+
 
 # ==================================================
 # LOGIN
