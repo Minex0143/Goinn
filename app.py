@@ -146,8 +146,8 @@ class Property(db.Model):
         nullable=False
     )
 
-    # Temporary image storage.
-    # Cloud image upload will be added later.
+    # Temporary image field.
+    # Actual image upload will be added later.
     images = db.Column(
         db.Text,
         nullable=True
@@ -209,7 +209,7 @@ def load_user(user_id):
 
 
 # ==================================================
-# HOME / PROPERTY SEARCH
+# HOME PAGE
 # ==================================================
 
 @app.route("/")
@@ -220,9 +220,7 @@ def home():
         ""
     ).strip()
 
-
     properties = []
-
 
     if search_location:
 
@@ -234,7 +232,6 @@ def home():
         ).order_by(
             Property.created_at.desc()
         ).all()
-
 
     return render_template(
         "home.html",
@@ -257,17 +254,15 @@ def property_details(property_id):
         property_id
     )
 
-
     if not property_obj:
 
         return "Property not found", 404
 
+    # Only approved properties can be viewed publicly
 
-    # Only approved properties are public
     if property_obj.status != "approved":
 
         return "Property not available", 404
-
 
     return render_template(
         "property_details.html",
@@ -282,7 +277,11 @@ def property_details(property_id):
 @app.route("/login")
 def login():
 
+    # If already logged in,
+    # take the user back to Home.
+
     if current_user.is_authenticated:
+
         return redirect(
             url_for("home")
         )
@@ -306,7 +305,6 @@ def google_login():
         "credential"
     )
 
-
     if not credential:
 
         return (
@@ -314,15 +312,17 @@ def google_login():
             400
         )
 
-
     try:
+
+        # ------------------------------------------
+        # VERIFY GOOGLE TOKEN
+        # ------------------------------------------
 
         google_user = id_token.verify_oauth2_token(
             credential,
             requests.Request(),
             app.config["GOOGLE_CLIENT_ID"]
         )
-
 
         google_id = google_user.get(
             "sub"
@@ -336,14 +336,12 @@ def google_login():
             "name"
         )
 
-
         if not google_id:
 
             return (
                 "Google ID missing",
                 400
             )
-
 
         if not email:
 
@@ -362,7 +360,6 @@ def google_login():
             ""
         ).strip().lower()
 
-
         is_admin = (
             bool(admin_email)
             and email.strip().lower() == admin_email
@@ -370,7 +367,7 @@ def google_login():
 
 
         # ------------------------------------------
-        # FIND EXISTING USER
+        # FIND USER USING GOOGLE ID
         # ------------------------------------------
 
         user = User.query.filter_by(
@@ -384,6 +381,9 @@ def google_login():
 
         if user:
 
+            # If this is the configured
+            # admin email, make sure role is admin.
+
             if is_admin:
 
                 user.role = "admin"
@@ -391,59 +391,26 @@ def google_login():
                 db.session.commit()
 
 
-            if user.role == "admin":
+            # Login existing user
 
-                login_user(user)
-
-                return redirect(
-                    url_for("admin_dashboard")
-                )
+            login_user(user)
 
 
-            if user.role == "owner":
-
-                if user.contact:
-
-                    login_user(user)
-
-                    return redirect(
-                        url_for("owner_dashboard")
-                    )
-
-
-            if user.contact:
-
-                login_user(user)
-
-                return redirect(
-                    url_for("user_dashboard")
-                )
-
-
-            session["profile_google_id"] = google_id
-
-            session["profile_email"] = email
-
-            session["profile_name"] = (
-                name or "Goinn User"
-            )
-
-            session["profile_is_admin"] = is_admin
-
+            # IMPORTANT:
+            # Always return to Home after login.
 
             return redirect(
-                url_for("complete_profile")
+                url_for("home")
             )
 
 
         # ------------------------------------------
-        # EMAIL ALREADY EXISTS
+        # CHECK EMAIL
         # ------------------------------------------
 
         existing_email_user = User.query.filter_by(
             email=email
         ).first()
-
 
         if existing_email_user:
 
@@ -458,6 +425,9 @@ def google_login():
         # ------------------------------------------
         # NEW USER
         # ------------------------------------------
+
+        # Save Google information temporarily
+        # until contact number is entered.
 
         session["profile_google_id"] = google_id
 
@@ -524,12 +494,19 @@ def complete_profile():
     )
 
 
+    # If Google information is not available,
+    # send user back to login.
+
     if not google_id or not email:
 
         return redirect(
             url_for("login")
         )
 
+
+    # ------------------------------------------
+    # DISPLAY PROFILE FORM
+    # ------------------------------------------
 
     if request.method == "GET":
 
@@ -539,6 +516,10 @@ def complete_profile():
             email=email
         )
 
+
+    # ------------------------------------------
+    # GET FORM DATA
+    # ------------------------------------------
 
     name = request.form.get(
         "name",
@@ -551,6 +532,10 @@ def complete_profile():
     ).strip()
 
 
+    # ------------------------------------------
+    # VALIDATE NAME
+    # ------------------------------------------
+
     if not name:
 
         return render_template(
@@ -560,6 +545,10 @@ def complete_profile():
             error="Name is required."
         )
 
+
+    # ------------------------------------------
+    # VALIDATE CONTACT
+    # ------------------------------------------
 
     if not contact:
 
@@ -603,10 +592,18 @@ def complete_profile():
         )
 
 
+    # ------------------------------------------
+    # CHECK EXISTING USER
+    # ------------------------------------------
+
     existing_user = User.query.filter_by(
         google_id=google_id
     ).first()
 
+
+    # ------------------------------------------
+    # UPDATE EXISTING USER
+    # ------------------------------------------
 
     if existing_user:
 
@@ -624,6 +621,10 @@ def complete_profile():
 
         user = existing_user
 
+
+    # ------------------------------------------
+    # CREATE NEW USER
+    # ------------------------------------------
 
     else:
 
@@ -649,7 +650,9 @@ def complete_profile():
         db.session.commit()
 
 
-    # Clear session
+    # ------------------------------------------
+    # CLEAR TEMPORARY SESSION DATA
+    # ------------------------------------------
 
     session.pop(
         "profile_google_id",
@@ -672,25 +675,20 @@ def complete_profile():
     )
 
 
+    # ------------------------------------------
+    # LOGIN USER
+    # ------------------------------------------
+
     login_user(user)
 
 
-    if user.role == "admin":
-
-        return redirect(
-            url_for("admin_dashboard")
-        )
-
-
-    if user.role == "owner":
-
-        return redirect(
-            url_for("owner_dashboard")
-        )
-
+    # ------------------------------------------
+    # IMPORTANT:
+    # GO TO HOME AFTER PROFILE COMPLETION
+    # ------------------------------------------
 
     return redirect(
-        url_for("user_dashboard")
+        url_for("home")
     )
 
 
@@ -746,7 +744,10 @@ def owner_dashboard():
         "admin"
     ]:
 
-        return "Access denied", 403
+        return (
+            "Access denied",
+            403
+        )
 
 
     properties = Property.query.filter_by(
@@ -779,8 +780,15 @@ def add_property():
         "admin"
     ]:
 
-        return "Access denied", 403
+        return (
+            "Access denied",
+            403
+        )
 
+
+    # ------------------------------------------
+    # DISPLAY FORM
+    # ------------------------------------------
 
     if request.method == "GET":
 
@@ -788,6 +796,10 @@ def add_property():
             "add_property.html"
         )
 
+
+    # ------------------------------------------
+    # PROPERTY INFORMATION
+    # ------------------------------------------
 
     property_name = request.form.get(
         "property_name",
@@ -809,6 +821,11 @@ def add_property():
         ""
     ).strip()
 
+
+    # ------------------------------------------
+    # PRICES
+    # ------------------------------------------
+
     price_1_guest = request.form.get(
         "price_1_guest"
     )
@@ -829,10 +846,19 @@ def add_property():
         "price_5_guest"
     )
 
+
+    # ------------------------------------------
+    # MAX GUESTS
+    # ------------------------------------------
+
     max_guests = request.form.get(
         "max_guests"
     )
 
+
+    # ------------------------------------------
+    # REQUIRED VALIDATION
+    # ------------------------------------------
 
     if not property_name:
 
@@ -874,6 +900,10 @@ def add_property():
         )
 
 
+    # ------------------------------------------
+    # CONVERT NUMBERS
+    # ------------------------------------------
+
     try:
 
         price_1 = float(
@@ -912,13 +942,49 @@ def add_property():
     except ValueError:
 
         return (
-            "Please enter valid pricing and "
-            "guest information.",
+            "Please enter valid pricing "
+            "and guest information.",
             400
         )
 
 
+    # ------------------------------------------
+    # VALIDATE PRICES
+    # ------------------------------------------
+
     if price_1 < 0:
+
+        return (
+            "Price cannot be negative.",
+            400
+        )
+
+
+    if price_2 is not None and price_2 < 0:
+
+        return (
+            "Price cannot be negative.",
+            400
+        )
+
+
+    if price_3 is not None and price_3 < 0:
+
+        return (
+            "Price cannot be negative.",
+            400
+        )
+
+
+    if price_4 is not None and price_4 < 0:
+
+        return (
+            "Price cannot be negative.",
+            400
+        )
+
+
+    if price_5 is not None and price_5 < 0:
 
         return (
             "Price cannot be negative.",
@@ -933,6 +999,10 @@ def add_property():
             400
         )
 
+
+    # ------------------------------------------
+    # CREATE PROPERTY
+    # ------------------------------------------
 
     property_obj = Property(
 
@@ -969,6 +1039,10 @@ def add_property():
     db.session.commit()
 
 
+    # ------------------------------------------
+    # BACK TO OWNER DASHBOARD
+    # ------------------------------------------
+
     return redirect(
         url_for("owner_dashboard")
     )
@@ -984,7 +1058,10 @@ def admin_dashboard():
 
     if current_user.role != "admin":
 
-        return "Access denied", 403
+        return (
+            "Access denied",
+            403
+        )
 
 
     properties = Property.query.order_by(
@@ -1011,7 +1088,10 @@ def approve_property(property_id):
 
     if current_user.role != "admin":
 
-        return "Access denied", 403
+        return (
+            "Access denied",
+            403
+        )
 
 
     property_obj = db.session.get(
@@ -1022,7 +1102,10 @@ def approve_property(property_id):
 
     if not property_obj:
 
-        return "Property not found", 404
+        return (
+            "Property not found",
+            404
+        )
 
 
     property_obj.status = "approved"
@@ -1048,7 +1131,10 @@ def reject_property(property_id):
 
     if current_user.role != "admin":
 
-        return "Access denied", 403
+        return (
+            "Access denied",
+            403
+        )
 
 
     property_obj = db.session.get(
@@ -1059,7 +1145,10 @@ def reject_property(property_id):
 
     if not property_obj:
 
-        return "Property not found", 404
+        return (
+            "Property not found",
+            404
+        )
 
 
     property_obj.status = "rejected"
