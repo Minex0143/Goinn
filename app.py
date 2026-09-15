@@ -65,6 +65,13 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
+@app.template_filter("fromjson")
+def fromjson_filter(value):
+    try:
+        return json.loads(value)
+    except Exception:
+        return []
+
 
 # ==================================================
 # LOGIN MANAGER
