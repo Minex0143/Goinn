@@ -21,7 +21,9 @@ from flask_login import (
 from google.oauth2 import id_token
 from google.auth.transport import requests
 
+from datetime import datetime
 import os
+import urllib.parse
 
 
 # ==================================================
@@ -146,8 +148,6 @@ class Property(db.Model):
         nullable=False
     )
 
-    # Temporary image field.
-    # Actual image upload will be added later.
     images = db.Column(
         db.Text,
         nullable=True
@@ -194,6 +194,105 @@ class Property(db.Model):
         server_default=db.func.now()
     )
 
+    # Relationship to owner
+
+    owner = db.relationship(
+        "User",
+        foreign_keys=[owner_id]
+    )
+
+
+# ==================================================
+# BOOKING MODEL
+# ==================================================
+
+class Booking(db.Model):
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("user.id"),
+        nullable=False
+    )
+
+    property_id = db.Column(
+        db.Integer,
+        db.ForeignKey("property.id"),
+        nullable=False
+    )
+
+    check_in = db.Column(
+        db.Date,
+        nullable=False
+    )
+
+    check_out = db.Column(
+        db.Date,
+        nullable=False
+    )
+
+    guests = db.Column(
+        db.Integer,
+        nullable=False
+    )
+
+    nights = db.Column(
+        db.Integer,
+        nullable=False
+    )
+
+    price_per_day = db.Column(
+        db.Float,
+        nullable=False
+    )
+
+    total_price = db.Column(
+        db.Float,
+        nullable=False
+    )
+
+    customer_name = db.Column(
+        db.String(120),
+        nullable=False
+    )
+
+    customer_contact = db.Column(
+        db.String(30),
+        nullable=False
+    )
+
+    customer_email = db.Column(
+        db.String(160),
+        nullable=False
+    )
+
+    status = db.Column(
+        db.String(30),
+        default="inquiry",
+        nullable=False
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        server_default=db.func.now()
+    )
+
+    # Relationships
+
+    user = db.relationship(
+        "User",
+        foreign_keys=[user_id]
+    )
+
+    property = db.relationship(
+        "Property",
+        foreign_keys=[property_id]
+    )
+
 
 # ==================================================
 # LOAD USER
@@ -206,6 +305,35 @@ def load_user(user_id):
         User,
         int(user_id)
     )
+
+
+# ==================================================
+# HELPER - GET PRICE FOR GUESTS
+# ==================================================
+
+def get_property_price(property_obj, guests):
+
+    if guests == 1:
+
+        return property_obj.price_1_guest
+
+    elif guests == 2:
+
+        return property_obj.price_2_guest
+
+    elif guests == 3:
+
+        return property_obj.price_3_guest
+
+    elif guests == 4:
+
+        return property_obj.price_4_guest
+
+    elif guests == 5:
+
+        return property_obj.price_5_guest
+
+    return None
 
 
 # ==================================================
@@ -256,17 +384,439 @@ def property_details(property_id):
 
     if not property_obj:
 
-        return "Property not found", 404
-
-    # Only approved properties can be viewed publicly
+        return (
+            "Property not found",
+            404
+        )
 
     if property_obj.status != "approved":
 
-        return "Property not available", 404
+        return (
+            "Property not available",
+            404
+        )
 
     return render_template(
         "property_details.html",
         property=property_obj
+    )
+
+
+# ==================================================
+# BOOK PROPERTY
+# ==================================================
+
+@app.route(
+    "/book/<int:property_id>",
+    methods=["GET", "POST"]
+)
+@login_required
+def book_property(property_id):
+
+    property_obj = db.session.get(
+        Property,
+        property_id
+    )
+
+    if not property_obj:
+
+        return (
+            "Property not found",
+            404
+        )
+
+    if property_obj.status != "approved":
+
+        return (
+            "Property not available",
+            404
+        )
+
+
+    # ----------------------------------------------
+    # SHOW BOOKING FORM
+    # ----------------------------------------------
+
+    if request.method == "GET":
+
+        return render_template(
+            "booking.html",
+            property=property_obj,
+            user=current_user
+        )
+
+
+    # ----------------------------------------------
+    # GET FORM DATA
+    # ----------------------------------------------
+
+    check_in_text = request.form.get(
+        "check_in",
+        ""
+    ).strip()
+
+    check_out_text = request.form.get(
+        "check_out",
+        ""
+    ).strip()
+
+    guests_text = request.form.get(
+        "guests",
+        ""
+    ).strip()
+
+
+    # ----------------------------------------------
+    # CUSTOMER DETAILS
+    # ----------------------------------------------
+
+    customer_name = request.form.get(
+        "customer_name",
+        ""
+    ).strip()
+
+    customer_contact = request.form.get(
+        "customer_contact",
+        ""
+    ).strip()
+
+    customer_email = request.form.get(
+        "customer_email",
+        ""
+    ).strip()
+
+
+    # ----------------------------------------------
+    # REQUIRED VALIDATION
+    # ----------------------------------------------
+
+    if not check_in_text:
+
+        return render_template(
+            "booking.html",
+            property=property_obj,
+            user=current_user,
+            error="Please select check-in date."
+        )
+
+
+    if not check_out_text:
+
+        return render_template(
+            "booking.html",
+            property=property_obj,
+            user=current_user,
+            error="Please select check-out date."
+        )
+
+
+    if not guests_text:
+
+        return render_template(
+            "booking.html",
+            property=property_obj,
+            user=current_user,
+            error="Please select number of guests."
+        )
+
+
+    if not customer_name:
+
+        return render_template(
+            "booking.html",
+            property=property_obj,
+            user=current_user,
+            error="Name is required."
+        )
+
+
+    if not customer_contact:
+
+        return render_template(
+            "booking.html",
+            property=property_obj,
+            user=current_user,
+            error="Contact number is required."
+        )
+
+
+    if not customer_email:
+
+        return render_template(
+            "booking.html",
+            property=property_obj,
+            user=current_user,
+            error="Email is required."
+        )
+
+
+    # ----------------------------------------------
+    # PARSE DATES
+    # ----------------------------------------------
+
+    try:
+
+        check_in = datetime.strptime(
+            check_in_text,
+            "%Y-%m-%d"
+        ).date()
+
+        check_out = datetime.strptime(
+            check_out_text,
+            "%Y-%m-%d"
+        ).date()
+
+    except ValueError:
+
+        return render_template(
+            "booking.html",
+            property=property_obj,
+            user=current_user,
+            error="Invalid date selected."
+        )
+
+
+    # ----------------------------------------------
+    # DATE VALIDATION
+    # ----------------------------------------------
+
+    if check_out <= check_in:
+
+        return render_template(
+            "booking.html",
+            property=property_obj,
+            user=current_user,
+            error=(
+                "Check-out date must be after "
+                "check-in date."
+            )
+        )
+
+
+    # ----------------------------------------------
+    # GUEST VALIDATION
+    # ----------------------------------------------
+
+    try:
+
+        guests = int(
+            guests_text
+        )
+
+    except ValueError:
+
+        return render_template(
+            "booking.html",
+            property=property_obj,
+            user=current_user,
+            error="Invalid number of guests."
+        )
+
+
+    if guests < 1:
+
+        return render_template(
+            "booking.html",
+            property=property_obj,
+            user=current_user,
+            error="At least one guest is required."
+        )
+
+
+    if guests > property_obj.max_guests:
+
+        return render_template(
+            "booking.html",
+            property=property_obj,
+            user=current_user,
+            error=(
+                f"This property allows a maximum "
+                f"of {property_obj.max_guests} guests."
+            )
+        )
+
+
+    # ----------------------------------------------
+    # GET PRICE
+    # ----------------------------------------------
+
+    price_per_day = get_property_price(
+        property_obj,
+        guests
+    )
+
+
+    if price_per_day is None:
+
+        return render_template(
+            "booking.html",
+            property=property_obj,
+            user=current_user,
+            error=(
+                "Price for the selected number "
+                "of guests is not configured."
+            )
+        )
+
+
+    # ----------------------------------------------
+    # CALCULATE NIGHTS
+    # ----------------------------------------------
+
+    nights = (
+        check_out - check_in
+    ).days
+
+
+    total_price = (
+        price_per_day * nights
+    )
+
+
+    # ----------------------------------------------
+    # CREATE BOOKING
+    # ----------------------------------------------
+
+    booking = Booking(
+
+        user_id=current_user.id,
+
+        property_id=property_obj.id,
+
+        check_in=check_in,
+
+        check_out=check_out,
+
+        guests=guests,
+
+        nights=nights,
+
+        price_per_day=price_per_day,
+
+        total_price=total_price,
+
+        customer_name=customer_name,
+
+        customer_contact=customer_contact,
+
+        customer_email=customer_email,
+
+        status="inquiry"
+    )
+
+
+    db.session.add(
+        booking
+    )
+
+    db.session.commit()
+
+
+    # ----------------------------------------------
+    # OWNER CONTACT
+    # ----------------------------------------------
+
+    owner = property_obj.owner
+
+
+    owner_contact = None
+
+    if owner:
+
+        owner_contact = owner.contact
+
+
+    # ----------------------------------------------
+    # WHATSAPP MESSAGE
+    # ----------------------------------------------
+
+    message = f"""
+Hello Goinn Property Owner,
+
+I am interested in booking your property.
+
+Property:
+{property_obj.property_name}
+
+Location:
+{property_obj.location}
+
+Customer Name:
+{customer_name}
+
+Contact:
+{customer_contact}
+
+Email:
+{customer_email}
+
+Check-in:
+{check_in.strftime("%d-%m-%Y")}
+
+Check-out:
+{check_out.strftime("%d-%m-%Y")}
+
+Number of Guests:
+{guests}
+
+Number of Nights:
+{nights}
+
+Initial Price Per Day:
+₹{price_per_day:.2f}
+
+Initial Total:
+₹{total_price:.2f}
+
+Booking ID:
+{booking.id}
+
+I would like to discuss/negotiate the final price and booking details.
+
+Thank you.
+"""
+
+
+    encoded_message = urllib.parse.quote(
+        message
+    )
+
+
+    # ----------------------------------------------
+    # WHATSAPP REDIRECT
+    # ----------------------------------------------
+
+    if owner_contact:
+
+        whatsapp_number = (
+            owner_contact
+            .replace("+", "")
+            .replace(" ", "")
+            .replace("-", "")
+            .replace("(", "")
+            .replace(")", "")
+        )
+
+        whatsapp_url = (
+            "https://wa.me/"
+            + whatsapp_number
+            + "?text="
+            + encoded_message
+        )
+
+    else:
+
+        # If owner contact is not configured,
+        # use WhatsApp without a number.
+
+        whatsapp_url = (
+            "https://wa.me/?text="
+            + encoded_message
+        )
+
+
+    return redirect(
+        whatsapp_url
     )
 
 
@@ -276,9 +826,6 @@ def property_details(property_id):
 
 @app.route("/login")
 def login():
-
-    # If already logged in,
-    # take the user back to Home.
 
     if current_user.is_authenticated:
 
@@ -314,10 +861,6 @@ def google_login():
 
     try:
 
-        # ------------------------------------------
-        # VERIFY GOOGLE TOKEN
-        # ------------------------------------------
-
         google_user = id_token.verify_oauth2_token(
             credential,
             requests.Request(),
@@ -346,7 +889,8 @@ def google_login():
         if not email:
 
             return (
-                "Google account email not available",
+                "Google account email "
+                "not available",
                 400
             )
 
@@ -362,12 +906,14 @@ def google_login():
 
         is_admin = (
             bool(admin_email)
-            and email.strip().lower() == admin_email
+            and
+            email.strip().lower()
+            == admin_email
         )
 
 
         # ------------------------------------------
-        # FIND USER USING GOOGLE ID
+        # FIND USER
         # ------------------------------------------
 
         user = User.query.filter_by(
@@ -381,9 +927,6 @@ def google_login():
 
         if user:
 
-            # If this is the configured
-            # admin email, make sure role is admin.
-
             if is_admin:
 
                 user.role = "admin"
@@ -391,13 +934,8 @@ def google_login():
                 db.session.commit()
 
 
-            # Login existing user
-
             login_user(user)
 
-
-            # IMPORTANT:
-            # Always return to Home after login.
 
             return redirect(
                 url_for("home")
@@ -415,9 +953,9 @@ def google_login():
         if existing_email_user:
 
             return (
-                "An account already exists with this "
-                "email but is linked to another Google "
-                "account.",
+                "An account already exists with "
+                "this email but is linked to "
+                "another Google account.",
                 409
             )
 
@@ -426,15 +964,14 @@ def google_login():
         # NEW USER
         # ------------------------------------------
 
-        # Save Google information temporarily
-        # until contact number is entered.
-
         session["profile_google_id"] = google_id
 
         session["profile_email"] = email
 
         session["profile_name"] = (
-            name or "Goinn User"
+            name
+            or
+            "Goinn User"
         )
 
         session["profile_is_admin"] = is_admin
@@ -461,7 +998,8 @@ def google_login():
         )
 
         return (
-            "Unable to complete Google login",
+            "Unable to complete "
+            "Google login",
             500
         )
 
@@ -494,9 +1032,6 @@ def complete_profile():
     )
 
 
-    # If Google information is not available,
-    # send user back to login.
-
     if not google_id or not email:
 
         return redirect(
@@ -505,7 +1040,7 @@ def complete_profile():
 
 
     # ------------------------------------------
-    # DISPLAY PROFILE FORM
+    # GET
     # ------------------------------------------
 
     if request.method == "GET":
@@ -518,7 +1053,7 @@ def complete_profile():
 
 
     # ------------------------------------------
-    # GET FORM DATA
+    # FORM DATA
     # ------------------------------------------
 
     name = request.form.get(
@@ -532,10 +1067,6 @@ def complete_profile():
     ).strip()
 
 
-    # ------------------------------------------
-    # VALIDATE NAME
-    # ------------------------------------------
-
     if not name:
 
         return render_template(
@@ -545,10 +1076,6 @@ def complete_profile():
             error="Name is required."
         )
 
-
-    # ------------------------------------------
-    # VALIDATE CONTACT
-    # ------------------------------------------
 
     if not contact:
 
@@ -575,7 +1102,10 @@ def complete_profile():
             "complete_profile.html",
             name=name,
             email=email,
-            error="Please enter a valid contact number."
+            error=(
+                "Please enter a valid "
+                "contact number."
+            )
         )
 
 
@@ -593,17 +1123,13 @@ def complete_profile():
 
 
     # ------------------------------------------
-    # CHECK EXISTING USER
+    # EXISTING GOOGLE USER
     # ------------------------------------------
 
     existing_user = User.query.filter_by(
         google_id=google_id
     ).first()
 
-
-    # ------------------------------------------
-    # UPDATE EXISTING USER
-    # ------------------------------------------
 
     if existing_user:
 
@@ -623,7 +1149,7 @@ def complete_profile():
 
 
     # ------------------------------------------
-    # CREATE NEW USER
+    # NEW USER
     # ------------------------------------------
 
     else:
@@ -651,7 +1177,7 @@ def complete_profile():
 
 
     # ------------------------------------------
-    # CLEAR TEMPORARY SESSION DATA
+    # CLEAR SESSION
     # ------------------------------------------
 
     session.pop(
@@ -675,17 +1201,8 @@ def complete_profile():
     )
 
 
-    # ------------------------------------------
-    # LOGIN USER
-    # ------------------------------------------
-
     login_user(user)
 
-
-    # ------------------------------------------
-    # IMPORTANT:
-    # GO TO HOME AFTER PROFILE COMPLETION
-    # ------------------------------------------
 
     return redirect(
         url_for("home")
@@ -700,14 +1217,22 @@ def complete_profile():
 @login_required
 def user_dashboard():
 
+    bookings = Booking.query.filter_by(
+        user_id=current_user.id
+    ).order_by(
+        Booking.created_at.desc()
+    ).all()
+
+
     return render_template(
         "user_dashboard.html",
-        user=current_user
+        user=current_user,
+        bookings=bookings
     )
 
 
 # ==================================================
-# BECOME PROPERTY OWNER
+# BECOME OWNER
 # ==================================================
 
 @app.route("/become-owner")
@@ -757,10 +1282,32 @@ def owner_dashboard():
     ).all()
 
 
+    bookings = []
+
+
+    # Get bookings for owner's properties
+
+    if properties:
+
+        property_ids = [
+            p.id
+            for p in properties
+        ]
+
+        bookings = Booking.query.filter(
+            Booking.property_id.in_(
+                property_ids
+            )
+        ).order_by(
+            Booking.created_at.desc()
+        ).all()
+
+
     return render_template(
         "owner_dashboard.html",
         user=current_user,
-        properties=properties
+        properties=properties,
+        bookings=bookings
     )
 
 
@@ -786,20 +1333,12 @@ def add_property():
         )
 
 
-    # ------------------------------------------
-    # DISPLAY FORM
-    # ------------------------------------------
-
     if request.method == "GET":
 
         return render_template(
             "add_property.html"
         )
 
-
-    # ------------------------------------------
-    # PROPERTY INFORMATION
-    # ------------------------------------------
 
     property_name = request.form.get(
         "property_name",
@@ -822,10 +1361,6 @@ def add_property():
     ).strip()
 
 
-    # ------------------------------------------
-    # PRICES
-    # ------------------------------------------
-
     price_1_guest = request.form.get(
         "price_1_guest"
     )
@@ -846,19 +1381,10 @@ def add_property():
         "price_5_guest"
     )
 
-
-    # ------------------------------------------
-    # MAX GUESTS
-    # ------------------------------------------
-
     max_guests = request.form.get(
         "max_guests"
     )
 
-
-    # ------------------------------------------
-    # REQUIRED VALIDATION
-    # ------------------------------------------
 
     if not property_name:
 
@@ -899,10 +1425,6 @@ def add_property():
             400
         )
 
-
-    # ------------------------------------------
-    # CONVERT NUMBERS
-    # ------------------------------------------
 
     try:
 
@@ -948,61 +1470,14 @@ def add_property():
         )
 
 
-    # ------------------------------------------
-    # VALIDATE PRICES
-    # ------------------------------------------
-
-    if price_1 < 0:
-
-        return (
-            "Price cannot be negative.",
-            400
-        )
-
-
-    if price_2 is not None and price_2 < 0:
-
-        return (
-            "Price cannot be negative.",
-            400
-        )
-
-
-    if price_3 is not None and price_3 < 0:
-
-        return (
-            "Price cannot be negative.",
-            400
-        )
-
-
-    if price_4 is not None and price_4 < 0:
-
-        return (
-            "Price cannot be negative.",
-            400
-        )
-
-
-    if price_5 is not None and price_5 < 0:
-
-        return (
-            "Price cannot be negative.",
-            400
-        )
-
-
     if maximum_guests < 1:
 
         return (
-            "Maximum guests must be at least 1.",
+            "Maximum guests must be "
+            "at least 1.",
             400
         )
 
-
-    # ------------------------------------------
-    # CREATE PROPERTY
-    # ------------------------------------------
 
     property_obj = Property(
 
@@ -1039,10 +1514,6 @@ def add_property():
     db.session.commit()
 
 
-    # ------------------------------------------
-    # BACK TO OWNER DASHBOARD
-    # ------------------------------------------
-
     return redirect(
         url_for("owner_dashboard")
     )
@@ -1069,9 +1540,15 @@ def admin_dashboard():
     ).all()
 
 
+    bookings = Booking.query.order_by(
+        Booking.created_at.desc()
+    ).all()
+
+
     return render_template(
         "admin_dashboard.html",
-        properties=properties
+        properties=properties,
+        bookings=bookings
     )
 
 
