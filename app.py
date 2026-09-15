@@ -147,8 +147,7 @@ class Property(db.Model):
     )
 
     # Temporary image storage.
-    # We will replace this with cloud image
-    # uploading later.
+    # Cloud image upload will be added later.
     images = db.Column(
         db.Text,
         nullable=True
@@ -210,14 +209,69 @@ def load_user(user_id):
 
 
 # ==================================================
-# HOME
+# HOME / PROPERTY SEARCH
 # ==================================================
 
 @app.route("/")
 def home():
 
+    search_location = request.args.get(
+        "location",
+        ""
+    ).strip()
+
+
+    properties = []
+
+
+    if search_location:
+
+        properties = Property.query.filter(
+            Property.status == "approved",
+            Property.location.ilike(
+                f"%{search_location}%"
+            )
+        ).order_by(
+            Property.created_at.desc()
+        ).all()
+
+
     return render_template(
-        "home.html"
+        "home.html",
+        properties=properties,
+        search_location=search_location
+    )
+
+
+# ==================================================
+# PROPERTY DETAILS
+# ==================================================
+
+@app.route(
+    "/property/<int:property_id>"
+)
+def property_details(property_id):
+
+    property_obj = db.session.get(
+        Property,
+        property_id
+    )
+
+
+    if not property_obj:
+
+        return "Property not found", 404
+
+
+    # Only approved properties are public
+    if property_obj.status != "approved":
+
+        return "Property not available", 404
+
+
+    return render_template(
+        "property_details.html",
+        property=property_obj
     )
 
 
@@ -246,6 +300,7 @@ def login():
             url_for("user_dashboard")
         )
 
+
     return render_template(
         "login.html"
     )
@@ -265,16 +320,16 @@ def google_login():
         "credential"
     )
 
+
     if not credential:
 
-        return "Google credential missing", 400
+        return (
+            "Google credential missing",
+            400
+        )
 
 
     try:
-
-        # ------------------------------------------
-        # VERIFY GOOGLE TOKEN
-        # ------------------------------------------
 
         google_user = id_token.verify_oauth2_token(
             credential,
@@ -296,13 +351,13 @@ def google_login():
         )
 
 
-        # ------------------------------------------
-        # VALIDATION
-        # ------------------------------------------
-
         if not google_id:
 
-            return "Google ID missing", 400
+            return (
+                "Google ID missing",
+                400
+            )
+
 
         if not email:
 
@@ -313,7 +368,7 @@ def google_login():
 
 
         # ------------------------------------------
-        # CHECK ADMIN EMAIL
+        # ADMIN EMAIL
         # ------------------------------------------
 
         admin_email = os.environ.get(
@@ -337,15 +392,11 @@ def google_login():
         ).first()
 
 
-        # ==================================================
+        # ------------------------------------------
         # EXISTING USER
-        # ==================================================
+        # ------------------------------------------
 
         if user:
-
-            # ------------------------------------------
-            # ADMIN ROLE
-            # ------------------------------------------
 
             if is_admin:
 
@@ -353,10 +404,6 @@ def google_login():
 
                 db.session.commit()
 
-
-            # ------------------------------------------
-            # ADMIN LOGIN
-            # ------------------------------------------
 
             if user.role == "admin":
 
@@ -366,10 +413,6 @@ def google_login():
                     url_for("admin_dashboard")
                 )
 
-
-            # ------------------------------------------
-            # OWNER LOGIN
-            # ------------------------------------------
 
             if user.role == "owner":
 
@@ -382,10 +425,6 @@ def google_login():
                     )
 
 
-            # ------------------------------------------
-            # NORMAL USER
-            # ------------------------------------------
-
             if user.contact:
 
                 login_user(user)
@@ -394,10 +433,6 @@ def google_login():
                     url_for("user_dashboard")
                 )
 
-
-            # ------------------------------------------
-            # PROFILE INCOMPLETE
-            # ------------------------------------------
 
             session["profile_google_id"] = google_id
 
@@ -409,14 +444,15 @@ def google_login():
 
             session["profile_is_admin"] = is_admin
 
+
             return redirect(
                 url_for("complete_profile")
             )
 
 
-        # ==================================================
-        # CHECK EMAIL
-        # ==================================================
+        # ------------------------------------------
+        # EMAIL ALREADY EXISTS
+        # ------------------------------------------
 
         existing_email_user = User.query.filter_by(
             email=email
@@ -433,9 +469,9 @@ def google_login():
             )
 
 
-        # ==================================================
+        # ------------------------------------------
         # NEW USER
-        # ==================================================
+        # ------------------------------------------
 
         session["profile_google_id"] = google_id
 
@@ -475,7 +511,7 @@ def google_login():
 
 
 # ==================================================
-# COMPLETE USER PROFILE
+# COMPLETE PROFILE
 # ==================================================
 
 @app.route(
@@ -502,20 +538,12 @@ def complete_profile():
     )
 
 
-    # ------------------------------------------
-    # GOOGLE SESSION REQUIRED
-    # ------------------------------------------
-
     if not google_id or not email:
 
         return redirect(
             url_for("login")
         )
 
-
-    # ------------------------------------------
-    # DISPLAY FORM
-    # ------------------------------------------
 
     if request.method == "GET":
 
@@ -525,10 +553,6 @@ def complete_profile():
             email=email
         )
 
-
-    # ------------------------------------------
-    # GET FORM DATA
-    # ------------------------------------------
 
     name = request.form.get(
         "name",
@@ -541,10 +565,6 @@ def complete_profile():
     ).strip()
 
 
-    # ------------------------------------------
-    # NAME VALIDATION
-    # ------------------------------------------
-
     if not name:
 
         return render_template(
@@ -554,10 +574,6 @@ def complete_profile():
             error="Name is required."
         )
 
-
-    # ------------------------------------------
-    # CONTACT VALIDATION
-    # ------------------------------------------
 
     if not contact:
 
@@ -569,7 +585,6 @@ def complete_profile():
         )
 
 
-    # Remove common characters
     clean_contact = (
         contact
         .replace(" ", "")
@@ -602,18 +617,10 @@ def complete_profile():
         )
 
 
-    # ==================================================
-    # FIND USER AGAIN
-    # ==================================================
-
     existing_user = User.query.filter_by(
         google_id=google_id
     ).first()
 
-
-    # ==================================================
-    # UPDATE EXISTING USER
-    # ==================================================
 
     if existing_user:
 
@@ -621,18 +628,16 @@ def complete_profile():
 
         existing_user.contact = clean_contact
 
+
         if is_admin:
 
             existing_user.role = "admin"
+
 
         db.session.commit()
 
         user = existing_user
 
-
-    # ==================================================
-    # CREATE NEW USER
-    # ==================================================
 
     else:
 
@@ -658,9 +663,7 @@ def complete_profile():
         db.session.commit()
 
 
-    # ==================================================
-    # CLEAR TEMPORARY SESSION DATA
-    # ==================================================
+    # Clear session
 
     session.pop(
         "profile_google_id",
@@ -683,16 +686,8 @@ def complete_profile():
     )
 
 
-    # ==================================================
-    # LOGIN
-    # ==================================================
-
     login_user(user)
 
-
-    # ==================================================
-    # REDIRECT BASED ON ROLE
-    # ==================================================
 
     if user.role == "admin":
 
@@ -700,11 +695,13 @@ def complete_profile():
             url_for("admin_dashboard")
         )
 
-    elif user.role == "owner":
+
+    if user.role == "owner":
 
         return redirect(
             url_for("owner_dashboard")
         )
+
 
     return redirect(
         url_for("user_dashboard")
@@ -733,7 +730,6 @@ def user_dashboard():
 @login_required
 def become_owner():
 
-    # Admin should remain admin
     if current_user.role == "admin":
 
         return redirect(
@@ -800,20 +796,12 @@ def add_property():
         return "Access denied", 403
 
 
-    # ------------------------------------------
-    # DISPLAY FORM
-    # ------------------------------------------
-
     if request.method == "GET":
 
         return render_template(
             "add_property.html"
         )
 
-
-    # ------------------------------------------
-    # FORM DATA
-    # ------------------------------------------
 
     property_name = request.form.get(
         "property_name",
@@ -860,23 +848,28 @@ def add_property():
     )
 
 
-    # ==================================================
-    # VALIDATION
-    # ==================================================
-
     if not property_name:
 
-        return "Property name is required", 400
+        return (
+            "Property name is required",
+            400
+        )
 
 
     if not property_address:
 
-        return "Property address is required", 400
+        return (
+            "Property address is required",
+            400
+        )
 
 
     if not location:
 
-        return "Location is required", 400
+        return (
+            "Location is required",
+            400
+        )
 
 
     if not price_1_guest:
@@ -954,10 +947,6 @@ def add_property():
             400
         )
 
-
-    # ==================================================
-    # CREATE PROPERTY
-    # ==================================================
 
     property_obj = Property(
 
