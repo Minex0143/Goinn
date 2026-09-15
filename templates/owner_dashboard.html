@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Owner Dashboard - Goinn</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+</head>
+
+<body>
+
+    <h1>Goinn Owner Dashboard</h1>
+
+    <h2>
+        Welcome, {{ user.name }}
+    </h2>
+
+    <p>
+        Email: {{ user.email }}
+    </p>
+
+    <p>
+        Contact: {{ user.contact }}
+    </p>
+
+    <hr>
+
+    <h2>Your Properties</h2>
+
+    {% if properties %}
+
+        {% for property in properties %}
+
+            <div>
+
+                <h3>
+                    {{ property.property_name }}
+                </h3>
+
+                <p>
+                    {{ property.property_address }}
+                </p>
+
+                <p>
+                    Location:
+                    {{ property.location }}
+                </p>
+
+                <p>
+                    Maximum guests:
+                    {{ property.max_guests }}
+                </p>
+
+                <p>
+                    1 Guest:
+                    ₹{{ property.price_1_guest }}
+                </p>
+
+                {% if property.price_2_guest %}
+                <p>
+                    2 Guests:
+                    ₹{{ property.price_2_guest }}
+                </p>
+                {% endif %}
+
+                {% if property.price_3_guest %}
+                <p>
+                    3 Guests:
+                    ₹{{ property.price_3_guest }}
+                </p>
+                {% endif %}
+
+                <p>
+                    Status:
+                    <strong>
+                        {{ property.status }}
+                    </strong>
+                </p>
+
+            </div>
+
+            <hr>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>
+            You haven't added any properties yet.
+        </p>
+
+    {% endif %}
+
+
+    <br>
+
+    <a href="{{ url_for('add_property') }}">
+        <button>
+            Add New Property
+        </button>
+    </a>
+
+    <br><br>
+
+    <a href="{{ url_for('user_dashboard') }}">
+        Back to User Dashboard
+    </a>
+
+    <br><br>
+
+    <a href="{{ url_for('logout') }}">
+        Logout
+    </a>
+
+</body>
+
+</html>
