@@ -323,7 +323,7 @@ class Booking(db.Model):
 
     status = db.Column(
         db.String(30),
-        default="inquiry",
+        default="pending",
         nullable=False
     )
 
@@ -933,7 +933,7 @@ def book_property(property_id):
 
         customer_email=customer_email,
 
-        status="inquiry"
+        status="pending"
     )
 
     db.session.add(
@@ -1630,7 +1630,7 @@ def admin_dashboard():
 
     # Booking counts
     pending_bookings = Booking.query.filter_by(
-        status="inquiry"
+        status="pending"
     ).count()
 
     rejected_bookings = Booking.query.filter_by(
