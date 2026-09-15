@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Goinn User Dashboard</title>
+
+</head>
+
+<body>
+
+    <h1>User Dashboard</h1>
+
+    <h2>
+        Welcome {{ user.name }}
+    </h2>
+
+    <p>
+        Email: {{ user.email }}
+    </p>
+
+    <p>
+        Contact:
+        {{ user.contact or "Not added yet" }}
+    </p>
+
+    <p>
+        Role: {{ user.role }}
+    </p>
+
+    <br>
+
+    <a href="/logout">
+        Logout
+    </a>
+
+</body>
+
+</html>
