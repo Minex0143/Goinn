@@ -283,23 +283,9 @@ def property_details(property_id):
 def login():
 
     if current_user.is_authenticated:
-
-        if current_user.role == "admin":
-
-            return redirect(
-                url_for("admin_dashboard")
-            )
-
-        elif current_user.role == "owner":
-
-            return redirect(
-                url_for("owner_dashboard")
-            )
-
         return redirect(
-            url_for("user_dashboard")
+            url_for("home")
         )
-
 
     return render_template(
         "login.html"
