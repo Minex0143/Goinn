@@ -18,859 +18,488 @@
 
         body {
             margin: 0;
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #f5f7fa 0%,
-                    #eef1f5 100%
-                );
-
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
             color: #222;
         }
 
-
-        /* ==================================================
+        /* ==========================================
            HEADER
-        ================================================== */
+        ========================================== */
 
         .header {
-
             background: #111;
-
             color: white;
-
-            padding:
-                18px 30px;
+            padding: 17px 30px;
 
             display: flex;
-
-            justify-content:
-                space-between;
-
+            justify-content: space-between;
             align-items: center;
 
-            box-shadow:
-                0 3px 12px
-                rgba(0,0,0,0.15);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
         }
-
 
         .logo {
-
-            font-size: 26px;
-
-            font-weight: 800;
-
-            letter-spacing: -0.5px;
+            font-size: 25px;
+            font-weight: bold;
+            letter-spacing: 0.3px;
         }
-
 
         .back-btn {
-
-            color: white;
-
             text-decoration: none;
-
-            padding:
-                9px 14px;
-
-            border:
-                1px solid
-                rgba(255,255,255,0.25);
-
+            color: white;
+            background: #292929;
+            padding: 9px 15px;
             border-radius: 8px;
-
             font-size: 14px;
-
             font-weight: 600;
-
-            transition: 0.2s;
         }
-
 
         .back-btn:hover {
-
-            background: #333;
+            background: #3b3b3b;
         }
 
-
-        /* ==================================================
-           CONTAINER
-        ================================================== */
+        /* ==========================================
+           MAIN
+        ========================================== */
 
         .container {
-
             max-width: 900px;
-
-            margin:
-                40px auto;
-
-            padding:
-                0 20px;
+            margin: 40px auto;
+            padding: 0 20px;
         }
-
-
-        /* ==================================================
-           CARD
-        ================================================== */
 
         .card {
-
             background: white;
-
-            border-radius: 18px;
-
-            padding:
-                35px;
+            border-radius: 16px;
+            padding: 32px;
 
             box-shadow:
-                0 8px 30px
-                rgba(0,0,0,0.08);
+                0 5px 25px rgba(0,0,0,0.07);
         }
-
-
-        /* ==================================================
-           TITLE
-        ================================================== */
 
         .page-title {
-
             margin: 0;
-
-            font-size: 30px;
-
-            font-weight: 800;
-
-            letter-spacing:
-                -0.5px;
+            font-size: 29px;
         }
-
 
         .subtitle {
-
-            color: #666;
-
-            margin-top: 8px;
-
-            margin-bottom: 30px;
-
+            color: #6b7280;
+            margin-top: 9px;
+            margin-bottom: 32px;
             line-height: 1.6;
-
-            font-size: 15px;
         }
 
-
-        /* ==================================================
+        /* ==========================================
            SECTION
-        ================================================== */
+        ========================================== */
 
         .section {
-
-            margin-top: 32px;
+            margin-top: 30px;
         }
 
+        .section:first-of-type {
+            margin-top: 0;
+        }
 
         .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
 
             font-size: 20px;
-
-            font-weight: 800;
+            font-weight: bold;
 
             margin-bottom: 18px;
 
             padding-bottom: 12px;
 
-            border-bottom:
-                1px solid #e8e8e8;
+            border-bottom: 1px solid #e5e7eb;
         }
 
+        .section-number {
+            width: 30px;
+            height: 30px;
 
-        /* ==================================================
-           OWNER DETAILS
-        ================================================== */
+            border-radius: 50%;
+
+            background: #111;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 14px;
+        }
+
+        /* ==========================================
+           OWNER INFORMATION
+        ========================================== */
 
         .owner-info {
+            background: #f8f9fb;
 
-            background:
-                linear-gradient(
-                    135deg,
-                    #f8f9fb,
-                    #f2f4f7
-                );
+            border: 1px solid #e8ebef;
 
-            border:
-                1px solid #e5e7eb;
+            padding: 20px;
 
-            padding:
-                20px;
-
-            border-radius:
-                12px;
+            border-radius: 12px;
         }
-
 
         .owner-row {
+            display: flex;
 
-            display: grid;
+            padding: 10px 0;
 
-            grid-template-columns:
-                110px 1fr;
-
-            gap: 15px;
-
-            margin-bottom: 13px;
+            border-bottom: 1px solid #e5e7eb;
         }
-
 
         .owner-row:last-child {
-
-            margin-bottom: 0;
+            border-bottom: none;
         }
 
-
         .owner-label {
+            width: 110px;
 
             font-weight: 700;
 
             color: #555;
         }
 
-
         .owner-value {
+            flex: 1;
 
             color: #222;
 
-            word-break:
-                break-word;
+            word-break: break-word;
         }
 
+        .owner-value.missing {
+            color: #dc3545;
+        }
 
-        /* ==================================================
+        /* ==========================================
            INFO BOX
-        ================================================== */
+        ========================================== */
 
         .info-box {
+            background: #fff8e8;
 
-            background:
-                #fff8e8;
+            border: 1px solid #efd58c;
 
-            border:
-                1px solid #efd58c;
+            border-radius: 10px;
 
-            border-radius:
-                11px;
+            padding: 16px;
 
-            padding:
-                17px;
+            margin-top: 16px;
 
-            margin-top:
-                18px;
+            color: #66531d;
 
-            color:
-                #66531d;
+            line-height: 1.6;
 
-            line-height:
-                1.6;
-
-            font-size:
-                14px;
+            font-size: 14px;
         }
-
 
         .info-box strong {
-
-            color:
-                #4e3f12;
+            color: #4d3c12;
         }
 
-
-        /* ==================================================
+        /* ==========================================
            FORM
-        ================================================== */
+        ========================================== */
 
         .form-group {
-
-            margin-bottom:
-                22px;
+            margin-bottom: 21px;
         }
-
 
         label {
+            display: block;
 
-            display:
-                block;
+            font-weight: 600;
 
-            font-weight:
-                700;
+            margin-bottom: 8px;
 
-            margin-bottom:
-                8px;
-
-            font-size:
-                14px;
+            color: #30343b;
         }
-
 
         .required {
-
-            color:
-                #dc3545;
+            color: #dc3545;
         }
-
 
         input,
-        textarea {
+        textarea,
+        select {
+            width: 100%;
 
-            width:
-                100%;
+            padding: 13px 14px;
 
-            padding:
-                13px 14px;
+            border: 1px solid #d5d9df;
 
-            border:
-                1px solid #d5d9df;
+            border-radius: 9px;
 
-            border-radius:
-                9px;
+            font-size: 15px;
 
-            font-size:
-                15px;
+            font-family: Arial, sans-serif;
 
-            font-family:
-                inherit;
+            outline: none;
 
-            outline:
-                none;
+            background: white;
 
-            transition:
-                border-color 0.2s,
-                box-shadow 0.2s;
+            transition: border 0.2s,
+                        box-shadow 0.2s;
         }
-
 
         input:focus,
-        textarea:focus {
-
-            border-color:
-                #555;
+        textarea:focus,
+        select:focus {
+            border-color: #555;
 
             box-shadow:
-                0 0 0 3px
-                rgba(0,0,0,0.06);
+                0 0 0 3px rgba(0,0,0,0.05);
         }
-
 
         textarea {
+            min-height: 110px;
 
-            min-height:
-                115px;
-
-            resize:
-                vertical;
-
-            line-height:
-                1.5;
+            resize: vertical;
         }
-
 
         .field-help {
+            display: block;
 
-            display:
-                block;
+            margin-top: 7px;
 
-            color:
-                #777;
+            color: #777;
 
-            font-size:
-                12px;
+            font-size: 13px;
 
-            margin-top:
-                7px;
-
-            line-height:
-                1.4;
+            line-height: 1.4;
         }
 
+        /* ==========================================
+           TWO COLUMN FORM
+        ========================================== */
 
-        /* ==================================================
-           IMAGE SECTION
-        ================================================== */
+        .form-grid {
+            display: grid;
 
-        .image-placeholder {
+            grid-template-columns:
+                1fr 1fr;
 
-            border:
-                2px dashed #d5d9df;
-
-            border-radius:
-                11px;
-
-            padding:
-                20px;
-
-            background:
-                #fafbfc;
+            gap: 18px;
         }
 
+        /* ==========================================
+           IMAGES
+        ========================================== */
 
-        .image-placeholder textarea {
+        .image-box {
+            border: 1px dashed #cbd0d6;
 
-            background:
-                white;
+            background: #fafbfc;
+
+            border-radius: 10px;
+
+            padding: 18px;
         }
 
-
-        /* ==================================================
-           ADMIN PRICING INFORMATION
-        ================================================== */
-
-        .admin-info {
-
-            margin-top:
-                28px;
-
-            background:
-                #f4f7ff;
-
-            border:
-                1px solid #d9e2ff;
-
-            border-radius:
-                12px;
-
-            padding:
-                20px;
+        .image-box textarea {
+            background: white;
         }
 
+        /* ==========================================
+           PRICING INFORMATION
+        ========================================== */
 
-        .admin-info-title {
+        .pricing-notice {
+            margin-top: 10px;
 
-            font-size:
-                16px;
+            background: #f1f5f9;
 
-            font-weight:
-                800;
+            border: 1px solid #dce2e8;
 
-            margin-bottom:
-                12px;
+            border-radius: 12px;
+
+            padding: 20px;
         }
 
+        .pricing-notice-title {
+            font-size: 17px;
 
-        .admin-info p {
+            font-weight: bold;
 
-            margin:
-                7px 0;
-
-            color:
-                #555;
-
-            line-height:
-                1.5;
-
-            font-size:
-                14px;
+            margin-bottom: 10px;
         }
 
+        .pricing-steps {
+            margin: 0;
 
-        .admin-steps {
+            padding-left: 20px;
 
-            margin:
-                15px 0 0;
+            color: #555;
 
-            padding-left:
-                20px;
+            line-height: 1.8;
         }
 
+        .pricing-highlight {
+            margin-top: 14px;
 
-        .admin-steps li {
+            background: white;
 
-            margin-bottom:
-                8px;
+            border-radius: 9px;
 
-            color:
-                #555;
+            padding: 13px;
 
-            line-height:
-                1.5;
+            border: 1px solid #e3e6ea;
 
-            font-size:
-                14px;
+            font-size: 14px;
+
+            color: #444;
         }
 
-
-        .admin-badge {
-
-            display:
-                inline-block;
-
-            background:
-                #111;
-
-            color:
-                white;
-
-            padding:
-                5px 9px;
-
-            border-radius:
-                6px;
-
-            font-size:
-                11px;
-
-            font-weight:
-                700;
-        }
-
-
-        /* ==================================================
-           SUBMISSION STATUS
-        ================================================== */
-
-        .pending-info {
-
-            display:
-                flex;
-
-            align-items:
-                flex-start;
-
-            gap:
-                12px;
-
-            background:
-                #f8f9fa;
-
-            border:
-                1px solid #e4e6e9;
-
-            padding:
-                16px;
-
-            border-radius:
-                11px;
-
-            margin-top:
-                20px;
-        }
-
-
-        .pending-icon {
-
-            width:
-                32px;
-
-            height:
-                32px;
-
-            border-radius:
-                50%;
-
-            background:
-                #fff3cd;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            flex-shrink:
-                0;
-        }
-
-
-        .pending-text {
-
-            font-size:
-                14px;
-
-            line-height:
-                1.5;
-
-            color:
-                #555;
-        }
-
-
-        .pending-text strong {
-
-            color:
-                #333;
-        }
-
-
-        /* ==================================================
+        /* ==========================================
            BUTTONS
-        ================================================== */
+        ========================================== */
 
         .button-container {
+            margin-top: 35px;
 
-            margin-top:
-                35px;
+            padding-top: 25px;
 
-            padding-top:
-                25px;
+            border-top: 1px solid #eee;
 
-            border-top:
-                1px solid #eee;
+            display: flex;
 
-            display:
-                flex;
+            justify-content: flex-end;
 
-            justify-content:
-                flex-end;
-
-            gap:
-                12px;
+            gap: 12px;
         }
-
 
         button {
+            border: none;
 
-            border:
-                none;
+            background: #111;
 
-            background:
-                #111;
+            color: white;
 
-            color:
-                white;
+            padding: 14px 28px;
 
-            padding:
-                14px 28px;
+            border-radius: 9px;
 
-            border-radius:
-                9px;
+            font-size: 15px;
 
-            font-size:
-                15px;
+            font-weight: bold;
 
-            font-weight:
-                700;
+            cursor: pointer;
 
-            cursor:
-                pointer;
-
-            transition:
-                0.2s;
-
-            font-family:
-                inherit;
+            transition: background 0.2s,
+                        transform 0.1s;
         }
-
 
         button:hover {
-
-            background:
-                #333;
-
-            transform:
-                translateY(-1px);
+            background: #333;
         }
 
+        button:active {
+            transform: scale(0.98);
+        }
 
         .cancel-btn {
+            padding: 14px 25px;
 
-            display:
-                inline-flex;
+            border-radius: 9px;
 
-            align-items:
-                center;
+            text-decoration: none;
 
-            justify-content:
-                center;
+            background: #eee;
 
-            padding:
-                14px 25px;
+            color: #333;
 
-            border-radius:
-                9px;
+            font-weight: 600;
 
-            text-decoration:
-                none;
-
-            background:
-                #eee;
-
-            color:
-                #333;
-
-            font-weight:
-                700;
-
-            font-size:
-                15px;
-
-            transition:
-                0.2s;
+            font-size: 15px;
         }
-
 
         .cancel-btn:hover {
-
-            background:
-                #ddd;
+            background: #ddd;
         }
 
+        /* ==========================================
+           FOOTER NOTE
+        ========================================== */
 
-        /* ==================================================
-           REQUIRED ERROR
-        ================================================== */
+        .footer-note {
+            text-align: center;
 
-        .error-message {
+            margin-top: 20px;
 
-            background:
-                #f8d7da;
+            color: #888;
 
-            border:
-                1px solid #f1aeb5;
-
-            color:
-                #721c24;
-
-            padding:
-                13px 15px;
-
-            border-radius:
-                9px;
-
-            margin-bottom:
-                20px;
-
-            font-size:
-                14px;
+            font-size: 13px;
         }
 
-
-        /* ==================================================
+        /* ==========================================
            RESPONSIVE
-        ================================================== */
+        ========================================== */
 
         @media (max-width: 700px) {
 
             .header {
-
-                padding:
-                    15px 18px;
+                padding: 15px 18px;
             }
-
 
             .logo {
-
-                font-size:
-                    23px;
+                font-size: 22px;
             }
-
 
             .container {
+                margin: 20px auto;
 
-                margin:
-                    20px auto;
-
-                padding:
-                    0 12px;
+                padding: 0 12px;
             }
-
 
             .card {
-
-                padding:
-                    22px 18px;
-
-                border-radius:
-                    14px;
+                padding: 21px;
             }
-
 
             .page-title {
-
-                font-size:
-                    25px;
+                font-size: 25px;
             }
 
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
 
             .owner-row {
-
-                display:
-                    block;
+                display: block;
             }
-
 
             .owner-label {
-
-                margin-bottom:
-                    4px;
+                width: auto;
+                margin-bottom: 4px;
             }
-
-
-            .owner-row:not(:last-child) {
-
-                margin-bottom:
-                    15px;
-            }
-
 
             .button-container {
-
-                display:
-                    flex;
-
-                flex-direction:
-                    column-reverse;
+                display: block;
             }
-
 
             button,
             .cancel-btn {
+                display: block;
 
-                width:
-                    100%;
+                width: 100%;
 
-                text-align:
-                    center;
+                text-align: center;
+
+                margin-bottom: 10px;
             }
-
 
             .back-btn {
+                font-size: 13px;
 
-                font-size:
-                    13px;
-
-                padding:
-                    8px 10px;
-            }
-
-        }
-
-
-        @media (max-width: 420px) {
-
-            .header {
-
-                padding:
-                    14px;
-            }
-
-
-            .back-btn {
-
-                font-size:
-                    12px;
-            }
-
-
-            .card {
-
-                padding:
-                    20px 15px;
+                padding: 8px 11px;
             }
 
         }
@@ -887,72 +516,45 @@
      HEADER
 ================================================== -->
 
-<header class="header">
+<div class="header">
 
     <div class="logo">
         Goinn
     </div>
 
-
     <a
         href="{{ url_for('owner_dashboard') }}"
         class="back-btn"
     >
-
         ← Owner Dashboard
-
     </a>
 
-</header>
-
+</div>
 
 
 <!-- ==================================================
      MAIN
 ================================================== -->
 
-<main class="container">
-
+<div class="container">
 
     <div class="card">
 
 
-        <!-- ==================================================
-             PAGE TITLE
-        ================================================== -->
+        <!-- PAGE HEADER -->
 
         <h1 class="page-title">
-
             Add Your Property
-
         </h1>
-
 
         <div class="subtitle">
 
-            Submit your property details to Goinn.
-            After submission, our Admin team will review
-            the property and configure the guest capacity
-            and pricing before approval.
+            Add your property details below.
+            Once submitted, the property will be
+            reviewed by the Goinn Admin team before
+            it becomes available to customers.
 
         </div>
-
-
-
-        <!-- ==================================================
-             ERROR
-        ================================================== -->
-
-        {% if error %}
-
-            <div class="error-message">
-
-                {{ error }}
-
-            </div>
-
-        {% endif %}
-
 
 
         <!-- ==================================================
@@ -965,15 +567,17 @@
         >
 
 
-
             <!-- ==================================================
-                 OWNER DETAILS
+                 SECTION 1 - OWNER
             ================================================== -->
 
             <div class="section">
 
-
                 <div class="section-title">
+
+                    <div class="section-number">
+                        1
+                    </div>
 
                     Owner Details
 
@@ -986,48 +590,43 @@
                     <div class="owner-row">
 
                         <div class="owner-label">
-
                             Name
-
                         </div>
 
                         <div class="owner-value">
-
                             {{ current_user.name }}
-
                         </div>
 
                     </div>
 
 
-
                     <div class="owner-row">
 
                         <div class="owner-label">
-
                             Email
-
                         </div>
 
                         <div class="owner-value">
-
                             {{ current_user.email }}
-
                         </div>
 
                     </div>
 
 
-
                     <div class="owner-row">
 
                         <div class="owner-label">
-
                             Contact
-
                         </div>
 
-                        <div class="owner-value">
+                        <div
+                            class="
+                            owner-value
+                            {% if not current_user.contact %}
+                            missing
+                            {% endif %}
+                            "
+                        >
 
                             {% if current_user.contact %}
 
@@ -1047,46 +646,36 @@
                 </div>
 
 
-
                 <div class="info-box">
+
+                    <strong>Owner information</strong>
+
+                    <br>
 
                     These details are automatically taken
                     from your Goinn account and will be
                     associated with this property.
 
-                    {% if not current_user.contact %}
-
-                        <br><br>
-
-                        <strong>
-                            Your contact number is missing.
-                        </strong>
-
-                        Please update your account profile
-                        before submitting the property.
-
-                    {% endif %}
-
                 </div>
-
 
             </div>
 
 
-
             <!-- ==================================================
-                 PROPERTY DETAILS
+                 SECTION 2 - PROPERTY DETAILS
             ================================================== -->
 
             <div class="section">
 
-
                 <div class="section-title">
+
+                    <div class="section-number">
+                        2
+                    </div>
 
                     Property Details
 
                 </div>
-
 
 
                 <!-- PROPERTY NAME -->
@@ -1096,11 +685,9 @@
                     <label for="property_name">
 
                         Property Name
-
                         <span class="required">*</span>
 
                     </label>
-
 
                     <input
                         type="text"
@@ -1111,49 +698,42 @@
                         required
                     >
 
-
-                    <small class="field-help">
+                    <span class="field-help">
 
                         Enter the name customers will see
-                        when searching for your property.
+                        when viewing your property.
 
-                    </small>
+                    </span>
 
                 </div>
 
 
-
-                <!-- PROPERTY ADDRESS -->
+                <!-- ADDRESS -->
 
                 <div class="form-group">
 
                     <label for="property_address">
 
                         Property Address
-
                         <span class="required">*</span>
 
                     </label>
-
 
                     <textarea
                         id="property_address"
                         name="property_address"
                         placeholder="Enter the complete property address"
-                        maxlength="2000"
                         required
                     ></textarea>
 
+                    <span class="field-help">
 
-                    <small class="field-help">
+                        Include the street, area, landmark
+                        and other useful address information.
 
-                        Provide the complete address including
-                        street, area, city and PIN code if applicable.
-
-                    </small>
+                    </span>
 
                 </div>
-
 
 
                 <!-- LOCATION -->
@@ -1163,11 +743,9 @@
                     <label for="location">
 
                         City / Location
-
                         <span class="required">*</span>
 
                     </label>
-
 
                     <input
                         type="text"
@@ -1178,178 +756,170 @@
                         required
                     >
 
-
-                    <small class="field-help">
+                    <span class="field-help">
 
                         Customers will use this location
-                        to search for properties.
+                        to search for your property.
 
-                    </small>
+                    </span>
 
                 </div>
 
 
-
-                <!-- ==================================================
-                     IMAGES
-                ================================================== -->
-
-                <div class="form-group">
+            </div>
 
 
-                    <label for="images">
+            <!-- ==================================================
+                 SECTION 3 - IMAGES
+            ================================================== -->
 
-                        Property Images
+            <div class="section">
 
-                    </label>
+                <div class="section-title">
+
+                    <div class="section-number">
+                        3
+                    </div>
+
+                    Property Images
+
+                </div>
 
 
-                    <div class="image-placeholder">
+                <div class="image-box">
 
+                    <div class="form-group"
+                         style="margin-bottom:0;">
+
+                        <label for="images">
+
+                            Property Images
+
+                        </label>
 
                         <textarea
                             id="images"
                             name="images"
-                            placeholder="Image information can be added here. File upload will be enabled in a later step."
-                            maxlength="5000"
+                            placeholder="Image information can be added here."
                         ></textarea>
 
+                        <span class="field-help">
 
-                        <small class="field-help">
+                            Image upload functionality will be
+                            enabled separately. Supported formats
+                            will include JPG, JPEG, PNG and WEBP.
 
-                            JPG, JPEG, PNG, WEBP and other
-                            supported image uploads will be
-                            implemented separately.
-
-                        </small>
-
+                        </span>
 
                     </div>
 
                 </div>
 
-
             </div>
 
 
-
             <!-- ==================================================
-                 ADMIN CONFIGURATION INFORMATION
+                 SECTION 4 - PRICING INFORMATION
             ================================================== -->
 
-            <div class="admin-info">
+            <div class="section">
 
+                <div class="section-title">
 
-                <div class="admin-info-title">
+                    <div class="section-number">
+                        4
+                    </div>
 
-                    <span class="admin-badge">
-                        ADMIN CONTROL
-                    </span>
-
-                    &nbsp;
-
-                    Guest Capacity & Pricing
+                    Pricing & Guest Capacity
 
                 </div>
 
 
-                <p>
-
-                    You do <strong>not</strong> need to enter
-                    maximum guests or pricing.
-
-                </p>
+                <div class="pricing-notice">
 
 
-                <p>
+                    <div class="pricing-notice-title">
 
-                    These settings are controlled exclusively
-                    by the Goinn Admin team.
+                        Pricing is managed by Goinn Admin
 
-                </p>
-
-
-                <ul class="admin-steps">
+                    </div>
 
 
-                    <li>
+                    <ul class="pricing-steps">
 
-                        Your property will first be submitted
-                        as <strong>Pending</strong>.
+                        <li>
+                            You do <strong>not</strong> need to
+                            enter pricing.
+                        </li>
 
-                    </li>
+                        <li>
+                            You do <strong>not</strong> need to
+                            enter maximum guest capacity.
+                        </li>
+
+                        <li>
+                            After submitting the property,
+                            Admin will review it.
+                        </li>
+
+                        <li>
+                            Admin will decide the
+                            <strong>Maximum Guests</strong>.
+                        </li>
+
+                        <li>
+                            Admin will configure either
+                            <strong>Individual Pricing</strong>
+                            or
+                            <strong>Group Pricing</strong>.
+                        </li>
+
+                        <li>
+                            The property will be approved only
+                            after pricing has been configured.
+                        </li>
+
+                    </ul>
 
 
-                    <li>
+                    <div class="pricing-highlight">
 
-                        The Admin will decide the
-                        <strong>Maximum Number of Guests</strong>.
+                        <strong>Example:</strong>
 
-                    </li>
+                        If Admin sets Maximum Guests to
+                        <strong>6</strong>:
+
+                        <br><br>
+
+                        <strong>Individual Pricing:</strong>
+
+                        1 guest, 2 guests, 3 guests,
+                        4 guests, 5 guests, 6 guests
+
+                        <br><br>
+
+                        <strong>Group Pricing:</strong>
+
+                        Example: 1–2 guests,
+                        3–4 guests,
+                        5–6 guests
+
+                        <br><br>
+
+                        The pricing form will automatically
+                        stop at the maximum guest count
+                        configured by Admin.
+
+                    </div>
 
 
-                    <li>
-
-                        The Admin will configure
-                        <strong>Individual Pricing</strong>
-                        or
-                        <strong>Group Pricing</strong>.
-
-                    </li>
-
-
-                    <li>
-
-                        The property will only become visible
-                        to customers after Admin approval.
-
-                    </li>
-
-
-                </ul>
-
+                </div>
 
             </div>
 
 
-
             <!-- ==================================================
-                 PENDING INFORMATION
-            ================================================== -->
-
-            <div class="pending-info">
-
-
-                <div class="pending-icon">
-
-                    ⏳
-
-                </div>
-
-
-                <div class="pending-text">
-
-                    <strong>
-                        What happens after submission?
-                    </strong>
-
-                    <br>
-
-                    Your property will appear in the Admin
-                    Dashboard with a <strong>Pending</strong>
-                    status. The Admin will review the property,
-                    set the maximum guest capacity and configure
-                    the pricing before approving it.
-
-                </div>
-
-
-            </div>
-
-
-
-            <!-- ==================================================
-                 BUTTONS
+                 SUBMIT
             ================================================== -->
 
             <div class="button-container">
@@ -1359,9 +929,7 @@
                     href="{{ url_for('owner_dashboard') }}"
                     class="cancel-btn"
                 >
-
                     Cancel
-
                 </a>
 
 
@@ -1378,10 +946,18 @@
         </form>
 
 
+        <div class="footer-note">
+
+            Your property will remain
+            <strong>Pending</strong> until approved
+            by Goinn Admin.
+
+        </div>
+
+
     </div>
 
-
-</main>
+</div>
 
 
 </body>
