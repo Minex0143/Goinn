@@ -18,39 +18,23 @@
 
     <h1>Login to Goinn</h1>
 
-
     <div
         id="g_id_onload"
-
         data-client_id="{{ config.GOOGLE_CLIENT_ID }}"
-
-        data-login_uri="{{ url_for(
-            'google_login',
-            _external=True
-        ) }}"
-
+        data-login_uri="{{ url_for('google_login', _external=True) }}"
         data-ux_mode="redirect"
-
         data-auto_prompt="false">
     </div>
 
-
     <div
         class="g_id_signin"
-
         data-type="standard"
-
         data-size="large"
-
         data-theme="outline"
-
         data-text="continue_with"
-
         data-shape="rectangular"
-
         data-logo_alignment="left">
     </div>
-
 
     <br>
 
