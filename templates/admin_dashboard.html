@@ -1492,18 +1492,14 @@
 
 
                             <button
-                                type="button"
-                                class="approve-btn"
-                                onclick="openPriceModal(
-                                    {{ property.id }},
-                                    {{ property.property_name|tojson }},
-                                    {{ property.location|tojson }}
-                                )"
-                            >
-
-                                Set Price & Approve
-
-                            </button>
+    type="button"
+    class="approve-btn set-price-btn"
+    data-property-id="{{ property.id }}"
+    data-property-name="{{ property.property_name }}"
+    data-property-location="{{ property.location }}"
+>
+    Set Price & Approve
+</button>
 
 
                             <form
