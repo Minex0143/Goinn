@@ -34,7 +34,9 @@ app.config["SECRET_KEY"] = os.environ.get(
     "development-secret"
 )
 
-
+app.config["GOOGLE_CLIENT_ID"] = os.environ.get(
+    "GOOGLE_CLIENT_ID"
+)
 # --------------------------------------------------
 # DATABASE CONFIGURATION
 # --------------------------------------------------
