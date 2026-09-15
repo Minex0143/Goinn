@@ -8,6 +8,7 @@ from flask import (
 )
 
 from flask_sqlalchemy import SQLAlchemy
+
 from flask_login import (
     LoginManager,
     UserMixin,
@@ -111,6 +112,8 @@ class User(UserMixin, db.Model):
         default="user",
         nullable=False
     )
+
+
 # ==================================================
 # PROPERTY MODEL
 # ==================================================
@@ -122,14 +125,12 @@ class Property(db.Model):
         primary_key=True
     )
 
-    # Owner who created this property
     owner_id = db.Column(
         db.Integer,
         db.ForeignKey("user.id"),
         nullable=False
     )
 
-    # Property information
     property_name = db.Column(
         db.String(200),
         nullable=False
@@ -145,14 +146,14 @@ class Property(db.Model):
         nullable=False
     )
 
-    # Images will initially be stored as
-    # comma-separated URLs
+    # Temporary image storage.
+    # We will replace this with cloud image
+    # uploading later.
     images = db.Column(
         db.Text,
         nullable=True
     )
 
-    # Guest pricing
     price_1_guest = db.Column(
         db.Float,
         nullable=False
@@ -183,7 +184,6 @@ class Property(db.Model):
         nullable=False
     )
 
-    # Property status
     status = db.Column(
         db.String(30),
         default="pending",
@@ -195,8 +195,9 @@ class Property(db.Model):
         server_default=db.func.now()
     )
 
+
 # ==================================================
-# LOAD LOGGED-IN USER
+# LOAD USER
 # ==================================================
 
 @login_manager.user_loader
@@ -221,14 +222,25 @@ def home():
 
 
 # ==================================================
-# LOGIN
+# LOGIN PAGE
 # ==================================================
 
 @app.route("/login")
 def login():
 
-    # If already logged in, don't show login page
     if current_user.is_authenticated:
+
+        if current_user.role == "admin":
+
+            return redirect(
+                url_for("admin_dashboard")
+            )
+
+        elif current_user.role == "owner":
+
+            return redirect(
+                url_for("owner_dashboard")
+            )
 
         return redirect(
             url_for("user_dashboard")
@@ -257,6 +269,7 @@ def google_login():
 
         return "Google credential missing", 400
 
+
     try:
 
         # ------------------------------------------
@@ -269,15 +282,22 @@ def google_login():
             app.config["GOOGLE_CLIENT_ID"]
         )
 
-        google_id = google_user.get("sub")
 
-        email = google_user.get("email")
+        google_id = google_user.get(
+            "sub"
+        )
 
-        name = google_user.get("name")
+        email = google_user.get(
+            "email"
+        )
+
+        name = google_user.get(
+            "name"
+        )
 
 
         # ------------------------------------------
-        # BASIC VALIDATION
+        # VALIDATION
         # ------------------------------------------
 
         if not google_id:
@@ -286,11 +306,30 @@ def google_login():
 
         if not email:
 
-            return "Google account email not available", 400
+            return (
+                "Google account email not available",
+                400
+            )
 
 
         # ------------------------------------------
-        # CHECK EXISTING USER
+        # CHECK ADMIN EMAIL
+        # ------------------------------------------
+
+        admin_email = os.environ.get(
+            "ADMIN_EMAIL",
+            ""
+        ).strip().lower()
+
+
+        is_admin = (
+            bool(admin_email)
+            and email.strip().lower() == admin_email
+        )
+
+
+        # ------------------------------------------
+        # FIND EXISTING USER
         # ------------------------------------------
 
         user = User.query.filter_by(
@@ -298,14 +337,55 @@ def google_login():
         ).first()
 
 
-        # ------------------------------------------
+        # ==================================================
         # EXISTING USER
-        # ------------------------------------------
+        # ==================================================
 
         if user:
 
-            # If contact number already exists,
-            # login directly.
+            # ------------------------------------------
+            # ADMIN ROLE
+            # ------------------------------------------
+
+            if is_admin:
+
+                user.role = "admin"
+
+                db.session.commit()
+
+
+            # ------------------------------------------
+            # ADMIN LOGIN
+            # ------------------------------------------
+
+            if user.role == "admin":
+
+                login_user(user)
+
+                return redirect(
+                    url_for("admin_dashboard")
+                )
+
+
+            # ------------------------------------------
+            # OWNER LOGIN
+            # ------------------------------------------
+
+            if user.role == "owner":
+
+                if user.contact:
+
+                    login_user(user)
+
+                    return redirect(
+                        url_for("owner_dashboard")
+                    )
+
+
+            # ------------------------------------------
+            # NORMAL USER
+            # ------------------------------------------
+
             if user.contact:
 
                 login_user(user)
@@ -314,43 +394,58 @@ def google_login():
                     url_for("user_dashboard")
                 )
 
-            # Existing account but profile
-            # is incomplete.
+
+            # ------------------------------------------
+            # PROFILE INCOMPLETE
+            # ------------------------------------------
+
             session["profile_google_id"] = google_id
+
             session["profile_email"] = email
-            session["profile_name"] = name or "Goinn User"
+
+            session["profile_name"] = (
+                name or "Goinn User"
+            )
+
+            session["profile_is_admin"] = is_admin
 
             return redirect(
                 url_for("complete_profile")
             )
 
 
-        # ------------------------------------------
+        # ==================================================
         # CHECK EMAIL
-        # ------------------------------------------
+        # ==================================================
 
-        # This protects against an email already
-        # existing with a different Google ID.
         existing_email_user = User.query.filter_by(
             email=email
         ).first()
 
+
         if existing_email_user:
 
             return (
-                "An account already exists with this email. "
-                "Please contact Goinn support.",
+                "An account already exists with this "
+                "email but is linked to another Google "
+                "account.",
                 409
             )
 
 
-        # ------------------------------------------
+        # ==================================================
         # NEW USER
-        # ------------------------------------------
+        # ==================================================
 
         session["profile_google_id"] = google_id
+
         session["profile_email"] = email
-        session["profile_name"] = name or "Goinn User"
+
+        session["profile_name"] = (
+            name or "Goinn User"
+        )
+
+        session["profile_is_admin"] = is_admin
 
 
         return redirect(
@@ -360,17 +455,27 @@ def google_login():
 
     except ValueError:
 
-        return "Invalid Google login token", 400
+        return (
+            "Invalid Google login token",
+            400
+        )
+
 
     except Exception as error:
 
-        print("Google login error:", error)
+        print(
+            "Google login error:",
+            error
+        )
 
-        return "Unable to complete Google login", 500
+        return (
+            "Unable to complete Google login",
+            500
+        )
 
 
 # ==================================================
-# COMPLETE PROFILE
+# COMPLETE USER PROFILE
 # ==================================================
 
 @app.route(
@@ -378,10 +483,6 @@ def google_login():
     methods=["GET", "POST"]
 )
 def complete_profile():
-
-    # ------------------------------------------
-    # MAKE SURE GOOGLE LOGIN HAPPENED
-    # ------------------------------------------
 
     google_id = session.get(
         "profile_google_id"
@@ -395,6 +496,15 @@ def complete_profile():
         "profile_name"
     )
 
+    is_admin = session.get(
+        "profile_is_admin",
+        False
+    )
+
+
+    # ------------------------------------------
+    # GOOGLE SESSION REQUIRED
+    # ------------------------------------------
 
     if not google_id or not email:
 
@@ -404,7 +514,7 @@ def complete_profile():
 
 
     # ------------------------------------------
-    # GET
+    # DISPLAY FORM
     # ------------------------------------------
 
     if request.method == "GET":
@@ -417,7 +527,7 @@ def complete_profile():
 
 
     # ------------------------------------------
-    # POST
+    # GET FORM DATA
     # ------------------------------------------
 
     name = request.form.get(
@@ -432,7 +542,7 @@ def complete_profile():
 
 
     # ------------------------------------------
-    # VALIDATION
+    # NAME VALIDATION
     # ------------------------------------------
 
     if not name:
@@ -445,6 +555,10 @@ def complete_profile():
         )
 
 
+    # ------------------------------------------
+    # CONTACT VALIDATION
+    # ------------------------------------------
+
     if not contact:
 
         return render_template(
@@ -455,7 +569,7 @@ def complete_profile():
         )
 
 
-    # Remove spaces and common symbols
+    # Remove common characters
     clean_contact = (
         contact
         .replace(" ", "")
@@ -481,36 +595,62 @@ def complete_profile():
             "complete_profile.html",
             name=name,
             email=email,
-            error="Contact number must contain at least 10 digits."
+            error=(
+                "Contact number must contain "
+                "at least 10 digits."
+            )
         )
 
 
-    # ------------------------------------------
-    # CHECK AGAIN BEFORE CREATE
-    # ------------------------------------------
+    # ==================================================
+    # FIND USER AGAIN
+    # ==================================================
 
     existing_user = User.query.filter_by(
         google_id=google_id
     ).first()
 
 
+    # ==================================================
+    # UPDATE EXISTING USER
+    # ==================================================
+
     if existing_user:
 
         existing_user.name = name
+
         existing_user.contact = clean_contact
+
+        if is_admin:
+
+            existing_user.role = "admin"
 
         db.session.commit()
 
         user = existing_user
 
+
+    # ==================================================
+    # CREATE NEW USER
+    # ==================================================
+
     else:
 
         user = User(
+
             google_id=google_id,
+
             name=name,
+
             email=email,
+
             contact=clean_contact,
-            role="user"
+
+            role=(
+                "admin"
+                if is_admin
+                else "user"
+            )
         )
 
         db.session.add(user)
@@ -518,9 +658,9 @@ def complete_profile():
         db.session.commit()
 
 
-    # ------------------------------------------
+    # ==================================================
     # CLEAR TEMPORARY SESSION DATA
-    # ------------------------------------------
+    # ==================================================
 
     session.pop(
         "profile_google_id",
@@ -537,13 +677,34 @@ def complete_profile():
         None
     )
 
+    session.pop(
+        "profile_is_admin",
+        None
+    )
 
-    # ------------------------------------------
-    # LOGIN USER
-    # ------------------------------------------
+
+    # ==================================================
+    # LOGIN
+    # ==================================================
 
     login_user(user)
 
+
+    # ==================================================
+    # REDIRECT BASED ON ROLE
+    # ==================================================
+
+    if user.role == "admin":
+
+        return redirect(
+            url_for("admin_dashboard")
+        )
+
+    elif user.role == "owner":
+
+        return redirect(
+            url_for("owner_dashboard")
+        )
 
     return redirect(
         url_for("user_dashboard")
@@ -563,6 +724,7 @@ def user_dashboard():
         user=current_user
     )
 
+
 # ==================================================
 # BECOME PROPERTY OWNER
 # ==================================================
@@ -571,13 +733,23 @@ def user_dashboard():
 @login_required
 def become_owner():
 
+    # Admin should remain admin
+    if current_user.role == "admin":
+
+        return redirect(
+            url_for("admin_dashboard")
+        )
+
+
     current_user.role = "owner"
 
     db.session.commit()
 
+
     return redirect(
         url_for("owner_dashboard")
     )
+
 
 # ==================================================
 # OWNER DASHBOARD
@@ -587,19 +759,27 @@ def become_owner():
 @login_required
 def owner_dashboard():
 
-    if current_user.role != "owner":
+    if current_user.role not in [
+        "owner",
+        "admin"
+    ]:
 
         return "Access denied", 403
 
+
     properties = Property.query.filter_by(
         owner_id=current_user.id
+    ).order_by(
+        Property.created_at.desc()
     ).all()
+
 
     return render_template(
         "owner_dashboard.html",
         user=current_user,
         properties=properties
     )
+
 
 # ==================================================
 # ADD PROPERTY
@@ -612,142 +792,212 @@ def owner_dashboard():
 @login_required
 def add_property():
 
-    if current_user.role != "owner":
+    if current_user.role not in [
+        "owner",
+        "admin"
+    ]:
 
         return "Access denied", 403
 
 
-    if request.method == "POST":
+    # ------------------------------------------
+    # DISPLAY FORM
+    # ------------------------------------------
 
-        property_name = request.form.get(
-            "property_name",
-            ""
-        ).strip()
+    if request.method == "GET":
 
-        property_address = request.form.get(
-            "property_address",
-            ""
-        ).strip()
-
-        location = request.form.get(
-            "location",
-            ""
-        ).strip()
-
-        images = request.form.get(
-            "images",
-            ""
-        ).strip()
-
-        price_1_guest = request.form.get(
-            "price_1_guest"
-        )
-
-        price_2_guest = request.form.get(
-            "price_2_guest"
-        )
-
-        price_3_guest = request.form.get(
-            "price_3_guest"
-        )
-
-        price_4_guest = request.form.get(
-            "price_4_guest"
-        )
-
-        price_5_guest = request.form.get(
-            "price_5_guest"
-        )
-
-        max_guests = request.form.get(
-            "max_guests"
+        return render_template(
+            "add_property.html"
         )
 
 
-        # ------------------------------------------
-        # VALIDATION
-        # ------------------------------------------
+    # ------------------------------------------
+    # FORM DATA
+    # ------------------------------------------
 
-        if not property_name:
+    property_name = request.form.get(
+        "property_name",
+        ""
+    ).strip()
 
-            return "Property name is required", 400
+    property_address = request.form.get(
+        "property_address",
+        ""
+    ).strip()
 
-        if not property_address:
+    location = request.form.get(
+        "location",
+        ""
+    ).strip()
 
-            return "Property address is required", 400
+    images = request.form.get(
+        "images",
+        ""
+    ).strip()
 
-        if not location:
-
-            return "Location is required", 400
-
-        if not price_1_guest:
-
-            return "Price for 1 guest is required", 400
-
-        if not max_guests:
-
-            return "Maximum guests is required", 400
-
-
-        # ------------------------------------------
-        # CREATE PROPERTY
-        # ------------------------------------------
-
-        property_obj = Property(
-
-            owner_id=current_user.id,
-
-            property_name=property_name,
-
-            property_address=property_address,
-
-            location=location,
-
-            images=images,
-
-            price_1_guest=float(
-                price_1_guest
-            ),
-
-            price_2_guest=float(
-                price_2_guest
-            ) if price_2_guest else None,
-
-            price_3_guest=float(
-                price_3_guest
-            ) if price_3_guest else None,
-
-            price_4_guest=float(
-                price_4_guest
-            ) if price_4_guest else None,
-
-            price_5_guest=float(
-                price_5_guest
-            ) if price_5_guest else None,
-
-            max_guests=int(
-                max_guests
-            ),
-
-            status="pending"
-        )
-
-
-        db.session.add(
-            property_obj
-        )
-
-        db.session.commit()
-
-
-        return redirect(
-            url_for("owner_dashboard")
-        )
-
-
-    return render_template(
-        "add_property.html"
+    price_1_guest = request.form.get(
+        "price_1_guest"
     )
+
+    price_2_guest = request.form.get(
+        "price_2_guest"
+    )
+
+    price_3_guest = request.form.get(
+        "price_3_guest"
+    )
+
+    price_4_guest = request.form.get(
+        "price_4_guest"
+    )
+
+    price_5_guest = request.form.get(
+        "price_5_guest"
+    )
+
+    max_guests = request.form.get(
+        "max_guests"
+    )
+
+
+    # ==================================================
+    # VALIDATION
+    # ==================================================
+
+    if not property_name:
+
+        return "Property name is required", 400
+
+
+    if not property_address:
+
+        return "Property address is required", 400
+
+
+    if not location:
+
+        return "Location is required", 400
+
+
+    if not price_1_guest:
+
+        return (
+            "Price for 1 guest is required",
+            400
+        )
+
+
+    if not max_guests:
+
+        return (
+            "Maximum guests is required",
+            400
+        )
+
+
+    try:
+
+        price_1 = float(
+            price_1_guest
+        )
+
+        price_2 = (
+            float(price_2_guest)
+            if price_2_guest
+            else None
+        )
+
+        price_3 = (
+            float(price_3_guest)
+            if price_3_guest
+            else None
+        )
+
+        price_4 = (
+            float(price_4_guest)
+            if price_4_guest
+            else None
+        )
+
+        price_5 = (
+            float(price_5_guest)
+            if price_5_guest
+            else None
+        )
+
+        maximum_guests = int(
+            max_guests
+        )
+
+
+    except ValueError:
+
+        return (
+            "Please enter valid pricing and "
+            "guest information.",
+            400
+        )
+
+
+    if price_1 < 0:
+
+        return (
+            "Price cannot be negative.",
+            400
+        )
+
+
+    if maximum_guests < 1:
+
+        return (
+            "Maximum guests must be at least 1.",
+            400
+        )
+
+
+    # ==================================================
+    # CREATE PROPERTY
+    # ==================================================
+
+    property_obj = Property(
+
+        owner_id=current_user.id,
+
+        property_name=property_name,
+
+        property_address=property_address,
+
+        location=location,
+
+        images=images,
+
+        price_1_guest=price_1,
+
+        price_2_guest=price_2,
+
+        price_3_guest=price_3,
+
+        price_4_guest=price_4,
+
+        price_5_guest=price_5,
+
+        max_guests=maximum_guests,
+
+        status="pending"
+    )
+
+
+    db.session.add(
+        property_obj
+    )
+
+    db.session.commit()
+
+
+    return redirect(
+        url_for("owner_dashboard")
+    )
+
 
 # ==================================================
 # ADMIN DASHBOARD
@@ -757,13 +1007,15 @@ def add_property():
 @login_required
 def admin_dashboard():
 
-    # Only admin users can access this page
     if current_user.role != "admin":
+
         return "Access denied", 403
+
 
     properties = Property.query.order_by(
         Property.created_at.desc()
     ).all()
+
 
     return render_template(
         "admin_dashboard.html",
@@ -783,19 +1035,25 @@ def admin_dashboard():
 def approve_property(property_id):
 
     if current_user.role != "admin":
+
         return "Access denied", 403
+
 
     property_obj = db.session.get(
         Property,
         property_id
     )
 
+
     if not property_obj:
+
         return "Property not found", 404
+
 
     property_obj.status = "approved"
 
     db.session.commit()
+
 
     return redirect(
         url_for("admin_dashboard")
@@ -814,23 +1072,31 @@ def approve_property(property_id):
 def reject_property(property_id):
 
     if current_user.role != "admin":
+
         return "Access denied", 403
+
 
     property_obj = db.session.get(
         Property,
         property_id
     )
 
+
     if not property_obj:
+
         return "Property not found", 404
+
 
     property_obj.status = "rejected"
 
     db.session.commit()
 
+
     return redirect(
         url_for("admin_dashboard")
     )
+
+
 # ==================================================
 # LOGOUT
 # ==================================================
@@ -847,7 +1113,7 @@ def logout():
 
 
 # ==================================================
-# DATABASE INITIALIZATION
+# CREATE DATABASE TABLES
 # ==================================================
 
 with app.app_context():
@@ -861,4 +1127,12 @@ with app.app_context():
 
 if __name__ == "__main__":
 
-    app.run()
+    app.run(
+        host="0.0.0.0",
+        port=int(
+            os.environ.get(
+                "PORT",
+                5000
+            )
+        )
+    )
