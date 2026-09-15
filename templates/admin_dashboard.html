@@ -1,17 +1,15 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Admin Dashboard - Goinn</title>
+
 
     <style>
 
@@ -19,241 +17,808 @@
             box-sizing: border-box;
         }
 
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: #f5f7fb;
+            background: #f5f7fa;
             color: #222;
         }
 
+
+        /* ==========================================
+           HEADER
+        ========================================== */
+
         .header {
-            background: #111827;
+            background: #111;
             color: white;
-            padding: 20px 30px;
+
+            padding: 18px 30px;
+
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
+
         .logo {
-            font-size: 26px;
+            font-size: 25px;
             font-weight: bold;
         }
 
-        .admin-title {
-            font-size: 14px;
-            opacity: 0.8;
-        }
 
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        .page-title {
-            margin-bottom: 25px;
-        }
-
-        .page-title h1 {
-            margin: 0 0 8px;
-        }
-
-        .page-title p {
-            color: #666;
-            margin: 0;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 22px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-        }
-
-        .stat-card h3 {
-            margin: 0 0 10px;
-            color: #666;
-            font-size: 14px;
-        }
-
-        .stat-number {
-            font-size: 30px;
-            font-weight: bold;
-        }
-
-        .property-card {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-        }
-
-        .property-header {
+        .header-right {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
             gap: 20px;
         }
 
-        .property-name {
-            margin: 0 0 8px;
-            font-size: 22px;
-        }
 
-        .location {
-            color: #666;
-            margin: 0;
-        }
-
-        .status {
-            padding: 7px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-            text-transform: capitalize;
-        }
-
-        .status.pending {
-            background: #fff4cc;
-            color: #8a6500;
-        }
-
-        .status.approved {
-            background: #d9f7df;
-            color: #167333;
-        }
-
-        .status.rejected {
-            background: #ffe0e0;
-            color: #b42318;
-        }
-
-        .details {
-            margin-top: 20px;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .detail {
-            background: #f8f9fc;
-            padding: 12px;
-            border-radius: 8px;
-        }
-
-        .detail-label {
-            display: block;
-            font-size: 12px;
-            color: #777;
-            margin-bottom: 5px;
-        }
-
-        .detail-value {
-            font-weight: 600;
-        }
-
-        .pricing {
-            margin-top: 20px;
-        }
-
-        .pricing h4 {
-            margin-bottom: 12px;
-        }
-
-        .prices {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .price {
-            background: #f1f5f9;
-            padding: 10px 15px;
-            border-radius: 8px;
-        }
-
-        .actions {
-            margin-top: 25px;
-            display: flex;
-            gap: 10px;
-        }
-
-        button {
-            border: none;
-            border-radius: 8px;
-            padding: 11px 20px;
+        .header-right span {
             font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
         }
 
-        .approve {
-            background: #198754;
-            color: white;
-        }
-
-        .reject {
-            background: #dc3545;
-            color: white;
-        }
-
-        button:hover {
-            opacity: 0.9;
-        }
-
-        .empty {
-            background: white;
-            padding: 40px;
-            text-align: center;
-            border-radius: 12px;
-            color: #666;
-        }
 
         .logout {
             color: white;
             text-decoration: none;
-            border: 1px solid rgba(255,255,255,0.4);
-            padding: 8px 15px;
+            background: #333;
+            padding: 9px 15px;
             border-radius: 7px;
         }
 
-        .logout:hover {
-            background: rgba(255,255,255,0.1);
+
+        /* ==========================================
+           MAIN
+        ========================================== */
+
+        .container {
+            max-width: 1200px;
+            margin: 35px auto;
+            padding: 0 20px;
         }
 
-        @media (max-width: 700px) {
 
-            .header {
-                padding: 15px 20px;
-            }
+        h1 {
+            margin-bottom: 5px;
+        }
+
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+
+        /* ==========================================
+           STAT CARDS
+        ========================================== */
+
+        .stats {
+            display: grid;
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 30px;
+        }
+
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 3px 12px
+                rgba(0,0,0,0.06);
+        }
+
+
+        .stat-title {
+            color: #777;
+            font-size: 14px;
+        }
+
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+
+        /* ==========================================
+           SECTION
+        ========================================== */
+
+        .section {
+            margin-bottom: 35px;
+        }
+
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 15px;
+        }
+
+
+        .section-header h2 {
+            margin: 0;
+        }
+
+
+        /* ==========================================
+           PROPERTY CARD
+        ========================================== */
+
+        .property-card {
+            background: white;
+
+            border-radius: 13px;
+
+            padding: 22px;
+
+            margin-bottom: 18px;
+
+            box-shadow:
+                0 3px 12px
+                rgba(0,0,0,0.06);
+        }
+
+
+        .property-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+
+            gap: 20px;
+        }
+
+
+        .property-name {
+            font-size: 21px;
+            font-weight: bold;
+
+            margin-bottom: 6px;
+        }
+
+
+        .property-location {
+            color: #666;
+        }
+
+
+        /* ==========================================
+           STATUS
+        ========================================== */
+
+        .status {
+            display: inline-block;
+
+            padding: 6px 12px;
+
+            border-radius: 20px;
+
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+
+        /* ==========================================
+           PROPERTY INFORMATION
+        ========================================== */
+
+        .property-info {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 15px;
+
+            margin-top: 20px;
+
+            padding-top: 20px;
+
+            border-top: 1px solid #eee;
+        }
+
+
+        .info-item {
+            background: #f8f9fa;
+
+            padding: 13px;
+
+            border-radius: 8px;
+        }
+
+
+        .info-label {
+            color: #777;
+            font-size: 13px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .info-value {
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+
+        /* ==========================================
+           OWNER DETAILS
+        ========================================== */
+
+        .owner-box {
+            margin-top: 18px;
+
+            background: #f7f8fa;
+
+            padding: 18px;
+
+            border-radius: 10px;
+        }
+
+
+        .owner-title {
+            font-weight: bold;
+
+            margin-bottom: 12px;
+        }
+
+
+        .owner-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 12px;
+        }
+
+
+        /* ==========================================
+           ACTION BUTTONS
+        ========================================== */
+
+        .actions {
+            margin-top: 20px;
+
+            display: flex;
+
+            gap: 10px;
+
+            flex-wrap: wrap;
+        }
+
+
+        button {
+            border: none;
+
+            padding: 11px 17px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        .approve-btn {
+            background: #111;
+            color: white;
+        }
+
+
+        .approve-btn:hover {
+            background: #333;
+        }
+
+
+        .reject-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+
+        .reject-btn:hover {
+            background: #b52a37;
+        }
+
+
+        .view-btn {
+            background: #eee;
+            color: #333;
+        }
+
+
+        /* ==========================================
+           PRICING DISPLAY
+        ========================================== */
+
+        .pricing-box {
+            margin-top: 18px;
+
+            padding: 15px;
+
+            background: #f7f8fa;
+
+            border-radius: 10px;
+        }
+
+
+        .pricing-title {
+            font-weight: bold;
+
+            margin-bottom: 10px;
+        }
+
+
+        .price-table {
+            width: 100%;
+
+            border-collapse: collapse;
+        }
+
+
+        .price-table th,
+        .price-table td {
+            padding: 8px;
+
+            border-bottom: 1px solid #ddd;
+
+            text-align: left;
+        }
+
+
+        /* ==========================================
+           BOOKINGS
+        ========================================== */
+
+        .booking-card {
+            background: white;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            margin-bottom: 15px;
+
+            box-shadow:
+                0 3px 12px
+                rgba(0,0,0,0.06);
+        }
+
+
+        .booking-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 12px;
+
+            margin-top: 15px;
+        }
+
+
+        /* ==========================================
+           EMPTY
+        ========================================== */
+
+        .empty {
+            background: white;
+
+            padding: 30px;
+
+            text-align: center;
+
+            color: #777;
+
+            border-radius: 12px;
+        }
+
+
+        /* ==========================================
+           MODAL
+        ========================================== */
+
+        .modal {
+            display: none;
+
+            position: fixed;
+
+            z-index: 9999;
+
+            left: 0;
+            top: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background:
+                rgba(0,0,0,0.65);
+
+            overflow-y: auto;
+
+            padding: 30px 15px;
+        }
+
+
+        .modal-content {
+            background: white;
+
+            max-width: 650px;
+
+            margin: 30px auto;
+
+            border-radius: 14px;
+
+            padding: 28px;
+
+            position: relative;
+        }
+
+
+        .modal-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 20px;
+        }
+
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+
+        .close {
+            font-size: 28px;
+
+            cursor: pointer;
+
+            color: #777;
+
+            line-height: 1;
+        }
+
+
+        .close:hover {
+            color: #111;
+        }
+
+
+        /* ==========================================
+           FORM
+        ========================================== */
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+
+        label {
+            display: block;
+
+            font-weight: 600;
+
+            margin-bottom: 7px;
+        }
+
+
+        input,
+        select {
+            width: 100%;
+
+            padding: 11px 13px;
+
+            border: 1px solid #d5d9df;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            outline: none;
+        }
+
+
+        input:focus,
+        select:focus {
+            border-color: #555;
+        }
+
+
+        .radio-container {
+            display: flex;
+
+            gap: 15px;
+
+            margin-top: 10px;
+        }
+
+
+        .radio-option {
+            flex: 1;
+
+            border: 1px solid #ddd;
+
+            padding: 15px;
+
+            border-radius: 9px;
+
+            cursor: pointer;
+        }
+
+
+        .radio-option:hover {
+            border-color: #555;
+        }
+
+
+        .radio-option input {
+            width: auto;
+            margin-right: 7px;
+        }
+
+
+        .radio-title {
+            font-weight: bold;
+        }
+
+
+        .radio-description {
+            color: #777;
+
+            font-size: 13px;
+
+            margin-top: 5px;
+        }
+
+
+        /* ==========================================
+           PRICING FIELDS
+        ========================================== */
+
+        .price-fields {
+            margin-top: 20px;
+        }
+
+
+        .price-row {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 12px;
+
+            align-items: center;
+
+            margin-bottom: 10px;
+
+            padding: 10px;
+
+            background: #f8f9fa;
+
+            border-radius: 8px;
+        }
+
+
+        .price-row.group-row {
+            grid-template-columns:
+                1fr 1fr 1fr;
+        }
+
+
+        .guest-label {
+            font-weight: 600;
+        }
+
+
+        .group-controls {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 10px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .add-group-btn {
+            background: #eee;
+
+            color: #333;
+
+            margin-top: 10px;
+        }
+
+
+        .remove-group-btn {
+            background: #dc3545;
+
+            color: white;
+
+            padding: 8px 10px;
+        }
+
+
+        .modal-footer {
+            margin-top: 25px;
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+        }
+
+
+        .cancel-modal {
+            background: #eee;
+
+            color: #333;
+        }
+
+
+        .save-price-btn {
+            background: #111;
+
+            color: white;
+        }
+
+
+        .warning {
+            background: #fff8e8;
+
+            border: 1px solid #efd58c;
+
+            padding: 13px;
+
+            border-radius: 8px;
+
+            color: #66531d;
+
+            margin-top: 15px;
+
+            line-height: 1.5;
+        }
+
+
+        /* ==========================================
+           RESPONSIVE
+        ========================================== */
+
+        @media (max-width: 900px) {
 
             .stats {
-                grid-template-columns: 1fr;
+                grid-template-columns:
+                    repeat(2, 1fr);
             }
 
-            .details {
-                grid-template-columns: 1fr;
+
+            .owner-grid {
+                grid-template-columns:
+                    1fr;
             }
 
-            .property-header {
-                flex-direction: column;
+
+            .booking-grid {
+                grid-template-columns:
+                    1fr;
             }
 
-            .actions {
-                flex-direction: column;
+        }
+
+
+        @media (max-width: 600px) {
+
+            .header {
+                padding: 15px;
             }
 
-            button {
-                width: 100%;
+
+            .header-right span {
+                display: none;
+            }
+
+
+            .container {
+                padding: 0 12px;
+
+                margin-top: 20px;
+            }
+
+
+            .stats {
+                grid-template-columns:
+                    1fr 1fr;
+
+                gap: 10px;
+            }
+
+
+            .stat-card {
+                padding: 15px;
+            }
+
+
+            .stat-number {
+                font-size: 24px;
+            }
+
+
+            .property-info {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .property-top {
+                display: block;
+            }
+
+
+            .property-top .status {
+                margin-top: 10px;
+            }
+
+
+            .price-row {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .price-row.group-row {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .radio-container {
+                display: block;
+            }
+
+
+            .radio-option {
+                margin-bottom: 10px;
             }
 
         }
@@ -270,29 +835,30 @@
      HEADER
 ================================================== -->
 
-<header class="header">
+<div class="header">
 
-    <div>
-
-        <div class="logo">
-            Goinn
-        </div>
-
-        <div class="admin-title">
-            Administration Panel
-        </div>
-
+    <div class="logo">
+        Goinn Admin
     </div>
 
 
-    <a
-        href="{{ url_for('logout') }}"
-        class="logout"
-    >
-        Logout
-    </a>
+    <div class="header-right">
 
-</header>
+        <span>
+            {{ current_user.name }}
+        </span>
+
+
+        <a
+            href="{{ url_for('logout') }}"
+            class="logout"
+        >
+            Logout
+        </a>
+
+    </div>
+
+</div>
 
 
 <!-- ==================================================
@@ -302,19 +868,13 @@
 <div class="container">
 
 
-    <!-- PAGE TITLE -->
+    <h1>
+        Admin Dashboard
+    </h1>
 
-    <div class="page-title">
 
-        <h1>
-            Admin Dashboard
-        </h1>
-
-        <p>
-            Manage and review properties submitted
-            by Goinn property owners.
-        </p>
-
+    <div class="subtitle">
+        Manage properties, pricing and bookings.
     </div>
 
 
@@ -322,19 +882,24 @@
          STATISTICS
     ================================================== -->
 
-    {% set pending_count = properties
+    {% set pending_count =
+        properties
         |selectattr("status", "equalto", "pending")
         |list
         |length
     %}
 
-    {% set approved_count = properties
+
+    {% set approved_count =
+        properties
         |selectattr("status", "equalto", "approved")
         |list
         |length
     %}
 
-    {% set rejected_count = properties
+
+    {% set rejected_count =
+        properties
         |selectattr("status", "equalto", "rejected")
         |list
         |length
@@ -346,9 +911,22 @@
 
         <div class="stat-card">
 
-            <h3>
-                Pending Properties
-            </h3>
+            <div class="stat-title">
+                Total Properties
+            </div>
+
+            <div class="stat-number">
+                {{ properties|length }}
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+                Pending
+            </div>
 
             <div class="stat-number">
                 {{ pending_count }}
@@ -359,9 +937,9 @@
 
         <div class="stat-card">
 
-            <h3>
-                Approved Properties
-            </h3>
+            <div class="stat-title">
+                Approved
+            </div>
 
             <div class="stat-number">
                 {{ approved_count }}
@@ -372,12 +950,12 @@
 
         <div class="stat-card">
 
-            <h3>
-                Rejected Properties
-            </h3>
+            <div class="stat-title">
+                Bookings
+            </div>
 
             <div class="stat-number">
-                {{ rejected_count }}
+                {{ bookings|length }}
             </div>
 
         </div>
@@ -387,251 +965,1569 @@
 
 
     <!-- ==================================================
-         PROPERTY LIST
+         PROPERTIES
     ================================================== -->
 
-    <h2>
-        Property Submissions
-    </h2>
+    <div class="section">
 
 
-    {% if properties %}
+        <div class="section-header">
+
+            <h2>
+                Properties
+            </h2>
+
+        </div>
 
 
-        {% for property in properties %}
+        {% if properties %}
 
 
-            <div class="property-card">
+            {% for property in properties %}
 
 
-                <!-- PROPERTY HEADER -->
+                <div class="property-card">
 
-                <div class="property-header">
 
-                    <div>
+                    <!-- PROPERTY HEADER -->
 
-                        <h3 class="property-name">
-                            {{ property.property_name }}
-                        </h3>
+                    <div class="property-top">
 
-                        <p class="location">
-                            📍 {{ property.location }}
-                        </p>
+
+                        <div>
+
+                            <div class="property-name">
+
+                                {{ property.property_name }}
+
+                            </div>
+
+
+                            <div class="property-location">
+
+                                📍 {{ property.location }}
+
+                            </div>
+
+                        </div>
+
+
+                        {% if property.status == "pending" %}
+
+                            <span class="status status-pending">
+                                Pending
+                            </span>
+
+                        {% elif property.status == "approved" %}
+
+                            <span class="status status-approved">
+                                Approved
+                            </span>
+
+                        {% elif property.status == "rejected" %}
+
+                            <span class="status status-rejected">
+                                Rejected
+                            </span>
+
+                        {% endif %}
+
 
                     </div>
 
 
-                    <span
-                        class="status {{ property.status }}"
+                    <!-- OWNER DETAILS -->
+
+                    <div class="owner-box">
+
+
+                        <div class="owner-title">
+                            Owner Details
+                        </div>
+
+
+                        <div class="owner-grid">
+
+
+                            <div>
+
+                                <div class="info-label">
+                                    Name
+                                </div>
+
+                                <div class="info-value">
+
+                                    {{ property.owner.name }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div>
+
+                                <div class="info-label">
+                                    Contact
+                                </div>
+
+                                <div class="info-value">
+
+                                    {% if property.owner.contact %}
+
+                                        {{ property.owner.contact }}
+
+                                    {% else %}
+
+                                        Not provided
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                            <div>
+
+                                <div class="info-label">
+                                    Email
+                                </div>
+
+                                <div class="info-value">
+
+                                    {{ property.owner.email }}
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PROPERTY DETAILS -->
+
+                    <div class="property-info">
+
+
+                        <div class="info-item">
+
+                            <div class="info-label">
+                                Property Address
+                            </div>
+
+                            <div class="info-value">
+
+                                {{ property.property_address }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="info-item">
+
+                            <div class="info-label">
+                                Maximum Guests
+                            </div>
+
+                            <div class="info-value">
+
+                                {{ property.max_guests }}
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- ==================================================
+                         PRICING DISPLAY
+                    ================================================== -->
+
+                    {% if property.pricing_method
+                          and property.pricing_data %}
+
+
+                        <div class="pricing-box">
+
+
+                            <div class="pricing-title">
+
+                                Pricing Configuration
+
+                            </div>
+
+
+                            {% set pricing =
+                                property.pricing_data
+                                |fromjson
+                            %}
+
+
+                            {% if property.pricing_method == "individual" %}
+
+
+                                <div>
+                                    Individual Pricing
+                                </div>
+
+
+                                <table class="price-table">
+
+                                    <thead>
+
+                                        <tr>
+
+                                            <th>
+                                                Guests
+                                            </th>
+
+                                            <th>
+                                                Price / Day
+                                            </th>
+
+                                        </tr>
+
+                                    </thead>
+
+
+                                    <tbody>
+
+                                        {% for item in pricing %}
+
+                                            <tr>
+
+                                                <td>
+                                                    {{ item.guests }}
+                                                    guest{% if item.guests != 1 %}s{% endif %}
+                                                </td>
+
+                                                <td>
+                                                    ₹{{ "%.2f"|format(item.price) }}
+                                                </td>
+
+                                            </tr>
+
+                                        {% endfor %}
+
+                                    </tbody>
+
+                                </table>
+
+
+                            {% else %}
+
+
+                                <div>
+                                    Group Pricing
+                                </div>
+
+
+                                <table class="price-table">
+
+                                    <thead>
+
+                                        <tr>
+
+                                            <th>
+                                                Guests
+                                            </th>
+
+                                            <th>
+                                                Price / Day
+                                            </th>
+
+                                        </tr>
+
+                                    </thead>
+
+
+                                    <tbody>
+
+                                        {% for item in pricing %}
+
+                                            <tr>
+
+                                                <td>
+                                                    {{ item.min_guests }}
+                                                    -
+                                                    {{ item.max_guests }}
+                                                    guests
+                                                </td>
+
+                                                <td>
+                                                    ₹{{ "%.2f"|format(item.price) }}
+                                                </td>
+
+                                            </tr>
+
+                                        {% endfor %}
+
+                                    </tbody>
+
+                                </table>
+
+
+                            {% endif %}
+
+
+                        </div>
+
+
+                    {% endif %}
+
+
+                    <!-- ==================================================
+                         ACTIONS
+                    ================================================== -->
+
+                    <div class="actions">
+
+
+                        {% if property.status == "pending" %}
+
+
+                            <button
+                                type="button"
+                                class="approve-btn"
+                                onclick="openPriceModal(
+                                    {{ property.id }},
+                                    '{{ property.property_name|replace("'", "\\'") }}',
+                                    {{ property.max_guests }}
+                                )"
+                            >
+
+                                Set Price & Approve
+
+                            </button>
+
+
+                            <form
+                                method="POST"
+                                action="{{
+                                    url_for(
+                                        'reject_property',
+                                        property_id=property.id
+                                    )
+                                }}"
+                                style="display:inline;"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="reject-btn"
+                                    onclick="return confirm(
+                                        'Are you sure you want to reject this property?'
+                                    );"
+                                >
+
+                                    Reject
+
+                                </button>
+
+                            </form>
+
+
+                        {% elif property.status == "approved" %}
+
+
+                            <button
+                                type="button"
+                                class="view-btn"
+                                onclick="openPriceModal(
+                                    {{ property.id }},
+                                    '{{ property.property_name|replace("'", "\\'") }}',
+                                    {{ property.max_guests }}
+                                )"
+                            >
+
+                                Edit Pricing
+
+                            </button>
+
+
+                        {% endif %}
+
+
+                    </div>
+
+
+                </div>
+
+
+            {% endfor %}
+
+
+        {% else %}
+
+
+            <div class="empty">
+
+                No properties have been created yet.
+
+            </div>
+
+
+        {% endif %}
+
+
+    </div>
+
+
+    <!-- ==================================================
+         BOOKINGS
+    ================================================== -->
+
+    <div class="section">
+
+
+        <div class="section-header">
+
+            <h2>
+                Bookings / Inquiries
+            </h2>
+
+        </div>
+
+
+        {% if bookings %}
+
+
+            {% for booking in bookings %}
+
+
+                <div class="booking-card">
+
+
+                    <strong>
+                        Booking #{{ booking.id }}
+                    </strong>
+
+
+                    <div style="margin-top:7px;">
+
+                        {{ booking.property.property_name }}
+
+                    </div>
+
+
+                    <div class="booking-grid">
+
+
+                        <div>
+
+                            <div class="info-label">
+                                Customer
+                            </div>
+
+                            <div class="info-value">
+
+                                {{ booking.customer_name }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="info-label">
+                                Contact
+                            </div>
+
+                            <div class="info-value">
+
+                                {{ booking.customer_contact }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="info-label">
+                                Guests
+                            </div>
+
+                            <div class="info-value">
+
+                                {{ booking.guests }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="info-label">
+                                Check-in
+                            </div>
+
+                            <div class="info-value">
+
+                                {{ booking.check_in.strftime("%d-%m-%Y") }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="info-label">
+                                Check-out
+                            </div>
+
+                            <div class="info-value">
+
+                                {{ booking.check_out.strftime("%d-%m-%Y") }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="info-label">
+                                Initial Total
+                            </div>
+
+                            <div class="info-value">
+
+                                ₹{{ "%.2f"|format(booking.total_price) }}
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            {% endfor %}
+
+
+        {% else %}
+
+
+            <div class="empty">
+
+                No bookings or inquiries yet.
+
+            </div>
+
+
+        {% endif %}
+
+
+    </div>
+
+
+</div>
+
+
+<!-- ==================================================
+     PRICE MODAL
+================================================== -->
+
+<div
+    id="priceModal"
+    class="modal"
+>
+
+
+    <div class="modal-content">
+
+
+        <div class="modal-header">
+
+
+            <h2>
+                Configure Property Pricing
+            </h2>
+
+
+            <span
+                class="close"
+                onclick="closePriceModal()"
+            >
+                &times;
+            </span>
+
+
+        </div>
+
+
+        <div style="margin-bottom:20px;">
+
+
+            <strong>
+                Property:
+            </strong>
+
+
+            <span id="modalPropertyName">
+            </span>
+
+
+            <br><br>
+
+
+            <strong>
+                Maximum Guests:
+            </strong>
+
+
+            <span id="modalMaxGuests">
+            </span>
+
+
+        </div>
+
+
+        <!-- ==================================================
+             PRICING FORM
+        ================================================== -->
+
+        <form
+            id="priceForm"
+            method="POST"
+        >
+
+
+            <input
+                type="hidden"
+                id="formMaxGuests"
+                name="max_guests"
+            >
+
+
+            <!-- PRICING METHOD -->
+
+            <div class="form-group">
+
+
+                <label>
+                    Pricing Method
+                </label>
+
+
+                <div class="radio-container">
+
+
+                    <label
+                        class="radio-option"
                     >
-                        {{ property.status }}
-                    </span>
 
-                </div>
-
-
-                <!-- PROPERTY DETAILS -->
-
-                <div class="details">
-
-
-                    <div class="detail">
-
-                        <span class="detail-label">
-                            Property Address
-                        </span>
-
-                        <span class="detail-value">
-                            {{ property.property_address }}
-                        </span>
-
-                    </div>
-
-
-                    <div class="detail">
-
-                        <span class="detail-label">
-                            Maximum Guests
-                        </span>
-
-                        <span class="detail-value">
-                            {{ property.max_guests }}
-                        </span>
-
-                    </div>
-
-
-                    <div class="detail">
-
-                        <span class="detail-label">
-                            Property ID
-                        </span>
-
-                        <span class="detail-value">
-                            #{{ property.id }}
-                        </span>
-
-                    </div>
-
-
-                    <div class="detail">
-
-                        <span class="detail-label">
-                            Owner ID
-                        </span>
-
-                        <span class="detail-value">
-                            #{{ property.owner_id }}
-                        </span>
-
-                    </div>
-
-
-                </div>
-
-
-                <!-- ==================================================
-                     PRICING
-                ================================================== -->
-
-                <div class="pricing">
-
-                    <h4>
-                        Daily Pricing
-                    </h4>
-
-
-                    <div class="prices">
-
-
-                        <div class="price">
-                            1 Guest:
-                            ₹{{ property.price_1_guest }}
-                        </div>
-
-
-                        {% if property.price_2_guest %}
-
-                        <div class="price">
-                            2 Guests:
-                            ₹{{ property.price_2_guest }}
-                        </div>
-
-                        {% endif %}
-
-
-                        {% if property.price_3_guest %}
-
-                        <div class="price">
-                            3 Guests:
-                            ₹{{ property.price_3_guest }}
-                        </div>
-
-                        {% endif %}
-
-
-                        {% if property.price_4_guest %}
-
-                        <div class="price">
-                            4 Guests:
-                            ₹{{ property.price_4_guest }}
-                        </div>
-
-                        {% endif %}
-
-
-                        {% if property.price_5_guest %}
-
-                        <div class="price">
-                            5 Guests:
-                            ₹{{ property.price_5_guest }}
-                        </div>
-
-                        {% endif %}
-
-
-                    </div>
-
-                </div>
-
-
-                <!-- ==================================================
-                     ACTIONS
-                ================================================== -->
-
-                {% if property.status == "pending" %}
-
-                <div class="actions">
-
-
-                    <form
-                        method="POST"
-                        action="{{ url_for(
-                            'approve_property',
-                            property_id=property.id
-                        ) }}"
-                    >
-
-                        <button
-                            type="submit"
-                            class="approve"
+                        <input
+                            type="radio"
+                            name="pricing_method"
+                            value="individual"
+                            checked
+                            onchange="changePricingMethod()"
                         >
-                            ✓ Approve Property
-                        </button>
-
-                    </form>
 
 
-                    <form
-                        method="POST"
-                        action="{{ url_for(
-                            'reject_property',
-                            property_id=property.id
-                        ) }}"
+                        <div
+                            class="radio-title"
+                        >
+                            Individual Pricing
+                        </div>
+
+
+                        <div
+                            class="radio-description"
+                        >
+                            Set a different price
+                            for every guest count.
+                        </div>
+
+                    </label>
+
+
+                    <label
+                        class="radio-option"
                     >
 
-                        <button
-                            type="submit"
-                            class="reject"
+                        <input
+                            type="radio"
+                            name="pricing_method"
+                            value="group"
+                            onchange="changePricingMethod()"
                         >
-                            ✕ Reject Property
-                        </button>
 
-                    </form>
+
+                        <div
+                            class="radio-title"
+                        >
+                            Group Pricing
+                        </div>
+
+
+                        <div
+                            class="radio-description"
+                        >
+                            Set one price for a
+                            range of guests.
+                        </div>
+
+                    </label>
 
 
                 </div>
-
-                {% endif %}
 
 
             </div>
 
 
-        {% endfor %}
+            <!-- ==================================================
+                 INDIVIDUAL PRICING
+            ================================================== -->
+
+            <div
+                id="individualPricing"
+                class="price-fields"
+            >
+
+                <h3>
+                    Price Per Guest Count
+                </h3>
 
 
-    {% else %}
+                <div id="individualFields">
+                </div>
 
 
-        <div class="empty">
+            </div>
 
-            <h3>
-                No Properties Yet
-            </h3>
 
-            <p>
-                Property submissions from owners
-                will appear here.
-            </p>
+            <!-- ==================================================
+                 GROUP PRICING
+            ================================================== -->
+
+            <div
+                id="groupPricing"
+                class="price-fields"
+                style="display:none;"
+            >
+
+                <h3>
+                    Guest Groups
+                </h3>
+
+
+                <div
+                    id="groupFields"
+                >
+                </div>
+
+
+                <button
+                    type="button"
+                    class="add-group-btn"
+                    onclick="addGroup()"
+                >
+
+                    + Add Guest Group
+
+                </button>
+
+
+                <div class="warning">
+
+                    Guest groups must cover all guest
+                    counts from <strong>1</strong> to
+                    <strong id="warningMaxGuests"></strong>
+                    without gaps.
+
+                    <br><br>
+
+                    Example:
+
+                    <br>
+
+                    1-5 guests → ₹3,000
+
+                    <br>
+
+                    6-8 guests → ₹4,000
+
+                    <br>
+
+                    9-20 guests → ₹6,000
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ==================================================
+                 FOOTER
+            ================================================== -->
+
+            <div class="modal-footer">
+
+
+                <button
+                    type="button"
+                    class="cancel-modal"
+                    onclick="closePriceModal()"
+                >
+
+                    Cancel
+
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="save-price-btn"
+                >
+
+                    Save Pricing & Approve
+
+                </button>
+
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     JAVASCRIPT
+================================================== -->
+
+<script>
+
+
+let currentMaxGuests = 1;
+
+let groupCounter = 0;
+
+
+/* ==================================================
+   OPEN MODAL
+================================================== */
+
+function openPriceModal(
+    propertyId,
+    propertyName,
+    maxGuests
+) {
+
+
+    currentMaxGuests = maxGuests;
+
+
+    document.getElementById(
+        "modalPropertyName"
+    ).textContent = propertyName;
+
+
+    document.getElementById(
+        "modalMaxGuests"
+    ).textContent = maxGuests;
+
+
+    document.getElementById(
+        "formMaxGuests"
+    ).value = maxGuests;
+
+
+    document.getElementById(
+        "warningMaxGuests"
+    ).textContent = maxGuests;
+
+
+    document.getElementById(
+        "priceForm"
+    ).action =
+        "/admin/property/"
+        + propertyId
+        + "/set-price";
+
+
+    /*
+       Reset to Individual pricing
+    */
+
+    document.querySelector(
+        'input[name="pricing_method"][value="individual"]'
+    ).checked = true;
+
+
+    document.querySelector(
+        'input[name="pricing_method"][value="group"]'
+    ).checked = false;
+
+
+    generateIndividualFields();
+
+
+    document.getElementById(
+        "individualPricing"
+    ).style.display = "block";
+
+
+    document.getElementById(
+        "groupPricing"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "priceModal"
+    ).style.display = "block";
+
+
+    document.body.style.overflow = "hidden";
+
+}
+
+
+/* ==================================================
+   CLOSE MODAL
+================================================== */
+
+function closePriceModal() {
+
+
+    document.getElementById(
+        "priceModal"
+    ).style.display = "none";
+
+
+    document.body.style.overflow = "auto";
+
+}
+
+
+/* ==================================================
+   CLICK OUTSIDE MODAL
+================================================== */
+
+window.onclick = function(event) {
+
+
+    const modal =
+        document.getElementById(
+            "priceModal"
+        );
+
+
+    if (event.target === modal) {
+
+        closePriceModal();
+
+    }
+
+};
+
+
+/* ==================================================
+   PRICING METHOD
+================================================== */
+
+function changePricingMethod() {
+
+
+    const method =
+        document.querySelector(
+            'input[name="pricing_method"]:checked'
+        ).value;
+
+
+    if (method === "individual") {
+
+
+        document.getElementById(
+            "individualPricing"
+        ).style.display = "block";
+
+
+        document.getElementById(
+            "groupPricing"
+        ).style.display = "none";
+
+
+        generateIndividualFields();
+
+
+    } else {
+
+
+        document.getElementById(
+            "individualPricing"
+        ).style.display = "none";
+
+
+        document.getElementById(
+            "groupPricing"
+        ).style.display = "block";
+
+
+        generateInitialGroup();
+
+    }
+
+}
+
+
+/* ==================================================
+   INDIVIDUAL PRICE FIELDS
+================================================== */
+
+function generateIndividualFields() {
+
+
+    const container =
+        document.getElementById(
+            "individualFields"
+        );
+
+
+    container.innerHTML = "";
+
+
+    for (
+        let guest = 1;
+        guest <= currentMaxGuests;
+        guest++
+    ) {
+
+
+        const row =
+            document.createElement(
+                "div"
+            );
+
+
+        row.className =
+            "price-row";
+
+
+        row.innerHTML = `
+
+            <div class="guest-label">
+
+                ${guest}
+                guest${guest !== 1 ? "s" : ""}
+
+            </div>
+
+
+            <div>
+
+                <input
+                    type="number"
+                    name="price_${guest}"
+                    min="0"
+                    step="0.01"
+                    placeholder="₹ Price per day"
+                    required
+                >
+
+            </div>
+
+        `;
+
+
+        container.appendChild(
+            row
+        );
+
+    }
+
+}
+
+
+/* ==================================================
+   INITIAL GROUP
+================================================== */
+
+function generateInitialGroup() {
+
+
+    const container =
+        document.getElementById(
+            "groupFields"
+        );
+
+
+    /*
+       Don't reset if groups already exist.
+    */
+
+    if (
+        container.children.length > 0
+    ) {
+
+        return;
+
+    }
+
+
+    groupCounter = 0;
+
+
+    addGroup();
+
+}
+
+
+/* ==================================================
+   ADD GROUP
+================================================== */
+
+function addGroup() {
+
+
+    groupCounter++;
+
+
+    const container =
+        document.getElementById(
+            "groupFields"
+        );
+
+
+    const row =
+        document.createElement(
+            "div"
+        );
+
+
+    row.className =
+        "price-row group-row";
+
+
+    row.dataset.group =
+        groupCounter;
+
+
+    row.innerHTML = `
+
+        <div>
+
+            <label>
+                From
+            </label>
+
+            <input
+                type="number"
+                name="group_${groupCounter}_min"
+                min="1"
+                max="${currentMaxGuests}"
+                placeholder="1"
+                required
+            >
 
         </div>
 
 
-    {% endif %}
+        <div>
+
+            <label>
+                To
+            </label>
+
+            <input
+                type="number"
+                name="group_${groupCounter}_max"
+                min="1"
+                max="${currentMaxGuests}"
+                placeholder="${currentMaxGuests}"
+                required
+            >
+
+        </div>
 
 
-</div>
+        <div>
+
+            <label>
+                Price / Day
+            </label>
+
+            <input
+                type="number"
+                name="group_${groupCounter}_price"
+                min="0"
+                step="0.01"
+                placeholder="₹ Price"
+                required
+            >
+
+        </div>
+
+
+        <div style="grid-column:1/-1;">
+
+            <button
+                type="button"
+                class="remove-group-btn"
+                onclick="removeGroup(this)"
+            >
+
+                Remove Group
+
+            </button>
+
+        </div>
+
+    `;
+
+
+    container.appendChild(
+        row
+    );
+
+
+    updateGroupNames();
+
+}
+
+
+/* ==================================================
+   REMOVE GROUP
+================================================== */
+
+function removeGroup(button) {
+
+
+    const row =
+        button.closest(
+            ".price-row"
+        );
+
+
+    if (row) {
+
+        row.remove();
+
+    }
+
+
+    updateGroupNames();
+
+}
+
+
+/* ==================================================
+   UPDATE GROUP FIELD NAMES
+================================================== */
+
+function updateGroupNames() {
+
+
+    const rows =
+        document.querySelectorAll(
+            "#groupFields .price-row"
+        );
+
+
+    rows.forEach(
+        function(row, index) {
+
+
+            const number =
+                index + 1;
+
+
+            const inputs =
+                row.querySelectorAll(
+                    "input"
+                );
+
+
+            if (inputs.length >= 3) {
+
+
+                inputs[0].name =
+                    "group_"
+                    + number
+                    + "_min";
+
+
+                inputs[1].name =
+                    "group_"
+                    + number
+                    + "_max";
+
+
+                inputs[2].name =
+                    "group_"
+                    + number
+                    + "_price";
+
+            }
+
+
+        }
+    );
+
+
+    groupCounter =
+        rows.length;
+
+}
+
+
+/* ==================================================
+   FORM VALIDATION
+================================================== */
+
+document.getElementById(
+    "priceForm"
+).addEventListener(
+    "submit",
+    function(event) {
+
+
+        const method =
+            document.querySelector(
+                'input[name="pricing_method"]:checked'
+            ).value;
+
+
+        if (
+            method === "individual"
+        ) {
+
+
+            const prices =
+                document.querySelectorAll(
+                    "#individualFields input"
+                );
+
+
+            for (
+                const input of prices
+            ) {
+
+
+                if (
+                    !input.value
+                    ||
+                    parseFloat(input.value) < 0
+                ) {
+
+
+                    alert(
+                        "Please enter a valid price for every guest count."
+                    );
+
+
+                    event.preventDefault();
+
+                    return;
+
+                }
+
+            }
+
+
+        } else {
+
+
+            const rows =
+                document.querySelectorAll(
+                    "#groupFields .price-row"
+                );
+
+
+            if (rows.length === 0) {
+
+
+                alert(
+                    "Please add at least one guest group."
+                );
+
+
+                event.preventDefault();
+
+                return;
+
+            }
+
+
+            let expectedStart = 1;
+
+
+            for (
+                let i = 0;
+                i < rows.length;
+                i++
+            ) {
+
+
+                const inputs =
+                    rows[i].querySelectorAll(
+                        "input"
+                    );
+
+
+                const minimum =
+                    parseInt(
+                        inputs[0].value
+                    );
+
+
+                const maximum =
+                    parseInt(
+                        inputs[1].value
+                    );
+
+
+                const price =
+                    parseFloat(
+                        inputs[2].value
+                    );
+
+
+                if (
+                    isNaN(minimum)
+                    ||
+                    isNaN(maximum)
+                    ||
+                    isNaN(price)
+                ) {
+
+
+                    alert(
+                        "Please complete every guest group."
+                    );
+
+
+                    event.preventDefault();
+
+                    return;
+
+                }
+
+
+                if (
+                    minimum !== expectedStart
+                ) {
+
+
+                    alert(
+                        "Guest groups must start from "
+                        + expectedStart
+                        + "."
+                    );
+
+
+                    event.preventDefault();
+
+                    return;
+
+                }
+
+
+                if (
+                    maximum < minimum
+                ) {
+
+
+                    alert(
+                        "Group maximum cannot be less than minimum."
+                    );
+
+
+                    event.preventDefault();
+
+                    return;
+
+                }
+
+
+                if (
+                    maximum > currentMaxGuests
+                ) {
+
+
+                    alert(
+                        "A guest group exceeds the property's maximum guests."
+                    );
+
+
+                    event.preventDefault();
+
+                    return;
+
+                }
+
+
+                if (
+                    price < 0
+                ) {
+
+
+                    alert(
+                        "Price cannot be negative."
+                    );
+
+
+                    event.preventDefault();
+
+                    return;
+
+                }
+
+
+                expectedStart =
+                    maximum + 1;
+
+            }
+
+
+            if (
+                expectedStart
+                !==
+                currentMaxGuests + 1
+            ) {
+
+
+                alert(
+                    "Guest groups must cover all guest counts from 1 to "
+                    + currentMaxGuests
+                    + "."
+                );
+
+
+                event.preventDefault();
+
+                return;
+
+            }
+
+        }
+
+
+    }
+);
+
+
+</script>
 
 
 </body>
