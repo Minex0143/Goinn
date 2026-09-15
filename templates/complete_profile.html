@@ -1,97 +1,1164 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 
 <head>
 
-    <title>Complete Profile - Goinn</title>
+    <meta charset="UTF-8">
 
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
 
+    <title>Complete Profile - Goinn</title>
+
+    <style>
+
+        /* ==================================================
+           GLOBAL
+        ================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+        }
+
+        body {
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f4f6f8;
+
+            color: #202124;
+
+            min-height: 100vh;
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+
+        /* ==================================================
+           HEADER
+        ================================================== */
+
+        .header {
+            width: 100%;
+
+            background: #111;
+
+            color: white;
+
+            padding: 17px 30px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            box-shadow:
+                0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+
+
+        .logo {
+            font-size: 25px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.6px;
+        }
+
+
+        .header-text {
+            font-size: 13px;
+
+            color: #cfcfcf;
+        }
+
+
+        /* ==================================================
+           MAIN
+        ================================================== */
+
+        .page {
+            flex: 1;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 45px 20px;
+        }
+
+
+        .profile-wrapper {
+            width: 100%;
+
+            max-width: 560px;
+        }
+
+
+        /* ==================================================
+           PROGRESS
+        ================================================== */
+
+        .progress-section {
+            margin-bottom: 18px;
+        }
+
+
+        .progress-top {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 8px;
+        }
+
+
+        .progress-title {
+            font-size: 13px;
+
+            font-weight: 700;
+
+            color: #555;
+        }
+
+
+        .progress-percent {
+            font-size: 13px;
+
+            font-weight: 800;
+
+            color: #111;
+        }
+
+
+        .progress-bar {
+            width: 100%;
+
+            height: 6px;
+
+            background: #e1e4e8;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+
+        .progress-fill {
+            width: 66%;
+
+            height: 100%;
+
+            background: #111;
+
+            border-radius: 20px;
+        }
+
+
+        /* ==================================================
+           CARD
+        ================================================== */
+
+        .card {
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 34px;
+
+            box-shadow:
+                0 5px 20px rgba(0, 0, 0, 0.07);
+
+            border: 1px solid #eceff1;
+        }
+
+
+        /* ==================================================
+           CARD HEADER
+        ================================================== */
+
+        .card-header {
+            text-align: center;
+
+            margin-bottom: 28px;
+        }
+
+
+        .profile-icon {
+            width: 66px;
+
+            height: 66px;
+
+            margin: 0 auto 17px;
+
+            background: #111;
+
+            color: white;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 27px;
+
+            font-weight: 800;
+        }
+
+
+        .card-header h1 {
+            margin: 0;
+
+            font-size: 26px;
+
+            letter-spacing: -0.5px;
+
+            color: #171717;
+        }
+
+
+        .card-header p {
+            margin: 9px auto 0;
+
+            max-width: 430px;
+
+            color: #70757a;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+        }
+
+
+        /* ==================================================
+           WELCOME BOX
+        ================================================== */
+
+        .welcome-box {
+            background: #f7f8fa;
+
+            border: 1px solid #e8eaed;
+
+            border-radius: 11px;
+
+            padding: 15px 16px;
+
+            margin-bottom: 25px;
+
+            display: flex;
+
+            gap: 12px;
+
+            align-items: flex-start;
+        }
+
+
+        .welcome-icon {
+            width: 32px;
+
+            height: 32px;
+
+            flex-shrink: 0;
+
+            border-radius: 8px;
+
+            background: #111;
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 15px;
+
+            font-weight: bold;
+        }
+
+
+        .welcome-content {
+            flex: 1;
+        }
+
+
+        .welcome-title {
+            font-size: 14px;
+
+            font-weight: 800;
+
+            margin-bottom: 4px;
+        }
+
+
+        .welcome-text {
+            color: #70757a;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+        }
+
+
+        /* ==================================================
+           FORM
+        ================================================== */
+
+        .form-group {
+            margin-bottom: 21px;
+        }
+
+
+        .form-label {
+            display: block;
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+            margin-bottom: 8px;
+
+            color: #303134;
+        }
+
+
+        .required {
+            color: #d93025;
+
+            margin-left: 2px;
+        }
+
+
+        .input-wrapper {
+            position: relative;
+        }
+
+
+        .input-icon {
+            position: absolute;
+
+            left: 13px;
+
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: #777;
+
+            font-size: 15px;
+
+            pointer-events: none;
+        }
+
+
+        input {
+            width: 100%;
+
+            height: 48px;
+
+            border: 1px solid #d5d9df;
+
+            border-radius: 9px;
+
+            padding: 0 14px 0 40px;
+
+            font-size: 14px;
+
+            color: #202124;
+
+            background: white;
+
+            outline: none;
+
+            transition:
+                border-color 0.2s,
+                box-shadow 0.2s;
+        }
+
+
+        input:hover {
+            border-color: #999;
+        }
+
+
+        input:focus {
+            border-color: #111;
+
+            box-shadow:
+                0 0 0 3px rgba(0, 0, 0, 0.06);
+        }
+
+
+        input::placeholder {
+            color: #9aa0a6;
+        }
+
+
+        input[readonly] {
+            background: #f7f8fa;
+
+            color: #666;
+
+            cursor: not-allowed;
+        }
+
+
+        .input-help {
+            margin-top: 6px;
+
+            color: #80868b;
+
+            font-size: 11px;
+
+            line-height: 1.4;
+        }
+
+
+        /* ==================================================
+           PHONE INPUT
+        ================================================== */
+
+        .phone-wrapper {
+            display: flex;
+
+            gap: 8px;
+        }
+
+
+        .country-code {
+            width: 82px;
+
+            flex-shrink: 0;
+
+            height: 48px;
+
+            border: 1px solid #d5d9df;
+
+            border-radius: 9px;
+
+            background: #f7f8fa;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            color: #333;
+        }
+
+
+        .phone-input {
+            flex: 1;
+
+            position: relative;
+        }
+
+
+        .phone-input input {
+            padding-left: 40px;
+        }
+
+
+        /* ==================================================
+           ERROR
+        ================================================== */
+
+        .error-box {
+            background: #fff1f1;
+
+            border: 1px solid #f1b5b5;
+
+            color: #b42318;
+
+            border-radius: 9px;
+
+            padding: 12px 14px;
+
+            margin-bottom: 21px;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+
+            display: flex;
+
+            gap: 9px;
+
+            align-items: flex-start;
+        }
+
+
+        .error-icon {
+            font-weight: 800;
+
+            flex-shrink: 0;
+        }
+
+
+        /* ==================================================
+           SECURITY NOTE
+        ================================================== */
+
+        .security-note {
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin-top: 2px;
+
+            margin-bottom: 23px;
+
+            color: #777;
+
+            font-size: 11px;
+        }
+
+
+        .security-icon {
+            font-size: 13px;
+        }
+
+
+        /* ==================================================
+           BUTTON
+        ================================================== */
+
+        .submit-btn {
+            width: 100%;
+
+            height: 49px;
+
+            border: none;
+
+            border-radius: 9px;
+
+            background: #111;
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s,
+                transform 0.1s,
+                box-shadow 0.2s;
+        }
+
+
+        .submit-btn:hover {
+            background: #2b2b2b;
+
+            box-shadow:
+                0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+
+        .submit-btn:active {
+            transform: translateY(1px);
+        }
+
+
+        .submit-btn:disabled {
+            background: #888;
+
+            cursor: not-allowed;
+
+            box-shadow: none;
+        }
+
+
+        /* ==================================================
+           FOOTER
+        ================================================== */
+
+        .footer {
+            text-align: center;
+
+            padding: 20px;
+
+            color: #888;
+
+            font-size: 11px;
+        }
+
+
+        .footer strong {
+            color: #555;
+        }
+
+
+        /* ==================================================
+           MOBILE
+        ================================================== */
+
+        @media (max-width: 650px) {
+
+            .header {
+                padding: 15px 17px;
+            }
+
+
+            .logo {
+                font-size: 22px;
+            }
+
+
+            .header-text {
+                display: none;
+            }
+
+
+            .page {
+                padding: 25px 13px;
+
+                align-items: flex-start;
+            }
+
+
+            .profile-wrapper {
+                margin-top: 10px;
+            }
+
+
+            .card {
+                padding: 25px 19px;
+
+                border-radius: 14px;
+            }
+
+
+            .card-header h1 {
+                font-size: 23px;
+            }
+
+
+            .card-header p {
+                font-size: 13px;
+            }
+
+
+            .profile-icon {
+                width: 58px;
+
+                height: 58px;
+
+                font-size: 23px;
+            }
+
+
+            .welcome-box {
+                padding: 13px;
+            }
+
+
+            .phone-code {
+                width: 75px;
+            }
+
+        }
+
+
+        @media (max-width: 380px) {
+
+            .card {
+                padding: 22px 15px;
+            }
+
+
+            .phone-wrapper {
+                gap: 6px;
+            }
+
+
+            .country-code {
+                width: 72px;
+            }
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
-    <h1>Complete Your Goinn Profile</h1>
 
-    <p>
-        Welcome to Goinn!
-    </p>
+<!-- ==================================================
+     HEADER
+================================================== -->
 
-    <p>
-        Please provide your contact number to continue.
-    </p>
+<header class="header">
 
+    <div class="logo">
+        Goinn
+    </div>
 
-    {% if error %}
+    <div class="header-text">
+        Secure Profile Setup
+    </div>
 
-        <p style="color: red;">
-            {{ error }}
-        </p>
-
-    {% endif %}
+</header>
 
 
-    <form
-        method="POST"
-        action="{{ url_for('complete_profile') }}"
-    >
+<!-- ==================================================
+     MAIN
+================================================== -->
 
-        <label>
-            Name
-        </label>
+<main class="page">
 
-        <br>
-
-        <input
-            type="text"
-            name="name"
-            value="{{ name }}"
-            required
-        >
-
-        <br><br>
+    <div class="profile-wrapper">
 
 
-        <label>
-            Email
-        </label>
+        <!-- ==================================================
+             PROGRESS
+        ================================================== -->
 
-        <br>
+        <div class="progress-section">
 
-        <input
-            type="email"
-            value="{{ email }}"
-            readonly
-        >
+            <div class="progress-top">
 
-        <br><br>
+                <span class="progress-title">
+                    Profile setup
+                </span>
 
+                <span class="progress-percent">
+                    66% complete
+                </span>
 
-        <label>
-            Contact Number *
-        </label>
-
-        <br>
-
-        <input
-            type="tel"
-            name="contact"
-            placeholder="Enter contact number"
-            required
-        >
-
-        <br><br>
+            </div>
 
 
-        <button type="submit">
-            Continue
-        </button>
+            <div class="progress-bar">
 
-    </form>
+                <div class="progress-fill"></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             CARD
+        ================================================== -->
+
+        <div class="card">
+
+
+            <!-- CARD HEADER -->
+
+            <div class="card-header">
+
+                <div class="profile-icon">
+                    👤
+                </div>
+
+                <h1>
+                    Complete Your Profile
+                </h1>
+
+                <p>
+                    Just one more step. Add your contact
+                    number so we can keep your Goinn account
+                    up to date.
+                </p>
+
+            </div>
+
+
+            <!-- ==================================================
+                 WELCOME
+            ================================================== -->
+
+            <div class="welcome-box">
+
+                <div class="welcome-icon">
+                    ✓
+                </div>
+
+
+                <div class="welcome-content">
+
+                    <div class="welcome-title">
+                        Welcome to Goinn!
+                    </div>
+
+                    <div class="welcome-text">
+                        Your account has been created
+                        successfully. Complete the information
+                        below to continue.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================================
+                 ERROR
+            ================================================== -->
+
+            {% if error %}
+
+                <div class="error-box">
+
+                    <div class="error-icon">
+                        !
+                    </div>
+
+                    <div>
+                        {{ error }}
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- ==================================================
+                 FORM
+            ================================================== -->
+
+            <form
+                method="POST"
+                action="{{ url_for('complete_profile') }}"
+                id="profileForm"
+            >
+
+
+                <!-- NAME -->
+
+                <div class="form-group">
+
+                    <label
+                        class="form-label"
+                        for="name"
+                    >
+                        Full Name
+                        <span class="required">*</span>
+                    </label>
+
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            👤
+                        </span>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value="{{ name }}"
+                            placeholder="Enter your full name"
+                            autocomplete="name"
+                            maxlength="100"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="input-help">
+                        Enter the name you would like to use
+                        on your Goinn account.
+                    </div>
+
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label
+                        class="form-label"
+                        for="email"
+                    >
+                        Email Address
+                    </label>
+
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ✉
+                        </span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            value="{{ email }}"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="input-help">
+                        Your email is linked to your account
+                        and cannot be changed here.
+                    </div>
+
+                </div>
+
+
+                <!-- CONTACT -->
+
+                <div class="form-group">
+
+                    <label
+                        class="form-label"
+                        for="contact"
+                    >
+                        Contact Number
+                        <span class="required">*</span>
+                    </label>
+
+
+                    <div class="phone-wrapper">
+
+
+                        <div class="country-code">
+                            🇮🇳 +91
+                        </div>
+
+
+                        <div class="phone-input">
+
+                            <span class="input-icon">
+                                ☎
+                            </span>
+
+                            <input
+                                type="tel"
+                                id="contact"
+                                name="contact"
+                                placeholder="10-digit mobile number"
+                                inputmode="numeric"
+                                autocomplete="tel"
+                                maxlength="10"
+                                pattern="[6-9][0-9]{9}"
+                                required
+                            >
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="input-help">
+                        Enter a valid 10-digit Indian mobile
+                        number starting with 6, 7, 8 or 9.
+                    </div>
+
+                </div>
+
+
+                <!-- SECURITY -->
+
+                <div class="security-note">
+
+                    <span class="security-icon">
+                        🔒
+                    </span>
+
+                    <span>
+                        Your contact information is kept
+                        secure and used only for account
+                        communication.
+                    </span>
+
+                </div>
+
+
+                <!-- SUBMIT -->
+
+                <button
+                    type="submit"
+                    class="submit-btn"
+                    id="submitButton"
+                >
+                    Continue to Goinn
+                </button>
+
+
+            </form>
+
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="footer">
+
+            <strong>Goinn</strong>
+            &nbsp;•&nbsp;
+            Your stay, your way.
+
+        </div>
+
+
+    </div>
+
+</main>
+
+
+<!-- ==================================================
+     JAVASCRIPT
+================================================== -->
+
+<script>
+
+"use strict";
+
+
+/* ==================================================
+   PHONE NUMBER
+================================================== */
+
+const contactInput =
+    document.getElementById("contact");
+
+
+if (contactInput) {
+
+    contactInput.addEventListener(
+        "input",
+        function () {
+
+            /* Allow numbers only */
+
+            this.value =
+                this.value
+                    .replace(/\D/g, "")
+                    .slice(0, 10);
+
+        }
+    );
+
+}
+
+
+/* ==================================================
+   FORM SUBMIT
+================================================== */
+
+const profileForm =
+    document.getElementById("profileForm");
+
+const submitButton =
+    document.getElementById("submitButton");
+
+
+if (profileForm) {
+
+    profileForm.addEventListener(
+        "submit",
+        function (event) {
+
+            const name =
+                document
+                    .getElementById("name")
+                    .value
+                    .trim();
+
+            const contact =
+                document
+                    .getElementById("contact")
+                    .value
+                    .trim();
+
+
+            /* Name validation */
+
+            if (name.length < 2) {
+
+                event.preventDefault();
+
+                alert(
+                    "Please enter your full name."
+                );
+
+                document
+                    .getElementById("name")
+                    .focus();
+
+                return;
+            }
+
+
+            /* Indian mobile validation */
+
+            const phonePattern =
+                /^[6-9][0-9]{9}$/;
+
+
+            if (!phonePattern.test(contact)) {
+
+                event.preventDefault();
+
+                alert(
+                    "Please enter a valid 10-digit Indian mobile number."
+                );
+
+                document
+                    .getElementById("contact")
+                    .focus();
+
+                return;
+            }
+
+
+            /* Prevent double submission */
+
+            submitButton.disabled = true;
+
+            submitButton.textContent =
+                "Saving Profile...";
+
+        }
+    );
+
+}
+
+</script>
+
 
 </body>
 
