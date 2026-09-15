@@ -2259,17 +2259,25 @@ def logout():
     )
 
 
+with app.app_context():
 
+    Booking.query.filter_by(
+        status="inquiry"
+    ).update(
+        {"status": "pending"}
+    )
+
+    db.session.commit()
 
 # ==================================================
 # DATABASE INITIALIZATION
 # ==================================================
 
-with app.app_context():
+#with app.app_context():
 
-    db.create_all()
+ #   db.create_all()
 
-    ensure_database_columns()
+#    ensure_database_columns()
 
 
 # ==================================================
