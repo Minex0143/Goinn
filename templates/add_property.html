@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Add Property - Goinn</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+</head>
+
+<body>
+
+    <h1>Add Your Property</h1>
+
+    <form
+        method="POST"
+        action="{{ url_for('add_property') }}"
+    >
+
+        <label>
+            Property Name *
+        </label>
+
+        <br>
+
+        <input
+            type="text"
+            name="property_name"
+            required
+        >
+
+        <br><br>
+
+
+        <label>
+            Property Address *
+        </label>
+
+        <br>
+
+        <textarea
+            name="property_address"
+            required
+        ></textarea>
+
+        <br><br>
+
+
+        <label>
+            Location / City *
+        </label>
+
+        <br>
+
+        <input
+            type="text"
+            name="location"
+            placeholder="Example: Hyderabad"
+            required
+        >
+
+        <br><br>
+
+
+        <label>
+            Property Image URLs
+        </label>
+
+        <br>
+
+        <textarea
+            name="images"
+            placeholder="Paste image URLs separated by commas"
+        ></textarea>
+
+        <p>
+            We will replace this with actual
+            image uploading later.
+        </p>
+
+        <br>
+
+
+        <h2>Daily Pricing</h2>
+
+        <label>
+            Price for 1 Guest *
+        </label>
+
+        <br>
+
+        <input
+            type="number"
+            name="price_1_guest"
+            min="0"
+            step="0.01"
+            required
+        >
+
+        <br><br>
+
+
+        <label>
+            Price for 2 Guests
+        </label>
+
+        <br>
+
+        <input
+            type="number"
+            name="price_2_guest"
+            min="0"
+            step="0.01"
+        >
+
+        <br><br>
+
+
+        <label>
+            Price for 3 Guests
+        </label>
+
+        <br>
+
+        <input
+            type="number"
+            name="price_3_guest"
+            min="0"
+            step="0.01"
+        >
+
+        <br><br>
+
+
+        <label>
+            Price for 4 Guests
+        </label>
+
+        <br>
+
+        <input
+            type="number"
+            name="price_4_guest"
+            min="0"
+            step="0.01"
+        >
+
+        <br><br>
+
+
+        <label>
+            Price for 5 Guests
+        </label>
+
+        <br>
+
+        <input
+            type="number"
+            name="price_5_guest"
+            min="0"
+            step="0.01"
+        >
+
+        <br><br>
+
+
+        <label>
+            Maximum Guests *
+        </label>
+
+        <br>
+
+        <input
+            type="number"
+            name="max_guests"
+            min="1"
+            required
+        >
+
+        <br><br>
+
+
+        <button type="submit">
+            Create Property
+        </button>
+
+    </form>
+
+
+    <br>
+
+    <a href="{{ url_for('owner_dashboard') }}">
+        Back to Owner Dashboard
+    </a>
+
+</body>
+
+</html>
