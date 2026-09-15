@@ -5,8 +5,10 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Admin Dashboard - Goinn</title>
 
@@ -52,6 +54,7 @@
         .logo {
             font-size: 24px;
             font-weight: 800;
+            letter-spacing: -0.5px;
         }
 
         .header-right {
@@ -68,13 +71,9 @@
         .logout {
             color: white;
             text-decoration: none;
-
             background: #2d2d2d;
-
             padding: 9px 15px;
-
             border-radius: 8px;
-
             font-size: 14px;
             font-weight: 700;
         }
@@ -170,6 +169,44 @@
         }
 
         /* =====================================================
+           TAB BADGES
+        ===================================================== */
+
+        .tab-badge {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            min-width: 20px;
+            height: 20px;
+
+            padding: 0 6px;
+
+            margin-left: 5px;
+
+            border-radius: 20px;
+
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .pending-badge {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .rejected-badge {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .tab-button.active .tab-badge {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        /* =====================================================
            STATISTICS
         ===================================================== */
 
@@ -211,6 +248,14 @@
             font-weight: 800;
         }
 
+        .stat-subtitle {
+            margin-top: 5px;
+
+            color: #999;
+
+            font-size: 11px;
+        }
+
         /* =====================================================
            SECTION CARD
         ===================================================== */
@@ -224,6 +269,10 @@
                 0 3px 14px rgba(0,0,0,0.06);
 
             overflow: hidden;
+        }
+
+        .section-card + .section-card {
+            margin-top: 25px;
         }
 
         .section-header {
@@ -266,10 +315,21 @@
             padding: 20px;
 
             margin-bottom: 15px;
+
+            transition:
+                box-shadow 0.2s,
+                transform 0.2s;
         }
 
         .property-card:last-child {
             margin-bottom: 0;
+        }
+
+        .property-card:hover {
+            box-shadow:
+                0 5px 18px rgba(0,0,0,0.06);
+
+            transform: translateY(-1px);
         }
 
         .property-top {
@@ -498,6 +558,14 @@
             align-items: center;
 
             justify-content: center;
+
+            transition:
+                background 0.2s,
+                transform 0.1s;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
         }
 
         .approve-btn {
@@ -543,10 +611,21 @@
             padding: 18px;
 
             margin-bottom: 14px;
+
+            transition:
+                box-shadow 0.2s,
+                transform 0.2s;
         }
 
         .booking-card:last-child {
             margin-bottom: 0;
+        }
+
+        .booking-card:hover {
+            box-shadow:
+                0 5px 18px rgba(0,0,0,0.06);
+
+            transform: translateY(-1px);
         }
 
         .booking-header {
@@ -586,6 +665,82 @@
             padding-top: 17px;
 
             border-top: 1px solid #eee;
+        }
+
+        .booking-actions {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 10px;
+
+            margin-top: 18px;
+
+            padding-top: 17px;
+
+            border-top: 1px solid #eee;
+        }
+
+        .booking-actions form {
+            margin: 0;
+        }
+
+        /* =====================================================
+           REJECTIONS
+        ===================================================== */
+
+        .rejection-section {
+            margin-bottom: 25px;
+        }
+
+        .rejection-title {
+            padding: 18px 20px;
+
+            background: #fafafa;
+
+            border-bottom: 1px solid #eee;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+        }
+
+        .rejection-title h3 {
+            margin: 0;
+
+            font-size: 16px;
+        }
+
+        .rejection-count {
+            background: #f8d7da;
+
+            color: #842029;
+
+            padding: 5px 9px;
+
+            border-radius: 20px;
+
+            font-size: 11px;
+
+            font-weight: 800;
+        }
+
+        .rejected-reason {
+            margin-top: 15px;
+
+            padding: 12px 14px;
+
+            background: #fff6f6;
+
+            border: 1px solid #f1d1d1;
+
+            border-radius: 8px;
+
+            color: #842029;
+
+            font-size: 12px;
         }
 
         /* =====================================================
@@ -659,6 +814,26 @@
             color: #777;
 
             background: white;
+        }
+
+        .empty-icon {
+            font-size: 34px;
+
+            margin-bottom: 10px;
+        }
+
+        .empty strong {
+            display: block;
+
+            color: #444;
+
+            font-size: 15px;
+        }
+
+        .empty p {
+            margin: 7px 0 0;
+
+            font-size: 12px;
         }
 
         /* =====================================================
@@ -1054,6 +1229,21 @@
                     1fr;
             }
 
+            .booking-header {
+                align-items: flex-start;
+            }
+
+            .booking-actions {
+                display: grid;
+
+                grid-template-columns:
+                    1fr;
+            }
+
+            .booking-actions .btn {
+                width: 100%;
+            }
+
             .radio-container {
                 grid-template-columns:
                     1fr;
@@ -1174,11 +1364,42 @@
     %}
 
 
+    {% set pending_bookings =
+        bookings
+        |selectattr("status", "equalto", "pending")
+        |list
+        |length
+    %}
+
+    {% set approved_bookings =
+        bookings
+        |selectattr("status", "equalto", "approved")
+        |list
+        |length
+    %}
+
+    {% set rejected_bookings =
+        bookings
+        |selectattr("status", "equalto", "rejected")
+        |list
+        |length
+    %}
+
+
+    {% set rejected_properties =
+        properties
+        |selectattr("status", "equalto", "rejected")
+        |list
+        |length
+    %}
+
+
     <!-- =====================================================
          TABS
     ===================================================== -->
 
     <div class="tabs">
+
 
         <button
             type="button"
@@ -1188,13 +1409,24 @@
             Overview
         </button>
 
+
         <button
             type="button"
             class="tab-button"
             data-tab="properties"
         >
             Properties
+
+            {% if pending_count > 0 %}
+
+                <span class="tab-badge pending-badge">
+                    {{ pending_count }}
+                </span>
+
+            {% endif %}
+
         </button>
+
 
         <button
             type="button"
@@ -1202,7 +1434,35 @@
             data-tab="bookings"
         >
             Bookings
+
+            {% if pending_bookings > 0 %}
+
+                <span class="tab-badge pending-badge">
+                    {{ pending_bookings }}
+                </span>
+
+            {% endif %}
+
         </button>
+
+
+        <button
+            type="button"
+            class="tab-button"
+            data-tab="rejections"
+        >
+            Rejections
+
+            {% if rejected_properties + rejected_bookings > 0 %}
+
+                <span class="tab-badge rejected-badge">
+                    {{ rejected_properties + rejected_bookings }}
+                </span>
+
+            {% endif %}
+
+        </button>
+
 
         <button
             type="button"
@@ -1211,6 +1471,7 @@
         >
             Users
         </button>
+
 
     </div>
 
@@ -1224,6 +1485,7 @@
         class="tab-content active"
     >
 
+
         <div class="stats">
 
 
@@ -1235,6 +1497,10 @@
 
                 <div class="stat-number">
                     {{ properties|length }}
+                </div>
+
+                <div class="stat-subtitle">
+                    {{ approved_count }} approved
                 </div>
 
             </div>
@@ -1250,17 +1516,8 @@
                     {{ pending_count }}
                 </div>
 
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-title">
-                    Approved Properties
-                </div>
-
-                <div class="stat-number">
-                    {{ approved_count }}
+                <div class="stat-subtitle">
+                    Properties waiting for review
                 </div>
 
             </div>
@@ -1274,6 +1531,27 @@
 
                 <div class="stat-number">
                     {{ bookings|length }}
+                </div>
+
+                <div class="stat-subtitle">
+                    {{ pending_bookings }} pending
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    Rejections
+                </div>
+
+                <div class="stat-number">
+                    {{ rejected_properties + rejected_bookings }}
+                </div>
+
+                <div class="stat-subtitle">
+                    Properties + bookings
                 </div>
 
             </div>
@@ -1312,7 +1590,12 @@
 
                     <li>
                         <strong>Bookings</strong>
-                        — view customer booking information.
+                        — review customer bookings and approve or reject them.
+                    </li>
+
+                    <li>
+                        <strong>Rejections</strong>
+                        — view all rejected properties and bookings.
                     </li>
 
                     <li>
@@ -1326,6 +1609,7 @@
 
         </div>
 
+
     </section>
 
 
@@ -1337,6 +1621,7 @@
         id="properties"
         class="tab-content"
     >
+
 
         <div class="section-card">
 
@@ -1363,8 +1648,6 @@
 
                     <div class="property-card">
 
-
-                        <!-- PROPERTY HEADER -->
 
                         <div class="property-top">
 
@@ -1407,10 +1690,9 @@
 
                             {% endif %}
 
+
                         </div>
 
-
-                        <!-- PROPERTY INFORMATION -->
 
                         <div class="property-details">
 
@@ -1469,8 +1751,6 @@
                         </div>
 
 
-                        <!-- OWNER INFORMATION -->
-
                         <div class="owner-section">
 
                             <div class="owner-title">
@@ -1488,9 +1768,7 @@
                                     </div>
 
                                     <div class="detail-value">
-
                                         {{ property.owner.name }}
-
                                     </div>
 
                                 </div>
@@ -1503,9 +1781,7 @@
                                     </div>
 
                                     <div class="detail-value">
-
                                         {{ property.owner.email }}
-
                                     </div>
 
                                 </div>
@@ -1518,9 +1794,7 @@
                                     </div>
 
                                     <div class="detail-value">
-
                                         {{ property.owner.contact or "Not provided" }}
-
                                     </div>
 
                                 </div>
@@ -1531,9 +1805,8 @@
                         </div>
 
 
-                        <!-- PRICING DISPLAY -->
-
                         {% if property.pricing_method and property.pricing_data %}
+
 
                             <div class="pricing-box">
 
@@ -1548,6 +1821,7 @@
 
 
                                 {% if property.pricing_method == "individual" %}
+
 
                                     <div class="pricing-method">
                                         INDIVIDUAL PRICING
@@ -1572,24 +1846,27 @@
 
                                         </thead>
 
+
                                         <tbody>
+
 
                                             {% for item in pricing %}
 
-                                                <tr>
+                                            <tr>
 
-                                                    <td>
-                                                        {{ item.guests }}
-                                                        guest{% if item.guests != 1 %}s{% endif %}
-                                                    </td>
+                                                <td>
+                                                    {{ item.guests }}
+                                                    guest{% if item.guests != 1 %}s{% endif %}
+                                                </td>
 
-                                                    <td>
-                                                        ₹{{ "%.2f"|format(item.price|float) }}
-                                                    </td>
+                                                <td>
+                                                    ₹{{ "%.2f"|format(item.price|float) }}
+                                                </td>
 
-                                                </tr>
+                                            </tr>
 
                                             {% endfor %}
+
 
                                         </tbody>
 
@@ -1597,6 +1874,7 @@
 
 
                                 {% elif property.pricing_method == "group" %}
+
 
                                     <div class="pricing-method">
                                         GROUP PRICING
@@ -1621,44 +1899,49 @@
 
                                         </thead>
 
+
                                         <tbody>
+
 
                                             {% for item in pricing %}
 
-                                                <tr>
+                                            <tr>
 
-                                                    <td>
-                                                        {{ item.min_guests }}
-                                                        -
-                                                        {{ item.max_guests }}
-                                                        guests
-                                                    </td>
+                                                <td>
+                                                    {{ item.min_guests }}
+                                                    -
+                                                    {{ item.max_guests }}
+                                                    guests
+                                                </td>
 
-                                                    <td>
-                                                        ₹{{ "%.2f"|format(item.price|float) }}
-                                                    </td>
+                                                <td>
+                                                    ₹{{ "%.2f"|format(item.price|float) }}
+                                                </td>
 
-                                                </tr>
+                                            </tr>
 
                                             {% endfor %}
+
 
                                         </tbody>
 
                                     </table>
 
+
                                 {% endif %}
+
 
                             </div>
 
+
                         {% endif %}
 
-
-                        <!-- ACTIONS -->
 
                         <div class="actions">
 
 
                             {% if property.status == "pending" %}
+
 
                                 <button
                                     type="button"
@@ -1694,6 +1977,7 @@
 
                             {% elif property.status == "approved" %}
 
+
                                 <button
                                     type="button"
                                     class="btn edit-btn js-edit-price"
@@ -1706,6 +1990,7 @@
                                 >
                                     Edit Pricing
                                 </button>
+
 
                             {% endif %}
 
@@ -1720,9 +2005,23 @@
 
                 {% else %}
 
+
                     <div class="empty">
-                        No properties have been created yet.
+
+                        <div class="empty-icon">
+                            🏠
+                        </div>
+
+                        <strong>
+                            No properties found
+                        </strong>
+
+                        <p>
+                            Properties submitted by owners will appear here.
+                        </p>
+
                     </div>
+
 
                 {% endif %}
 
@@ -1730,6 +2029,7 @@
             </div>
 
         </div>
+
 
     </section>
 
@@ -1743,17 +2043,23 @@
         class="tab-content"
     >
 
+
         <div class="section-card">
+
 
             <div class="section-header">
 
-                <h2>
-                    Bookings
-                </h2>
+                <div>
 
-                <span>
-                    {{ bookings|length }} bookings
-                </span>
+                    <h2>
+                        Bookings
+                    </h2>
+
+                    <span>
+                        {{ bookings|length }} bookings
+                    </span>
+
+                </div>
 
             </div>
 
@@ -1766,10 +2072,12 @@
 
                     {% for booking in bookings %}
 
+
                     <div class="booking-card">
 
 
                         <div class="booking-header">
+
 
                             <div>
 
@@ -1782,6 +2090,34 @@
                                 </div>
 
                             </div>
+
+
+                            {% if booking.status == "pending" %}
+
+                                <span class="status status-pending">
+                                    Pending
+                                </span>
+
+                            {% elif booking.status == "approved" %}
+
+                                <span class="status status-approved">
+                                    Approved
+                                </span>
+
+                            {% elif booking.status == "rejected" %}
+
+                                <span class="status status-rejected">
+                                    Rejected
+                                </span>
+
+                            {% else %}
+
+                                <span class="status status-pending">
+                                    Pending
+                                </span>
+
+                            {% endif %}
+
 
                         </div>
 
@@ -1874,8 +2210,480 @@
 
                                 <div class="detail-value">
 
-                                    ₹{{ "%.2f"|format(booking.total_price|float) }}
+                                    ₹{{ "%.2f"|format(
+                                        booking.total_price|float
+                                    ) }}
 
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- BOOKING ACTIONS -->
+
+                        {% if booking.status != "rejected" %}
+
+
+                        <div class="booking-actions">
+
+
+                            {% if booking.status != "approved" %}
+
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'approve_booking',
+                                    booking_id=booking.id
+                                ) }}"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="btn approve-btn"
+                                    onclick="return confirm(
+                                        'Approve this booking?'
+                                    );"
+                                >
+                                    ✓ Approve Booking
+                                </button>
+
+                            </form>
+
+
+                            {% endif %}
+
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'reject_booking',
+                                    booking_id=booking.id
+                                ) }}"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="btn reject-btn"
+                                    onclick="return confirm(
+                                        'Are you sure you want to reject this booking?'
+                                    );"
+                                >
+                                    ✕ Reject Booking
+                                </button>
+
+                            </form>
+
+
+                        </div>
+
+
+                        {% endif %}
+
+
+                    </div>
+
+
+                    {% endfor %}
+
+
+                {% else %}
+
+
+                    <div class="empty">
+
+                        <div class="empty-icon">
+                            📅
+                        </div>
+
+                        <strong>
+                            No bookings yet
+                        </strong>
+
+                        <p>
+                            New customer bookings will appear here.
+                        </p>
+
+                    </div>
+
+
+                {% endif %}
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         REJECTIONS TAB
+    ===================================================== -->
+
+    <section
+        id="rejections"
+        class="tab-content"
+    >
+
+
+        <!-- =================================================
+             REJECTED PROPERTIES
+        ================================================= -->
+
+        <div class="section-card rejection-section">
+
+
+            <div class="rejection-title">
+
+                <h3>
+                    Rejected Properties
+                </h3>
+
+                <span class="rejection-count">
+                    {{ rejected_properties }}
+                </span>
+
+            </div>
+
+
+            <div class="property-list">
+
+
+                {% set rejected_property_list =
+                    properties
+                    |selectattr("status", "equalto", "rejected")
+                    |list
+                %}
+
+
+                {% if rejected_property_list %}
+
+
+                    {% for property in rejected_property_list %}
+
+
+                    <div class="property-card">
+
+
+                        <div class="property-top">
+
+
+                            <div>
+
+                                <div class="property-name">
+                                    {{ property.property_name }}
+                                </div>
+
+                                <div class="property-location">
+                                    📍 {{ property.location }}
+                                </div>
+
+                            </div>
+
+
+                            <span class="status status-rejected">
+                                Rejected
+                            </span>
+
+
+                        </div>
+
+
+                        <div class="property-details">
+
+
+                            <div class="detail-box">
+
+                                <div class="detail-label">
+                                    Address
+                                </div>
+
+                                <div class="detail-value">
+                                    {{ property.property_address or "Not provided" }}
+                                </div>
+
+                            </div>
+
+
+                            <div class="detail-box">
+
+                                <div class="detail-label">
+                                    Maximum Guests
+                                </div>
+
+                                <div class="detail-value">
+                                    {{ property.max_guests or "Not configured" }}
+                                </div>
+
+                            </div>
+
+
+                            <div class="detail-box">
+
+                                <div class="detail-label">
+                                    Owner
+                                </div>
+
+                                <div class="detail-value">
+                                    {{ property.owner.name }}
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="owner-section">
+
+
+                            <div class="owner-title">
+                                Property Owner
+                            </div>
+
+
+                            <div class="owner-grid">
+
+
+                                <div class="detail-box">
+
+                                    <div class="detail-label">
+                                        Name
+                                    </div>
+
+                                    <div class="detail-value">
+                                        {{ property.owner.name }}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="detail-box">
+
+                                    <div class="detail-label">
+                                        Email
+                                    </div>
+
+                                    <div class="detail-value">
+                                        {{ property.owner.email }}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="detail-box">
+
+                                    <div class="detail-label">
+                                        Contact
+                                    </div>
+
+                                    <div class="detail-value">
+                                        {{ property.owner.contact or "Not provided" }}
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    {% endfor %}
+
+
+                {% else %}
+
+
+                    <div class="empty">
+
+                        <div class="empty-icon">
+                            ✓
+                        </div>
+
+                        <strong>
+                            No rejected properties
+                        </strong>
+
+                        <p>
+                            Rejected properties will appear here.
+                        </p>
+
+                    </div>
+
+
+                {% endif %}
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             REJECTED BOOKINGS
+        ================================================= -->
+
+        <div class="section-card">
+
+
+            <div class="rejection-title">
+
+                <h3>
+                    Rejected Bookings
+                </h3>
+
+                <span class="rejection-count">
+                    {{ rejected_bookings }}
+                </span>
+
+            </div>
+
+
+            <div class="booking-list">
+
+
+                {% set rejected_booking_list =
+                    bookings
+                    |selectattr("status", "equalto", "rejected")
+                    |list
+                %}
+
+
+                {% if rejected_booking_list %}
+
+
+                    {% for booking in rejected_booking_list %}
+
+
+                    <div class="booking-card">
+
+
+                        <div class="booking-header">
+
+
+                            <div>
+
+                                <div class="booking-id">
+                                    Booking #{{ booking.id }}
+                                </div>
+
+                                <div class="booking-property">
+                                    {{ booking.property.property_name }}
+                                </div>
+
+                            </div>
+
+
+                            <span class="status status-rejected">
+                                Rejected
+                            </span>
+
+
+                        </div>
+
+
+                        <div class="booking-grid">
+
+
+                            <div>
+
+                                <div class="detail-label">
+                                    Customer
+                                </div>
+
+                                <div class="detail-value">
+                                    {{ booking.customer_name }}
+                                </div>
+
+                            </div>
+
+
+                            <div>
+
+                                <div class="detail-label">
+                                    Contact
+                                </div>
+
+                                <div class="detail-value">
+                                    {{ booking.customer_contact }}
+                                </div>
+
+                            </div>
+
+
+                            <div>
+
+                                <div class="detail-label">
+                                    Guests
+                                </div>
+
+                                <div class="detail-value">
+                                    {{ booking.guests }}
+                                </div>
+
+                            </div>
+
+
+                            <div>
+
+                                <div class="detail-label">
+                                    Check-in
+                                </div>
+
+                                <div class="detail-value">
+
+                                    {% if booking.check_in %}
+                                        {{ booking.check_in.strftime("%d-%m-%Y") }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                            <div>
+
+                                <div class="detail-label">
+                                    Check-out
+                                </div>
+
+                                <div class="detail-value">
+
+                                    {% if booking.check_out %}
+                                        {{ booking.check_out.strftime("%d-%m-%Y") }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                            <div>
+
+                                <div class="detail-label">
+                                    Total
+                                </div>
+
+                                <div class="detail-value">
+                                    ₹{{ "%.2f"|format(
+                                        booking.total_price|float
+                                    ) }}
                                 </div>
 
                             </div>
@@ -1886,21 +2694,38 @@
 
                     </div>
 
+
                     {% endfor %}
 
 
                 {% else %}
 
+
                     <div class="empty">
-                        No bookings or inquiries yet.
+
+                        <div class="empty-icon">
+                            ✓
+                        </div>
+
+                        <strong>
+                            No rejected bookings
+                        </strong>
+
+                        <p>
+                            Rejected bookings will appear here.
+                        </p>
+
                     </div>
+
 
                 {% endif %}
 
 
             </div>
 
+
         </div>
+
 
     </section>
 
@@ -1914,7 +2739,9 @@
         class="tab-content"
     >
 
+
         <div class="section-card">
+
 
             <div class="section-header">
 
@@ -1923,11 +2750,13 @@
                 </h2>
 
                 <span>
+
                     {% if users %}
                         {{ users|length }} users
                     {% else %}
                         0 users
                     {% endif %}
+
                 </span>
 
             </div>
@@ -1935,9 +2764,12 @@
 
             {% if users %}
 
+
             <div class="users-wrapper">
 
+
                 <table class="users-table">
+
 
                     <thead>
 
@@ -1972,6 +2804,7 @@
 
 
                         {% for user in users %}
+
 
                         <tr>
 
@@ -2011,26 +2844,44 @@
 
                         </tr>
 
+
                         {% endfor %}
 
 
                     </tbody>
 
+
                 </table>
+
 
             </div>
 
 
             {% else %}
 
+
             <div class="empty">
-                No users found.
+
+                <div class="empty-icon">
+                    👤
+                </div>
+
+                <strong>
+                    No users found
+                </strong>
+
+                <p>
+                    Registered users will appear here.
+                </p>
+
             </div>
+
 
             {% endif %}
 
 
         </div>
+
 
     </section>
 
@@ -2084,17 +2935,11 @@
         </div>
 
 
-        <!-- =================================================
-             FORM
-        ================================================= -->
-
         <form
             id="priceForm"
             method="POST"
         >
 
-
-            <!-- MAX GUESTS -->
 
             <div class="form-group">
 
@@ -2116,8 +2961,6 @@
 
             </div>
 
-
-            <!-- PRICING METHOD -->
 
             <div class="form-group">
 
@@ -2187,8 +3030,6 @@
             </div>
 
 
-            <!-- INDIVIDUAL -->
-
             <div
                 id="individualPricing"
                 class="price-fields"
@@ -2202,8 +3043,6 @@
 
             </div>
 
-
-            <!-- GROUP -->
 
             <div
                 id="groupPricing"
@@ -2254,8 +3093,6 @@
             </div>
 
 
-            <!-- FOOTER -->
-
             <div class="modal-footer">
 
                 <button
@@ -2294,18 +3131,10 @@
 "use strict";
 
 
-/* =========================================================
-   GLOBAL VARIABLES
-========================================================= */
-
 let currentMaxGuests = 1;
 
 let groupCounter = 0;
 
-
-/* =========================================================
-   ELEMENTS
-========================================================= */
 
 const modal =
     document.getElementById("priceModal");
