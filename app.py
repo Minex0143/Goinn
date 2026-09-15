@@ -24,6 +24,7 @@ from google.auth.transport import requests
 from datetime import datetime
 import os
 import urllib.parse
+import json
 
 
 # ==================================================
@@ -133,6 +134,10 @@ class Property(db.Model):
         nullable=False
     )
 
+    # ----------------------------------------------
+    # PROPERTY INFORMATION
+    # ----------------------------------------------
+
     property_name = db.Column(
         db.String(200),
         nullable=False
@@ -153,9 +158,39 @@ class Property(db.Model):
         nullable=True
     )
 
+    # ----------------------------------------------
+    # GUEST INFORMATION
+    # ----------------------------------------------
+
+    max_guests = db.Column(
+        db.Integer,
+        nullable=False
+    )
+
+    # ----------------------------------------------
+    # NEW ADMIN PRICING SYSTEM
+    # ----------------------------------------------
+
+    pricing_method = db.Column(
+        db.String(30),
+        nullable=True
+    )
+
+    pricing_data = db.Column(
+        db.Text,
+        nullable=True
+    )
+
+    # ----------------------------------------------
+    # OLD PRICING COLUMNS
+    #
+    # Kept for compatibility with the existing
+    # database. They are no longer entered by owner.
+    # ----------------------------------------------
+
     price_1_guest = db.Column(
         db.Float,
-        nullable=False
+        nullable=True
     )
 
     price_2_guest = db.Column(
@@ -178,10 +213,9 @@ class Property(db.Model):
         nullable=True
     )
 
-    max_guests = db.Column(
-        db.Integer,
-        nullable=False
-    )
+    # ----------------------------------------------
+    # STATUS
+    # ----------------------------------------------
 
     status = db.Column(
         db.String(30),
@@ -194,7 +228,9 @@ class Property(db.Model):
         server_default=db.func.now()
     )
 
-    # Relationship to owner
+    # ----------------------------------------------
+    # OWNER RELATIONSHIP
+    # ----------------------------------------------
 
     owner = db.relationship(
         "User",
@@ -281,8 +317,6 @@ class Booking(db.Model):
         server_default=db.func.now()
     )
 
-    # Relationships
-
     user = db.relationship(
         "User",
         foreign_keys=[user_id]
@@ -292,6 +326,104 @@ class Booking(db.Model):
         "Property",
         foreign_keys=[property_id]
     )
+
+
+# ==================================================
+# DATABASE MIGRATION
+# ==================================================
+#
+# Render uses PostgreSQL.
+#
+# db.create_all() does NOT add new columns to an
+# existing table, so we add the new pricing columns
+# if they don't already exist.
+#
+# ==================================================
+
+def update_database_schema():
+
+    try:
+
+        database_url = app.config[
+            "SQLALCHEMY_DATABASE_URI"
+        ]
+
+        # ------------------------------------------
+        # PostgreSQL
+        # ------------------------------------------
+
+        if database_url.startswith(
+            "postgresql"
+        ):
+
+            from sqlalchemy import inspect, text
+
+            inspector = inspect(db.engine)
+
+            columns = [
+                column["name"]
+                for column in inspector.get_columns(
+                    "property"
+                )
+            ]
+
+            with db.engine.begin() as connection:
+
+                if "pricing_method" not in columns:
+
+                    connection.execute(
+                        text(
+                            """
+                            ALTER TABLE property
+                            ADD COLUMN pricing_method
+                            VARCHAR(30)
+                            """
+                        )
+                    )
+
+                if "pricing_data" not in columns:
+
+                    connection.execute(
+                        text(
+                            """
+                            ALTER TABLE property
+                            ADD COLUMN pricing_data
+                            TEXT
+                            """
+                        )
+                    )
+
+                # Old price columns were NOT NULL.
+                # Make them nullable because pricing is
+                # now entered by Admin.
+
+                for column_name in [
+                    "price_1_guest",
+                    "price_2_guest",
+                    "price_3_guest",
+                    "price_4_guest",
+                    "price_5_guest"
+                ]:
+
+                    if column_name in columns:
+
+                        connection.execute(
+                            text(
+                                f"""
+                                ALTER TABLE property
+                                ALTER COLUMN
+                                {column_name}
+                                DROP NOT NULL
+                                """
+                            )
+                        )
+
+    except Exception as error:
+
+        print(
+            "Database schema update warning:",
+            error
+        )
 
 
 # ==================================================
@@ -308,10 +440,81 @@ def load_user(user_id):
 
 
 # ==================================================
-# HELPER - GET PRICE FOR GUESTS
+# PRICE CALCULATION
 # ==================================================
 
-def get_property_price(property_obj, guests):
+def get_property_price(
+    property_obj,
+    guests
+):
+
+    # ----------------------------------------------
+    # Check new pricing system
+    # ----------------------------------------------
+
+    if property_obj.pricing_method:
+
+        try:
+
+            pricing = json.loads(
+                property_obj.pricing_data
+                or "[]"
+            )
+
+        except Exception:
+
+            return None
+
+
+        # ------------------------------------------
+        # INDIVIDUAL PRICING
+        # ------------------------------------------
+
+        if property_obj.pricing_method == "individual":
+
+            for item in pricing:
+
+                if int(item["guests"]) == guests:
+
+                    return float(
+                        item["price"]
+                    )
+
+
+        # ------------------------------------------
+        # GROUP PRICING
+        # ------------------------------------------
+
+        elif property_obj.pricing_method == "group":
+
+            for item in pricing:
+
+                minimum = int(
+                    item["min_guests"]
+                )
+
+                maximum = int(
+                    item["max_guests"]
+                )
+
+                if (
+                    minimum
+                    <= guests
+                    <= maximum
+                ):
+
+                    return float(
+                        item["price"]
+                    )
+
+
+    # ----------------------------------------------
+    # OLD DATA FALLBACK
+    #
+    # This allows existing properties to continue
+    # working until they are updated with the new
+    # Admin pricing system.
+    # ----------------------------------------------
 
     if guests == 1:
 
@@ -447,7 +650,7 @@ def book_property(property_id):
 
 
     # ----------------------------------------------
-    # GET FORM DATA
+    # FORM DATA
     # ----------------------------------------------
 
     check_in_text = request.form.get(
@@ -466,10 +669,6 @@ def book_property(property_id):
     ).strip()
 
 
-    # ----------------------------------------------
-    # CUSTOMER DETAILS
-    # ----------------------------------------------
-
     customer_name = request.form.get(
         "customer_name",
         ""
@@ -487,7 +686,7 @@ def book_property(property_id):
 
 
     # ----------------------------------------------
-    # REQUIRED VALIDATION
+    # VALIDATION
     # ----------------------------------------------
 
     if not check_in_text:
@@ -551,7 +750,7 @@ def book_property(property_id):
 
 
     # ----------------------------------------------
-    # PARSE DATES
+    # DATE PARSING
     # ----------------------------------------------
 
     try:
@@ -576,10 +775,6 @@ def book_property(property_id):
         )
 
 
-    # ----------------------------------------------
-    # DATE VALIDATION
-    # ----------------------------------------------
-
     if check_out <= check_in:
 
         return render_template(
@@ -594,7 +789,7 @@ def book_property(property_id):
 
 
     # ----------------------------------------------
-    # GUEST VALIDATION
+    # GUEST PARSING
     # ----------------------------------------------
 
     try:
@@ -637,7 +832,7 @@ def book_property(property_id):
 
 
     # ----------------------------------------------
-    # GET PRICE
+    # GET ADMIN-CONFIGURED PRICE
     # ----------------------------------------------
 
     price_per_day = get_property_price(
@@ -654,7 +849,8 @@ def book_property(property_id):
             user=current_user,
             error=(
                 "Price for the selected number "
-                "of guests is not configured."
+                "of guests has not been configured "
+                "by Admin yet."
             )
         )
 
@@ -717,7 +913,6 @@ def book_property(property_id):
     # ----------------------------------------------
 
     owner = property_obj.owner
-
 
     owner_contact = None
 
@@ -805,9 +1000,6 @@ Thank you.
         )
 
     else:
-
-        # If owner contact is not configured,
-        # use WhatsApp without a number.
 
         whatsapp_url = (
             "https://wa.me/?text="
@@ -1039,10 +1231,6 @@ def complete_profile():
         )
 
 
-    # ------------------------------------------
-    # GET
-    # ------------------------------------------
-
     if request.method == "GET":
 
         return render_template(
@@ -1051,10 +1239,6 @@ def complete_profile():
             email=email
         )
 
-
-    # ------------------------------------------
-    # FORM DATA
-    # ------------------------------------------
 
     name = request.form.get(
         "name",
@@ -1122,10 +1306,6 @@ def complete_profile():
         )
 
 
-    # ------------------------------------------
-    # EXISTING GOOGLE USER
-    # ------------------------------------------
-
     existing_user = User.query.filter_by(
         google_id=google_id
     ).first()
@@ -1147,10 +1327,6 @@ def complete_profile():
 
         user = existing_user
 
-
-    # ------------------------------------------
-    # NEW USER
-    # ------------------------------------------
 
     else:
 
@@ -1177,7 +1353,7 @@ def complete_profile():
 
 
     # ------------------------------------------
-    # CLEAR SESSION
+    # CLEAR PROFILE SESSION
     # ------------------------------------------
 
     session.pop(
@@ -1285,8 +1461,6 @@ def owner_dashboard():
     bookings = []
 
 
-    # Get bookings for owner's properties
-
     if properties:
 
         property_ids = [
@@ -1340,6 +1514,12 @@ def add_property():
         )
 
 
+    # ----------------------------------------------
+    # PROPERTY INFORMATION ONLY
+    #
+    # NO PRICING HERE
+    # ----------------------------------------------
+
     property_name = request.form.get(
         "property_name",
         ""
@@ -1360,31 +1540,15 @@ def add_property():
         ""
     ).strip()
 
+    max_guests_text = request.form.get(
+        "max_guests",
+        ""
+    ).strip()
 
-    price_1_guest = request.form.get(
-        "price_1_guest"
-    )
 
-    price_2_guest = request.form.get(
-        "price_2_guest"
-    )
-
-    price_3_guest = request.form.get(
-        "price_3_guest"
-    )
-
-    price_4_guest = request.form.get(
-        "price_4_guest"
-    )
-
-    price_5_guest = request.form.get(
-        "price_5_guest"
-    )
-
-    max_guests = request.form.get(
-        "max_guests"
-    )
-
+    # ----------------------------------------------
+    # VALIDATION
+    # ----------------------------------------------
 
     if not property_name:
 
@@ -1410,15 +1574,7 @@ def add_property():
         )
 
 
-    if not price_1_guest:
-
-        return (
-            "Price for 1 guest is required",
-            400
-        )
-
-
-    if not max_guests:
+    if not max_guests_text:
 
         return (
             "Maximum guests is required",
@@ -1428,44 +1584,14 @@ def add_property():
 
     try:
 
-        price_1 = float(
-            price_1_guest
-        )
-
-        price_2 = (
-            float(price_2_guest)
-            if price_2_guest
-            else None
-        )
-
-        price_3 = (
-            float(price_3_guest)
-            if price_3_guest
-            else None
-        )
-
-        price_4 = (
-            float(price_4_guest)
-            if price_4_guest
-            else None
-        )
-
-        price_5 = (
-            float(price_5_guest)
-            if price_5_guest
-            else None
-        )
-
         maximum_guests = int(
-            max_guests
+            max_guests_text
         )
-
 
     except ValueError:
 
         return (
-            "Please enter valid pricing "
-            "and guest information.",
+            "Maximum guests must be a valid number.",
             400
         )
 
@@ -1473,11 +1599,22 @@ def add_property():
     if maximum_guests < 1:
 
         return (
-            "Maximum guests must be "
-            "at least 1.",
+            "Maximum guests must be at least 1.",
             400
         )
 
+
+    if maximum_guests > 100:
+
+        return (
+            "Maximum guests cannot exceed 100.",
+            400
+        )
+
+
+    # ----------------------------------------------
+    # CREATE PROPERTY
+    # ----------------------------------------------
 
     property_obj = Property(
 
@@ -1491,17 +1628,11 @@ def add_property():
 
         images=images,
 
-        price_1_guest=price_1,
-
-        price_2_guest=price_2,
-
-        price_3_guest=price_3,
-
-        price_4_guest=price_4,
-
-        price_5_guest=price_5,
-
         max_guests=maximum_guests,
+
+        pricing_method=None,
+
+        pricing_data=None,
 
         status="pending"
     )
@@ -1553,15 +1684,19 @@ def admin_dashboard():
 
 
 # ==================================================
-# APPROVE PROPERTY
+# ADMIN PRICE FORM
 # ==================================================
 
 @app.route(
-    "/admin/property/<int:property_id>/approve",
+    "/admin/property/<int:property_id>/set-price",
     methods=["POST"]
 )
 @login_required
-def approve_property(property_id):
+def set_property_price(property_id):
+
+    # ----------------------------------------------
+    # ADMIN ONLY
+    # ----------------------------------------------
 
     if current_user.role != "admin":
 
@@ -1570,6 +1705,10 @@ def approve_property(property_id):
             403
         )
 
+
+    # ----------------------------------------------
+    # FIND PROPERTY
+    # ----------------------------------------------
 
     property_obj = db.session.get(
         Property,
@@ -1584,6 +1723,293 @@ def approve_property(property_id):
             404
         )
 
+
+    # ----------------------------------------------
+    # GET FORM DATA
+    # ----------------------------------------------
+
+    pricing_method = request.form.get(
+        "pricing_method",
+        ""
+    ).strip().lower()
+
+
+    max_guests_text = request.form.get(
+        "max_guests",
+        ""
+    ).strip()
+
+
+    # ----------------------------------------------
+    # VALIDATE METHOD
+    # ----------------------------------------------
+
+    if pricing_method not in [
+        "individual",
+        "group"
+    ]:
+
+        return (
+            "Invalid pricing method.",
+            400
+        )
+
+
+    # ----------------------------------------------
+    # VALIDATE MAX GUESTS
+    # ----------------------------------------------
+
+    try:
+
+        max_guests = int(
+            max_guests_text
+        )
+
+    except ValueError:
+
+        return (
+            "Maximum guests must be a valid number.",
+            400
+        )
+
+
+    if max_guests < 1 or max_guests > 100:
+
+        return (
+            "Maximum guests must be between 1 and 100.",
+            400
+        )
+
+
+    # ==================================================
+    # INDIVIDUAL PRICING
+    # ==================================================
+
+    if pricing_method == "individual":
+
+        pricing = []
+
+
+        for guest_number in range(
+            1,
+            max_guests + 1
+        ):
+
+            price_text = request.form.get(
+                f"price_{guest_number}",
+                ""
+            ).strip()
+
+
+            if not price_text:
+
+                return (
+                    f"Price for {guest_number} "
+                    f"guest(s) is required.",
+                    400
+                )
+
+
+            try:
+
+                price = float(
+                    price_text
+                )
+
+            except ValueError:
+
+                return (
+                    f"Invalid price for "
+                    f"{guest_number} guest(s).",
+                    400
+                )
+
+
+            if price < 0:
+
+                return (
+                    "Price cannot be negative.",
+                    400
+                )
+
+
+            pricing.append({
+
+                "guests": guest_number,
+
+                "price": price
+            })
+
+
+    # ==================================================
+    # GROUP PRICING
+    # ==================================================
+
+    else:
+
+        pricing = []
+
+        group_count_text = request.form.get(
+            "group_count",
+            ""
+        ).strip()
+
+
+        try:
+
+            group_count = int(
+                group_count_text
+            )
+
+        except ValueError:
+
+            return (
+                "Invalid number of groups.",
+                400
+            )
+
+
+        if group_count < 1:
+
+            return (
+                "At least one group is required.",
+                400
+            )
+
+
+        expected_start = 1
+
+
+        for group_number in range(
+            1,
+            group_count + 1
+        ):
+
+            min_text = request.form.get(
+                f"group_{group_number}_min",
+                ""
+            ).strip()
+
+            max_text = request.form.get(
+                f"group_{group_number}_max",
+                ""
+            ).strip()
+
+            price_text = request.form.get(
+                f"group_{group_number}_price",
+                ""
+            ).strip()
+
+
+            if not min_text or not max_text:
+
+                return (
+                    "Every guest group must have "
+                    "a minimum and maximum.",
+                    400
+                )
+
+
+            try:
+
+                minimum = int(
+                    min_text
+                )
+
+                maximum = int(
+                    max_text
+                )
+
+                price = float(
+                    price_text
+                )
+
+            except ValueError:
+
+                return (
+                    "Invalid group pricing information.",
+                    400
+                )
+
+
+            # ------------------------------------------
+            # GROUP VALIDATION
+            # ------------------------------------------
+
+            if minimum != expected_start:
+
+                return (
+                    "Guest groups must start from "
+                    f"{expected_start}.",
+                    400
+                )
+
+
+            if maximum < minimum:
+
+                return (
+                    "Group maximum cannot be less "
+                    "than group minimum.",
+                    400
+                )
+
+
+            if maximum > max_guests:
+
+                return (
+                    "Guest group exceeds maximum "
+                    "guest count.",
+                    400
+                )
+
+
+            if price < 0:
+
+                return (
+                    "Price cannot be negative.",
+                    400
+                )
+
+
+            pricing.append({
+
+                "min_guests": minimum,
+
+                "max_guests": maximum,
+
+                "price": price
+            })
+
+
+            expected_start = maximum + 1
+
+
+        # ------------------------------------------
+        # MAKE SURE ALL GUEST COUNTS ARE COVERED
+        # ------------------------------------------
+
+        if expected_start != max_guests + 1:
+
+            return (
+                "Guest groups must cover all guests "
+                f"from 1 to {max_guests}.",
+                400
+            )
+
+
+    # ==================================================
+    # SAVE PRICING
+    # ==================================================
+
+    property_obj.max_guests = max_guests
+
+    property_obj.pricing_method = (
+        pricing_method
+    )
+
+    property_obj.pricing_data = json.dumps(
+        pricing
+    )
 
     property_obj.status = "approved"
 
@@ -1660,6 +2086,8 @@ def logout():
 with app.app_context():
 
     db.create_all()
+
+    update_database_schema()
 
 
 # ==================================================
