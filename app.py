@@ -65,7 +65,24 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
+@app.route("/admin/reset-database")
+@login_required
+def reset_database():
 
+    if not current_user.is_admin:
+        return "Unauthorized", 403
+
+    db.session.execute(
+        db.text("DROP SCHEMA public CASCADE")
+    )
+
+    db.session.execute(
+        db.text("CREATE SCHEMA public")
+    )
+
+    db.session.commit()
+
+    return "Database reset successfully. Restart the application."
 # ==================================================
 # JINJA FILTER
 # ==================================================
