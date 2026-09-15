@@ -748,6 +748,89 @@ def add_property():
     return render_template(
         "add_property.html"
     )
+
+# ==================================================
+# ADMIN DASHBOARD
+# ==================================================
+
+@app.route("/admin")
+@login_required
+def admin_dashboard():
+
+    # Only admin users can access this page
+    if current_user.role != "admin":
+        return "Access denied", 403
+
+    properties = Property.query.order_by(
+        Property.created_at.desc()
+    ).all()
+
+    return render_template(
+        "admin_dashboard.html",
+        properties=properties
+    )
+
+
+# ==================================================
+# APPROVE PROPERTY
+# ==================================================
+
+@app.route(
+    "/admin/property/<int:property_id>/approve",
+    methods=["POST"]
+)
+@login_required
+def approve_property(property_id):
+
+    if current_user.role != "admin":
+        return "Access denied", 403
+
+    property_obj = db.session.get(
+        Property,
+        property_id
+    )
+
+    if not property_obj:
+        return "Property not found", 404
+
+    property_obj.status = "approved"
+
+    db.session.commit()
+
+    return redirect(
+        url_for("admin_dashboard")
+    )
+
+
+# ==================================================
+# REJECT PROPERTY
+# ==================================================
+
+@app.route(
+    "/admin/property/<int:property_id>/reject",
+    methods=["POST"]
+)
+@login_required
+def reject_property(property_id):
+
+    if current_user.role != "admin":
+        return "Access denied", 403
+
+    property_obj = db.session.get(
+        Property,
+        property_id
+    )
+
+    if not property_obj:
+        return "Property not found", 404
+
+    property_obj.status = "rejected"
+
+    db.session.commit()
+
+    return redirect(
+        url_for("admin_dashboard")
+    )
 # ==================================================
 # LOGOUT
 # ==================================================
