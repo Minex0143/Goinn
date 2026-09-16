@@ -1078,7 +1078,6 @@ def reject_booking(booking_id):
 # ==================================================
 # LOGIN
 # ==================================================
-
 @app.route("/login")
 def login():
 
@@ -1088,9 +1087,19 @@ def login():
             url_for("home")
         )
 
+    # --------------------------------------------------
+    # SAVE THE PAGE USER WANTED TO VISIT
+    # --------------------------------------------------
+
+    next_url = request.args.get("next")
+
+    if next_url:
+        session["login_next"] = next_url
+
     return render_template(
         "login.html"
     )
+
 
 
 # ==================================================
