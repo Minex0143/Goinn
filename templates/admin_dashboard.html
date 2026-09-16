@@ -3057,13 +3057,7 @@
                         </td>
 
                         <td>
-
-                            {% if owner.properties %}
-                                {{ owner.properties|length }}
-                            {% else %}
-                                0
-                            {% endif %}
-
+                            {{ properties|selectattr("owner_id", "equalto", owner.id)|list|length }}
                         </td>
 
                         <td>
