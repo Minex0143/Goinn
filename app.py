@@ -27,6 +27,7 @@ import os
 import urllib.parse
 import json
 
+from sqlalchemy.exc import IntegrityError
 
 # ==================================================
 # FLASK CONFIGURATION
@@ -1684,6 +1685,8 @@ def admin_dashboard():
         status="pending"
     ).count()
 
+    
+
     rejected_bookings = Booking.query.filter_by(
         status="rejected"
     ).count()
@@ -1692,6 +1695,10 @@ def admin_dashboard():
     rejected_properties = Property.query.filter_by(
         status="rejected"
     ).count()
+
+    property_owners = PropertyOwner.query.order_by(
+    PropertyOwner.id.desc()
+    ).all()
 
     return render_template(
         "admin_dashboard.html",
@@ -1702,7 +1709,8 @@ def admin_dashboard():
         pending_bookings=pending_bookings,
 
         rejected_bookings=rejected_bookings,
-        rejected_properties=rejected_properties
+        rejected_properties=rejected_properties,
+        property_owners = property_owners
     )
 
 
@@ -2295,6 +2303,92 @@ def reject_property(property_id):
     )
 
 
+
+# Delete route 
+
+@app.route("/admin/delete-user/<int:user_id>", methods=["POST"])
+@login_required
+def delete_user(user_id):
+
+    if not current_user.is_admin:
+        return redirect(url_for("index"))
+
+    user = User.query.get_or_404(user_id)
+
+    # Never allow admin account to be deleted
+    if user.is_admin:
+        flash("Admin users cannot be deleted.", "danger")
+        return redirect(url_for("admin_dashboard"))
+
+    try:
+
+        db.session.delete(user)
+
+        db.session.commit()
+
+        flash(
+            f"User {user.name} deleted successfully.",
+            "success"
+        )
+
+    except IntegrityError:
+
+        db.session.rollback()
+
+        flash(
+            "Cannot delete this user because related records exist.",
+            "danger"
+        )
+
+    return redirect(
+        url_for("admin_dashboard")
+    )
+
+# Delete propertyowner 
+
+@app.route(
+    "/admin/delete-property-owner/<int:owner_id>",
+    methods=["POST"]
+)
+@login_required
+def delete_property_owner(owner_id):
+
+    if not current_user.is_admin:
+        return redirect(url_for("index"))
+
+    owner = PropertyOwner.query.get_or_404(owner_id)
+
+    try:
+
+        # Delete owner's properties first
+        properties = Property.query.filter_by(
+            owner_id=owner.id
+        ).all()
+
+        for property in properties:
+            db.session.delete(property)
+
+        db.session.delete(owner)
+
+        db.session.commit()
+
+        flash(
+            f"Property owner {owner.name} and their properties were deleted successfully.",
+            "success"
+        )
+
+    except IntegrityError:
+
+        db.session.rollback()
+
+        flash(
+            "Cannot delete this property owner because related bookings or records exist.",
+            "danger"
+        )
+
+    return redirect(
+        url_for("admin_dashboard")
+    )
 # ==================================================
 # LOGOUT
 # ==================================================
