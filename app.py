@@ -2344,7 +2344,6 @@ def delete_user(user_id):
     )
 
 # Delete propertyowner 
-
 @app.route(
     "/admin/delete-property-owner/<int:owner_id>",
     methods=["POST"]
@@ -2353,41 +2352,47 @@ def delete_user(user_id):
 def delete_property_owner(owner_id):
 
     if not current_user.is_admin:
-        return redirect(url_for("index"))
+        return "Unauthorized", 403
 
-    owner = PropertyOwner.query.get_or_404(owner_id)
+    owner = User.query.filter_by(
+        id=owner_id,
+        role="owner"
+    ).first_or_404()
 
     try:
 
-        # Delete owner's properties first
-        properties = Property.query.filter_by(
+        # Find properties belonging to this owner
+        owner_properties = Property.query.filter_by(
             owner_id=owner.id
         ).all()
 
-        for property in properties:
+        # Delete owner properties
+        for property in owner_properties:
             db.session.delete(property)
 
+        # Delete owner
         db.session.delete(owner)
 
         db.session.commit()
 
         flash(
-            f"Property owner {owner.name} and their properties were deleted successfully.",
+            f"Property owner {owner.name} deleted successfully.",
             "success"
         )
 
-    except IntegrityError:
+    except Exception as e:
 
         db.session.rollback()
 
+        print("DELETE OWNER ERROR:", e)
+
         flash(
-            "Cannot delete this property owner because related bookings or records exist.",
+            "Unable to delete property owner.",
             "danger"
         )
 
-    return redirect(
-        url_for("admin_dashboard")
-    )
+    return redirect(url_for("admin_dashboard"))
+
 # ==================================================
 # LOGOUT
 # ==================================================
