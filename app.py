@@ -3,6 +3,7 @@ from flask import (
     render_template,
     request,
     redirect,
+    flash,
     url_for,
     session
 )
@@ -1391,6 +1392,12 @@ def complete_profile():
     )
 
     login_user(user)
+
+    # Return the user to the page they originally
+# wanted to access before signing in.
+    next_url = session.pop("login_next", None)
+    if next_url:
+        return redirect(next_url)
 
     return redirect(
         url_for("home")
