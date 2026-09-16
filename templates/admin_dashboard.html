@@ -1151,6 +1151,35 @@
             color: white;
         }
 
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .delete-btn:hover {
+            background: #b52a37;
+        }
+        
+        .delete-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .owner-role-badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: #e8f0fe;
+            color: #174ea6;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
         /* =====================================================
            MOBILE
         ===================================================== */
@@ -1468,9 +1497,21 @@
             type="button"
             class="tab-button"
             data-tab="users"
-        >
+            >
             Users
         </button>
+        
+        <button
+            type="button"
+            class="tab-button"
+            data-tab="property-owners"
+            >
+            Property Owners
+        </button>
+
+
+        
+        
 
 
     </div>
