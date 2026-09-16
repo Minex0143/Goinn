@@ -1452,18 +1452,18 @@ def complete_profile():
 @login_required
 def user_dashboard():
 
-    bookings = Booking.query.filter_by(
-        user_id=current_user.id
-    ).order_by(
-        Booking.created_at.desc()
-    ).all()
+    bookings = (
+        Booking.query
+        .filter_by(user_id=current_user.id)
+        .order_by(Booking.created_at.desc())
+        .all()
+    )
 
     return render_template(
         "user_dashboard.html",
         user=current_user,
         bookings=bookings
     )
-
 
 # ==================================================
 # BECOME OWNER
