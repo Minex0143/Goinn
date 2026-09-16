@@ -2305,37 +2305,111 @@ def reject_property(property_id):
 
 # Delete route 
 
-@app.route("/admin/delete-user/<int:user_id>", methods=["POST"])
+# ==================================================
+# DELETE NORMAL USER
+# ==================================================
+
+@app.route(
+    "/admin/delete-user/<int:user_id>",
+    methods=["POST"]
+)
 @login_required
 def delete_user(user_id):
 
+    # Only admin can delete users
     if not current_user.is_admin:
-        return redirect(url_for("index"))
+        return "Unauthorized", 403
 
-    user = User.query.get_or_404(user_id)
+    user = db.session.get(
+        User,
+        user_id
+    )
 
-    # Never allow admin account to be deleted
+    if not user:
+        flash(
+            "User not found.",
+            "danger"
+        )
+
+        return redirect(
+            url_for("admin_dashboard")
+        )
+
+    # Never allow an admin account to be deleted
     if user.is_admin:
-        flash("Admin users cannot be deleted.", "danger")
-        return redirect(url_for("admin_dashboard"))
+        flash(
+            "Admin users cannot be deleted.",
+            "danger"
+        )
+
+        return redirect(
+            url_for("admin_dashboard")
+        )
 
     try:
 
-        db.session.delete(user)
+        # ------------------------------------------------
+        # DELETE BOOKINGS CREATED BY THIS USER
+        # ------------------------------------------------
+
+        Booking.query.filter_by(
+            user_id=user.id
+        ).delete(
+            synchronize_session=False
+        )
+
+
+        # ------------------------------------------------
+        # IF USER HAS PROPERTIES, DELETE THEIR BOOKINGS
+        # AND PROPERTIES TOO
+        # ------------------------------------------------
+
+        user_properties = Property.query.filter_by(
+            owner_id=user.id
+        ).all()
+
+        for property_obj in user_properties:
+
+            Booking.query.filter_by(
+                property_id=property_obj.id
+            ).delete(
+                synchronize_session=False
+            )
+
+            db.session.delete(
+                property_obj
+            )
+
+
+        # ------------------------------------------------
+        # DELETE USER
+        # ------------------------------------------------
+
+        user_name = user.name
+
+        db.session.delete(
+            user
+        )
 
         db.session.commit()
 
         flash(
-            f"User {user.name} deleted successfully.",
+            f"User {user_name} deleted successfully.",
             "success"
         )
 
-    except IntegrityError:
+    except Exception as error:
 
         db.session.rollback()
 
+        print(
+            "DELETE USER ERROR:",
+            error
+        )
+
         flash(
-            "Cannot delete this user because related records exist.",
+            "Unable to delete user. "
+            "Please check the application logs.",
             "danger"
         )
 
@@ -2343,7 +2417,11 @@ def delete_user(user_id):
         url_for("admin_dashboard")
     )
 
-# Delete propertyowner 
+
+# ==================================================
+# DELETE PROPERTY OWNER
+# ==================================================
+
 @app.route(
     "/admin/delete-property-owner/<int:owner_id>",
     methods=["POST"]
@@ -2351,47 +2429,101 @@ def delete_user(user_id):
 @login_required
 def delete_property_owner(owner_id):
 
+    # Only admin can delete property owners
     if not current_user.is_admin:
         return "Unauthorized", 403
 
     owner = User.query.filter_by(
         id=owner_id,
         role="owner"
-    ).first_or_404()
+    ).first()
+
+    if not owner:
+
+        flash(
+            "Property owner not found.",
+            "danger"
+        )
+
+        return redirect(
+            url_for("admin_dashboard")
+        )
 
     try:
 
-        # Find properties belonging to this owner
+        # ------------------------------------------------
+        # FIND ALL PROPERTIES BELONGING TO OWNER
+        # ------------------------------------------------
+
         owner_properties = Property.query.filter_by(
             owner_id=owner.id
         ).all()
 
-        # Delete owner properties
-        for property in owner_properties:
-            db.session.delete(property)
 
-        # Delete owner
-        db.session.delete(owner)
+        # ------------------------------------------------
+        # DELETE BOOKINGS FOR OWNER PROPERTIES
+        # ------------------------------------------------
+
+        for property_obj in owner_properties:
+
+            Booking.query.filter_by(
+                property_id=property_obj.id
+            ).delete(
+                synchronize_session=False
+            )
+
+            db.session.delete(
+                property_obj
+            )
+
+
+        # ------------------------------------------------
+        # DELETE BOOKINGS CREATED BY OWNER
+        # ------------------------------------------------
+
+        Booking.query.filter_by(
+            user_id=owner.id
+        ).delete(
+            synchronize_session=False
+        )
+
+
+        # ------------------------------------------------
+        # DELETE OWNER
+        # ------------------------------------------------
+
+        owner_name = owner.name
+
+        db.session.delete(
+            owner
+        )
 
         db.session.commit()
 
         flash(
-            f"Property owner {owner.name} deleted successfully.",
+            f"Property owner {owner_name} "
+            f"and associated properties deleted successfully.",
             "success"
         )
 
-    except Exception as e:
+    except Exception as error:
 
         db.session.rollback()
 
-        print("DELETE OWNER ERROR:", e)
+        print(
+            "DELETE PROPERTY OWNER ERROR:",
+            error
+        )
 
         flash(
-            "Unable to delete property owner.",
+            "Unable to delete property owner. "
+            "Please check the application logs.",
             "danger"
         )
 
-    return redirect(url_for("admin_dashboard"))
+    return redirect(
+        url_for("admin_dashboard")
+    )
 
 # ==================================================
 # LOGOUT
