@@ -5,7 +5,6 @@
     content="width=device-width, initial-scale=1"
 >
 
-
 <style>
 
     body {
@@ -14,28 +13,22 @@
         background: #f5f5f5;
     }
 
-
     .container {
         max-width: 700px;
         margin: 30px auto;
         padding: 20px;
     }
 
-
     .card {
         background: white;
         padding: 25px;
         border-radius: 12px;
-
-        box-shadow:
-            0 2px 10px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-
 
     h1 {
         margin-top: 0;
     }
-
 
     label {
         display: block;
@@ -43,104 +36,53 @@
         font-weight: bold;
     }
 
-
     input,
     select {
         width: 100%;
         padding: 12px;
         margin-top: 6px;
-
         box-sizing: border-box;
-
         border: 1px solid #ccc;
         border-radius: 6px;
     }
 
-
     .summary {
         background: #f0f7ff;
-
         padding: 15px;
-
         margin-top: 20px;
-
         border-radius: 8px;
     }
-
 
     .summary p {
         margin: 8px 0;
     }
 
-
     .error {
         background: #ffe5e5;
-
         color: #b00020;
-
         padding: 12px;
-
         border-radius: 6px;
-
         margin-bottom: 15px;
     }
 
-
-    .pricing-info {
-        margin-top: 10px;
-
-        padding: 10px;
-
-        background: #f8f8f8;
-
-        border-radius: 6px;
-
-        font-size: 14px;
-
-        color: #555;
-    }
-
-
-    .price-error {
-        margin-top: 10px;
-
-        color: #b00020;
-
-        font-size: 14px;
-
-        display: none;
-    }
-
-
     button {
         width: 100%;
-
         padding: 14px;
-
         margin-top: 25px;
-
         border: none;
-
         border-radius: 7px;
-
         background: #25D366;
-
         color: white;
-
         font-size: 17px;
-
         cursor: pointer;
     }
-
 
     button:hover {
         opacity: 0.9;
     }
 
-
     .back {
         display: inline-block;
-
         margin-top: 20px;
     }
 
@@ -155,24 +97,14 @@
 
 
     <p>
-
-        <strong>
-            Location:
-        </strong>
-
+        <strong>Location:</strong>
         {{ property.location }}
-
     </p>
 
 
     <p>
-
-        <strong>
-            Address:
-        </strong>
-
+        <strong>Address:</strong>
         {{ property.property_address }}
-
     </p>
 
 
@@ -204,7 +136,6 @@
             Check-in
         </label>
 
-
         <input
             type="date"
             id="check_in"
@@ -220,7 +151,6 @@
         <label>
             Check-out
         </label>
-
 
         <input
             type="date"
@@ -238,7 +168,6 @@
             Number of Guests
         </label>
 
-
         <select
             id="guests"
             name="guests"
@@ -249,59 +178,21 @@
                 Select guests
             </option>
 
-
             {% for number in range(
                 1,
                 property.max_guests + 1
             ) %}
 
-
             <option value="{{ number }}">
 
                 {{ number }}
-
                 Guest{% if number > 1 %}s{% endif %}
 
             </option>
 
-
             {% endfor %}
 
         </select>
-
-
-        <!-- ==================================================
-             PRICING INFORMATION
-        ================================================== -->
-
-        <div class="pricing-info">
-
-            {% if property.pricing_method == "group" %}
-
-                Group pricing is applied based on
-                the number of guests.
-
-            {% elif property.pricing_method == "individual" %}
-
-                Individual pricing is applied based on
-                the number of guests.
-
-            {% else %}
-
-                Pricing is not configured.
-
-            {% endif %}
-
-        </div>
-
-
-        <div
-            id="priceError"
-            class="price-error"
-        >
-            Price for the selected number of guests
-            is not configured.
-        </div>
 
 
         <!-- ==================================================
@@ -311,7 +202,6 @@
         <label>
             Your Name
         </label>
-
 
         <input
             type="text"
@@ -329,7 +219,6 @@
             Contact Number
         </label>
 
-
         <input
             type="tel"
             name="customer_contact"
@@ -346,7 +235,6 @@
             Email
         </label>
 
-
         <input
             type="email"
             name="customer_email"
@@ -361,52 +249,35 @@
 
         <div class="summary">
 
-
             <h3>
                 Booking Summary
             </h3>
 
-
             <p>
-
                 Nights:
-
                 <strong id="nights">
                     0
                 </strong>
-
             </p>
 
-
             <p>
-
                 Price per day:
-
                 ₹<strong id="price">
-                    0.00
+                    0
                 </strong>
-
             </p>
-
 
             <p>
-
                 Estimated total:
-
                 ₹<strong id="total">
-                    0.00
+                    0
                 </strong>
-
             </p>
-
 
             <small>
-
                 Final price can be discussed
                 with the property owner on WhatsApp.
-
             </small>
-
 
         </div>
 
@@ -415,10 +286,7 @@
              SUBMIT
         ================================================== -->
 
-        <button
-            type="submit"
-            id="submitButton"
-        >
+        <button type="submit">
 
             Continue to WhatsApp
 
@@ -427,10 +295,6 @@
 
     </form>
 
-
-    <!-- ==================================================
-         BACK
-    ================================================== -->
 
     <a
         class="back"
@@ -449,69 +313,194 @@
 
 </div><script>
 
-
     // ==================================================
     // ELEMENTS
     // ==================================================
 
     const checkIn =
-        document.getElementById(
-            "check_in"
-        );
-
+        document.getElementById("check_in");
 
     const checkOut =
-        document.getElementById(
-            "check_out"
-        );
-
+        document.getElementById("check_out");
 
     const guests =
-        document.getElementById(
-            "guests"
-        );
-
+        document.getElementById("guests");
 
     const nightsElement =
-        document.getElementById(
-            "nights"
-        );
-
+        document.getElementById("nights");
 
     const priceElement =
-        document.getElementById(
-            "price"
-        );
-
+        document.getElementById("price");
 
     const totalElement =
-        document.getElementById(
-            "total"
-        );
-
-
-    const priceError =
-        document.getElementById(
-            "priceError"
-        );
-
-
-    const submitButton =
-        document.getElementById(
-            "submitButton"
-        );
+        document.getElementById("total");
 
 
     // ==================================================
-    // PRICING DATA FROM DATABASE
+    // TODAY'S DATE
+    // ==================================================
+    //
+    // Uses local browser date.
+    //
+    // Example:
+    // Today = 16-09-2026
+    //
+    // Check-in minimum = 16-09-2026
+    // Check-out minimum = 17-09-2026
+    //
+    // ==================================================
+
+    function getLocalDateString(date) {
+
+        const year =
+            date.getFullYear();
+
+        const month =
+            String(
+                date.getMonth() + 1
+            ).padStart(2, "0");
+
+        const day =
+            String(
+                date.getDate()
+            ).padStart(2, "0");
+
+        return (
+            year +
+            "-" +
+            month +
+            "-" +
+            day
+        );
+    }
+
+
+    const today =
+        new Date();
+
+
+    const todayString =
+        getLocalDateString(today);
+
+
+    // ==================================================
+    // SET CHECK-IN MINIMUM
+    // ==================================================
+
+    checkIn.min =
+        todayString;
+
+
+    // ==================================================
+    // CHECK-OUT MINIMUM
+    // ==================================================
+    //
+    // Initially checkout must be tomorrow.
+    //
+    // ==================================================
+
+    const tomorrow =
+        new Date(today);
+
+    tomorrow.setDate(
+        tomorrow.getDate() + 1
+    );
+
+
+    checkOut.min =
+        getLocalDateString(tomorrow);
+
+
+    // ==================================================
+    // WHEN CHECK-IN CHANGES
+    // ==================================================
+
+    checkIn.addEventListener(
+        "change",
+        function () {
+
+            if (!checkIn.value) {
+
+                checkOut.min =
+                    getLocalDateString(tomorrow);
+
+                return;
+
+            }
+
+
+            const selectedCheckIn =
+                new Date(
+                    checkIn.value + "T00:00:00"
+                );
+
+
+            // Checkout must be at least
+            // one day after check-in.
+
+            const minimumCheckOut =
+                new Date(
+                    selectedCheckIn
+                );
+
+
+            minimumCheckOut.setDate(
+                minimumCheckOut.getDate() + 1
+            );
+
+
+            const minimumCheckOutString =
+                getLocalDateString(
+                    minimumCheckOut
+                );
+
+
+            checkOut.min =
+                minimumCheckOutString;
+
+
+            // If an already selected checkout
+            // is before the new minimum,
+            // clear it.
+
+            if (
+                checkOut.value &&
+                checkOut.value <
+                minimumCheckOutString
+            ) {
+
+                checkOut.value = "";
+
+            }
+
+
+            calculatePrice();
+
+        }
+    );
+
+
+    // ==================================================
+    // PRICING DATA FROM SERVER
+    // ==================================================
+    //
+    // This supports BOTH:
+    //
+    // 1. Individual pricing
+    //
+    // 2. Group pricing
+    //
     // ==================================================
 
     const pricingMethod =
-        {{ property.pricing_method | tojson }};
+        {{ property.pricing_method|tojson }};
 
 
     const pricingData =
-        {{ property.pricing_data | fromjson | tojson }};
+        {{ (
+            property.pricing_data
+            |fromjson
+        )|tojson }};
 
 
     // ==================================================
@@ -522,9 +511,10 @@
         guestCount
     ) {
 
-
         if (
-            !guestCount
+            !guestCount ||
+            !pricingData ||
+            !Array.isArray(pricingData)
         ) {
 
             return null;
@@ -532,39 +522,17 @@
         }
 
 
-        if (
-            !pricingMethod
-        ) {
-
-            return null;
-
-        }
-
-
-        if (
-            !Array.isArray(
-                pricingData
-            )
-        ) {
-
-            return null;
-
-        }
-
-
-        // ==============================================
+        // ==================================================
         // INDIVIDUAL PRICING
-        // ==============================================
+        // ==================================================
 
         if (
             pricingMethod === "individual"
         ) {
 
-
             for (
                 const item of pricingData
             ) {
-
 
                 const itemGuests =
                     parseInt(
@@ -572,19 +540,24 @@
                     );
 
 
-                const itemPrice =
-                    parseFloat(
-                        item.price
-                    );
-
-
                 if (
-                    itemGuests === guestCount
-                    &&
-                    !isNaN(itemPrice)
+                    itemGuests ===
+                    guestCount
                 ) {
 
-                    return itemPrice;
+                    const price =
+                        parseFloat(
+                            item.price
+                        );
+
+
+                    if (
+                        Number.isFinite(price)
+                    ) {
+
+                        return price;
+
+                    }
 
                 }
 
@@ -593,19 +566,17 @@
         }
 
 
-        // ==============================================
+        // ==================================================
         // GROUP PRICING
-        // ==============================================
+        // ==================================================
 
         if (
             pricingMethod === "group"
         ) {
 
-
             for (
                 const item of pricingData
             ) {
-
 
                 const minimum =
                     parseInt(
@@ -619,21 +590,21 @@
                     );
 
 
-                const itemPrice =
+                const price =
                     parseFloat(
                         item.price
                     );
 
 
                 if (
-                    guestCount >= minimum
-                    &&
+                    Number.isFinite(minimum) &&
+                    Number.isFinite(maximum) &&
+                    Number.isFinite(price) &&
+                    guestCount >= minimum &&
                     guestCount <= maximum
-                    &&
-                    !isNaN(itemPrice)
                 ) {
 
-                    return itemPrice;
+                    return price;
 
                 }
 
@@ -648,27 +619,10 @@
 
 
     // ==================================================
-    // CALCULATE PRICE
+    // CALCULATE BOOKING PRICE
     // ==================================================
 
     function calculatePrice() {
-
-
-        // ==============================================
-        // RESET PRICE ERROR
-        // ==============================================
-
-        priceError.style.display =
-            "none";
-
-
-        submitButton.disabled =
-            false;
-
-
-        // ==============================================
-        // REQUIRED VALUES
-        // ==============================================
 
         if (
             !checkIn.value ||
@@ -676,37 +630,29 @@
             !guests.value
         ) {
 
-
             nightsElement.innerText =
                 "0";
 
-
             priceElement.innerText =
-                "0.00";
-
+                "0";
 
             totalElement.innerText =
-                "0.00";
-
+                "0";
 
             return;
 
         }
 
 
-        // ==============================================
-        // DATES
-        // ==============================================
-
         const start =
             new Date(
-                checkIn.value
+                checkIn.value + "T00:00:00"
             );
 
 
         const end =
             new Date(
-                checkOut.value
+                checkOut.value + "T00:00:00"
             );
 
 
@@ -715,46 +661,27 @@
 
 
         const nights =
-            Math.ceil(
+            Math.round(
                 difference /
-                (
-                    1000 *
-                    60 *
-                    60 *
-                    24
-                )
+                (1000 * 60 * 60 * 24)
             );
 
 
-        // ==============================================
-        // INVALID DATES
-        // ==============================================
-
-        if (
-            nights <= 0
-        ) {
-
+        if (nights <= 0) {
 
             nightsElement.innerText =
                 "0";
 
-
             priceElement.innerText =
-                "0.00";
-
+                "0";
 
             totalElement.innerText =
-                "0.00";
-
+                "0";
 
             return;
 
         }
 
-
-        // ==============================================
-        // GUEST COUNT
-        // ==============================================
 
         const guestCount =
             parseInt(
@@ -762,61 +689,38 @@
             );
 
 
-        // ==============================================
-        // GET PRICE
-        // ==============================================
-
         const price =
             getPriceForGuests(
                 guestCount
             );
 
 
-        // ==============================================
+        // ==================================================
         // PRICE NOT CONFIGURED
-        // ==============================================
+        // ==================================================
 
         if (
-            price === null
+            price === null ||
+            price < 0
         ) {
-
 
             nightsElement.innerText =
                 nights;
 
-
             priceElement.innerText =
                 "Not configured";
 
-
             totalElement.innerText =
                 "Not available";
-
-
-            priceError.style.display =
-                "block";
-
-
-            submitButton.disabled =
-                true;
-
 
             return;
 
         }
 
 
-        // ==============================================
-        // TOTAL
-        // ==============================================
-
         const total =
             price * nights;
 
-
-        // ==============================================
-        // DISPLAY
-        // ==============================================
 
         nightsElement.innerText =
             nights;
@@ -833,14 +737,8 @@
 
 
     // ==================================================
-    // EVENTS
+    // EVENT LISTENERS
     // ==================================================
-
-    checkIn.addEventListener(
-        "change",
-        calculatePrice
-    );
-
 
     checkOut.addEventListener(
         "change",
@@ -853,5 +751,11 @@
         calculatePrice
     );
 
+
+    // ==================================================
+    // INITIALIZE
+    // ==================================================
+
+    calculatePrice();
 
 </script></body></html>
