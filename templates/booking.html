@@ -1,332 +1,674 @@
-<!DOCTYPE html>
+<!DOCTYPE html><html><head><title>Book Property - Goinn</title>
 
-<html>
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+>
 
-<head>
 
-    <title>Book Property - Goinn</title>
+<style>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1"
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: #f5f5f5;
+    }
+
+
+    .container {
+        max-width: 700px;
+        margin: 30px auto;
+        padding: 20px;
+    }
+
+
+    .card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+
+        box-shadow:
+            0 2px 10px rgba(0,0,0,0.1);
+    }
+
+
+    h1 {
+        margin-top: 0;
+    }
+
+
+    label {
+        display: block;
+        margin-top: 15px;
+        font-weight: bold;
+    }
+
+
+    input,
+    select {
+        width: 100%;
+        padding: 12px;
+        margin-top: 6px;
+
+        box-sizing: border-box;
+
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
+
+
+    .summary {
+        background: #f0f7ff;
+
+        padding: 15px;
+
+        margin-top: 20px;
+
+        border-radius: 8px;
+    }
+
+
+    .summary p {
+        margin: 8px 0;
+    }
+
+
+    .error {
+        background: #ffe5e5;
+
+        color: #b00020;
+
+        padding: 12px;
+
+        border-radius: 6px;
+
+        margin-bottom: 15px;
+    }
+
+
+    .pricing-info {
+        margin-top: 10px;
+
+        padding: 10px;
+
+        background: #f8f8f8;
+
+        border-radius: 6px;
+
+        font-size: 14px;
+
+        color: #555;
+    }
+
+
+    .price-error {
+        margin-top: 10px;
+
+        color: #b00020;
+
+        font-size: 14px;
+
+        display: none;
+    }
+
+
+    button {
+        width: 100%;
+
+        padding: 14px;
+
+        margin-top: 25px;
+
+        border: none;
+
+        border-radius: 7px;
+
+        background: #25D366;
+
+        color: white;
+
+        font-size: 17px;
+
+        cursor: pointer;
+    }
+
+
+    button:hover {
+        opacity: 0.9;
+    }
+
+
+    .back {
+        display: inline-block;
+
+        margin-top: 20px;
+    }
+
+</style>
+
+</head><body><div class="container"><div class="card">
+
+
+    <h1>
+        Book {{ property.property_name }}
+    </h1>
+
+
+    <p>
+
+        <strong>
+            Location:
+        </strong>
+
+        {{ property.location }}
+
+    </p>
+
+
+    <p>
+
+        <strong>
+            Address:
+        </strong>
+
+        {{ property.property_address }}
+
+    </p>
+
+
+    {% if error %}
+
+    <div class="error">
+
+        {{ error }}
+
+    </div>
+
+    {% endif %}
+
+
+    <form
+        method="POST"
+        action="{{ url_for(
+            'book_property',
+            property_id=property.id
+        ) }}"
     >
 
-    <style>
 
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background: #f5f5f5;
-        }
+        <!-- ==================================================
+             CHECK-IN
+        ================================================== -->
 
-        .container {
-            max-width: 700px;
-            margin: 30px auto;
-            padding: 20px;
-        }
-
-        .card {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        h1 {
-            margin-top: 0;
-        }
-
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: bold;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 12px;
-            margin-top: 6px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-        }
-
-        .summary {
-            background: #f0f7ff;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 8px;
-        }
-
-        .summary p {
-            margin: 8px 0;
-        }
-
-        .error {
-            background: #ffe5e5;
-            color: #b00020;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-        }
-
-        button {
-            width: 100%;
-            padding: 14px;
-            margin-top: 25px;
-            border: none;
-            border-radius: 7px;
-            background: #25D366;
-            color: white;
-            font-size: 17px;
-            cursor: pointer;
-        }
-
-        .back {
-            display: inline-block;
-            margin-top: 20px;
-        }
-
-    </style>
-
-</head>
+        <label>
+            Check-in
+        </label>
 
 
-<body>
+        <input
+            type="date"
+            id="check_in"
+            name="check_in"
+            required
+        >
 
 
-<div class="container">
+        <!-- ==================================================
+             CHECK-OUT
+        ================================================== -->
+
+        <label>
+            Check-out
+        </label>
 
 
-    <div class="card">
+        <input
+            type="date"
+            id="check_out"
+            name="check_out"
+            required
+        >
 
 
-        <h1>
-            Book {{ property.property_name }}
-        </h1>
+        <!-- ==================================================
+             GUESTS
+        ================================================== -->
+
+        <label>
+            Number of Guests
+        </label>
 
 
-        <p>
-            <strong>Location:</strong>
-            {{ property.location }}
-        </p>
+        <select
+            id="guests"
+            name="guests"
+            required
+        >
+
+            <option value="">
+                Select guests
+            </option>
 
 
-        <p>
-            <strong>Address:</strong>
-            {{ property.property_address }}
-        </p>
+            {% for number in range(
+                1,
+                property.max_guests + 1
+            ) %}
 
 
-        {% if error %}
+            <option value="{{ number }}">
 
-        <div class="error">
+                {{ number }}
 
-            {{ error }}
+                Guest{% if number > 1 %}s{% endif %}
+
+            </option>
+
+
+            {% endfor %}
+
+        </select>
+
+
+        <!-- ==================================================
+             PRICING INFORMATION
+        ================================================== -->
+
+        <div class="pricing-info">
+
+            {% if property.pricing_method == "group" %}
+
+                Group pricing is applied based on
+                the number of guests.
+
+            {% elif property.pricing_method == "individual" %}
+
+                Individual pricing is applied based on
+                the number of guests.
+
+            {% else %}
+
+                Pricing is not configured.
+
+            {% endif %}
 
         </div>
 
-        {% endif %}
+
+        <div
+            id="priceError"
+            class="price-error"
+        >
+            Price for the selected number of guests
+            is not configured.
+        </div>
 
 
-        <form
-            method="POST"
-            action="{{ url_for(
-                'book_property',
-                property_id=property.id
-            ) }}"
+        <!-- ==================================================
+             CUSTOMER NAME
+        ================================================== -->
+
+        <label>
+            Your Name
+        </label>
+
+
+        <input
+            type="text"
+            name="customer_name"
+            value="{{ user.name }}"
+            required
         >
 
 
-            <label>
-                Check-in
-            </label>
+        <!-- ==================================================
+             CONTACT
+        ================================================== -->
 
-            <input
-                type="date"
-                id="check_in"
-                name="check_in"
-                required
-            >
+        <label>
+            Contact Number
+        </label>
 
 
-            <label>
-                Check-out
-            </label>
-
-            <input
-                type="date"
-                id="check_out"
-                name="check_out"
-                required
-            >
-
-
-            <label>
-                Number of Guests
-            </label>
-
-            <select
-                id="guests"
-                name="guests"
-                required
-            >
-
-                <option value="">
-                    Select guests
-                </option>
-
-                {% for number in range(
-                    1,
-                    property.max_guests + 1
-                ) %}
-
-                <option value="{{ number }}">
-                    {{ number }}
-                    Guest{% if number > 1 %}s{% endif %}
-                </option>
-
-                {% endfor %}
-
-            </select>
-
-
-            <label>
-                Your Name
-            </label>
-
-            <input
-                type="text"
-                name="customer_name"
-                value="{{ user.name }}"
-                required
-            >
-
-
-            <label>
-                Contact Number
-            </label>
-
-            <input
-                type="tel"
-                name="customer_contact"
-                value="{{ user.contact or '' }}"
-                required
-            >
-
-
-            <label>
-                Email
-            </label>
-
-            <input
-                type="email"
-                name="customer_email"
-                value="{{ user.email }}"
-                required
-            >
-
-
-            <div class="summary">
-
-                <h3>
-                    Booking Summary
-                </h3>
-
-                <p>
-                    Nights:
-                    <strong id="nights">
-                        0
-                    </strong>
-                </p>
-
-                <p>
-                    Price per day:
-                    ₹<strong id="price">
-                        0
-                    </strong>
-                </p>
-
-                <p>
-                    Estimated total:
-                    ₹<strong id="total">
-                        0
-                    </strong>
-                </p>
-
-                <small>
-                    Final price can be discussed
-                    with the property owner on WhatsApp.
-                </small>
-
-            </div>
-
-
-            <button type="submit">
-
-                Continue to WhatsApp
-
-            </button>
-
-
-        </form>
-
-
-        <a
-            class="back"
-            href="{{ url_for(
-                'property_details',
-                property_id=property.id
-            ) }}"
+        <input
+            type="tel"
+            name="customer_contact"
+            value="{{ user.contact or '' }}"
+            required
         >
-            ← Back to Property
-        </a>
 
 
-    </div>
+        <!-- ==================================================
+             EMAIL
+        ================================================== -->
+
+        <label>
+            Email
+        </label>
+
+
+        <input
+            type="email"
+            name="customer_email"
+            value="{{ user.email }}"
+            required
+        >
+
+
+        <!-- ==================================================
+             BOOKING SUMMARY
+        ================================================== -->
+
+        <div class="summary">
+
+
+            <h3>
+                Booking Summary
+            </h3>
+
+
+            <p>
+
+                Nights:
+
+                <strong id="nights">
+                    0
+                </strong>
+
+            </p>
+
+
+            <p>
+
+                Price per day:
+
+                ₹<strong id="price">
+                    0.00
+                </strong>
+
+            </p>
+
+
+            <p>
+
+                Estimated total:
+
+                ₹<strong id="total">
+                    0.00
+                </strong>
+
+            </p>
+
+
+            <small>
+
+                Final price can be discussed
+                with the property owner on WhatsApp.
+
+            </small>
+
+
+        </div>
+
+
+        <!-- ==================================================
+             SUBMIT
+        ================================================== -->
+
+        <button
+            type="submit"
+            id="submitButton"
+        >
+
+            Continue to WhatsApp
+
+        </button>
+
+
+    </form>
+
+
+    <!-- ==================================================
+         BACK
+    ================================================== -->
+
+    <a
+        class="back"
+        href="{{ url_for(
+            'property_details',
+            property_id=property.id
+        ) }}"
+    >
+
+        ← Back to Property
+
+    </a>
 
 
 </div>
 
+</div><script>
 
-<script>
+
+    // ==================================================
+    // ELEMENTS
+    // ==================================================
 
     const checkIn =
-        document.getElementById("check_in");
+        document.getElementById(
+            "check_in"
+        );
+
 
     const checkOut =
-        document.getElementById("check_out");
+        document.getElementById(
+            "check_out"
+        );
+
 
     const guests =
-        document.getElementById("guests");
+        document.getElementById(
+            "guests"
+        );
+
 
     const nightsElement =
-        document.getElementById("nights");
+        document.getElementById(
+            "nights"
+        );
+
 
     const priceElement =
-        document.getElementById("price");
+        document.getElementById(
+            "price"
+        );
+
 
     const totalElement =
-        document.getElementById("total");
+        document.getElementById(
+            "total"
+        );
 
 
-    const prices = {
+    const priceError =
+        document.getElementById(
+            "priceError"
+        );
 
-        1: {{ property.price_1_guest or 0 }},
 
-        2: {{ property.price_2_guest or 0 }},
+    const submitButton =
+        document.getElementById(
+            "submitButton"
+        );
 
-        3: {{ property.price_3_guest or 0 }},
 
-        4: {{ property.price_4_guest or 0 }},
+    // ==================================================
+    // PRICING DATA FROM DATABASE
+    // ==================================================
 
-        5: {{ property.price_5_guest or 0 }}
+    const pricingMethod =
+        {{ property.pricing_method | tojson }};
 
-    };
 
+    const pricingData =
+        {{ property.pricing_data | fromjson | tojson }};
+
+
+    // ==================================================
+    // GET PRICE FOR GUEST COUNT
+    // ==================================================
+
+    function getPriceForGuests(
+        guestCount
+    ) {
+
+
+        if (
+            !guestCount
+        ) {
+
+            return null;
+
+        }
+
+
+        if (
+            !pricingMethod
+        ) {
+
+            return null;
+
+        }
+
+
+        if (
+            !Array.isArray(
+                pricingData
+            )
+        ) {
+
+            return null;
+
+        }
+
+
+        // ==============================================
+        // INDIVIDUAL PRICING
+        // ==============================================
+
+        if (
+            pricingMethod === "individual"
+        ) {
+
+
+            for (
+                const item of pricingData
+            ) {
+
+
+                const itemGuests =
+                    parseInt(
+                        item.guests
+                    );
+
+
+                const itemPrice =
+                    parseFloat(
+                        item.price
+                    );
+
+
+                if (
+                    itemGuests === guestCount
+                    &&
+                    !isNaN(itemPrice)
+                ) {
+
+                    return itemPrice;
+
+                }
+
+            }
+
+        }
+
+
+        // ==============================================
+        // GROUP PRICING
+        // ==============================================
+
+        if (
+            pricingMethod === "group"
+        ) {
+
+
+            for (
+                const item of pricingData
+            ) {
+
+
+                const minimum =
+                    parseInt(
+                        item.min_guests
+                    );
+
+
+                const maximum =
+                    parseInt(
+                        item.max_guests
+                    );
+
+
+                const itemPrice =
+                    parseFloat(
+                        item.price
+                    );
+
+
+                if (
+                    guestCount >= minimum
+                    &&
+                    guestCount <= maximum
+                    &&
+                    !isNaN(itemPrice)
+                ) {
+
+                    return itemPrice;
+
+                }
+
+            }
+
+        }
+
+
+        return null;
+
+    }
+
+
+    // ==================================================
+    // CALCULATE PRICE
+    // ==================================================
 
     function calculatePrice() {
+
+
+        // ==============================================
+        // RESET PRICE ERROR
+        // ==============================================
+
+        priceError.style.display =
+            "none";
+
+
+        submitButton.disabled =
+            false;
+
+
+        // ==============================================
+        // REQUIRED VALUES
+        // ==============================================
 
         if (
             !checkIn.value ||
@@ -334,21 +676,38 @@
             !guests.value
         ) {
 
-            nightsElement.innerText = "0";
 
-            priceElement.innerText = "0";
+            nightsElement.innerText =
+                "0";
 
-            totalElement.innerText = "0";
+
+            priceElement.innerText =
+                "0.00";
+
+
+            totalElement.innerText =
+                "0.00";
+
 
             return;
+
         }
 
 
+        // ==============================================
+        // DATES
+        // ==============================================
+
         const start =
-            new Date(checkIn.value);
+            new Date(
+                checkIn.value
+            );
+
 
         const end =
-            new Date(checkOut.value);
+            new Date(
+                checkOut.value
+            );
 
 
         const difference =
@@ -358,21 +717,44 @@
         const nights =
             Math.ceil(
                 difference /
-                (1000 * 60 * 60 * 24)
+                (
+                    1000 *
+                    60 *
+                    60 *
+                    24
+                )
             );
 
 
-        if (nights <= 0) {
+        // ==============================================
+        // INVALID DATES
+        // ==============================================
 
-            nightsElement.innerText = "0";
+        if (
+            nights <= 0
+        ) {
 
-            priceElement.innerText = "0";
 
-            totalElement.innerText = "0";
+            nightsElement.innerText =
+                "0";
+
+
+            priceElement.innerText =
+                "0.00";
+
+
+            totalElement.innerText =
+                "0.00";
+
 
             return;
+
         }
 
+
+        // ==============================================
+        // GUEST COUNT
+        // ==============================================
 
         const guestCount =
             parseInt(
@@ -380,13 +762,61 @@
             );
 
 
-        const price =
-            prices[guestCount] || 0;
+        // ==============================================
+        // GET PRICE
+        // ==============================================
 
+        const price =
+            getPriceForGuests(
+                guestCount
+            );
+
+
+        // ==============================================
+        // PRICE NOT CONFIGURED
+        // ==============================================
+
+        if (
+            price === null
+        ) {
+
+
+            nightsElement.innerText =
+                nights;
+
+
+            priceElement.innerText =
+                "Not configured";
+
+
+            totalElement.innerText =
+                "Not available";
+
+
+            priceError.style.display =
+                "block";
+
+
+            submitButton.disabled =
+                true;
+
+
+            return;
+
+        }
+
+
+        // ==============================================
+        // TOTAL
+        // ==============================================
 
         const total =
             price * nights;
 
+
+        // ==============================================
+        // DISPLAY
+        // ==============================================
 
         nightsElement.innerText =
             nights;
@@ -401,6 +831,10 @@
 
     }
 
+
+    // ==================================================
+    // EVENTS
+    // ==================================================
 
     checkIn.addEventListener(
         "change",
@@ -419,9 +853,5 @@
         calculatePrice
     );
 
-</script>
 
-
-</body>
-
-</html>
+</script></body></html>
