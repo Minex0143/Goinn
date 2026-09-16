@@ -436,7 +436,6 @@ def ensure_database_columns():
             error
         )
 
-
 # ==================================================
 # PRICING HELPER
 # ==================================================
@@ -447,11 +446,9 @@ def get_property_price(
 ):
 
     if not property_obj:
-
         return None
 
     if not guests or guests < 1:
-
         return None
 
     # ------------------------------------------------
@@ -462,11 +459,9 @@ def get_property_price(
         not property_obj.max_guests
         or property_obj.max_guests < 1
     ):
-
         return None
 
     if guests > property_obj.max_guests:
-
         return None
 
     # ------------------------------------------------
@@ -493,9 +488,9 @@ def get_property_price(
 
             pricing = []
 
-        # --------------------------------------------
-        # INDIVIDUAL
-        # --------------------------------------------
+        # ============================================
+        # INDIVIDUAL PRICING
+        # ============================================
 
         if (
             property_obj.pricing_method
@@ -525,9 +520,9 @@ def get_property_price(
 
                     return item_price
 
-        # --------------------------------------------
-        # GROUP
-        # --------------------------------------------
+        # ============================================
+        # GROUP PRICING
+        # ============================================
 
         elif (
             property_obj.pricing_method
@@ -558,9 +553,7 @@ def get_property_price(
                     continue
 
                 if (
-                    minimum
-                    <= guests
-                    <= maximum
+                    minimum <= guests <= maximum
                 ):
 
                     return item_price
@@ -587,6 +580,14 @@ def get_property_price(
         guests
     )
 
+
+# ==================================================
+# MAKE PRICE HELPER AVAILABLE TO JINJA
+# ==================================================
+
+app.jinja_env.globals[
+    "get_property_price"
+] = get_property_price
 
 # ==================================================
 # HOME
