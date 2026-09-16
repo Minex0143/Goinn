@@ -2871,13 +2871,13 @@
                         <td>
 
                             <span class="role-badge">
-
                                 {% if user.is_admin %}
-                                    Admin
-                                {% else %}
-                                    User
-                                {% endif %}
-
+                                Admin
+                                % elif user.role == "owner" %}
+                                Property Owner
+                                % else %}
+                                User
+                                % endif %}
                             </span>
 
                         </td>
