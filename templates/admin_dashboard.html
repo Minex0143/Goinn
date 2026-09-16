@@ -2775,10 +2775,362 @@
          USERS TAB
     ===================================================== -->
 
-    <section
-        id="users"
-        class="tab-content"
-    >
+    <!-- =====================================================
+     USERS TAB
+===================================================== -->
+
+<section
+    id="users"
+    class="tab-content"
+>
+
+    <div class="section-card">
+
+        <div class="section-header">
+
+            <div>
+                <h2>
+                    Users
+                </h2>
+
+                <span>
+                    {% if users %}
+                        {{ users|length }} users
+                    {% else %}
+                        0 users
+                    {% endif %}
+                </span>
+            </div>
+
+        </div>
+
+
+        {% if users %}
+
+        <div class="users-wrapper">
+
+            <table class="users-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            ID
+                        </th>
+
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Email
+                        </th>
+
+                        <th>
+                            Contact
+                        </th>
+
+                        <th>
+                            Role
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for user in users %}
+
+                    <tr>
+
+                        <td>
+                            {{ user.id }}
+                        </td>
+
+                        <td>
+                            <div class="user-name">
+                                {{ user.name or "Not provided" }}
+                            </div>
+                        </td>
+
+                        <td>
+                            {{ user.email or "Not provided" }}
+                        </td>
+
+                        <td>
+                            {{ user.contact or "Not provided" }}
+                        </td>
+
+                        <td>
+
+                            <span class="role-badge">
+
+                                {% if user.is_admin %}
+                                    Admin
+                                {% else %}
+                                    User
+                                {% endif %}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            {% if not user.is_admin %}
+
+                            <div class="user-actions">
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'delete_user',
+                                        user_id=user.id
+                                    ) }}"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="btn delete-btn"
+                                        onclick="return confirm(
+                                            'Are you sure you want to delete user {{ user.name|e }}? This action cannot be undone.'
+                                        );"
+                                    >
+                                        Delete User
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                            {% else %}
+
+                                <span class="role-badge">
+                                    Protected
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty">
+
+            <div class="empty-icon">
+                👤
+            </div>
+
+            <strong>
+                No users found
+            </strong>
+
+            <p>
+                Registered users will appear here.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     PROPERTY OWNERS TAB
+===================================================== -->
+
+<section
+    id="property-owners"
+    class="tab-content"
+>
+
+    <div class="section-card">
+
+        <div class="section-header">
+
+            <div>
+
+                <h2>
+                    Property Owners
+                </h2>
+
+                <span>
+                    {% if property_owners %}
+                        {{ property_owners|length }} property owners
+                    {% else %}
+                        0 property owners
+                    {% endif %}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        {% if property_owners %}
+
+        <div class="users-wrapper">
+
+            <table class="users-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            ID
+                        </th>
+
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Email
+                        </th>
+
+                        <th>
+                            Contact
+                        </th>
+
+                        <th>
+                            Properties
+                        </th>
+
+                        <th>
+                            Role
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for owner in property_owners %}
+
+                    <tr>
+
+                        <td>
+                            {{ owner.id }}
+                        </td>
+
+                        <td>
+
+                            <div class="user-name">
+                                {{ owner.name or "Not provided" }}
+                            </div>
+
+                        </td>
+
+                        <td>
+                            {{ owner.email or "Not provided" }}
+                        </td>
+
+                        <td>
+                            {{ owner.contact or "Not provided" }}
+                        </td>
+
+                        <td>
+
+                            {% if owner.properties %}
+                                {{ owner.properties|length }}
+                            {% else %}
+                                0
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <span class="owner-role-badge">
+                                Property Owner
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'delete_property_owner',
+                                    owner_id=owner.id
+                                ) }}"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="btn delete-btn"
+                                    onclick="return confirm(
+                                        'Are you sure you want to delete property owner {{ owner.name|e }}? All properties belonging to this owner may also be deleted. This action cannot be undone.'
+                                    );"
+                                >
+                                    Delete Owner
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty">
+
+            <div class="empty-icon">
+                🏠
+            </div>
+
+            <strong>
+                No property owners found
+            </strong>
+
+            <p>
+                Registered property owners will appear here.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
 
 
         <div class="section-card">
