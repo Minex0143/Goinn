@@ -1676,7 +1676,15 @@ def admin_dashboard():
         Booking.id.desc()
     ).all()
 
+    # All registered users
     users = User.query.order_by(
+        User.id.desc()
+    ).all()
+
+    # Property owners are users with role = "owner"
+    property_owners = User.query.filter_by(
+        role="owner"
+    ).order_by(
         User.id.desc()
     ).all()
 
@@ -1684,8 +1692,6 @@ def admin_dashboard():
     pending_bookings = Booking.query.filter_by(
         status="pending"
     ).count()
-
-    
 
     rejected_bookings = Booking.query.filter_by(
         status="rejected"
@@ -1696,23 +1702,16 @@ def admin_dashboard():
         status="rejected"
     ).count()
 
-    property_owners = PropertyOwner.query.order_by(
-    PropertyOwner.id.desc()
-    ).all()
-
     return render_template(
         "admin_dashboard.html",
         properties=properties,
         bookings=bookings,
         users=users,
-
         pending_bookings=pending_bookings,
-
         rejected_bookings=rejected_bookings,
         rejected_properties=rejected_properties,
-        property_owners = property_owners
+        property_owners=property_owners
     )
-
 
 # ==================================================
 # ADMIN SET / UPDATE PRICE
