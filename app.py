@@ -1087,10 +1087,7 @@ def login():
             url_for("home")
         )
 
-    # --------------------------------------------------
-    # SAVE THE PAGE USER WANTED TO VISIT
-    # --------------------------------------------------
-
+    # Save the page the user originally wanted
     next_url = request.args.get("next")
 
     if next_url:
@@ -1099,7 +1096,6 @@ def login():
     return render_template(
         "login.html"
     )
-
 
 
 # ==================================================
@@ -1158,6 +1154,10 @@ def google_login():
                 400
             )
 
+        # --------------------------------------------------
+        # ADMIN
+        # --------------------------------------------------
+
         admin_email = os.environ.get(
             "ADMIN_EMAIL",
             ""
@@ -1169,6 +1169,10 @@ def google_login():
             email.strip().lower()
             == admin_email
         )
+
+        # --------------------------------------------------
+        # CHECK GOOGLE USER
+        # --------------------------------------------------
 
         user = User.query.filter_by(
             google_id=google_id
@@ -1184,9 +1188,28 @@ def google_login():
 
             login_user(user)
 
+            # ----------------------------------------------
+            # RETURN TO ORIGINAL PAGE
+            # ----------------------------------------------
+
+            next_url = session.pop(
+                "login_next",
+                None
+            )
+
+            if next_url:
+
+                return redirect(
+                    next_url
+                )
+
             return redirect(
                 url_for("home")
             )
+
+        # --------------------------------------------------
+        # CHECK EMAIL
+        # --------------------------------------------------
 
         existing_email_user = User.query.filter_by(
             email=email
@@ -1201,6 +1224,10 @@ def google_login():
                 409
             )
 
+        # --------------------------------------------------
+        # STORE GOOGLE PROFILE
+        # --------------------------------------------------
+
         session["profile_google_id"] = google_id
 
         session["profile_email"] = email
@@ -1212,6 +1239,9 @@ def google_login():
         )
 
         session["profile_is_admin"] = is_admin
+
+        # IMPORTANT:
+        # Do NOT remove login_next here.
 
         return redirect(
             url_for("complete_profile")
@@ -1236,6 +1266,7 @@ def google_login():
             "Google login",
             500
         )
+
 
 
 # ==================================================
