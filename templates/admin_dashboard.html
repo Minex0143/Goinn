@@ -1607,6 +1607,34 @@
 
     }
 
+
+
+    .flash-message {
+        padding: 13px 16px;
+        border-radius: 10px;
+        margin: 0 0 18px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .flash-success {
+        background: #ecfdf5;
+        border: 1px solid #a7f3d0;
+        color: #047857;
+    }
+
+    .flash-danger {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #b91c1c;
+    }
+
+    .flash-info {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1d4ed8;
+    }
+
 </style>
 
 </head><body><!-- =========================================================
@@ -1648,6 +1676,16 @@
 
 </div>
 
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="flash-message {% if category == 'success' %}flash-success{% elif category == 'danger' %}flash-danger{% else %}flash-info{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 
 
 <!-- =====================================================
