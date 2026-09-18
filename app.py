@@ -759,6 +759,34 @@ def home():
 
                 properties.append(property_obj)
 
+    # --------------------------------------------------
+    # REMEMBER THE USER'S SEARCH
+    # --------------------------------------------------
+    #
+    # When the user opens a property from these search
+    # results and then proceeds to booking, the selected
+    # check-in, check-out and guest count will be carried
+    # forward automatically.
+    #
+    # We only save a complete and valid search. This means
+    # a direct visit to a property will still show the
+    # normal blank booking form.
+    # --------------------------------------------------
+
+    if search_performed and not search_error:
+
+        session["booking_search_check_in"] = (
+            check_in_text
+        )
+
+        session["booking_search_check_out"] = (
+            check_out_text
+        )
+
+        session["booking_search_guests"] = (
+            str(search_guests)
+        )
+
     return render_template(
         "home.html",
         properties=properties,
@@ -861,12 +889,43 @@ def book_property(property_id):
 
     if request.method == "GET":
 
+        # --------------------------------------------------
+        # RESTORE SEARCH VALUES FROM HOME PAGE
+        # --------------------------------------------------
+        #
+        # If the user reached this property through a home
+        # page search, pre-fill the exact dates and guest
+        # count they searched for.
+        #
+        # Query-string values are also supported, so this
+        # continues to work if the property-details template
+        # is later changed to pass the values explicitly.
+        # --------------------------------------------------
+
+        booking_check_in = request.args.get(
+            "check_in",
+            session.get("booking_search_check_in", "")
+        ).strip()
+
+        booking_check_out = request.args.get(
+            "check_out",
+            session.get("booking_search_check_out", "")
+        ).strip()
+
+        booking_guests = request.args.get(
+            "guests",
+            session.get("booking_search_guests", "")
+        ).strip()
+
         return render_template(
             "booking.html",
             property=property_obj,
             user=current_user,
             today=today_string,
-            tomorrow=tomorrow_string
+            tomorrow=tomorrow_string,
+            selected_check_in=booking_check_in,
+            selected_check_out=booking_check_out,
+            selected_guests=booking_guests
         )
 
     # ==================================================
