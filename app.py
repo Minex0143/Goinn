@@ -350,6 +350,51 @@ class Booking(db.Model):
 
 
 # ==================================================
+# PROPERTY BLOCKED DATE MODEL
+# ==================================================
+
+class PropertyBlockedDate(db.Model):
+
+    __tablename__ = "property_blocked_dates"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    property_id = db.Column(
+        db.Integer,
+        db.ForeignKey("property.id"),
+        nullable=False
+    )
+
+    block_date = db.Column(
+        db.Date,
+        nullable=False
+    )
+
+    blocked_by = db.Column(
+        db.String(20),
+        nullable=False,
+        default="owner"
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        server_default=db.func.now()
+    )
+
+    property = db.relationship(
+        "Property",
+        backref=db.backref(
+            "blocked_dates",
+            lazy=True,
+            cascade="all, delete-orphan"
+        )
+    )
+
+
+# ==================================================
 # LOAD USER
 # ==================================================
 
@@ -611,7 +656,16 @@ def is_property_available(
         Booking.check_out > check_in
     ).first()
 
-    return existing_booking is None
+    if existing_booking:
+        return False
+
+    existing_block = PropertyBlockedDate.query.filter(
+        PropertyBlockedDate.property_id == property_id,
+        PropertyBlockedDate.block_date >= check_in,
+        PropertyBlockedDate.block_date < check_out
+    ).first()
+
+    return existing_block is None
 
 
 # ==================================================
@@ -1374,9 +1428,38 @@ def approve_booking(booking_id):
 
     booking = Booking.query.get_or_404(booking_id)
 
-    booking.status = "approved"
+    owner_block = PropertyBlockedDate.query.filter(
+        PropertyBlockedDate.property_id == booking.property_id,
+        PropertyBlockedDate.block_date >= booking.check_in,
+        PropertyBlockedDate.block_date < booking.check_out
+    ).first()
 
+    if owner_block:
+        flash(
+            "This booking overlaps with dates blocked by the property owner. The booking cannot be approved.",
+            "danger"
+        )
+        return redirect(url_for("admin_dashboard"))
+
+    existing_approved_booking = Booking.query.filter(
+        Booking.id != booking.id,
+        Booking.property_id == booking.property_id,
+        Booking.status == "approved",
+        Booking.check_in < booking.check_out,
+        Booking.check_out > booking.check_in
+    ).first()
+
+    if existing_approved_booking:
+        flash(
+            "Another approved booking already exists for these dates.",
+            "danger"
+        )
+        return redirect(url_for("admin_dashboard"))
+
+    booking.status = "approved"
     db.session.commit()
+
+    flash("Booking approved successfully.", "success")
 
     return redirect(url_for("admin_dashboard"))
 
@@ -1858,6 +1941,256 @@ def owner_dashboard():
         properties=properties,
         bookings=bookings
     )
+
+
+# ==================================================
+# OWNER CALENDAR
+# ==================================================
+
+@app.route("/owner/calendar")
+@login_required
+def owner_calendar():
+
+    if current_user.role not in ["owner", "admin"]:
+        return "Access denied", 403
+
+    properties = Property.query.filter_by(
+        owner_id=current_user.id
+    ).order_by(
+        Property.created_at.desc()
+    ).all()
+
+    selected_property_id = request.args.get(
+        "property_id",
+        type=int
+    )
+
+    selected_property = None
+
+    if selected_property_id:
+        selected_property = Property.query.filter_by(
+            id=selected_property_id,
+            owner_id=current_user.id
+        ).first()
+
+    if not selected_property and properties:
+        selected_property = properties[0]
+
+    return render_template(
+        "owner_calendar.html",
+        properties=properties,
+        selected_property=selected_property
+    )
+
+
+@app.route("/owner/calendar/data")
+@login_required
+def owner_calendar_data():
+
+    if current_user.role not in ["owner", "admin"]:
+        return {"status": "error", "message": "Access denied"}, 403
+
+    property_id = request.args.get("property_id", type=int)
+    year = request.args.get("year", type=int)
+    month = request.args.get("month", type=int)
+
+    if not property_id or not year or not month or month < 1 or month > 12:
+        return {"status": "error", "message": "Invalid calendar request."}, 400
+
+    property_obj = Property.query.filter_by(
+        id=property_id,
+        owner_id=current_user.id
+    ).first()
+
+    if not property_obj:
+        return {"status": "error", "message": "Property not found."}, 404
+
+    month_start = date(year, month, 1)
+
+    if month == 12:
+        next_month = date(year + 1, 1, 1)
+    else:
+        next_month = date(year, month + 1, 1)
+
+    # Owner blocks: one query for the month.
+    owner_blocks = PropertyBlockedDate.query.filter(
+        PropertyBlockedDate.property_id == property_id,
+        PropertyBlockedDate.blocked_by == "owner",
+        PropertyBlockedDate.block_date >= month_start,
+        PropertyBlockedDate.block_date < next_month
+    ).all()
+
+    owner_blocked_dates = [
+        blocked.block_date.isoformat()
+        for blocked in owner_blocks
+    ]
+
+    # Approved bookings: one query for all bookings touching this month.
+    bookings = Booking.query.filter(
+        Booking.property_id == property_id,
+        Booking.status == "approved",
+        Booking.check_in < next_month,
+        Booking.check_out > month_start
+    ).all()
+
+    booked_dates = set()
+
+    for booking in bookings:
+        current_date = max(
+            booking.check_in,
+            month_start
+        )
+        booking_end = min(
+            booking.check_out,
+            next_month
+        )
+
+        while current_date < booking_end:
+            booked_dates.add(
+                current_date.isoformat()
+            )
+            current_date += timedelta(days=1)
+
+    return {
+        "status": "ok",
+        "property_id": property_id,
+        "year": year,
+        "month": month,
+        "today": date.today().isoformat(),
+        "booked_dates": sorted(booked_dates),
+        "owner_blocked_dates": sorted(owner_blocked_dates)
+    }
+
+
+@app.route("/owner/calendar/block", methods=["POST"])
+@login_required
+def owner_block_date():
+
+    if current_user.role not in ["owner", "admin"]:
+        return "Access denied", 403
+
+    property_id = request.form.get("property_id", type=int)
+    block_date_text = request.form.get("block_date", "").strip()
+
+    property_obj = Property.query.filter_by(
+        id=property_id,
+        owner_id=current_user.id
+    ).first()
+
+    if not property_obj:
+        flash("Property not found.", "danger")
+        return redirect(url_for("owner_calendar"))
+
+    try:
+        block_date = datetime.strptime(
+            block_date_text, "%Y-%m-%d"
+        ).date()
+    except ValueError:
+        flash("Invalid date.", "danger")
+        return redirect(url_for("owner_calendar", property_id=property_id))
+
+    if block_date < date.today():
+        flash("Past dates cannot be blocked.", "danger")
+        return redirect(url_for("owner_calendar", property_id=property_id))
+
+    booking = Booking.query.filter(
+        Booking.property_id == property_id,
+        Booking.status.in_(["pending", "approved"]),
+        Booking.check_in <= block_date,
+        Booking.check_out > block_date
+    ).first()
+
+    if booking:
+        if booking.status == "approved":
+            flash("This date belongs to an approved booking and cannot be changed.", "danger")
+        else:
+            flash("This date has a pending booking and cannot be blocked.", "danger")
+        return redirect(url_for("owner_calendar", property_id=property_id))
+
+    existing_block = PropertyBlockedDate.query.filter_by(
+        property_id=property_id,
+        block_date=block_date
+    ).first()
+
+    if existing_block:
+        flash("This date is already blocked.", "info")
+        return redirect(url_for("owner_calendar", property_id=property_id))
+
+    db.session.add(PropertyBlockedDate(
+        property_id=property_id,
+        block_date=block_date,
+        blocked_by="owner"
+    ))
+    db.session.commit()
+
+    flash(
+        f"{block_date.strftime('%d-%m-%Y')} has been blocked successfully.",
+        "success"
+    )
+
+    return redirect(url_for("owner_calendar", property_id=property_id))
+
+
+@app.route("/owner/calendar/unblock", methods=["POST"])
+@login_required
+def owner_unblock_date():
+
+    if current_user.role not in ["owner", "admin"]:
+        return "Access denied", 403
+
+    property_id = request.form.get("property_id", type=int)
+    block_date_text = request.form.get("block_date", "").strip()
+
+    property_obj = Property.query.filter_by(
+        id=property_id,
+        owner_id=current_user.id
+    ).first()
+
+    if not property_obj:
+        flash("Property not found.", "danger")
+        return redirect(url_for("owner_calendar"))
+
+    try:
+        block_date = datetime.strptime(
+            block_date_text, "%Y-%m-%d"
+        ).date()
+    except ValueError:
+        flash("Invalid date.", "danger")
+        return redirect(url_for("owner_calendar", property_id=property_id))
+
+    approved_booking = Booking.query.filter(
+        Booking.property_id == property_id,
+        Booking.status == "approved",
+        Booking.check_in <= block_date,
+        Booking.check_out > block_date
+    ).first()
+
+    if approved_booking:
+        flash(
+            "This date belongs to an approved booking and cannot be unblocked.",
+            "danger"
+        )
+        return redirect(url_for("owner_calendar", property_id=property_id))
+
+    blocked_date = PropertyBlockedDate.query.filter_by(
+        property_id=property_id,
+        block_date=block_date,
+        blocked_by="owner"
+    ).first()
+
+    if not blocked_date:
+        flash("This date is not blocked by you.", "info")
+        return redirect(url_for("owner_calendar", property_id=property_id))
+
+    db.session.delete(blocked_date)
+    db.session.commit()
+
+    flash(
+        f"{block_date.strftime('%d-%m-%Y')} is available again.",
+        "success"
+    )
+
+    return redirect(url_for("owner_calendar", property_id=property_id))
 
 
 # ==================================================
@@ -2755,6 +3088,12 @@ def delete_user(user_id):
                 synchronize_session=False
             )
 
+            PropertyBlockedDate.query.filter_by(
+                property_id=property_obj.id
+            ).delete(
+                synchronize_session=False
+            )
+
             db.session.delete(
                 property_obj
             )
@@ -2846,6 +3185,12 @@ def delete_property_owner(owner_id):
         for property_obj in owner_properties:
 
             Booking.query.filter_by(
+                property_id=property_obj.id
+            ).delete(
+                synchronize_session=False
+            )
+
+            PropertyBlockedDate.query.filter_by(
                 property_id=property_obj.id
             ).delete(
                 synchronize_session=False
