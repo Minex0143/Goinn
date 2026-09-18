@@ -287,6 +287,7 @@
                 id="check_in"
                 name="check_in"
                 min="{{ today }}"
+                value="{{ selected_check_in or '' }}"
                 required
             >
 
@@ -310,6 +311,7 @@
                 id="check_out"
                 name="check_out"
                 min="{{ tomorrow }}"
+                value="{{ selected_check_out or '' }}"
                 required
             >
 
@@ -349,7 +351,10 @@
                         property.max_guests + 1
                     ) %}
 
-                    <option value="{{ number }}">
+                    <option
+                        value="{{ number }}"
+                        {% if selected_guests|string == number|string %}selected{% endif %}
+                    >
 
                         {{ number }}
                         Guest{% if number > 1 %}s{% endif %}
