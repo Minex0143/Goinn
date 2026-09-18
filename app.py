@@ -593,6 +593,28 @@ app.jinja_env.globals[
 ] = get_property_price
 
 # ==================================================
+# PROPERTY AVAILABILITY HELPER
+# ==================================================
+
+def is_property_available(
+    property_id,
+    check_in,
+    check_out
+):
+
+    # A pending or approved booking blocks the property
+    # for overlapping dates. Rejected bookings do not.
+    existing_booking = Booking.query.filter(
+        Booking.property_id == property_id,
+        Booking.status.in_(["pending", "approved"]),
+        Booking.check_in < check_out,
+        Booking.check_out > check_in
+    ).first()
+
+    return existing_booking is None
+
+
+# ==================================================
 # HOME
 # ==================================================
 
@@ -604,23 +626,150 @@ def home():
         ""
     ).strip()
 
+    check_in_text = request.args.get(
+        "check_in",
+        ""
+    ).strip()
+
+    check_out_text = request.args.get(
+        "check_out",
+        ""
+    ).strip()
+
+    guests_text = request.args.get(
+        "guests",
+        ""
+    ).strip()
+
+    today = date.today()
+    tomorrow = today + timedelta(days=1)
+
     properties = []
+    search_error = None
+    search_performed = False
+    search_guests = None
+    check_in = None
+    check_out = None
 
-    if search_location:
+    # --------------------------------------------------
+    # SEARCH IS PERFORMED ONLY WHEN ALL FOUR VALUES
+    # ARE PROVIDED.
+    # --------------------------------------------------
 
-        properties = Property.query.filter(
-            Property.status == "approved",
-            Property.location.ilike(
-                f"%{search_location}%"
-            )
-        ).order_by(
-            Property.created_at.desc()
-        ).all()
+    if (
+        search_location
+        or check_in_text
+        or check_out_text
+        or guests_text
+    ):
+
+        if not search_location:
+            search_error = "Please enter a location."
+
+        elif not check_in_text:
+            search_error = "Please select check-in date."
+
+        elif not check_out_text:
+            search_error = "Please select check-out date."
+
+        elif not guests_text:
+            search_error = "Please select number of guests."
+
+        else:
+            try:
+                check_in = datetime.strptime(
+                    check_in_text,
+                    "%Y-%m-%d"
+                ).date()
+
+                check_out = datetime.strptime(
+                    check_out_text,
+                    "%Y-%m-%d"
+                ).date()
+
+            except ValueError:
+                search_error = "Invalid date selected."
+
+            if not search_error and check_in < today:
+                search_error = (
+                    "Check-in date cannot be before today."
+                )
+
+            if not search_error and check_out <= check_in:
+                search_error = (
+                    "Check-out date must be after check-in date."
+                )
+
+            if not search_error:
+                try:
+                    search_guests = int(guests_text)
+                except ValueError:
+                    search_error = "Invalid number of guests."
+
+            if not search_error and search_guests < 1:
+                search_error = "At least one guest is required."
+
+        # --------------------------------------------------
+        # FILTER APPROVED PROPERTIES BY LOCATION, CAPACITY,
+        # PRICING AND DATE AVAILABILITY.
+        # --------------------------------------------------
+
+        if not search_error:
+            search_performed = True
+
+            candidate_properties = Property.query.filter(
+                Property.status == "approved",
+                Property.location.ilike(
+                    f"%{search_location}%"
+                )
+            ).order_by(
+                Property.created_at.desc()
+            ).all()
+
+            for property_obj in candidate_properties:
+
+                # Property must have an admin-configured capacity.
+                if (
+                    not property_obj.max_guests
+                    or property_obj.max_guests < 1
+                ):
+                    continue
+
+                if search_guests > property_obj.max_guests:
+                    continue
+
+                # A valid price must exist for the selected
+                # guest count, including group pricing.
+                price = get_property_price(
+                    property_obj,
+                    search_guests
+                )
+
+                if price is None or price < 0:
+                    continue
+
+                # Do not show properties already booked for
+                # any overlapping part of the selected dates.
+                if not is_property_available(
+                    property_obj.id,
+                    check_in,
+                    check_out
+                ):
+                    continue
+
+                properties.append(property_obj)
 
     return render_template(
         "home.html",
         properties=properties,
-        search_location=search_location
+        search_location=search_location,
+        check_in=check_in_text,
+        check_out=check_out_text,
+        search_guests=search_guests,
+        search_error=search_error,
+        search_performed=search_performed,
+        today=today.isoformat(),
+        tomorrow=tomorrow.isoformat()
     )
 
 
@@ -951,6 +1100,34 @@ def book_property(property_id):
             error=(
                 f"This property allows a maximum "
                 f"of {property_obj.max_guests} guests."
+            )
+        )
+
+    # ==================================================
+    # PROPERTY AVAILABILITY
+    # ==================================================
+
+    # Search results can become stale between the home page
+    # search and the actual booking submission. Check again
+    # here so a property cannot normally be booked for dates
+    # that are already occupied.
+
+    if not is_property_available(
+        property_obj.id,
+        check_in,
+        check_out
+    ):
+
+        return render_template(
+            "booking.html",
+            property=property_obj,
+            user=current_user,
+            today=today_string,
+            tomorrow=tomorrow_string,
+            error=(
+                "Sorry, this property is already booked "
+                "for the selected dates. Please choose "
+                "different dates."
             )
         )
 
