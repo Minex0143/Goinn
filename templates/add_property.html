@@ -565,6 +565,11 @@
             method="POST"
             action="{{ url_for('add_property') }}"
         >
+            <input
+                type="hidden"
+                name="submission_token"
+                value="{{ submission_token }}"
+                >
 
 
             <!-- ==================================================
@@ -958,6 +963,48 @@
     </div>
 
 </div>
+    
+    <script>
+        
+        const propertyForm =
+            document.querySelector("form");
+        
+        if (propertyForm) {
+            
+            propertyForm.addEventListener(
+                "submit",
+                function(event) {
+                    // Prevent a second submission
+                    // while the first one is processing.
+                    if (
+                        propertyForm.dataset.submitting
+                        === "true"
+                    ) {
+                        
+                        event.preventDefault();
+                        
+                        return;
+                    }
+                    propertyForm.dataset.submitting =
+                        "true";
+                    
+                    
+                    const submitButton =
+                        propertyForm.querySelector(
+                            'button[type="submit"]'
+                        );
+                    if (submitButton) {
+                        submitButton.disabled =
+                            true;
+                        submitButton.textContent =
+                            "Submitting...";
+                    }
+                }
+            );
+        
+        }
+    
+    </script>
 
 
 </body>
