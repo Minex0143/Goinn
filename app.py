@@ -22,10 +22,11 @@ from flask_login import (
 from google.oauth2 import id_token
 from google.auth.transport import requests
 
-from datetime import datetime
+from datetime import datetime, date, timedelta
 import os
 import urllib.parse
 import json
+import secrets
 
 from sqlalchemy.exc import IntegrityError
 
@@ -673,6 +674,10 @@ def book_property(property_id):
         property_id
     )
 
+    # ==================================================
+    # PROPERTY VALIDATION
+    # ==================================================
+
     if not property_obj:
 
         return (
@@ -687,13 +692,37 @@ def book_property(property_id):
             404
         )
 
+    # ==================================================
+    # TODAY / TOMORROW
+    # ==================================================
+
+    today = date.today()
+
+    tomorrow = (
+        today + timedelta(days=1)
+    )
+
+    today_string = today.isoformat()
+
+    tomorrow_string = tomorrow.isoformat()
+
+    # ==================================================
+    # GET
+    # ==================================================
+
     if request.method == "GET":
 
         return render_template(
             "booking.html",
             property=property_obj,
-            user=current_user
+            user=current_user,
+            today=today_string,
+            tomorrow=tomorrow_string
         )
+
+    # ==================================================
+    # FORM DATA
+    # ==================================================
 
     check_in_text = request.form.get(
         "check_in",
@@ -725,9 +754,9 @@ def book_property(property_id):
         ""
     ).strip()
 
-    # ------------------------------------------------
-    # REQUIRED
-    # ------------------------------------------------
+    # ==================================================
+    # REQUIRED VALIDATION
+    # ==================================================
 
     if not check_in_text:
 
@@ -735,6 +764,8 @@ def book_property(property_id):
             "booking.html",
             property=property_obj,
             user=current_user,
+            today=today_string,
+            tomorrow=tomorrow_string,
             error="Please select check-in date."
         )
 
@@ -744,6 +775,8 @@ def book_property(property_id):
             "booking.html",
             property=property_obj,
             user=current_user,
+            today=today_string,
+            tomorrow=tomorrow_string,
             error="Please select check-out date."
         )
 
@@ -753,6 +786,8 @@ def book_property(property_id):
             "booking.html",
             property=property_obj,
             user=current_user,
+            today=today_string,
+            tomorrow=tomorrow_string,
             error="Please select number of guests."
         )
 
@@ -762,6 +797,8 @@ def book_property(property_id):
             "booking.html",
             property=property_obj,
             user=current_user,
+            today=today_string,
+            tomorrow=tomorrow_string,
             error="Name is required."
         )
 
@@ -771,6 +808,8 @@ def book_property(property_id):
             "booking.html",
             property=property_obj,
             user=current_user,
+            today=today_string,
+            tomorrow=tomorrow_string,
             error="Contact number is required."
         )
 
@@ -780,12 +819,14 @@ def book_property(property_id):
             "booking.html",
             property=property_obj,
             user=current_user,
+            today=today_string,
+            tomorrow=tomorrow_string,
             error="Email is required."
         )
 
-    # ------------------------------------------------
+    # ==================================================
     # DATES
-    # ------------------------------------------------
+    # ==================================================
 
     try:
 
@@ -805,8 +846,32 @@ def book_property(property_id):
             "booking.html",
             property=property_obj,
             user=current_user,
+            today=today_string,
+            tomorrow=tomorrow_string,
             error="Invalid date selected."
         )
+
+    # ==================================================
+    # CHECK-IN CANNOT BE IN THE PAST
+    # ==================================================
+
+    if check_in < today:
+
+        return render_template(
+            "booking.html",
+            property=property_obj,
+            user=current_user,
+            today=today_string,
+            tomorrow=tomorrow_string,
+            error=(
+                "Check-in date cannot be "
+                "before today."
+            )
+        )
+
+    # ==================================================
+    # CHECK-OUT MUST BE AFTER CHECK-IN
+    # ==================================================
 
     if check_out <= check_in:
 
@@ -814,15 +879,17 @@ def book_property(property_id):
             "booking.html",
             property=property_obj,
             user=current_user,
+            today=today_string,
+            tomorrow=tomorrow_string,
             error=(
                 "Check-out date must be after "
                 "check-in date."
             )
         )
 
-    # ------------------------------------------------
+    # ==================================================
     # GUESTS
-    # ------------------------------------------------
+    # ==================================================
 
     try:
 
@@ -836,6 +903,8 @@ def book_property(property_id):
             "booking.html",
             property=property_obj,
             user=current_user,
+            today=today_string,
+            tomorrow=tomorrow_string,
             error="Invalid number of guests."
         )
 
@@ -845,12 +914,14 @@ def book_property(property_id):
             "booking.html",
             property=property_obj,
             user=current_user,
+            today=today_string,
+            tomorrow=tomorrow_string,
             error="At least one guest is required."
         )
 
-    # ------------------------------------------------
+    # ==================================================
     # MAX GUESTS
-    # ------------------------------------------------
+    # ==================================================
 
     if (
         not property_obj.max_guests
@@ -861,6 +932,8 @@ def book_property(property_id):
             "booking.html",
             property=property_obj,
             user=current_user,
+            today=today_string,
+            tomorrow=tomorrow_string,
             error=(
                 "Guest capacity has not been "
                 "configured for this property."
@@ -873,15 +946,17 @@ def book_property(property_id):
             "booking.html",
             property=property_obj,
             user=current_user,
+            today=today_string,
+            tomorrow=tomorrow_string,
             error=(
                 f"This property allows a maximum "
                 f"of {property_obj.max_guests} guests."
             )
         )
 
-    # ------------------------------------------------
+    # ==================================================
     # PRICE
-    # ------------------------------------------------
+    # ==================================================
 
     price_per_day = get_property_price(
         property_obj,
@@ -897,11 +972,17 @@ def book_property(property_id):
             "booking.html",
             property=property_obj,
             user=current_user,
+            today=today_string,
+            tomorrow=tomorrow_string,
             error=(
                 "Price for the selected number "
                 "of guests is not configured."
             )
         )
+
+    # ==================================================
+    # NIGHTS
+    # ==================================================
 
     nights = (
         check_out - check_in
@@ -911,9 +992,9 @@ def book_property(property_id):
         price_per_day * nights
     )
 
-    # ------------------------------------------------
-    # BOOKING
-    # ------------------------------------------------
+    # ==================================================
+    # CREATE BOOKING
+    # ==================================================
 
     booking = Booking(
 
@@ -948,9 +1029,9 @@ def book_property(property_id):
 
     db.session.commit()
 
-    # ------------------------------------------------
+    # ==================================================
     # OWNER
-    # ------------------------------------------------
+    # ==================================================
 
     owner = property_obj.owner
 
@@ -960,9 +1041,9 @@ def book_property(property_id):
 
         owner_contact = owner.contact
 
-    # ------------------------------------------------
-    # WHATSAPP
-    # ------------------------------------------------
+    # ==================================================
+    # WHATSAPP MESSAGE
+    # ==================================================
 
     message = f"""
 Hello Goinn Property Owner,
@@ -1014,6 +1095,10 @@ Thank you.
         message
     )
 
+    # ==================================================
+    # WHATSAPP URL
+    # ==================================================
+
     if owner_contact:
 
         whatsapp_number = (
@@ -1042,6 +1127,7 @@ Thank you.
     return redirect(
         whatsapp_url
     )
+
 
 @app.route("/admin/booking/<int:booking_id>/approve", methods=["POST"])
 @login_required
@@ -1549,7 +1635,6 @@ def owner_dashboard():
 #
 # Admin will configure these.
 # ==================================================
-
 @app.route(
     "/owner/add-property",
     methods=["GET", "POST"]
@@ -1567,11 +1652,64 @@ def add_property():
             403
         )
 
+    # ==================================================
+    # GET REQUEST
+    # ==================================================
+
     if request.method == "GET":
 
-        return render_template(
-            "add_property.html"
+        # Generate a unique token for this form.
+        #
+        # This prevents duplicate property creation
+        # if the browser/iPhone submits the same form
+        # more than once.
+
+        submission_token = secrets.token_urlsafe(32)
+
+        session["add_property_token"] = (
+            submission_token
         )
+
+        return render_template(
+            "add_property.html",
+            submission_token=submission_token
+        )
+
+    # ==================================================
+    # POST REQUEST
+    # ==================================================
+
+    submitted_token = request.form.get(
+        "submission_token",
+        ""
+    ).strip()
+
+    session_token = session.pop(
+        "add_property_token",
+        None
+    )
+
+    # ==================================================
+    # DUPLICATE SUBMISSION PROTECTION
+    # ==================================================
+
+    # If the token does not match, this request is
+    # either a duplicate submission or an old
+    # browser resubmission.
+
+    if (
+        not submitted_token
+        or submitted_token != session_token
+    ):
+
+        return redirect(
+            url_for("owner_dashboard"),
+            code=303
+        )
+
+    # ==================================================
+    # FORM DATA
+    # ==================================================
 
     property_name = request.form.get(
         "property_name",
@@ -1592,6 +1730,10 @@ def add_property():
         "images",
         ""
     ).strip()
+
+    # ==================================================
+    # VALIDATION
+    # ==================================================
 
     if not property_name:
 
@@ -1614,16 +1756,9 @@ def add_property():
             400
         )
 
-    # ------------------------------------------------
-    # IMPORTANT
-    # OWNER DOES NOT SET MAX GUESTS
-    # ------------------------------------------------
-    #
-    # Keep NULL if the database supports it.
-    # If an old database requires a value, use 0.
-    #
-    # 0 means NOT CONFIGURED.
-    # ------------------------------------------------
+    # ==================================================
+    # CREATE PROPERTY
+    # ==================================================
 
     property_obj = Property(
 
@@ -1636,6 +1771,9 @@ def add_property():
         location=location,
 
         images=images,
+
+        # Owner does NOT configure guests.
+        # Admin will configure max guests and pricing.
 
         max_guests=0,
 
@@ -1652,8 +1790,13 @@ def add_property():
 
     db.session.commit()
 
+    # ==================================================
+    # POST -> REDIRECT -> GET
+    # ==================================================
+
     return redirect(
-        url_for("owner_dashboard")
+        url_for("owner_dashboard"),
+        code=303
     )
 
 
