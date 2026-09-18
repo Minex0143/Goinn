@@ -1,317 +1,507 @@
-<!DOCTYPE html><html><head><title>Book Property - Goinn</title>
+<!DOCTYPE html>
+<html lang="en">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
->
+<head>
 
-<style>
+    <meta charset="UTF-8">
 
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        background: #f5f5f5;
-    }
-
-    .container {
-        max-width: 700px;
-        margin: 30px auto;
-        padding: 20px;
-    }
-
-    .card {
-        background: white;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    h1 {
-        margin-top: 0;
-    }
-
-    label {
-        display: block;
-        margin-top: 15px;
-        font-weight: bold;
-    }
-
-    input,
-    select {
-        width: 100%;
-        padding: 12px;
-        margin-top: 6px;
-        box-sizing: border-box;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-    }
-
-    .summary {
-        background: #f0f7ff;
-        padding: 15px;
-        margin-top: 20px;
-        border-radius: 8px;
-    }
-
-    .summary p {
-        margin: 8px 0;
-    }
-
-    .error {
-        background: #ffe5e5;
-        color: #b00020;
-        padding: 12px;
-        border-radius: 6px;
-        margin-bottom: 15px;
-    }
-
-    button {
-        width: 100%;
-        padding: 14px;
-        margin-top: 25px;
-        border: none;
-        border-radius: 7px;
-        background: #25D366;
-        color: white;
-        font-size: 17px;
-        cursor: pointer;
-    }
-
-    button:hover {
-        opacity: 0.9;
-    }
-
-    .back {
-        display: inline-block;
-        margin-top: 20px;
-    }
-
-</style>
-
-</head><body><div class="container"><div class="card">
-
-
-    <h1>
-        Book {{ property.property_name }}
-    </h1>
-
-
-    <p>
-        <strong>Location:</strong>
-        {{ property.location }}
-    </p>
-
-
-    <p>
-        <strong>Address:</strong>
-        {{ property.property_address }}
-    </p>
-
-
-    {% if error %}
-
-    <div class="error">
-
-        {{ error }}
-
-    </div>
-
-    {% endif %}
-
-
-    <form
-        method="POST"
-        action="{{ url_for(
-            'book_property',
-            property_id=property.id
-        ) }}"
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
     >
 
+    <title>
+        Book Property - Goinn
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f5f5f5;
+            color: #222;
+        }
+
+
+        .container {
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow:
+                0 2px 10px rgba(0,0,0,0.1);
+        }
+
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+
+        .property-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+
+        .property-info p {
+            margin: 7px 0;
+        }
+
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            background: white;
+        }
+
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #25D366;
+            box-shadow:
+                0 0 0 2px rgba(37,211,102,0.12);
+        }
+
+
+        .date-note {
+            display: block;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #777;
+        }
+
+
+        .summary {
+            background: #f0f7ff;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            border: 1px solid #dcecff;
+        }
+
+
+        .summary h3 {
+            margin-top: 0;
+        }
+
+
+        .summary p {
+            margin: 8px 0;
+        }
+
+
+        .summary small {
+            display: block;
+            margin-top: 12px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+
+        .error {
+            background: #ffe5e5;
+            color: #b00020;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 25px;
+            border: none;
+            border-radius: 7px;
+            background: #25D366;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+
+        button:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #333;
+        }
+
+
+        .back:hover {
+            text-decoration: underline;
+        }
+
+
+        @media (max-width: 600px) {
+
+            .container {
+                margin: 10px auto;
+                padding: 12px;
+            }
+
+
+            .card {
+                padding: 18px;
+                border-radius: 10px;
+            }
+
+
+            h1 {
+                font-size: 23px;
+            }
+
+
+            input,
+            select {
+                font-size: 16px;
+                padding: 13px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <div class="card">
+
 
         <!-- ==================================================
-             CHECK-IN
+             PROPERTY DETAILS
         ================================================== -->
 
-        <label>
-            Check-in
-        </label>
-
-        <input
-            type="date"
-            id="check_in"
-            name="check_in"
-            required
-        >
+        <h1>
+            Book {{ property.property_name }}
+        </h1>
 
 
-        <!-- ==================================================
-             CHECK-OUT
-        ================================================== -->
-
-        <label>
-            Check-out
-        </label>
-
-        <input
-            type="date"
-            id="check_out"
-            name="check_out"
-            required
-        >
-
-
-        <!-- ==================================================
-             GUESTS
-        ================================================== -->
-
-        <label>
-            Number of Guests
-        </label>
-
-        <select
-            id="guests"
-            name="guests"
-            required
-        >
-
-            <option value="">
-                Select guests
-            </option>
-
-            {% for number in range(
-                1,
-                property.max_guests + 1
-            ) %}
-
-            <option value="{{ number }}">
-
-                {{ number }}
-                Guest{% if number > 1 %}s{% endif %}
-
-            </option>
-
-            {% endfor %}
-
-        </select>
-
-
-        <!-- ==================================================
-             CUSTOMER NAME
-        ================================================== -->
-
-        <label>
-            Your Name
-        </label>
-
-        <input
-            type="text"
-            name="customer_name"
-            value="{{ user.name }}"
-            required
-        >
-
-
-        <!-- ==================================================
-             CONTACT
-        ================================================== -->
-
-        <label>
-            Contact Number
-        </label>
-
-        <input
-            type="tel"
-            name="customer_contact"
-            value="{{ user.contact or '' }}"
-            required
-        >
-
-
-        <!-- ==================================================
-             EMAIL
-        ================================================== -->
-
-        <label>
-            Email
-        </label>
-
-        <input
-            type="email"
-            name="customer_email"
-            value="{{ user.email }}"
-            required
-        >
-
-
-        <!-- ==================================================
-             BOOKING SUMMARY
-        ================================================== -->
-
-        <div class="summary">
-
-            <h3>
-                Booking Summary
-            </h3>
+        <div class="property-info">
 
             <p>
-                Nights:
-                <strong id="nights">
-                    0
-                </strong>
+                <strong>Location:</strong>
+                {{ property.location }}
             </p>
+
 
             <p>
-                Price per day:
-                ₹<strong id="price">
-                    0
-                </strong>
+                <strong>Address:</strong>
+                {{ property.property_address }}
             </p>
-
-            <p>
-                Estimated total:
-                ₹<strong id="total">
-                    0
-                </strong>
-            </p>
-
-            <small>
-                Final price can be discussed
-                with the property owner on WhatsApp.
-            </small>
 
         </div>
 
 
         <!-- ==================================================
-             SUBMIT
+             ERROR
         ================================================== -->
 
-        <button type="submit">
+        {% if error %}
 
-            Continue to WhatsApp
+        <div class="error">
 
-        </button>
+            {{ error }}
+
+        </div>
+
+        {% endif %}
 
 
-    </form>
+        <!-- ==================================================
+             BOOKING FORM
+        ================================================== -->
+
+        <form
+            method="POST"
+            action="{{ url_for(
+                'book_property',
+                property_id=property.id
+            ) }}"
+            id="bookingForm"
+        >
 
 
-    <a
-        class="back"
-        href="{{ url_for(
-            'property_details',
-            property_id=property.id
-        ) }}"
-    >
+            <!-- ==================================================
+                 CHECK-IN
+            ================================================== -->
 
-        ← Back to Property
+            <label for="check_in">
+                Check-in
+            </label>
 
-    </a>
+
+            <input
+                type="date"
+                id="check_in"
+                name="check_in"
+                min="{{ today }}"
+                required
+            >
+
+
+            <small class="date-note">
+                Check-in cannot be before today.
+            </small>
+
+
+            <!-- ==================================================
+                 CHECK-OUT
+            ================================================== -->
+
+            <label for="check_out">
+                Check-out
+            </label>
+
+
+            <input
+                type="date"
+                id="check_out"
+                name="check_out"
+                min="{{ tomorrow }}"
+                required
+            >
+
+
+            <small class="date-note">
+                Check-out must be at least one day
+                after check-in.
+            </small>
+
+
+            <!-- ==================================================
+                 GUESTS
+            ================================================== -->
+
+            <label for="guests">
+                Number of Guests
+            </label>
+
+
+            <select
+                id="guests"
+                name="guests"
+                required
+            >
+
+                <option value="">
+                    Select guests
+                </option>
+
+
+                {% if property.max_guests
+                      and property.max_guests > 0 %}
+
+
+                    {% for number in range(
+                        1,
+                        property.max_guests + 1
+                    ) %}
+
+                    <option value="{{ number }}">
+
+                        {{ number }}
+                        Guest{% if number > 1 %}s{% endif %}
+
+                    </option>
+
+                    {% endfor %}
+
+                {% endif %}
+
+            </select>
+
+
+            <!-- ==================================================
+                 CUSTOMER NAME
+            ================================================== -->
+
+            <label for="customer_name">
+                Your Name
+            </label>
+
+
+            <input
+                type="text"
+                id="customer_name"
+                name="customer_name"
+                value="{{ user.name or '' }}"
+                autocomplete="name"
+                required
+            >
+
+
+            <!-- ==================================================
+                 CONTACT
+            ================================================== -->
+
+            <label for="customer_contact">
+                Contact Number
+            </label>
+
+
+            <input
+                type="tel"
+                id="customer_contact"
+                name="customer_contact"
+                value="{{ user.contact or '' }}"
+                autocomplete="tel"
+                required
+            >
+
+
+            <!-- ==================================================
+                 EMAIL
+            ================================================== -->
+
+            <label for="customer_email">
+                Email
+            </label>
+
+
+            <input
+                type="email"
+                id="customer_email"
+                name="customer_email"
+                value="{{ user.email or '' }}"
+                autocomplete="email"
+                required
+            >
+
+
+            <!-- ==================================================
+                 BOOKING SUMMARY
+            ================================================== -->
+
+            <div class="summary">
+
+                <h3>
+                    Booking Summary
+                </h3>
+
+
+                <p>
+                    Nights:
+                    <strong id="nights">
+                        0
+                    </strong>
+                </p>
+
+
+                <p>
+                    Price per day:
+                    ₹<strong id="price">
+                        0
+                    </strong>
+                </p>
+
+
+                <p>
+                    Estimated total:
+                    ₹<strong id="total">
+                        0
+                    </strong>
+                </p>
+
+
+                <small>
+                    Final price can be discussed
+                    with the property owner on WhatsApp.
+                </small>
+
+            </div>
+
+
+            <!-- ==================================================
+                 SUBMIT
+            ================================================== -->
+
+            <button
+                type="submit"
+                id="submitButton"
+            >
+                Continue to WhatsApp
+            </button>
+
+
+        </form>
+
+
+        <!-- ==================================================
+             BACK
+        ================================================== -->
+
+        <a
+            class="back"
+            href="{{ url_for(
+                'property_details',
+                property_id=property.id
+            ) }}"
+        >
+
+            ← Back to Property
+
+        </a>
+
+
+    </div>
 
 
 </div>
 
-</div><script>
+
+<script>
 
     // ==================================================
     // ELEMENTS
@@ -320,153 +510,183 @@
     const checkIn =
         document.getElementById("check_in");
 
+
     const checkOut =
         document.getElementById("check_out");
+
 
     const guests =
         document.getElementById("guests");
 
+
     const nightsElement =
         document.getElementById("nights");
 
+
     const priceElement =
         document.getElementById("price");
+
 
     const totalElement =
         document.getElementById("total");
 
 
-    // ==================================================
-    // TODAY'S DATE
-    // ==================================================
-    //
-    // Uses local browser date.
-    //
-    // Example:
-    // Today = 16-09-2026
-    //
-    // Check-in minimum = 16-09-2026
-    // Check-out minimum = 17-09-2026
-    //
-    // ==================================================
-
-    function getLocalDateString(date) {
-
-        const year =
-            date.getFullYear();
-
-        const month =
-            String(
-                date.getMonth() + 1
-            ).padStart(2, "0");
-
-        const day =
-            String(
-                date.getDate()
-            ).padStart(2, "0");
-
-        return (
-            year +
-            "-" +
-            month +
-            "-" +
-            day
-        );
-    }
+    const bookingForm =
+        document.getElementById("bookingForm");
 
 
-    const today =
-        new Date();
-
-
-    const todayString =
-        getLocalDateString(today);
+    const submitButton =
+        document.getElementById("submitButton");
 
 
     // ==================================================
-    // SET CHECK-IN MINIMUM
+    // SERVER-PROVIDED DATES
+    // ==================================================
+
+    const serverToday =
+        "{{ today }}";
+
+
+    const serverTomorrow =
+        "{{ tomorrow }}";
+
+
+    // ==================================================
+    // INITIAL DATE LIMITS
     // ==================================================
 
     checkIn.min =
-        todayString;
-
-
-    // ==================================================
-    // CHECK-OUT MINIMUM
-    // ==================================================
-    //
-    // Initially checkout must be tomorrow.
-    //
-    // ==================================================
-
-    const tomorrow =
-        new Date(today);
-
-    tomorrow.setDate(
-        tomorrow.getDate() + 1
-    );
+        serverToday;
 
 
     checkOut.min =
-        getLocalDateString(tomorrow);
+        serverTomorrow;
 
 
     // ==================================================
-    // WHEN CHECK-IN CHANGES
+    // CHECK-IN CHANGE
     // ==================================================
 
     checkIn.addEventListener(
         "change",
         function () {
 
-            if (!checkIn.value) {
+            // ------------------------------------------------
+            // Check-in cannot be before today
+            // ------------------------------------------------
+
+            if (
+                checkIn.value &&
+                checkIn.value < serverToday
+            ) {
+
+                checkIn.value = "";
+
+                checkOut.value = "";
 
                 checkOut.min =
-                    getLocalDateString(tomorrow);
+                    serverTomorrow;
+
+                calculatePrice();
 
                 return;
-
             }
 
 
+            // ------------------------------------------------
+            // No check-in selected
+            // ------------------------------------------------
+
+            if (!checkIn.value) {
+
+                checkOut.value = "";
+
+                checkOut.min =
+                    serverTomorrow;
+
+                calculatePrice();
+
+                return;
+            }
+
+
+            // ------------------------------------------------
+            // Calculate minimum checkout
+            // ------------------------------------------------
+
             const selectedCheckIn =
                 new Date(
-                    checkIn.value + "T00:00:00"
+                    checkIn.value +
+                    "T00:00:00"
                 );
 
 
-            // Checkout must be at least
-            // one day after check-in.
-
-            const minimumCheckOut =
-                new Date(
-                    selectedCheckIn
-                );
-
-
-            minimumCheckOut.setDate(
-                minimumCheckOut.getDate() + 1
+            selectedCheckIn.setDate(
+                selectedCheckIn.getDate() + 1
             );
 
 
-            const minimumCheckOutString =
-                getLocalDateString(
-                    minimumCheckOut
-                );
+            const year =
+                selectedCheckIn.getFullYear();
+
+
+            const month =
+                String(
+                    selectedCheckIn.getMonth() + 1
+                ).padStart(2, "0");
+
+
+            const day =
+                String(
+                    selectedCheckIn.getDate()
+                ).padStart(2, "0");
+
+
+            const minimumCheckout =
+                year +
+                "-" +
+                month +
+                "-" +
+                day;
 
 
             checkOut.min =
-                minimumCheckOutString;
+                minimumCheckout;
 
 
-            // If an already selected checkout
-            // is before the new minimum,
-            // clear it.
+            // ------------------------------------------------
+            // Clear invalid checkout
+            // ------------------------------------------------
 
             if (
                 checkOut.value &&
                 checkOut.value <
-                minimumCheckOutString
+                minimumCheckout
+            ) {
+
+                checkOut.value = "";
+
+            }
+
+
+            calculatePrice();
+
+        }
+    );
+
+
+    // ==================================================
+    // CHECKOUT CHANGE
+    // ==================================================
+
+    checkOut.addEventListener(
+        "change",
+        function () {
+
+            if (
+                checkIn.value &&
+                checkOut.value <=
+                checkIn.value
             ) {
 
                 checkOut.value = "";
@@ -482,14 +702,6 @@
 
     // ==================================================
     // PRICING DATA FROM SERVER
-    // ==================================================
-    //
-    // This supports BOTH:
-    //
-    // 1. Individual pricing
-    //
-    // 2. Group pricing
-    //
     // ==================================================
 
     const pricingMethod =
@@ -646,13 +858,15 @@
 
         const start =
             new Date(
-                checkIn.value + "T00:00:00"
+                checkIn.value +
+                "T00:00:00"
             );
 
 
         const end =
             new Date(
-                checkOut.value + "T00:00:00"
+                checkOut.value +
+                "T00:00:00"
             );
 
 
@@ -718,6 +932,10 @@
         }
 
 
+        // ==================================================
+        // TOTAL
+        // ==================================================
+
         const total =
             price * nights;
 
@@ -737,18 +955,84 @@
 
 
     // ==================================================
-    // EVENT LISTENERS
+    // GUEST CHANGE
     // ==================================================
 
-    checkOut.addEventListener(
+    guests.addEventListener(
         "change",
         calculatePrice
     );
 
 
-    guests.addEventListener(
-        "change",
-        calculatePrice
+    // ==================================================
+    // PREVENT DOUBLE BOOKING SUBMISSION
+    // ==================================================
+
+    bookingForm.addEventListener(
+        "submit",
+        function (event) {
+
+            if (
+                bookingForm.dataset.submitting
+                === "true"
+            ) {
+
+                event.preventDefault();
+
+                return;
+
+            }
+
+
+            // Final browser-side date validation.
+
+            if (
+                checkIn.value &&
+                checkIn.value <
+                serverToday
+            ) {
+
+                event.preventDefault();
+
+                alert(
+                    "Check-in date cannot be before today."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                checkIn.value &&
+                checkOut.value &&
+                checkOut.value <=
+                checkIn.value
+            ) {
+
+                event.preventDefault();
+
+                alert(
+                    "Check-out date must be after check-in date."
+                );
+
+                return;
+
+            }
+
+
+            bookingForm.dataset.submitting =
+                "true";
+
+
+            submitButton.disabled =
+                true;
+
+
+            submitButton.textContent =
+                "Opening WhatsApp...";
+
+        }
     );
 
 
@@ -758,4 +1042,9 @@
 
     calculatePrice();
 
-</script></body></html>
+</script>
+
+
+</body>
+
+</html>
