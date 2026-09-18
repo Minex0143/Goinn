@@ -742,6 +742,29 @@
            FOOTER LINKS
         ========================================= */
 
+
+
+        .section-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .calendar-btn {
+            display: inline-block;
+            background: #111827;
+            color: white;
+            text-decoration: none;
+            padding: 11px 17px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .calendar-btn:hover {
+            opacity: 0.9;
+        }
+
         .footer-links {
 
             text-align: center;
@@ -842,8 +865,12 @@
             }
 
 
-            .add-btn {
+            .section-actions {
+                flex-direction: column;
+            }
 
+            .calendar-btn,
+            .add-btn {
                 text-align: center;
             }
 
@@ -1024,13 +1051,23 @@
             Your Properties
         </h2>
 
+        <div class="section-actions">
 
-        <a
-            href="{{ url_for('add_property') }}"
-            class="add-btn"
-        >
-            + Add New Property
-        </a>
+            <a
+                href="{{ url_for('owner_calendar') }}"
+                class="calendar-btn"
+            >
+                📅 Calendar
+            </a>
+
+            <a
+                href="{{ url_for('add_property') }}"
+                class="add-btn"
+            >
+                + Add New Property
+            </a>
+
+        </div>
 
     </div>
 
