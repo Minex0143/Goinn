@@ -235,6 +235,16 @@ class Property(db.Model):
     )
 
     # ------------------------------------------------
+    # AVAILABILITY TYPE
+    # ------------------------------------------------
+
+    availability_type = db.Column(
+        db.String(20),
+        nullable=False,
+        default="type1"
+    )
+
+    # ------------------------------------------------
     # STATUS
     # ------------------------------------------------
 
@@ -474,6 +484,29 @@ def ensure_database_columns():
                     """
                     ALTER TABLE property
                     ADD COLUMN max_guests INTEGER
+                    """
+                )
+
+        # ------------------------------------------
+        # AVAILABILITY TYPE
+        # ------------------------------------------
+
+        if "availability_type" not in columns:
+
+            with db.engine.begin() as connection:
+
+                connection.exec_driver_sql(
+                    """
+                    ALTER TABLE property
+                    ADD COLUMN availability_type VARCHAR(20)
+                    """
+                )
+
+                connection.exec_driver_sql(
+                    """
+                    UPDATE property
+                    SET availability_type = 'type1'
+                    WHERE availability_type IS NULL
                     """
                 )
 
@@ -1220,29 +1253,29 @@ def book_property(property_id):
     # PROPERTY AVAILABILITY
     # ==================================================
 
-    # Search results can become stale between the home page
-    # search and the actual booking submission. Check again
-    # here so a property cannot normally be booked for dates
-    # that are already occupied.
+    # Type 3 is a request-for-confirmation flow.
+    # Type 1 and Type 2 use the normal availability check.
 
-    if not is_property_available(
-        property_obj.id,
-        check_in,
-        check_out
-    ):
+    if property_obj.availability_type != "type3":
 
-        return render_template(
-            "booking.html",
-            property=property_obj,
-            user=current_user,
-            today=today_string,
-            tomorrow=tomorrow_string,
-            error=(
-                "Sorry, this property is already booked "
-                "for the selected dates. Please choose "
-                "different dates."
+        if not is_property_available(
+            property_obj.id,
+            check_in,
+            check_out
+        ):
+
+            return render_template(
+                "booking.html",
+                property=property_obj,
+                user=current_user,
+                today=today_string,
+                tomorrow=tomorrow_string,
+                error=(
+                    "Sorry, this property is already booked "
+                    "for the selected dates. Please choose "
+                    "different dates."
+                )
             )
-        )
 
     # ==================================================
     # PRICE
@@ -1286,6 +1319,12 @@ def book_property(property_id):
     # CREATE BOOKING
     # ==================================================
 
+    booking_status = (
+        "availability_requested"
+        if property_obj.availability_type == "type3"
+        else "pending"
+    )
+
     booking = Booking(
 
         user_id=current_user.id,
@@ -1310,7 +1349,7 @@ def book_property(property_id):
 
         customer_email=customer_email,
 
-        status="pending"
+        status=booking_status
     )
 
     db.session.add(
@@ -1320,20 +1359,88 @@ def book_property(property_id):
     db.session.commit()
 
     # ==================================================
-    # OWNER
+    # WHATSAPP ROUTING
     # ==================================================
 
+    if property_obj.availability_type == "type3":
+
+        goinn_contact = os.environ.get(
+            "GOINN_WHATSAPP_NUMBER",
+            ""
+        ).strip()
+
+        message = f"""
+Hello Goinn,
+
+I want to check availability for a Type 3 property.
+
+Property:
+{property_obj.property_name}
+
+Location:
+{property_obj.location}
+
+Customer Name:
+{customer_name}
+
+Contact:
+{customer_contact}
+
+Email:
+{customer_email}
+
+Check-in:
+{check_in.strftime("%d-%m-%Y")}
+
+Check-out:
+{check_out.strftime("%d-%m-%Y")}
+
+Number of Guests:
+{guests}
+
+Number of Nights:
+{nights}
+
+Estimated Price Per Day:
+₹{price_per_day:.2f}
+
+Estimated Total:
+₹{total_price:.2f}
+
+Availability Request ID:
+{booking.id}
+
+Please contact the property owner and confirm availability.
+"""
+
+        encoded_message = urllib.parse.quote(message)
+
+        if goinn_contact:
+            whatsapp_number = (
+                goinn_contact
+                .replace("+", "")
+                .replace(" ", "")
+                .replace("-", "")
+                .replace("(", "")
+                .replace(")", "")
+            )
+            whatsapp_url = (
+                "https://wa.me/"
+                + whatsapp_number
+                + "?text="
+                + encoded_message
+            )
+        else:
+            whatsapp_url = (
+                "https://wa.me/?text="
+                + encoded_message
+            )
+
+        return redirect(whatsapp_url)
+
+    # Type 1 / Type 2 continue to contact the property owner.
     owner = property_obj.owner
-
-    owner_contact = None
-
-    if owner:
-
-        owner_contact = owner.contact
-
-    # ==================================================
-    # WHATSAPP MESSAGE
-    # ==================================================
+    owner_contact = owner.contact if owner else None
 
     message = f"""
 Hello Goinn Property Owner,
@@ -1381,16 +1488,9 @@ I would like to discuss/negotiate the final price and booking details.
 Thank you.
 """
 
-    encoded_message = urllib.parse.quote(
-        message
-    )
-
-    # ==================================================
-    # WHATSAPP URL
-    # ==================================================
+    encoded_message = urllib.parse.quote(message)
 
     if owner_contact:
-
         whatsapp_number = (
             owner_contact
             .replace("+", "")
@@ -1406,17 +1506,13 @@ Thank you.
             + "?text="
             + encoded_message
         )
-
     else:
-
         whatsapp_url = (
             "https://wa.me/?text="
             + encoded_message
         )
 
-    return redirect(
-        whatsapp_url
-    )
+    return redirect(whatsapp_url)
 
 
 @app.route("/admin/booking/<int:booking_id>/approve", methods=["POST"])
@@ -1944,6 +2040,307 @@ def owner_dashboard():
 
 
 # ==================================================
+# ADMIN TYPE 2 CALENDAR
+# ==================================================
+
+@app.route("/admin/property/<int:property_id>/calendar")
+@login_required
+def admin_type2_calendar(property_id):
+
+    if not current_user.is_admin:
+        return "Unauthorized", 403
+
+    properties = Property.query.filter(
+        Property.status == "approved",
+        Property.availability_type == "type2"
+    ).order_by(Property.created_at.desc()).all()
+
+    selected_property = db.session.get(Property, property_id)
+
+    if (
+        not selected_property
+        or selected_property.status != "approved"
+        or selected_property.availability_type != "type2"
+    ):
+        return "Type 2 property not found", 404
+
+    return render_template(
+        "admin_type2_calendar.html",
+        properties=properties,
+        selected_property=selected_property
+    )
+
+
+@app.route("/admin/property/<int:property_id>/calendar/data")
+@login_required
+def admin_type2_calendar_data(property_id):
+
+    if not current_user.is_admin:
+        return {"status": "error", "message": "Unauthorized"}, 403
+
+    year = request.args.get("year", type=int)
+    month = request.args.get("month", type=int)
+
+    if not year or not month or month < 1 or month > 12:
+        return {"status": "error", "message": "Invalid calendar request."}, 400
+
+    property_obj = db.session.get(Property, property_id)
+
+    if (
+        not property_obj
+        or property_obj.status != "approved"
+        or property_obj.availability_type != "type2"
+    ):
+        return {"status": "error", "message": "Type 2 property not found."}, 404
+
+    month_start = date(year, month, 1)
+    next_month = (
+        date(year + 1, 1, 1)
+        if month == 12
+        else date(year, month + 1, 1)
+    )
+
+    blocks = PropertyBlockedDate.query.filter(
+        PropertyBlockedDate.property_id == property_id,
+        PropertyBlockedDate.block_date >= month_start,
+        PropertyBlockedDate.block_date < next_month
+    ).all()
+
+    owner_blocked_dates = sorted(
+        b.block_date.isoformat()
+        for b in blocks
+        if b.blocked_by == "owner"
+    )
+
+    goinn_blocked_dates = sorted(
+        b.block_date.isoformat()
+        for b in blocks
+        if b.blocked_by in ["goinn", "booking"]
+    )
+
+    bookings = Booking.query.filter(
+        Booking.property_id == property_id,
+        Booking.status == "approved",
+        Booking.check_in < next_month,
+        Booking.check_out > month_start
+    ).all()
+
+    booked_dates = set()
+
+    for booking in bookings:
+        current_date = max(booking.check_in, month_start)
+        booking_end = min(booking.check_out, next_month)
+
+        while current_date < booking_end:
+            booked_dates.add(current_date.isoformat())
+            current_date += timedelta(days=1)
+
+    return {
+        "status": "ok",
+        "property_id": property_id,
+        "year": year,
+        "month": month,
+        "today": date.today().isoformat(),
+        "booked_dates": sorted(booked_dates),
+        "owner_blocked_dates": owner_blocked_dates,
+        "goinn_blocked_dates": goinn_blocked_dates
+    }
+
+
+@app.route("/admin/property/<int:property_id>/calendar/block", methods=["POST"])
+@login_required
+def admin_type2_block_date(property_id):
+
+    if not current_user.is_admin:
+        return "Unauthorized", 403
+
+    property_obj = db.session.get(Property, property_id)
+
+    if (
+        not property_obj
+        or property_obj.status != "approved"
+        or property_obj.availability_type != "type2"
+    ):
+        return "Type 2 property not found", 404
+
+    block_date_text = request.form.get("block_date", "").strip()
+
+    try:
+        block_date = datetime.strptime(
+            block_date_text,
+            "%Y-%m-%d"
+        ).date()
+    except ValueError:
+        flash("Invalid date.", "danger")
+        return redirect(url_for("admin_type2_calendar", property_id=property_id))
+
+    if block_date < date.today():
+        flash("Past dates cannot be blocked.", "danger")
+        return redirect(url_for("admin_type2_calendar", property_id=property_id))
+
+    booking = Booking.query.filter(
+        Booking.property_id == property_id,
+        Booking.status.in_(["pending", "approved"]),
+        Booking.check_in <= block_date,
+        Booking.check_out > block_date
+    ).first()
+
+    if booking:
+        flash("This date has a booking and cannot be blocked.", "danger")
+        return redirect(url_for("admin_type2_calendar", property_id=property_id))
+
+    existing = PropertyBlockedDate.query.filter_by(
+        property_id=property_id,
+        block_date=block_date
+    ).first()
+
+    if existing:
+        flash("This date is already blocked.", "info")
+    else:
+        db.session.add(PropertyBlockedDate(
+            property_id=property_id,
+            block_date=block_date,
+            blocked_by="goinn"
+        ))
+        db.session.commit()
+        flash("Date blocked successfully.", "success")
+
+    return redirect(url_for("admin_type2_calendar", property_id=property_id))
+
+
+@app.route("/admin/property/<int:property_id>/calendar/unblock", methods=["POST"])
+@login_required
+def admin_type2_unblock_date(property_id):
+
+    if not current_user.is_admin:
+        return "Unauthorized", 403
+
+    property_obj = db.session.get(Property, property_id)
+
+    if (
+        not property_obj
+        or property_obj.status != "approved"
+        or property_obj.availability_type != "type2"
+    ):
+        return "Type 2 property not found", 404
+
+    block_date_text = request.form.get("block_date", "").strip()
+
+    try:
+        block_date = datetime.strptime(
+            block_date_text,
+            "%Y-%m-%d"
+        ).date()
+    except ValueError:
+        flash("Invalid date.", "danger")
+        return redirect(url_for("admin_type2_calendar", property_id=property_id))
+
+    blocked_date = PropertyBlockedDate.query.filter_by(
+        property_id=property_id,
+        block_date=block_date,
+        blocked_by="goinn"
+    ).first()
+
+    if not blocked_date:
+        flash("This date is not blocked by Goinn.", "info")
+    else:
+        db.session.delete(blocked_date)
+        db.session.commit()
+        flash("Date is available again.", "success")
+
+    return redirect(url_for("admin_type2_calendar", property_id=property_id))
+
+
+# ==================================================
+# TYPE 3 AVAILABILITY
+# ==================================================
+
+def _block_booking_dates(booking, blocked_by="booking"):
+
+    current_date = booking.check_in
+
+    while current_date < booking.check_out:
+
+        existing = PropertyBlockedDate.query.filter_by(
+            property_id=booking.property_id,
+            block_date=current_date
+        ).first()
+
+        if not existing:
+            db.session.add(PropertyBlockedDate(
+                property_id=booking.property_id,
+                block_date=current_date,
+                blocked_by=blocked_by
+            ))
+
+        current_date += timedelta(days=1)
+
+
+@app.route("/admin/availability/<int:booking_id>/available", methods=["POST"])
+@login_required
+def type3_available(booking_id):
+
+    if not current_user.is_admin:
+        return "Unauthorized", 403
+
+    booking = Booking.query.get_or_404(booking_id)
+
+    if booking.status != "availability_requested":
+        flash("This availability request has already been handled.", "info")
+        return redirect(url_for("admin_dashboard"))
+
+    property_obj = booking.property
+
+    if not property_obj or property_obj.availability_type != "type3":
+        return "Invalid Type 3 request", 400
+
+    if not is_property_available(
+        property_obj.id,
+        booking.check_in,
+        booking.check_out
+    ):
+        flash("The requested dates are no longer available.", "danger")
+        return redirect(url_for("admin_dashboard"))
+
+    booking.status = "approved"
+
+    _block_booking_dates(booking, blocked_by="booking")
+
+    db.session.commit()
+
+    flash(
+        f"Type 3 request #{booking.id} approved and dates blocked.",
+        "success"
+    )
+
+    return redirect(url_for("admin_dashboard"))
+
+
+@app.route("/admin/availability/<int:booking_id>/not-available", methods=["POST"])
+@login_required
+def type3_not_available(booking_id):
+
+    if not current_user.is_admin:
+        return "Unauthorized", 403
+
+    booking = Booking.query.get_or_404(booking_id)
+
+    if booking.status != "availability_requested":
+        flash("This availability request has already been handled.", "info")
+        return redirect(url_for("admin_dashboard"))
+
+    booking.status = "rejected"
+    db.session.commit()
+
+    flash(
+        f"Type 3 request #{booking.id} marked as not available.",
+        "success"
+    )
+
+    return redirect(url_for("admin_dashboard"))
+
+
+# ==================================================
 # OWNER CALENDAR
 # ==================================================
 
@@ -2025,6 +2422,18 @@ def owner_calendar_data():
         for blocked in owner_blocks
     ]
 
+    goinn_blocks = PropertyBlockedDate.query.filter(
+        PropertyBlockedDate.property_id == property_id,
+        PropertyBlockedDate.blocked_by.in_(["goinn", "booking"]),
+        PropertyBlockedDate.block_date >= month_start,
+        PropertyBlockedDate.block_date < next_month
+    ).all()
+
+    goinn_blocked_dates = [
+        blocked.block_date.isoformat()
+        for blocked in goinn_blocks
+    ]
+
     # Approved bookings: one query for all bookings touching this month.
     bookings = Booking.query.filter(
         Booking.property_id == property_id,
@@ -2058,7 +2467,8 @@ def owner_calendar_data():
         "month": month,
         "today": date.today().isoformat(),
         "booked_dates": sorted(booked_dates),
-        "owner_blocked_dates": sorted(owner_blocked_dates)
+        "owner_blocked_dates": sorted(owner_blocked_dates),
+        "goinn_blocked_dates": sorted(goinn_blocked_dates)
     }
 
 
@@ -2080,6 +2490,18 @@ def owner_block_date():
     if not property_obj:
         flash("Property not found.", "danger")
         return redirect(url_for("owner_calendar"))
+
+    if property_obj.availability_type != "type1":
+        flash(
+            "Only Type 1 properties can be managed by the owner.",
+            "danger"
+        )
+        return redirect(
+            url_for(
+                "owner_calendar",
+                property_id=property_id
+            )
+        )
 
     try:
         block_date = datetime.strptime(
@@ -2149,6 +2571,18 @@ def owner_unblock_date():
     if not property_obj:
         flash("Property not found.", "danger")
         return redirect(url_for("owner_calendar"))
+
+    if property_obj.availability_type != "type1":
+        flash(
+            "Only Type 1 properties can be managed by the owner.",
+            "danger"
+        )
+        return redirect(
+            url_for(
+                "owner_calendar",
+                property_id=property_id
+            )
+        )
 
     try:
         block_date = datetime.strptime(
@@ -2350,6 +2784,8 @@ def add_property():
 
         pricing_data=None,
 
+        availability_type="type1",
+
         status="pending"
     )
 
@@ -2414,6 +2850,10 @@ def admin_dashboard():
         status="rejected"
     ).count()
 
+    availability_requests = Booking.query.filter_by(
+        status="availability_requested"
+    ).count()
+
     return render_template(
         "admin_dashboard.html",
         properties=properties,
@@ -2422,7 +2862,8 @@ def admin_dashboard():
         pending_bookings=pending_bookings,
         rejected_bookings=rejected_bookings,
         rejected_properties=rejected_properties,
-        property_owners=property_owners
+        property_owners=property_owners,
+        availability_requests=availability_requests
     )
 
 # ==================================================
@@ -2484,6 +2925,14 @@ def set_property_price(property_id):
         "pricing_method",
         ""
     ).strip().lower()
+
+    availability_type = request.form.get(
+        "availability_type",
+        "type1"
+    ).strip().lower()
+
+    if availability_type not in ["type1", "type2", "type3"]:
+        return "Invalid availability type.", 400
 
     max_guests_text = request.form.get(
         "max_guests",
@@ -2835,6 +3284,8 @@ def set_property_price(property_id):
     property_obj.pricing_data = json.dumps(
         pricing
     )
+
+    property_obj.availability_type = availability_type
 
     # =================================================
     # CLEAR LEGACY PRICES
