@@ -358,6 +358,28 @@
            AVAILABILITY
         ================================================== */
 
+        .availability-type-badge {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #eef2ff;
+            color: #3730a3;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .request-badge {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #fff7ed;
+            color: #9a3412;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
         .available-badge {
 
             display: inline-block;
@@ -966,10 +988,28 @@
                         {% endif %}
 
 
-                        <span class="available-badge">
+                        {% if property.availability_type == "type3" %}
 
-                            ✓ Available for selected dates
+                            <span class="request-badge">
+                                ☎ Availability confirmation required
+                            </span>
 
+                        {% else %}
+
+                            <span class="available-badge">
+                                ✓ Available for selected dates
+                            </span>
+
+                        {% endif %}
+
+                        <span class="availability-type-badge">
+                            {% if property.availability_type == "type2" %}
+                                Type 2 · Goinn Managed
+                            {% elif property.availability_type == "type3" %}
+                                Type 3 · Check Availability
+                            {% else %}
+                                Type 1 · Owner Managed
+                            {% endif %}
                         </span>
 
 
