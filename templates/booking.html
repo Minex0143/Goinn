@@ -103,6 +103,28 @@
         }
 
 
+        .availability-notice {
+            display: none;
+            background: #fff7ed;
+            color: #9a3412;
+            border: 1px solid #fed7aa;
+            padding: 13px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .availability-type {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #eef2ff;
+            color: #3730a3;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
         .summary {
             background: #f0f7ff;
             padding: 15px;
@@ -241,7 +263,26 @@
                 {{ property.property_address }}
             </p>
 
+            <div class="availability-type">
+                {% if property.availability_type == "type2" %}
+                    Type 2 · Goinn Managed Availability
+                {% elif property.availability_type == "type3" %}
+                    Type 3 · Availability Confirmation Required
+                {% else %}
+                    Type 1 · Owner Managed Availability
+                {% endif %}
+            </div>
+
         </div>
+
+        {% if property.availability_type == "type3" %}
+            <div class="availability-notice" style="display:block;">
+                <strong>Check Availability</strong><br>
+                This property requires Goinn to confirm availability with
+                the property owner first. Your selected dates and guest
+                details will be sent as an availability request.
+            </div>
+        {% endif %}
 
 
         <!-- ==================================================
@@ -461,8 +502,13 @@
 
 
                 <small>
-                    Final price can be discussed
-                    with the property owner on WhatsApp.
+                    {% if property.availability_type == "type3" %}
+                        Goinn will confirm availability with the property
+                        owner before the booking can be approved.
+                    {% else %}
+                        Final price can be discussed
+                        with the property owner on WhatsApp.
+                    {% endif %}
                 </small>
 
             </div>
@@ -476,7 +522,11 @@
                 type="submit"
                 id="submitButton"
             >
-                Continue to WhatsApp
+                {% if property.availability_type == "type3" %}
+                    Check Availability
+                {% else %}
+                    Continue to WhatsApp
+                {% endif %}
             </button>
 
 
@@ -542,6 +592,9 @@
 
     const submitButton =
         document.getElementById("submitButton");
+
+    const isType3 =
+        {{ (property.availability_type == "type3")|tojson }};
 
 
     // ==================================================
@@ -1035,7 +1088,11 @@
 
 
             submitButton.textContent =
-                "Opening WhatsApp...";
+                {% if property.availability_type == "type3" %}
+                    "Sending Availability Request...";
+                {% else %}
+                    "Opening WhatsApp...";
+                {% endif %}
 
         }
     );
