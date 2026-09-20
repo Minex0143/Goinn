@@ -439,6 +439,35 @@ body{
     padding:22px;
 }
 
+.image-preview-content{
+    background:#fff;
+    width:min(1000px,100%);
+    margin:15px auto;
+    border-radius:16px;
+    padding:22px;
+}
+
+.image-preview-stage{
+    margin-top:18px;
+    background:#111;
+    border-radius:12px;
+    min-height:320px;
+    max-height:70vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    padding:12px;
+}
+
+.image-preview-stage img{
+    max-width:100%;
+    max-height:68vh;
+    object-fit:contain;
+    display:block;
+}
+
+
 .modal-head{
     display:flex;
     justify-content:space-between;
@@ -513,12 +542,61 @@ body{
     background:#f8fafc;
 }
 
+.image-card.empty-slot{
+    border-style:dashed;
+    background:#fbfbfc;
+}
+
 .image-card img{
     width:100%;
     height:115px;
     object-fit:cover;
     display:block;
     background:#e5e7eb;
+    cursor:pointer;
+}
+
+.image-preview-button{
+    display:block;
+    width:100%;
+    border:0;
+    padding:0;
+    margin:0;
+    background:transparent;
+    cursor:pointer;
+}
+
+.image-preview-button:hover img{
+    opacity:.88;
+}
+
+.empty-image{
+    height:115px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:5px;
+    color:#888;
+    font-size:12px;
+}
+
+.empty-image strong{
+    color:#555;
+}
+
+.slot-upload-form{
+    margin-top:7px;
+}
+
+.slot-upload-form input[type="file"]{
+    width:100%;
+    font-size:10px;
+}
+
+.download-btn{
+    background:#eee;
+    color:#222;
 }
 
 .image-card-body{
@@ -1022,23 +1100,33 @@ select{
 
                             <h3>Approved Property Images</h3>
 
+                            {% set approved_map = {} %}
+                            {% for image in property.property_images %}
+                                {% if image.status == 'approved' %}
+                                    {% set _ = approved_map.update({image.slot: image}) %}
+                                {% endif %}
+                            {% endfor %}
+
                             <div class="image-grid">
 
-                                {% for image in property.property_images %}
+                                {% for slot in range(1, 11) %}
 
-                                    {% if image.status == 'approved' %}
+                                    {% set image = approved_map.get(slot) %}
 
-                                        <div class="image-card">
+                                    <div class="image-card {% if not image %}empty-slot{% endif %}">
 
-                                            <a
-                                                class="image-download"
-                                                href="{{ url_for('admin_download_property_image', image_id=image.id) }}"
+                                        {% if image %}
+
+                                            <button
+                                                type="button"
+                                                class="image-preview-button"
+                                                onclick="event.stopPropagation(); openImagePreview('{{ url_for('admin_view_property_image', image_id=image.id) }}', 'Image {{ image.slot }}')"
                                             >
                                                 <img
                                                     src="{{ url_for('admin_view_property_image', image_id=image.id) }}"
                                                     alt="Image {{ image.slot }}"
                                                 >
-                                            </a>
+                                            </button>
 
                                             <div class="image-card-body">
                                                 <div class="image-slot">
@@ -1053,14 +1141,46 @@ select{
                                                     class="btn gray"
                                                     style="margin-top:6px;width:100%;"
                                                     href="{{ url_for('admin_download_property_image', image_id=image.id) }}"
+                                                    onclick="event.stopPropagation()"
                                                 >
                                                     Download
                                                 </a>
                                             </div>
 
-                                        </div>
+                                        {% else %}
 
-                                    {% endif %}
+                                            <div class="empty-image">
+                                                <strong>Image {{ slot }}</strong>
+                                                <span>Not uploaded</span>
+                                            </div>
+
+                                            <div class="image-card-body">
+                                                <form
+                                                    class="slot-upload-form"
+                                                    method="POST"
+                                                    enctype="multipart/form-data"
+                                                    action="{{ url_for('admin_upload_property_image', property_id=property.id, slot=slot) }}"
+                                                    onclick="event.stopPropagation()"
+                                                >
+                                                    <input
+                                                        type="file"
+                                                        name="image"
+                                                        accept="image/jpeg,image/png,image/webp,image/gif"
+                                                        required
+                                                    >
+                                                    <button
+                                                        class="btn blue"
+                                                        type="submit"
+                                                        style="margin-top:6px;width:100%;"
+                                                    >
+                                                        Upload Image {{ slot }}
+                                                    </button>
+                                                </form>
+                                            </div>
+
+                                        {% endif %}
+
+                                    </div>
 
                                 {% endfor %}
 
@@ -1385,104 +1505,187 @@ select{
                             <h3>Step 1 — Review Property Images</h3>
 
                             <div class="note">
-                                Click an image to download it. Approve good images.
-                                If an image is not acceptable, use Delete & Re-upload
-                                and enter the reason. The owner must replace it in
-                                the same numbered slot.
+                                This property always has 10 image slots.
+                                Click an image to preview it in a popup.
+                                Use Download when you want the original file.
+                                If an image is not acceptable, use Delete & Re-upload.
+                                If a slot is empty, Admin can upload an image directly.
                             </div>
+
+                            {% set image_map = {} %}
+                            {% for image in property.property_images %}
+                                {% set _ = image_map.update({image.slot: image}) %}
+                            {% endfor %}
 
                             <div class="image-grid">
 
-                                {% for image in property.property_images %}
+                                {% for slot in range(1, 11) %}
 
-                                    <div class="image-card">
+                                    {% set image = image_map.get(slot) %}
 
-                                        <a
-                                            class="image-download"
-                                            href="{{ url_for('admin_download_property_image', image_id=image.id) }}"
-                                        >
-                                            <img
-                                                src="{{ url_for('admin_view_property_image', image_id=image.id) }}"
-                                                alt="Image {{ image.slot }}"
+                                    <div class="image-card {% if not image %}empty-slot{% endif %}">
+
+                                        {% if image %}
+
+                                            <button
+                                                type="button"
+                                                class="image-preview-button"
+                                                onclick="event.stopPropagation(); openImagePreview('{{ url_for('admin_view_property_image', image_id=image.id) }}', 'Image {{ image.slot }}')"
                                             >
-                                        </a>
+                                                <img
+                                                    src="{{ url_for('admin_view_property_image', image_id=image.id) }}"
+                                                    alt="Image {{ image.slot }}"
+                                                >
+                                            </button>
 
-                                        <div class="image-card-body">
+                                            <div class="image-card-body">
 
-                                            <div class="image-slot">
-                                                Image {{ image.slot }}
+                                                <div class="image-slot">
+                                                    Image {{ image.slot }}
+                                                </div>
+
+                                                {% if image.status == 'approved' %}
+
+                                                    <div class="image-status approved">
+                                                        Approved
+                                                    </div>
+
+                                                {% elif image.status == 'reupload_required' %}
+
+                                                    <div class="image-status reupload">
+                                                        Re-upload required
+                                                    </div>
+
+                                                    <div class="muted">
+                                                        {{ image.rejection_reason or 'Replacement required.' }}
+                                                    </div>
+
+                                                {% else %}
+
+                                                    <div class="image-status pending">
+                                                        Under review
+                                                    </div>
+
+                                                {% endif %}
+
+                                                <div class="image-actions">
+
+                                                    {% if image.status != 'approved' %}
+
+                                                        <form
+                                                            method="POST"
+                                                            action="{{ url_for('approve_property_image', image_id=image.id) }}"
+                                                            onclick="event.stopPropagation()"
+                                                        >
+                                                            <button class="btn green" type="submit">
+                                                                ✓ Approve Image
+                                                            </button>
+                                                        </form>
+
+                                                    {% endif %}
+
+                                                    <a
+                                                        class="btn download-btn"
+                                                        href="{{ url_for('admin_download_property_image', image_id=image.id) }}"
+                                                        onclick="event.stopPropagation()"
+                                                    >
+                                                        Download Image
+                                                    </a>
+
+                                                    {% if image.status != 'reupload_required' %}
+
+                                                        <form
+                                                            method="POST"
+                                                            action="{{ url_for('request_property_image_reupload', image_id=image.id) }}"
+                                                            onclick="event.stopPropagation()"
+                                                        >
+                                                            <input
+                                                                class="input"
+                                                                type="text"
+                                                                name="reason"
+                                                                placeholder="Reason for re-upload"
+                                                                required
+                                                            >
+
+                                                            <button
+                                                                class="btn red"
+                                                                type="submit"
+                                                                style="margin-top:5px;"
+                                                                onclick="return confirm('Delete this image and request a replacement?')"
+                                                            >
+                                                                Delete & Re-upload
+                                                            </button>
+                                                        </form>
+
+                                                    {% else %}
+
+                                                        <form
+                                                            class="slot-upload-form"
+                                                            method="POST"
+                                                            enctype="multipart/form-data"
+                                                            action="{{ url_for('admin_upload_property_image', property_id=property.id, slot=slot) }}"
+                                                            onclick="event.stopPropagation()"
+                                                        >
+                                                            <input
+                                                                type="file"
+                                                                name="image"
+                                                                accept="image/jpeg,image/png,image/webp,image/gif"
+                                                                required
+                                                            >
+                                                            <button
+                                                                class="btn blue"
+                                                                type="submit"
+                                                                style="margin-top:6px;width:100%;"
+                                                            >
+                                                                Replace Image {{ slot }}
+                                                            </button>
+                                                        </form>
+
+                                                    {% endif %}
+
+                                                </div>
+
                                             </div>
 
-                                            {% if image.status == 'approved' %}
+                                        {% else %}
 
-                                                <div class="image-status approved">
-                                                    Approved
-                                                </div>
+                                            <div class="empty-image">
+                                                <strong>Image {{ slot }}</strong>
+                                                <span>Not uploaded</span>
+                                            </div>
 
-                                            {% elif image.status == 'reupload_required' %}
-
-                                                <div class="image-status reupload">
-                                                    Re-upload required
-                                                </div>
-
-                                                <div class="muted">
-                                                    {{ image.rejection_reason or 'Replacement required.' }}
-                                                </div>
-
-                                            {% else %}
+                                            <div class="image-card-body">
 
                                                 <div class="image-status pending">
-                                                    Under review
+                                                    Empty slot
                                                 </div>
 
-                                            {% endif %}
-
-                                            <div class="image-actions">
-
-                                                {% if image.status != 'approved' %}
-
-                                                    <form
-                                                        method="POST"
-                                                        action="{{ url_for('approve_property_image', image_id=image.id) }}"
-                                                        onclick="event.stopPropagation()"
+                                                <form
+                                                    class="slot-upload-form"
+                                                    method="POST"
+                                                    enctype="multipart/form-data"
+                                                    action="{{ url_for('admin_upload_property_image', property_id=property.id, slot=slot) }}"
+                                                    onclick="event.stopPropagation()"
+                                                >
+                                                    <input
+                                                        type="file"
+                                                        name="image"
+                                                        accept="image/jpeg,image/png,image/webp,image/gif"
+                                                        required
                                                     >
-                                                        <button class="btn green" type="submit">
-                                                            ✓ Approve Image
-                                                        </button>
-                                                    </form>
 
-                                                {% endif %}
-
-                                                {% if image.status != 'reupload_required' %}
-
-                                                    <form
-                                                        method="POST"
-                                                        action="{{ url_for('request_property_image_reupload', image_id=image.id) }}"
-                                                        onclick="event.stopPropagation()"
+                                                    <button
+                                                        class="btn blue"
+                                                        type="submit"
+                                                        style="margin-top:6px;width:100%;"
                                                     >
-                                                        <input
-                                                            class="input"
-                                                            type="text"
-                                                            name="reason"
-                                                            placeholder="Reason for re-upload"
-                                                            required
-                                                        >
-
-                                                        <button
-                                                            class="btn red"
-                                                            type="submit"
-                                                            style="margin-top:5px;"
-                                                            onclick="return confirm('Delete this image and request a replacement?')"
-                                                        >
-                                                            Delete & Re-upload
-                                                        </button>
-                                                    </form>
-
-                                                {% endif %}
+                                                        Upload Image {{ slot }}
+                                                    </button>
+                                                </form>
 
                                             </div>
 
-                                        </div>
+                                        {% endif %}
 
                                     </div>
 
@@ -2018,6 +2221,66 @@ select{
 
 </main>
 
+
+<!-- ======================================================
+     IMAGE PREVIEW MODAL
+======================================================= -->
+
+<div id="imagePreviewModal" class="modal image-preview-modal">
+
+    <div class="image-preview-content">
+
+        <div class="modal-head">
+
+            <div>
+                <h2 id="imagePreviewTitle" style="margin:0">
+                    Image Preview
+                </h2>
+                <div class="muted">
+                    Click Download to save the image.
+                </div>
+            </div>
+
+            <button class="close" onclick="closeImagePreview()">
+                ✕
+            </button>
+
+        </div>
+
+        <div class="image-preview-stage">
+            <img
+                id="imagePreview"
+                src=""
+                alt="Property image preview"
+            >
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                class="btn gray"
+                onclick="closeImagePreview()"
+            >
+                Close
+            </button>
+
+            <a
+                id="imagePreviewDownload"
+                class="btn dark"
+                href="#"
+                target="_blank"
+                download
+            >
+                Download Image
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
 <!-- ======================================================
      PROPERTY DETAIL MODAL
 ======================================================= -->
@@ -2287,6 +2550,26 @@ select{
 </div>
 
 <script>
+const imagePreviewModal = document.getElementById("imagePreviewModal");
+const imagePreview = document.getElementById("imagePreview");
+const imagePreviewTitle = document.getElementById("imagePreviewTitle");
+const imagePreviewDownload = document.getElementById("imagePreviewDownload");
+
+function openImagePreview(src, title){
+
+    imagePreview.src = src;
+    imagePreviewTitle.textContent = title || "Image Preview";
+    imagePreviewDownload.href = src;
+    imagePreviewModal.classList.add("show");
+}
+
+function closeImagePreview(){
+
+    imagePreview.src = "";
+    imagePreviewDownload.href = "#";
+    imagePreviewModal.classList.remove("show");
+}
+
 const propertyModal = document.getElementById("propertyModal");
 const rejectedModal = document.getElementById("rejectedModal");
 const pendingModal = document.getElementById("pendingModal");
@@ -2594,6 +2877,10 @@ maxInput.addEventListener("change", () => {
 
 window.addEventListener("click", event => {
 
+    if(event.target === imagePreviewModal){
+        closeImagePreview();
+    }
+
     if(event.target === propertyModal){
         closePropertyModal();
     }
@@ -2613,6 +2900,26 @@ window.addEventListener("click", event => {
 });
 
 toggleMethod();
+
+document.addEventListener("keydown", event => {
+
+    if(event.key === "Escape"){
+
+        if(imagePreviewModal.classList.contains("show")){
+            closeImagePreview();
+        }else if(priceModal.classList.contains("show")){
+            closePriceModal();
+        }else if(pendingModal.classList.contains("show")){
+            closePendingModal();
+        }else if(rejectedModal.classList.contains("show")){
+            closeRejectedModal();
+        }else if(propertyModal.classList.contains("show")){
+            closePropertyModal();
+        }
+
+    }
+
+});
 </script>
 
 </body>
