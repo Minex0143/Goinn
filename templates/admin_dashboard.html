@@ -464,6 +464,18 @@ body{
     margin-top:15px;
 }
 
+.approved-edit-actions{
+    margin:14px 0 18px;
+    padding:12px;
+    background:#f7f8fa;
+    border:1px solid #e5e7eb;
+    border-radius:10px;
+}
+
+.approved-edit-actions .btn{
+    flex:1 1 220px;
+}
+
 .edit-details-grid{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -509,6 +521,10 @@ body{
     z-index:1000;
     padding:18px;
     overflow:auto;
+}
+
+#imagePreviewModal{
+    z-index:5000;
 }
 
 .modal.show{
@@ -1278,6 +1294,34 @@ select{
                                 {% endif %}
 
                             </div>
+
+                        </div>
+
+                        <div class="edit-actions approved-edit-actions">
+
+                            <button
+                                type="button"
+                                class="btn dark"
+                                onclick="event.stopPropagation(); openEditProperty({{ property.id }})"
+                            >
+                                ✏️ Edit Property Details
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn blue"
+                                onclick='event.stopPropagation(); openEditPricing(
+                                    {{ property.id }},
+                                    {{ property.property_name|tojson }},
+                                    {{ property.location|tojson }},
+                                    {{ property.max_guests or 1 }},
+                                    {{ (property.pricing_method or "individual")|tojson }},
+                                    {{ (property.pricing_data|fromjson)|tojson }},
+                                    {{ (property.availability_type or "type1")|tojson }}
+                                )'
+                            >
+                                💰 Edit Type & Pricing
+                            </button>
 
                         </div>
 
@@ -2849,6 +2893,7 @@ function openImagePreview(src, title){
     imagePreview.src = src;
     imagePreviewTitle.textContent = title || "Image Preview";
     imagePreviewDownload.href = src;
+    imagePreviewModal.style.zIndex = "5000";
     imagePreviewModal.classList.add("show");
 }
 
@@ -3026,6 +3071,8 @@ function openEditPricing(
     pricingItems,
     availabilityType
 ){
+
+    closePropertyModal();
 
     document.getElementById("modalTitle").textContent =
         "Edit Availability & Pricing";
@@ -3221,28 +3268,55 @@ function toggleMethod(){
     }
 }
 
+function activateMainTab(tabId){
+
+    const button = document.querySelector(
+        '.tab-button[data-tab="' + tabId + '"]'
+    );
+
+    const content = document.getElementById(tabId);
+
+    if(!button || !content){
+        return false;
+    }
+
+    document
+        .querySelectorAll(".tab-button")
+        .forEach(x => x.classList.remove("active"));
+
+    document
+        .querySelectorAll(".tab-content")
+        .forEach(x => x.classList.remove("active"));
+
+    button.classList.add("active");
+    content.classList.add("active");
+
+    localStorage.setItem("goinn_admin_active_tab", tabId);
+
+    return true;
+}
+
 document
     .querySelectorAll(".tab-button")
     .forEach(button => {
 
         button.addEventListener("click", () => {
-
-            document
-                .querySelectorAll(".tab-button")
-                .forEach(x => x.classList.remove("active"));
-
-            document
-                .querySelectorAll(".tab-content")
-                .forEach(x => x.classList.remove("active"));
-
-            button.classList.add("active");
-
-            document
-                .getElementById(button.dataset.tab)
-                .classList.add("active");
+            activateMainTab(button.dataset.tab);
         });
 
     });
+
+const requestedTab =
+    new URLSearchParams(window.location.search).get("tab");
+
+const savedTab =
+    localStorage.getItem("goinn_admin_active_tab");
+
+if(requestedTab && activateMainTab(requestedTab)){
+    // URL-selected tab has priority.
+}else if(savedTab){
+    activateMainTab(savedTab);
+}
 
 document
     .querySelectorAll(".subtab")
