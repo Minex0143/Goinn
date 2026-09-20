@@ -411,6 +411,92 @@ body{
     line-height:1.5;
 }
 
+
+.pricing-summary{
+    margin-top:5px;
+}
+
+.pricing-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:10px;
+}
+
+.pricing-meta span{
+    background:#eef2f7;
+    border-radius:7px;
+    padding:7px 9px;
+    font-size:11px;
+    color:#555;
+}
+
+.pricing-list{
+    border:1px solid #e5e7eb;
+    border-radius:9px;
+    overflow:hidden;
+}
+
+.pricing-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:9px 11px;
+    border-bottom:1px solid #eee;
+    font-size:12px;
+    background:#fff;
+}
+
+.pricing-row:last-child{
+    border-bottom:0;
+}
+
+.pricing-row strong{
+    color:#111827;
+    white-space:nowrap;
+}
+
+.edit-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:15px;
+}
+
+.edit-details-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.edit-details-grid .full{
+    grid-column:1/-1;
+}
+
+.form-group label{
+    display:block;
+    font-size:11px;
+    font-weight:800;
+    color:#666;
+    text-transform:uppercase;
+    margin-bottom:6px;
+}
+
+@media(max-width:700px){
+    .edit-details-grid{
+        grid-template-columns:1fr;
+    }
+
+    .edit-details-grid .full{
+        grid-column:auto;
+    }
+
+    .pricing-row{
+        font-size:11px;
+    }
+}
+
 /* --------------------------------------------------
    PROPERTY DETAIL / REVIEW MODAL
 -------------------------------------------------- */
@@ -981,6 +1067,26 @@ select{
 
                         </div>
 
+                        <div class="edit-actions">
+
+                            <button
+                                type="button"
+                                class="btn dark"
+                                onclick="event.stopPropagation(); openEditProperty({{ property.id }})"
+                            >
+                                ✏️ Edit Property
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn blue"
+                                onclick="event.stopPropagation(); openEditPricing({{ property.id }}, '{{ property.property_name|e }}', '{{ property.location|e }}', {{ property.max_guests or 1 }}, '{{ property.pricing_method or 'individual' }}', {{ (property.pricing_data|fromjson)|tojson }}, '{{ property.availability_type or 'type1' }}')"
+                            >
+                                💰 Edit Type & Pricing
+                            </button>
+
+                        </div>
+
                         <div class="grid">
 
                             <div class="box">
@@ -1026,21 +1132,21 @@ select{
 
                             <div class="detail-box">
                                 <div class="detail-title">Property Name</div>
-                                <div class="detail-value">
+                                <div class="detail-value" data-field="property-name">
                                     {{ property.property_name }}
                                 </div>
                             </div>
 
                             <div class="detail-box">
                                 <div class="detail-title">Location</div>
-                                <div class="detail-value">
+                                <div class="detail-value" data-field="location">
                                     {{ property.location }}
                                 </div>
                             </div>
 
                             <div class="detail-box full">
                                 <div class="detail-title">Address</div>
-                                <div class="detail-value">
+                                <div class="detail-value" data-field="address">
                                     {{ property.property_address }}
                                 </div>
                             </div>
@@ -1088,10 +1194,89 @@ select{
                             </div>
 
                             <div class="detail-box full">
-                                <div class="detail-title">Pricing Data</div>
-                                <div class="detail-value">
-                                    {{ property.pricing_data or 'Not configured' }}
+                                <div class="detail-title">
+                                    Pricing
                                 </div>
+
+                                {% if property.pricing_method and property.pricing_data %}
+
+                                    <div class="pricing-summary">
+
+                                        <div class="pricing-meta">
+                                            <span>
+                                                Method:
+                                                <strong>
+                                                    {{ property.pricing_method|title }}
+                                                </strong>
+                                            </span>
+
+                                            <span>
+                                                Maximum Guests:
+                                                <strong>
+                                                    {{ property.max_guests }}
+                                                </strong>
+                                            </span>
+
+                                        </div>
+
+                                        {% set pricing_items = property.pricing_data|fromjson %}
+
+                                        <div class="pricing-list">
+
+                                            {% for item in pricing_items %}
+
+                                                {% if property.pricing_method == 'individual' %}
+
+                                                    <div class="pricing-row">
+                                                        <span>
+                                                            {{ item.guests }}
+                                                            guest{% if item.guests != 1 %}s{% endif %}
+                                                        </span>
+
+                                                        <strong>
+                                                            ₹{{ "%.2f"|format(item.price) }}
+                                                            / day
+                                                        </strong>
+                                                    </div>
+
+                                                {% else %}
+
+                                                    <div class="pricing-row">
+                                                        <span>
+                                                            {{ item.min_guests }}
+                                                            –
+                                                            {{ item.max_guests }}
+                                                            guests
+                                                        </span>
+
+                                                        <strong>
+                                                            ₹{{ "%.2f"|format(item.price) }}
+                                                            / day
+                                                        </strong>
+                                                    </div>
+
+                                                {% endif %}
+
+                                            {% else %}
+
+                                                <div class="muted">
+                                                    Pricing is not configured.
+                                                </div>
+
+                                            {% endfor %}
+
+                                        </div>
+
+                                    </div>
+
+                                {% else %}
+
+                                    <div class="muted">
+                                        Pricing is not configured.
+                                    </div>
+
+                                {% endif %}
+
                             </div>
 
                         </div>
@@ -2369,6 +2554,110 @@ select{
 
 </div>
 
+
+<!-- ======================================================
+     EDIT APPROVED PROPERTY DETAILS MODAL
+======================================================= -->
+
+<div id="editPropertyModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-head">
+
+            <div>
+                <h2 style="margin:0">
+                    Edit Property Details
+                </h2>
+
+                <div class="muted">
+                    Admin can update the approved property's basic information.
+                </div>
+            </div>
+
+            <button
+                class="close"
+                type="button"
+                onclick="closeEditProperty()"
+            >
+                ✕
+            </button>
+
+        </div>
+
+        <form
+            id="editPropertyForm"
+            method="POST"
+        >
+
+            <div class="edit-details-grid">
+
+                <div class="form-group">
+                    <label>Property Name</label>
+
+                    <input
+                        class="input"
+                        id="editPropertyName"
+                        name="property_name"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Location</label>
+
+                    <input
+                        class="input"
+                        id="editPropertyLocation"
+                        name="location"
+                        required
+                    >
+                </div>
+
+                <div class="form-group full">
+                    <label>Property Address</label>
+
+                    <textarea
+                        class="input"
+                        id="editPropertyAddress"
+                        name="property_address"
+                        rows="3"
+                        required
+                    ></textarea>
+                </div>
+
+            </div>
+
+            <div class="note">
+                Pricing, maximum guests and Availability Type are managed
+                separately using <strong>Edit Type & Pricing</strong>.
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn gray"
+                    onclick="closeEditProperty()"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn dark"
+                >
+                    Save Property Details
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
 <!-- ======================================================
      PRICING / AVAILABILITY MODAL
 ======================================================= -->
@@ -2381,7 +2670,7 @@ select{
 
             <div>
                 <h2 id="modalTitle" style="margin:0">
-                    Step 2 — Availability & Pricing
+                    Edit Availability & Pricing
                 </h2>
 
                 <div id="modalProperty" class="muted"></div>
@@ -2538,7 +2827,7 @@ select{
                     type="submit"
                     class="btn dark"
                 >
-                    Save Pricing & Approve
+                    Save Availability & Pricing
                 </button>
 
             </div>
@@ -2597,6 +2886,38 @@ function closePendingModal(){
 
 function closePriceModal(){
     hideModal(priceModal);
+}
+
+function openEditProperty(id){
+
+    const source =
+        document.getElementById("property-details-" + id);
+
+    if(!source){
+        return;
+    }
+
+    const name =
+        source.querySelector('[data-field="property-name"]')?.textContent.trim() || "";
+
+    const location =
+        source.querySelector('[data-field="location"]')?.textContent.trim() || "";
+
+    const address =
+        source.querySelector('[data-field="address"]')?.textContent.trim() || "";
+
+    document.getElementById("editPropertyName").value = name;
+    document.getElementById("editPropertyLocation").value = location;
+    document.getElementById("editPropertyAddress").value = address;
+
+    document.getElementById("editPropertyForm").action =
+        "/admin/property/" + id + "/edit-details";
+
+    document.getElementById("editPropertyModal").classList.add("show");
+}
+
+function closeEditProperty(){
+    document.getElementById("editPropertyModal").classList.remove("show");
 }
 
 function openPropertyDetails(card){
@@ -2659,9 +2980,23 @@ function openPendingProperty(card){
     showModal(pendingModal);
 }
 
+function setRadio(name, value){
+
+    const radio = document.querySelector(
+        'input[name="' + name + '"][value="' + value + '"]'
+    );
+
+    if(radio){
+        radio.checked = true;
+    }
+}
+
 function openPriceForProperty(id, name, location){
 
     closePendingModal();
+
+    document.getElementById("modalTitle").textContent =
+        "Step 2 — Availability & Pricing";
 
     document.getElementById("modalProperty").textContent =
         name + " · " + location;
@@ -2671,18 +3006,91 @@ function openPriceForProperty(id, name, location){
 
     document.getElementById("maxGuests").value = 1;
 
-    document.querySelector(
-        'input[name="availability_type"][value="type1"]'
-    ).checked = true;
-
-    document.querySelector(
-        'input[name="pricing_method"][value="individual"]'
-    ).checked = true;
+    setRadio("availability_type", "type1");
+    setRadio("pricing_method", "individual");
 
     document.getElementById("groups").innerHTML = "";
     groupCount = 0;
 
     toggleMethod();
+
+    showModal(priceModal);
+}
+
+function openEditPricing(
+    id,
+    name,
+    location,
+    maxGuests,
+    pricingMethod,
+    pricingItems,
+    availabilityType
+){
+
+    document.getElementById("modalTitle").textContent =
+        "Edit Availability & Pricing";
+
+    document.getElementById("modalProperty").textContent =
+        name + " · " + location;
+
+    document.getElementById("priceForm").action =
+        "/admin/property/" + id + "/edit-price";
+
+    document.getElementById("maxGuests").value =
+        maxGuests || 1;
+
+    setRadio(
+        "availability_type",
+        availabilityType || "type1"
+    );
+
+    setRadio(
+        "pricing_method",
+        pricingMethod || "individual"
+    );
+
+    document.getElementById("groups").innerHTML = "";
+    groupCount = 0;
+
+    if((pricingMethod || "individual") === "individual"){
+
+        individualBox.style.display = "block";
+        groupBox.style.display = "none";
+
+        generateIndividual();
+
+        (pricingItems || []).forEach(item => {
+
+            const input = document.querySelector(
+                'input[name="price_' + item.guests + '"]'
+            );
+
+            if(input){
+                input.value = item.price;
+            }
+
+        });
+
+    }else{
+
+        individualBox.style.display = "none";
+        groupBox.style.display = "block";
+
+        (pricingItems || []).forEach(item => {
+
+            addGroup(
+                item.min_guests,
+                item.max_guests,
+                item.price
+            );
+
+        });
+
+        if(!pricingItems || !pricingItems.length){
+            addGroup();
+        }
+
+    }
 
     showModal(priceModal);
 }
@@ -2877,6 +3285,13 @@ maxInput.addEventListener("change", () => {
 
 window.addEventListener("click", event => {
 
+    const editPropertyModal =
+        document.getElementById("editPropertyModal");
+
+    if(event.target === editPropertyModal){
+        closeEditProperty();
+    }
+
     if(event.target === imagePreviewModal){
         closeImagePreview();
     }
@@ -2905,7 +3320,9 @@ document.addEventListener("keydown", event => {
 
     if(event.key === "Escape"){
 
-        if(imagePreviewModal.classList.contains("show")){
+        if(document.getElementById("editPropertyModal").classList.contains("show")){
+            closeEditProperty();
+        }else if(imagePreviewModal.classList.contains("show")){
             closeImagePreview();
         }else if(priceModal.classList.contains("show")){
             closePriceModal();
