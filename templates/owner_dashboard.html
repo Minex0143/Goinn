@@ -765,6 +765,21 @@
             opacity: 0.9;
         }
 
+        .modify-btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            padding: 11px 17px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .modify-btn:hover {
+            background: #1d4ed8;
+        }
+
         .footer-links {
 
             text-align: center;
@@ -1138,6 +1153,26 @@
 
 
                 </div>
+
+
+                <!-- ======================================
+                     MODIFY PROPERTY
+                ====================================== -->
+
+                {% if property.status == "pending" %}
+
+                    <div style="margin-bottom:18px;">
+
+                        <a
+                            href="{{ url_for('modify_property', property_id=property.id) }}"
+                            class="modify-btn"
+                        >
+                            ✏️ Modify Property
+                        </a>
+
+                    </div>
+
+                {% endif %}
 
 
                 <!-- ======================================
