@@ -2321,6 +2321,28 @@ def admin_view_property_image(image_id):
     )
 
 
+@app.route("/owner/property-image/<int:image_id>")
+@login_required
+def owner_view_property_image(image_id):
+    """Allow the property owner to preview their own pending images."""
+    image = db.session.get(PropertyImage, image_id)
+    if not image:
+        return "Image not found", 404
+
+    property_obj = db.session.get(Property, image.property_id)
+    if not property_obj:
+        return "Property not found", 404
+
+    if not current_user.is_admin and property_obj.owner_id != current_user.id:
+        return "Unauthorized", 403
+
+    return app.response_class(
+        image.image_data,
+        mimetype=image.mime_type,
+        headers={"Content-Disposition": "inline", "Cache-Control": "no-store"}
+    )
+
+
 @app.route("/admin/property-image/<int:image_id>/download")
 @login_required
 def admin_download_property_image(image_id):
@@ -2350,7 +2372,7 @@ def approve_property_image(image_id):
     image.rejection_reason = None
     db.session.commit()
     flash(f"Image {image.slot} approved.", "success")
-    return redirect(url_for("admin_dashboard"))
+    return redirect(url_for("admin_dashboard") + "#properties")
 
 
 @app.route("/admin/property-image/<int:image_id>/request-reupload", methods=["POST"])
@@ -2366,7 +2388,54 @@ def request_property_image_reupload(image_id):
     image.rejection_reason = reason[:1000] if reason else "Image needs to be replaced by the owner."
     db.session.commit()
     flash(f"Image {image.slot} was removed and the owner was asked to re-upload it.", "info")
-    return redirect(url_for("admin_dashboard"))
+    return redirect(url_for("admin_dashboard") + "#properties")
+
+
+@app.route("/admin/property/<int:property_id>/image/<int:slot>/upload", methods=["POST"])
+@login_required
+def admin_upload_property_image(property_id, slot):
+    """Admin can upload or replace any of the 10 property image slots."""
+    if not current_user.is_admin or slot < 1 or slot > 10:
+        return "Access denied", 403
+
+    property_obj = db.session.get(Property, property_id)
+    if not property_obj:
+        return "Property not found", 404
+
+    file = request.files.get("image")
+    if not file or not file.filename:
+        flash(f"Please select an image for slot {slot}.", "danger")
+        return redirect(url_for("admin_dashboard") + "#properties")
+
+    mime = (file.mimetype or "").lower()
+    allowed_types = {"image/jpeg", "image/png", "image/webp", "image/gif"}
+    if mime not in allowed_types:
+        flash("Unsupported image format. Use JPG, PNG, WEBP or GIF.", "danger")
+        return redirect(url_for("admin_dashboard") + "#properties")
+
+    data = file.read()
+    if not data:
+        flash("The uploaded image is empty.", "danger")
+        return redirect(url_for("admin_dashboard") + "#properties")
+
+    image = PropertyImage.query.filter_by(
+        property_id=property_id, slot=slot
+    ).first()
+
+    if not image:
+        image = PropertyImage(property_id=property_id, slot=slot)
+        db.session.add(image)
+
+    image.filename = file.filename
+    image.mime_type = mime
+    image.image_data = data
+    image.status = "approved"
+    image.rejection_reason = None
+
+    db.session.commit()
+
+    flash(f"Image {slot} uploaded by Admin and approved.", "success")
+    return redirect(url_for("admin_dashboard") + "#properties")
 
 
 @app.route("/owner/property/<int:property_id>/image/<int:slot>/upload", methods=["POST"])
