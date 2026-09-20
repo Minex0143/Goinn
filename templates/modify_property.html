@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Modify Property - Goinn</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            color: #222;
+        }
+
+        /* ==========================================
+           HEADER
+        ========================================== */
+
+        .header {
+            background: #111;
+            color: white;
+            padding: 17px 30px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            letter-spacing: 0.3px;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: white;
+            background: #292929;
+            padding: 9px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            background: #3b3b3b;
+        }
+
+        /* ==========================================
+           MAIN
+        ========================================== */
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+
+            box-shadow:
+                0 5px 25px rgba(0,0,0,0.07);
+        }
+
+        .page-title {
+            margin: 0;
+            font-size: 29px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-top: 9px;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        /* ==========================================
+           SECTION
+        ========================================== */
+
+        .section {
+            margin-top: 30px;
+        }
+
+        .section:first-of-type {
+            margin-top: 0;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            font-size: 20px;
+            font-weight: bold;
+
+            margin-bottom: 18px;
+
+            padding-bottom: 12px;
+
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .section-number {
+            width: 30px;
+            height: 30px;
+
+            border-radius: 50%;
+
+            background: #111;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 14px;
+        }
+
+        /* ==========================================
+           OWNER INFORMATION
+        ========================================== */
+
+        .owner-info {
+            background: #f8f9fb;
+
+            border: 1px solid #e8ebef;
+
+            padding: 20px;
+
+            border-radius: 12px;
+        }
+
+        .owner-row {
+            display: flex;
+
+            padding: 10px 0;
+
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .owner-row:last-child {
+            border-bottom: none;
+        }
+
+        .owner-label {
+            width: 110px;
+
+            font-weight: 700;
+
+            color: #555;
+        }
+
+        .owner-value {
+            flex: 1;
+
+            color: #222;
+
+            word-break: break-word;
+        }
+
+        .owner-value.missing {
+            color: #dc3545;
+        }
+
+        /* ==========================================
+           INFO BOX
+        ========================================== */
+
+        .info-box {
+            background: #fff8e8;
+
+            border: 1px solid #efd58c;
+
+            border-radius: 10px;
+
+            padding: 16px;
+
+            margin-top: 16px;
+
+            color: #66531d;
+
+            line-height: 1.6;
+
+            font-size: 14px;
+        }
+
+        .info-box strong {
+            color: #4d3c12;
+        }
+
+        /* ==========================================
+           FORM
+        ========================================== */
+
+        .form-group {
+            margin-bottom: 21px;
+        }
+
+        label {
+            display: block;
+
+            font-weight: 600;
+
+            margin-bottom: 8px;
+
+            color: #30343b;
+        }
+
+        .required {
+            color: #dc3545;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+
+            padding: 13px 14px;
+
+            border: 1px solid #d5d9df;
+
+            border-radius: 9px;
+
+            font-size: 15px;
+
+            font-family: Arial, sans-serif;
+
+            outline: none;
+
+            background: white;
+
+            transition: border 0.2s,
+                        box-shadow 0.2s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #555;
+
+            box-shadow:
+                0 0 0 3px rgba(0,0,0,0.05);
+        }
+
+        textarea {
+            min-height: 110px;
+
+            resize: vertical;
+        }
+
+        .field-help {
+            display: block;
+
+            margin-top: 7px;
+
+            color: #777;
+
+            font-size: 13px;
+
+            line-height: 1.4;
+        }
+
+        /* ==========================================
+           TWO COLUMN FORM
+        ========================================== */
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 18px;
+        }
+
+        /* ==========================================
+           IMAGES
+        ========================================== */
+
+        .image-box {
+            border: 1px dashed #cbd0d6;
+
+            background: #fafbfc;
+
+            border-radius: 10px;
+
+            padding: 18px;
+        }
+
+        .image-box textarea {
+            background: white;
+        }
+
+        /* ==========================================
+           PRICING INFORMATION
+        ========================================== */
+
+        .pricing-notice {
+            margin-top: 10px;
+
+            background: #f1f5f9;
+
+            border: 1px solid #dce2e8;
+
+            border-radius: 12px;
+
+            padding: 20px;
+        }
+
+        .pricing-notice-title {
+            font-size: 17px;
+
+            font-weight: bold;
+
+            margin-bottom: 10px;
+        }
+
+        .pricing-steps {
+            margin: 0;
+
+            padding-left: 20px;
+
+            color: #555;
+
+            line-height: 1.8;
+        }
+
+        .pricing-highlight {
+            margin-top: 14px;
+
+            background: white;
+
+            border-radius: 9px;
+
+            padding: 13px;
+
+            border: 1px solid #e3e6ea;
+
+            font-size: 14px;
+
+            color: #444;
+        }
+
+        /* ==========================================
+           BUTTONS
+        ========================================== */
+
+        .button-container {
+            margin-top: 35px;
+
+            padding-top: 25px;
+
+            border-top: 1px solid #eee;
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 12px;
+        }
+
+        button {
+            border: none;
+
+            background: #111;
+
+            color: white;
+
+            padding: 14px 28px;
+
+            border-radius: 9px;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: background 0.2s,
+                        transform 0.1s;
+        }
+
+        button:hover {
+            background: #333;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .cancel-btn {
+            padding: 14px 25px;
+
+            border-radius: 9px;
+
+            text-decoration: none;
+
+            background: #eee;
+
+            color: #333;
+
+            font-weight: 600;
+
+            font-size: 15px;
+        }
+
+        .cancel-btn:hover {
+            background: #ddd;
+        }
+
+        /* ==========================================
+           FOOTER NOTE
+        ========================================== */
+
+        .footer-note {
+            text-align: center;
+
+            margin-top: 20px;
+
+            color: #888;
+
+            font-size: 13px;
+        }
+
+        /* ==========================================
+           RESPONSIVE
+        ========================================== */
+
+        @media (max-width: 700px) {
+
+            .header {
+                padding: 15px 18px;
+            }
+
+            .logo {
+                font-size: 22px;
+            }
+
+            .container {
+                margin: 20px auto;
+
+                padding: 0 12px;
+            }
+
+            .card {
+                padding: 21px;
+            }
+
+            .page-title {
+                font-size: 25px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .owner-row {
+                display: block;
+            }
+
+            .owner-label {
+                width: auto;
+                margin-bottom: 4px;
+            }
+
+            .button-container {
+                display: block;
+            }
+
+            button,
+            .cancel-btn {
+                display: block;
+
+                width: 100%;
+
+                text-align: center;
+
+                margin-bottom: 10px;
+            }
+
+            .back-btn {
+                font-size: 13px;
+
+                padding: 8px 11px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==================================================
+     HEADER
+================================================== -->
+
+<div class="header">
+
+    <div class="logo">
+        Goinn
+    </div>
+
+    <a
+        href="{{ url_for('owner_dashboard') }}"
+        class="back-btn"
+    >
+        ← Owner Dashboard
+    </a>
+
+</div>
+
+
+<!-- ==================================================
+     MAIN
+================================================== -->
+
+<div class="container">
+
+    <div class="card">
+
+
+        <!-- PAGE HEADER -->
+
+        <h1 class="page-title">
+            Modify Your Property
+        </h1>
+
+        <div class="subtitle">
+
+            Update your property details below.
+            You can modify this property only while it is
+            pending Goinn Admin approval. After approval,
+            modification will be disabled.
+
+        </div>
+
+
+        <!-- ==================================================
+             FORM
+        ================================================== -->
+
+        <form
+            method="POST"
+            action="{{ url_for('modify_property', property_id=property.id) }}"
+        >
+            <input
+                type="hidden"
+                name="submission_token"
+                value="{{ submission_token }}"
+                >
+
+
+            <!-- ==================================================
+                 SECTION 1 - OWNER
+            ================================================== -->
+
+            <div class="section">
+
+                <div class="section-title">
+
+                    <div class="section-number">
+                        1
+                    </div>
+
+                    Owner Details
+
+                </div>
+
+
+                <div class="owner-info">
+
+
+                    <div class="owner-row">
+
+                        <div class="owner-label">
+                            Name
+                        </div>
+
+                        <div class="owner-value">
+                            {{ current_user.name }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="owner-row">
+
+                        <div class="owner-label">
+                            Email
+                        </div>
+
+                        <div class="owner-value">
+                            {{ current_user.email }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="owner-row">
+
+                        <div class="owner-label">
+                            Contact
+                        </div>
+
+                        <div
+                            class="
+                            owner-value
+                            {% if not current_user.contact %}
+                            missing
+                            {% endif %}
+                            "
+                        >
+
+                            {% if current_user.contact %}
+
+                                {{ current_user.contact }}
+
+                            {% else %}
+
+                                Not provided
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <strong>Owner information</strong>
+
+                    <br>
+
+                    These details are automatically taken
+                    from your Goinn account and will be
+                    associated with this property.
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================================
+                 SECTION 2 - PROPERTY DETAILS
+            ================================================== -->
+
+            <div class="section">
+
+                <div class="section-title">
+
+                    <div class="section-number">
+                        2
+                    </div>
+
+                    Property Details
+
+                </div>
+
+
+                <!-- PROPERTY NAME -->
+
+                <div class="form-group">
+
+                    <label for="property_name">
+
+                        Property Name
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="property_name"
+                        name="property_name"
+                        value="{{ property.property_name|e }}"
+                        placeholder="Example: Green Valley Villa"
+                        maxlength="200"
+                        required
+                    >
+
+                    <span class="field-help">
+
+                        Enter the name customers will see
+                        when viewing your property.
+
+                    </span>
+
+                </div>
+
+
+                <!-- ADDRESS -->
+
+                <div class="form-group">
+
+                    <label for="property_address">
+
+                        Property Address
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <textarea
+                        id="property_address"
+                        name="property_address"
+                        placeholder="Enter the complete property address"
+                        required
+                    >{{ property.property_address|e }}</textarea>
+
+                    <span class="field-help">
+
+                        Include the street, area, landmark
+                        and other useful address information.
+
+                    </span>
+
+                </div>
+
+
+                <!-- LOCATION -->
+
+                <div class="form-group">
+
+                    <label for="location">
+
+                        City / Location
+                        <span class="required">*</span>
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        value="{{ property.location|e }}"
+                        placeholder="Example: Hyderabad"
+                        maxlength="120"
+                        required
+                    >
+
+                    <span class="field-help">
+
+                        Customers will use this location
+                        to search for your property.
+
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ==================================================
+                 SECTION 3 - IMAGES
+            ================================================== -->
+
+            <div class="section">
+
+                <div class="section-title">
+
+                    <div class="section-number">
+                        3
+                    </div>
+
+                    Property Images
+
+                </div>
+
+
+                <div class="image-box">
+
+                    <div class="form-group"
+                         style="margin-bottom:0;">
+
+                        <label for="images">
+
+                            Property Images
+
+                        </label>
+
+                        <textarea
+                            id="images"
+                            name="images"
+                            placeholder="Image information can be added here."
+                        >{{ property.images|e if property.images else '' }}</textarea>
+
+                        <span class="field-help">
+
+                            Image upload functionality will be
+                            enabled separately. Supported formats
+                            will include JPG, JPEG, PNG and WEBP.
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================================
+                 SECTION 4 - PRICING INFORMATION
+            ================================================== -->
+
+            <div class="section">
+
+                <div class="section-title">
+
+                    <div class="section-number">
+                        4
+                    </div>
+
+                    Admin-Controlled Fields
+
+                </div>
+
+
+                <div class="pricing-notice">
+
+
+                    <div class="pricing-notice-title">
+
+                        These fields are managed by Goinn Admin
+
+                    </div>
+
+
+                    <ul class="pricing-steps">
+
+                        <li>
+                            You do <strong>not</strong> need to
+                            enter pricing or guest capacity.
+                        </li>
+
+                        <li>
+                            Maximum guest capacity is configured by
+                            Goinn Admin.
+                        </li>
+
+                        <li>
+                            Your changes will be saved to the existing
+                            property.
+                        </li>
+
+                        <li>
+                            Admin will decide the
+                            <strong>Maximum Guests</strong>.
+                        </li>
+
+                        <li>
+                            Admin will configure either
+                            <strong>Individual Pricing</strong>
+                            or
+                            <strong>Group Pricing</strong>.
+                        </li>
+
+                        <li>
+                            The property will be approved only
+                            after pricing has been configured.
+                        </li>
+
+                    </ul>
+
+
+                    <div class="pricing-highlight">
+
+                        <strong>Example:</strong>
+
+                        If Admin sets Maximum Guests to
+                        <strong>6</strong>:
+
+                        <br><br>
+
+                        <strong>Individual Pricing:</strong>
+
+                        1 guest, 2 guests, 3 guests,
+                        4 guests, 5 guests, 6 guests
+
+                        <br><br>
+
+                        <strong>Group Pricing:</strong>
+
+                        Example: 1–2 guests,
+                        3–4 guests,
+                        5–6 guests
+
+                        <br><br>
+
+                        The pricing form will automatically
+                        stop at the maximum guest count
+                        configured by Admin.
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================================
+                 SUBMIT
+            ================================================== -->
+
+            <div class="button-container">
+
+
+                <a
+                    href="{{ url_for('owner_dashboard') }}"
+                    class="cancel-btn"
+                >
+                    Cancel
+                </a>
+
+
+                <button type="submit">
+
+                    Save Changes
+
+                </button>
+
+
+            </div>
+
+
+        </form>
+
+
+        <div class="footer-note">
+
+            Your property will remain
+            <strong>Pending</strong> until approved
+            by Goinn Admin. Once approved, the Modify
+            option will no longer be available.
+
+        </div>
+
+
+    </div>
+
+</div>
+    
+    <script>
+        
+        const propertyForm =
+            document.querySelector("form");
+        
+        if (propertyForm) {
+            
+            propertyForm.addEventListener(
+                "submit",
+                function(event) {
+                    // Prevent a second submission
+                    // while the first one is processing.
+                    if (
+                        propertyForm.dataset.submitting
+                        === "true"
+                    ) {
+                        
+                        event.preventDefault();
+                        
+                        return;
+                    }
+                    propertyForm.dataset.submitting =
+                        "true";
+                    
+                    
+                    const submitButton =
+                        propertyForm.querySelector(
+                            'button[type="submit"]'
+                        );
+                    if (submitButton) {
+                        submitButton.disabled =
+                            true;
+                        submitButton.textContent =
+                            "Submitting...";
+                    }
+                }
+            );
+        
+        }
+    
+    </script>
+
+
+</body>
+
+</html>
