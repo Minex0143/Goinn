@@ -1103,107 +1103,231 @@
 
 
 <style>
+/* ==========================================================
+   GOINN CUSTOM DATE PICKER
+   Fully custom calendar - no browser/Google/Apple calendar
+========================================================== */
 .goinn-date-input{
     cursor:pointer !important;
     background:#fff !important;
+    user-select:none;
 }
+
 .goinn-date-picker{
     position:fixed;
-    z-index:99999;
-    width:min(360px,calc(100vw - 24px));
+    z-index:2147483647;
+    width:360px;
+    max-width:calc(100vw - 32px);
     background:#fff;
     border:1px solid #e5e7eb;
-    border-radius:16px;
-    box-shadow:0 15px 45px rgba(0,0,0,.18);
+    border-radius:18px;
+    box-shadow:0 20px 55px rgba(0,0,0,.20);
     padding:16px;
     display:none;
+    overflow:hidden;
 }
-.goinn-date-picker.show{display:block}
+
+.goinn-date-picker.show{display:block;}
+
 .goinn-calendar-head{
-    display:flex;
+    display:grid;
+    grid-template-columns:40px 1fr 40px;
     align-items:center;
-    justify-content:space-between;
     gap:8px;
-    margin-bottom:12px;
+    margin-bottom:14px;
 }
+
 .goinn-calendar-title{
-    flex:1;
+    min-width:0;
     text-align:center;
-    font-size:17px;
+    font-size:18px;
+    line-height:40px;
     font-weight:800;
+    color:#111827;
+    white-space:nowrap;
 }
+
 .goinn-calendar-nav{
-    width:38px;
-    height:38px;
-    border:0;
-    border-radius:9px;
-    background:#f3f4f6;
-    cursor:pointer;
-    font-size:20px;
+    width:40px !important;
+    min-width:40px !important;
+    max-width:40px !important;
+    height:40px !important;
+    min-height:40px !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:0 !important;
+    border-radius:10px !important;
+    background:#f3f4f6 !important;
+    color:#111827 !important;
+    font-size:24px !important;
+    line-height:40px !important;
+    cursor:pointer !important;
+    box-shadow:none !important;
 }
+
+.goinn-calendar-nav:disabled{
+    opacity:.35;
+    cursor:not-allowed !important;
+}
+
 .goinn-calendar-weekdays,
 .goinn-calendar-grid{
-    display:grid;
-    grid-template-columns:repeat(7,1fr);
-    gap:4px;
+    width:100%;
+    display:grid !important;
+    grid-template-columns:repeat(7,minmax(0,1fr)) !important;
+    gap:5px !important;
 }
+
 .goinn-calendar-weekday{
+    min-width:0;
     text-align:center;
     font-size:11px;
+    line-height:30px;
     font-weight:800;
     color:#6b7280;
-    padding:7px 0;
 }
+
 .goinn-calendar-day{
-    min-height:40px;
-    border:0;
-    border-radius:9px;
-    background:#f9fafb;
-    cursor:pointer;
-    font-size:13px;
-    font-weight:700;
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    height:40px !important;
+    min-height:40px !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:1px solid transparent !important;
+    border-radius:10px !important;
+    background:#f8fafc !important;
+    color:#111827 !important;
+    cursor:pointer !important;
+    font-family:inherit !important;
+    font-size:14px !important;
+    font-weight:700 !important;
+    line-height:40px !important;
+    box-shadow:none !important;
 }
-.goinn-calendar-day:hover:not(:disabled){background:#e0f2fe}
-.goinn-calendar-day.today{box-shadow:inset 0 0 0 2px #2563eb}
-.goinn-calendar-day.selected{background:#2563eb;color:#fff}
-.goinn-calendar-day.range{background:#dbeafe;color:#1e40af}
+
+.goinn-calendar-day:hover:not(:disabled){
+    background:#e8f0ff !important;
+    border-color:#c7d7fe !important;
+}
+
+.goinn-calendar-day.today{
+    border-color:#2563eb !important;
+}
+
+.goinn-calendar-day.selected{
+    background:#2563eb !important;
+    border-color:#2563eb !important;
+    color:#fff !important;
+}
+
+.goinn-calendar-day.range{
+    background:#dbeafe !important;
+    border-color:#dbeafe !important;
+    color:#1e40af !important;
+}
+
 .goinn-calendar-day.disabled{
-    color:#c7cbd1;
-    background:#f9fafb;
-    cursor:not-allowed;
+    color:#c9cdd4 !important;
+    background:#f8fafc !important;
+    border-color:transparent !important;
+    cursor:not-allowed !important;
 }
+
 .goinn-calendar-day.empty{
-    background:transparent;
-    cursor:default;
+    background:transparent !important;
+    border-color:transparent !important;
+    cursor:default !important;
 }
+
 .goinn-calendar-hint{
-    margin-top:12px;
-    padding-top:10px;
-    border-top:1px solid #eee;
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid #e5e7eb;
     color:#6b7280;
-    font-size:11px;
+    font-size:12px;
+    line-height:18px;
     text-align:center;
 }
+
 .goinn-calendar-clear{
-    width:100%;
-    margin-top:10px;
-    padding:9px;
-    border:0;
-    border-radius:8px;
-    background:#f3f4f6;
-    cursor:pointer;
-    font-weight:700;
+    width:100% !important;
+    height:40px !important;
+    min-height:40px !important;
+    margin:10px 0 0 !important;
+    padding:0 !important;
+    border:0 !important;
+    border-radius:10px !important;
+    background:#f3f4f6 !important;
+    color:#111827 !important;
+    font-family:inherit !important;
+    font-size:14px !important;
+    font-weight:700 !important;
+    cursor:pointer !important;
+    box-shadow:none !important;
+}
+
+.goinn-calendar-clear:hover{
+    background:#e5e7eb !important;
+}
+
+@media (max-width:600px){
+    .goinn-date-picker{
+        width:calc(100vw - 32px);
+        max-width:calc(100vw - 32px);
+        padding:14px;
+        border-radius:16px;
+    }
+
+    .goinn-calendar-head{
+        grid-template-columns:38px 1fr 38px;
+        gap:6px;
+        margin-bottom:12px;
+    }
+
+    .goinn-calendar-nav{
+        width:38px !important;
+        min-width:38px !important;
+        max-width:38px !important;
+        height:38px !important;
+        min-height:38px !important;
+        line-height:38px !important;
+    }
+
+    .goinn-calendar-title{
+        font-size:17px;
+        line-height:38px;
+    }
+
+    .goinn-calendar-weekdays,
+    .goinn-calendar-grid{
+        gap:4px !important;
+    }
+
+    .goinn-calendar-weekday{
+        line-height:28px;
+        font-size:10px;
+    }
+
+    .goinn-calendar-day{
+        height:38px !important;
+        min-height:38px !important;
+        line-height:38px !important;
+        border-radius:9px !important;
+        font-size:13px !important;
+    }
 }
 </style>
 
-<div id="goinnDatePicker" class="goinn-date-picker">
+<div id="goinnDatePicker" class="goinn-date-picker" role="dialog" aria-label="Goinn date picker">
     <div class="goinn-calendar-head">
-        <button type="button" class="goinn-calendar-nav" id="goinnPrevMonth">‹</button>
+        <button type="button" class="goinn-calendar-nav" id="goinnPrevMonth" aria-label="Previous month">‹</button>
         <div class="goinn-calendar-title" id="goinnCalendarTitle"></div>
-        <button type="button" class="goinn-calendar-nav" id="goinnNextMonth">›</button>
+        <button type="button" class="goinn-calendar-nav" id="goinnNextMonth" aria-label="Next month">›</button>
     </div>
 
-    <div class="goinn-calendar-weekdays">
+    <div class="goinn-calendar-weekdays" aria-hidden="true">
         <div class="goinn-calendar-weekday">Sun</div>
         <div class="goinn-calendar-weekday">Mon</div>
         <div class="goinn-calendar-weekday">Tue</div>
@@ -1215,197 +1339,282 @@
 
     <div id="goinnCalendarGrid" class="goinn-calendar-grid"></div>
 
-    <div class="goinn-calendar-hint" id="goinnCalendarHint">
-        Select a date
-    </div>
+    <div class="goinn-calendar-hint" id="goinnCalendarHint">Select a date</div>
 
-    <button type="button" class="goinn-calendar-clear" id="goinnClearDate">
-        Clear
-    </button>
+    <button type="button" class="goinn-calendar-clear" id="goinnClearDate">Clear</button>
 </div>
 
 <script>
 (function(){
-    const checkIn=document.getElementById("check_in");
-    const checkOut=document.getElementById("check_out");
-    if(!checkIn || !checkOut) return;
+    const checkIn = document.getElementById("check_in");
+    const checkOut = document.getElementById("check_out");
+    const picker = document.getElementById("goinnDatePicker");
 
-    const picker=document.getElementById("goinnDatePicker");
-    const title=document.getElementById("goinnCalendarTitle");
-    const grid=document.getElementById("goinnCalendarGrid");
-    const hint=document.getElementById("goinnCalendarHint");
-    const prev=document.getElementById("goinnPrevMonth");
-    const next=document.getElementById("goinnNextMonth");
-    const clear=document.getElementById("goinnClearDate");
+    if (!checkIn || !checkOut || !picker) return;
 
-    const todayText="{{ today }}";
-    const tomorrowText="{{ tomorrow }}";
-    let activeInput=null;
-    let viewDate=null;
+    const title = document.getElementById("goinnCalendarTitle");
+    const grid = document.getElementById("goinnCalendarGrid");
+    const hint = document.getElementById("goinnCalendarHint");
+    const prev = document.getElementById("goinnPrevMonth");
+    const next = document.getElementById("goinnNextMonth");
+    const clear = document.getElementById("goinnClearDate");
 
-    function parseISO(v){
-        if(!v || !/^\\d{4}-\\d{2}-\\d{2}$/.test(v)) return null;
-        const p=v.split("-");
-        return new Date(Number(p[0]),Number(p[1])-1,Number(p[2]));
+    const todayText = "{{ today }}";
+    const tomorrowText = "{{ tomorrow }}";
+
+    let activeInput = null;
+    let viewDate = null;
+
+    function parseISO(value){
+        if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+        const parts = value.split("-").map(Number);
+        return new Date(parts[0], parts[1] - 1, parts[2]);
     }
 
-    function iso(d){
-        return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+    function iso(date){
+        return date.getFullYear() + "-" +
+            String(date.getMonth() + 1).padStart(2,"0") + "-" +
+            String(date.getDate()).padStart(2,"0");
     }
 
-    function nextDay(v){
-        const d=parseISO(v);
-        if(!d) return tomorrowText;
-        d.setDate(d.getDate()+1);
-        return iso(d);
+    function startOfMonth(date){
+        return new Date(date.getFullYear(), date.getMonth(), 1);
+    }
+
+    function nextDay(value){
+        const date = parseISO(value);
+        if (!date) return tomorrowText;
+        date.setDate(date.getDate() + 1);
+        return iso(date);
     }
 
     function positionPicker(){
-        if(!activeInput) return;
-        const r=activeInput.getBoundingClientRect();
-        const w=Math.min(360,window.innerWidth-24);
-        let left=Math.max(12,Math.min(r.left,window.innerWidth-w-12));
-        let top=r.bottom+8;
-        if(top+430>window.innerHeight && r.top>430) top=r.top-438;
-        picker.style.left=left+"px";
-        picker.style.top=top+"px";
+        if (!activeInput) return;
+
+        const rect = activeInput.getBoundingClientRect();
+        const mobile = window.innerWidth <= 600;
+        const pickerWidth = mobile
+            ? window.innerWidth - 32
+            : Math.min(360, window.innerWidth - 32);
+
+        picker.style.width = pickerWidth + "px";
+
+        let left = mobile
+            ? 16
+            : rect.left;
+
+        left = Math.max(16, Math.min(left, window.innerWidth - pickerWidth - 16));
+
+        const pickerHeight = picker.offsetHeight || 390;
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const spaceAbove = rect.top;
+
+        let top;
+
+        if (spaceBelow >= pickerHeight + 10 || spaceBelow >= spaceAbove) {
+            top = rect.bottom + 8;
+        } else {
+            top = rect.top - pickerHeight - 8;
+        }
+
+        top = Math.max(8, Math.min(top, window.innerHeight - pickerHeight - 8));
+
+        picker.style.left = left + "px";
+        picker.style.top = top + "px";
     }
 
     function openPicker(input){
-        activeInput=input;
-        const selected=parseISO(input.value);
-        const base=selected || parseISO(todayText) || new Date();
-        viewDate=new Date(base.getFullYear(),base.getMonth(),1);
+        activeInput = input;
+
+        const selected = parseISO(input.value);
+        const fallback = parseISO(todayText) || new Date();
+        const base = selected || fallback;
+
+        viewDate = startOfMonth(base);
+
         picker.classList.add("show");
-        positionPicker();
         render();
+
+        requestAnimationFrame(positionPicker);
     }
 
     function closePicker(){
         picker.classList.remove("show");
-        activeInput=null;
+        activeInput = null;
     }
 
     function render(){
-        if(!activeInput) return;
+        if (!activeInput || !viewDate) return;
 
-        const y=viewDate.getFullYear();
-        const m=viewDate.getMonth();
-        title.textContent=viewDate.toLocaleString("default",{month:"long",year:"numeric"});
-        grid.innerHTML="";
+        const year = viewDate.getFullYear();
+        const month = viewDate.getMonth();
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-        const first=new Date(y,m,1).getDay();
-        const days=new Date(y,m+1,0).getDate();
-        const minDate=activeInput===checkOut
-            ?(checkIn.value ? nextDay(checkIn.value) : tomorrowText)
-            :todayText;
+        title.textContent = viewDate.toLocaleString("en-US", {
+            month:"long",
+            year:"numeric"
+        });
 
-        for(let i=0;i<first;i++){
-            const b=document.createElement("button");
-            b.type="button";
-            b.disabled=true;
-            b.className="goinn-calendar-day empty";
-            grid.appendChild(b);
+        grid.innerHTML = "";
+
+        const minDate = activeInput === checkOut
+            ? (checkIn.value ? nextDay(checkIn.value) : tomorrowText)
+            : todayText;
+
+        for (let i = 0; i < firstDay; i++) {
+            const empty = document.createElement("div");
+            empty.className = "goinn-calendar-day empty";
+            empty.setAttribute("aria-hidden", "true");
+            grid.appendChild(empty);
         }
 
-        for(let day=1;day<=days;day++){
-            const d=new Date(y,m,day);
-            const value=iso(d);
-            const b=document.createElement("button");
-            b.type="button";
-            b.className="goinn-calendar-day";
-            b.textContent=day;
+        for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(year, month, day);
+            const value = iso(date);
+            const button = document.createElement("button");
 
-            if(value===todayText) b.classList.add("today");
-            if(value===activeInput.value) b.classList.add("selected");
+            button.type = "button";
+            button.className = "goinn-calendar-day";
+            button.textContent = day;
+            button.setAttribute("aria-label", value);
 
-            if(checkIn.value && checkOut.value &&
-               value>checkIn.value && value<checkOut.value){
-                b.classList.add("range");
+            if (value === todayText) button.classList.add("today");
+            if (value === checkIn.value || value === checkOut.value) {
+                button.classList.add("selected");
             }
 
-            if(value<minDate){
-                b.disabled=true;
-                b.classList.add("disabled");
-            }else{
-                b.addEventListener("click",function(){
-                    activeInput.value=value;
+            if (checkIn.value && checkOut.value &&
+                value > checkIn.value && value < checkOut.value) {
+                button.classList.add("range");
+            }
 
-                    if(activeInput===checkIn){
-                        if(checkOut.value && checkOut.value<=checkIn.value){
-                            checkOut.value="";
+            if (value < minDate) {
+                button.disabled = true;
+                button.classList.add("disabled");
+            } else {
+                button.addEventListener("click", function(){
+                    if (activeInput === checkIn) {
+                        checkIn.value = value;
+
+                        if (checkOut.value && checkOut.value <= checkIn.value) {
+                            checkOut.value = "";
                         }
-                        hint.textContent="Now select your check-out date";
-                        setTimeout(function(){openPicker(checkOut)},100);
-                    }else{
-                        checkOut.value=value;
+
+                        checkIn.dispatchEvent(new Event("change", {bubbles:true}));
+
+                        // Immediately move to checkout selection.
+                        openPicker(checkOut);
+                    } else {
+                        if (value <= checkIn.value) return;
+
+                        checkOut.value = value;
+                        checkOut.dispatchEvent(new Event("change", {bubbles:true}));
                         closePicker();
-                        checkOut.dispatchEvent(new Event("change",{bubbles:true}));
                     }
                 });
             }
-            grid.appendChild(b);
+
+            grid.appendChild(button);
         }
 
-        hint.textContent=activeInput===checkIn
-            ?"Select check-in date"
-            :(checkIn.value?"Select check-out date":"Select check-in date first");
+        const minMonth = startOfMonth(parseISO(todayText) || new Date());
+        const currentMonth = startOfMonth(viewDate);
+        prev.disabled = currentMonth <= minMonth;
+
+        hint.textContent = activeInput === checkIn
+            ? "Select check-in date"
+            : (checkIn.value ? "Select check-out date" : "Select check-in date first");
+
+        requestAnimationFrame(positionPicker);
     }
 
-    checkIn.addEventListener("click",function(){openPicker(checkIn)});
-    checkOut.addEventListener("click",function(){
-        if(!checkIn.value){openPicker(checkIn);return;}
+    checkIn.addEventListener("click", function(){
+        openPicker(checkIn);
+    });
+
+    checkOut.addEventListener("click", function(){
+        if (!checkIn.value) {
+            openPicker(checkIn);
+            return;
+        }
         openPicker(checkOut);
     });
 
-    checkIn.addEventListener("change",function(){
-        if(checkOut.value && checkOut.value<=checkIn.value) checkOut.value="";
-    });
-
-    checkOut.addEventListener("change",function(){
-        if(checkIn.value && checkOut.value<=checkIn.value){
-            alert("Check-out date must be after check-in date.");
-            checkOut.value="";
+    checkIn.addEventListener("change", function(){
+        if (checkOut.value && checkOut.value <= checkIn.value) {
+            checkOut.value = "";
         }
     });
 
-    prev.addEventListener("click",function(){
-        const min=parseISO(todayText);
-        const candidate=new Date(viewDate.getFullYear(),viewDate.getMonth()-1,1);
-        const minMonth=new Date(min.getFullYear(),min.getMonth(),1);
-        if(candidate>=minMonth){viewDate=candidate;render();}
+    checkOut.addEventListener("change", function(){
+        if (checkIn.value && checkOut.value <= checkIn.value) {
+            checkOut.value = "";
+        }
     });
 
-    next.addEventListener("click",function(){
-        viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()+1,1);
+    prev.addEventListener("click", function(event){
+        event.preventDefault();
+        event.stopPropagation();
+
+        const candidate = new Date(
+            viewDate.getFullYear(),
+            viewDate.getMonth() - 1,
+            1
+        );
+
+        const minMonth = startOfMonth(parseISO(todayText) || new Date());
+
+        if (candidate >= minMonth) {
+            viewDate = candidate;
+            render();
+        }
+    });
+
+    next.addEventListener("click", function(event){
+        event.preventDefault();
+        event.stopPropagation();
+
+        viewDate = new Date(
+            viewDate.getFullYear(),
+            viewDate.getMonth() + 1,
+            1
+        );
+
         render();
     });
 
-    clear.addEventListener("click",function(){
-        if(activeInput===checkIn){
-            checkIn.value="";
-            checkOut.value="";
-        }else if(activeInput===checkOut){
-            checkOut.value="";
+    clear.addEventListener("click", function(event){
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (activeInput === checkIn) {
+            checkIn.value = "";
+            checkOut.value = "";
+        } else {
+            checkOut.value = "";
         }
+
         closePicker();
     });
 
-    document.addEventListener("click",function(e){
-        if(picker.classList.contains("show") &&
-           !picker.contains(e.target) &&
-           e.target!==checkIn &&
-           e.target!==checkOut){
+    document.addEventListener("click", function(event){
+        if (!picker.classList.contains("show")) return;
+
+        if (!picker.contains(event.target) &&
+            event.target !== checkIn &&
+            event.target !== checkOut) {
             closePicker();
         }
     });
 
-    window.addEventListener("resize",positionPicker);
+    window.addEventListener("resize", function(){
+        if (picker.classList.contains("show")) positionPicker();
+    });
 
-    if(checkIn.value){
-        const original=checkIn.value;
-        checkIn.value=original;
-    }
+    window.addEventListener("scroll", function(){
+        if (picker.classList.contains("show")) positionPicker();
+    }, true);
 })();
 </script>
 
