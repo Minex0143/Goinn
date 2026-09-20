@@ -2040,6 +2040,179 @@ def owner_dashboard():
 
 
 # ==================================================
+# MODIFY PROPERTY - OWNER
+# ==================================================
+#
+# Owners can modify ONLY their own property while it
+# is still pending Admin approval.
+#
+# Owner-editable fields:
+# - Property name
+# - Property address
+# - Location
+# - Images
+#
+# Admin-controlled fields are never accepted from this
+# form: max guests, pricing, pricing method and
+# availability type.
+#
+# Once a property is approved or rejected, the owner
+# cannot modify it.
+# ==================================================
+@app.route(
+    "/owner/property/<int:property_id>/modify",
+    methods=["GET", "POST"]
+)
+@login_required
+def modify_property(property_id):
+
+    if current_user.role not in [
+        "owner",
+        "admin"
+    ]:
+        return "Access denied", 403
+
+    property_obj = Property.query.filter_by(
+        id=property_id,
+        owner_id=current_user.id
+    ).first()
+
+    if not property_obj:
+        flash(
+            "Property not found or you do not have permission to modify it.",
+            "danger"
+        )
+        return redirect(url_for("owner_dashboard"))
+
+    # IMPORTANT: Modify is available only before Admin approval.
+    if property_obj.status != "pending":
+        flash(
+            "This property can no longer be modified because it is not pending Admin approval.",
+            "danger"
+        )
+        return redirect(url_for("owner_dashboard"))
+
+    # ==================================================
+    # GET
+    # ==================================================
+    if request.method == "GET":
+
+        submission_token = secrets.token_urlsafe(32)
+
+        session["modify_property_token"] = {
+            "property_id": property_id,
+            "token": submission_token
+        }
+
+        return render_template(
+            "modify_property.html",
+            property=property_obj,
+            submission_token=submission_token
+        )
+
+    # ==================================================
+    # POST
+    # ==================================================
+    token_data = session.pop(
+        "modify_property_token",
+        None
+    )
+
+    submitted_token = request.form.get(
+        "submission_token",
+        ""
+    ).strip()
+
+    if not isinstance(token_data, dict):
+        return redirect(
+            url_for("owner_dashboard"),
+            code=303
+        )
+
+    if (
+        token_data.get("property_id") != property_id
+        or not submitted_token
+        or submitted_token != token_data.get("token")
+    ):
+        return redirect(
+            url_for("owner_dashboard"),
+            code=303
+        )
+
+    # Re-check the database status on POST so an already-approved
+    # property cannot be changed using an old edit page.
+    property_obj = Property.query.filter_by(
+        id=property_id,
+        owner_id=current_user.id
+    ).first()
+
+    if not property_obj:
+        flash("Property not found.", "danger")
+        return redirect(url_for("owner_dashboard"))
+
+    if property_obj.status != "pending":
+        flash(
+            "This property has already been processed by Admin and can no longer be modified.",
+            "danger"
+        )
+        return redirect(url_for("owner_dashboard"))
+
+    property_name = request.form.get(
+        "property_name",
+        ""
+    ).strip()
+
+    property_address = request.form.get(
+        "property_address",
+        ""
+    ).strip()
+
+    location = request.form.get(
+        "location",
+        ""
+    ).strip()
+
+    images = request.form.get(
+        "images",
+        ""
+    ).strip()
+
+    if not property_name:
+        return "Property name is required", 400
+
+    if not property_address:
+        return "Property address is required", 400
+
+    if not location:
+        return "Location is required", 400
+
+    # Only owner-editable fields are updated here.
+    property_obj.property_name = property_name
+    property_obj.property_address = property_address
+    property_obj.location = location
+    property_obj.images = images
+
+    # Do NOT change:
+    # - status
+    # - max_guests
+    # - pricing_method
+    # - pricing_data
+    # - availability_type
+
+    db.session.commit()
+
+    flash(
+        "Property details updated successfully. The property remains pending Admin approval.",
+        "success"
+    )
+
+    return redirect(
+        url_for("owner_dashboard"),
+        code=303
+    )
+
+
+# ==================================================
 # ADMIN TYPE 2 CALENDAR
 # ==================================================
 
