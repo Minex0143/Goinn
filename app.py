@@ -270,6 +270,58 @@ class Property(db.Model):
 
 
 # ==================================================
+# PROPERTY IMAGE MODEL
+# ==================================================
+
+class PropertyImage(db.Model):
+
+    __tablename__ = "property_images"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    property_id = db.Column(
+        db.Integer,
+        db.ForeignKey("property.id"),
+        nullable=False
+    )
+
+    slot = db.Column(db.Integer, nullable=False)
+
+    filename = db.Column(db.String(255), nullable=False)
+    mime_type = db.Column(db.String(100), nullable=False)
+    image_data = db.Column(db.LargeBinary, nullable=False)
+
+    status = db.Column(
+        db.String(30),
+        nullable=False,
+        default="pending"
+    )
+
+    rejection_reason = db.Column(db.Text, nullable=True)
+
+    created_at = db.Column(
+        db.DateTime,
+        server_default=db.func.now()
+    )
+
+    updated_at = db.Column(
+        db.DateTime,
+        server_default=db.func.now(),
+        onupdate=db.func.now()
+    )
+
+    property = db.relationship(
+        "Property",
+        backref=db.backref(
+            "property_images",
+            lazy=True,
+            cascade="all, delete-orphan",
+            order_by="PropertyImage.slot"
+        )
+    )
+
+
+# ==================================================
 # BOOKING MODEL
 # ==================================================
 
@@ -2172,11 +2224,6 @@ def modify_property(property_id):
         ""
     ).strip()
 
-    images = request.form.get(
-        "images",
-        ""
-    ).strip()
-
     if not property_name:
         return "Property name is required", 400
 
@@ -2190,7 +2237,38 @@ def modify_property(property_id):
     property_obj.property_name = property_name
     property_obj.property_address = property_address
     property_obj.location = location
-    property_obj.images = images
+
+    allowed_types = {"image/jpeg", "image/png", "image/webp", "image/gif"}
+    for slot in range(1, 11):
+        file = request.files.get(f"image_{slot}")
+        if not file or not file.filename:
+            continue
+        mime = (file.mimetype or "").lower()
+        if mime not in allowed_types:
+            return f"Image {slot} has an unsupported format.", 400
+        data = file.read()
+        if not data:
+            return f"Image {slot} is empty.", 400
+
+        image = PropertyImage.query.filter_by(
+            property_id=property_id, slot=slot
+        ).first()
+        if not image:
+            image = PropertyImage(
+                property_id=property_id,
+                slot=slot
+            )
+            db.session.add(image)
+
+        # Owners may replace an image only when it is not already approved.
+        if image.status == "approved":
+            continue
+
+        image.filename = file.filename
+        image.mime_type = mime
+        image.image_data = data
+        image.status = "pending"
+        image.rejection_reason = None
 
     # Do NOT change:
     # - status
@@ -2210,6 +2288,134 @@ def modify_property(property_id):
         url_for("owner_dashboard"),
         code=303
     )
+
+
+# ==================================================
+# PROPERTY IMAGE ROUTES
+# ==================================================
+
+@app.route("/property-image/<int:image_id>")
+def property_image(image_id):
+    image = db.session.get(PropertyImage, image_id)
+    if not image or image.status != "approved":
+        return "Image not available", 404
+    return app.response_class(
+        image.image_data,
+        mimetype=image.mime_type,
+        headers={"Cache-Control": "public, max-age=3600"}
+    )
+
+
+@app.route("/admin/property-image/<int:image_id>/view")
+@login_required
+def admin_view_property_image(image_id):
+    if not current_user.is_admin:
+        return "Unauthorized", 403
+    image = db.session.get(PropertyImage, image_id)
+    if not image:
+        return "Image not found", 404
+    return app.response_class(
+        image.image_data,
+        mimetype=image.mime_type,
+        headers={"Content-Disposition": "inline"}
+    )
+
+
+@app.route("/admin/property-image/<int:image_id>/download")
+@login_required
+def admin_download_property_image(image_id):
+    if not current_user.is_admin:
+        return "Unauthorized", 403
+    image = db.session.get(PropertyImage, image_id)
+    if not image:
+        return "Image not found", 404
+    return app.response_class(
+        image.image_data,
+        mimetype=image.mime_type,
+        headers={
+            "Content-Disposition": f'attachment; filename="{image.filename}"'
+        }
+    )
+
+
+@app.route("/admin/property-image/<int:image_id>/approve", methods=["POST"])
+@login_required
+def approve_property_image(image_id):
+    if not current_user.is_admin:
+        return "Unauthorized", 403
+    image = db.session.get(PropertyImage, image_id)
+    if not image:
+        return "Image not found", 404
+    image.status = "approved"
+    image.rejection_reason = None
+    db.session.commit()
+    flash(f"Image {image.slot} approved.", "success")
+    return redirect(url_for("admin_dashboard"))
+
+
+@app.route("/admin/property-image/<int:image_id>/request-reupload", methods=["POST"])
+@login_required
+def request_property_image_reupload(image_id):
+    if not current_user.is_admin:
+        return "Unauthorized", 403
+    image = db.session.get(PropertyImage, image_id)
+    if not image:
+        return "Image not found", 404
+    reason = request.form.get("reason", "Image needs to be replaced by the owner.").strip()
+    image.status = "reupload_required"
+    image.rejection_reason = reason[:1000] if reason else "Image needs to be replaced by the owner."
+    db.session.commit()
+    flash(f"Image {image.slot} was removed and the owner was asked to re-upload it.", "info")
+    return redirect(url_for("admin_dashboard"))
+
+
+@app.route("/owner/property/<int:property_id>/image/<int:slot>/upload", methods=["POST"])
+@login_required
+def owner_reupload_property_image(property_id, slot):
+    if current_user.role not in ["owner", "admin"] or slot < 1 or slot > 10:
+        return "Access denied", 403
+
+    property_obj = Property.query.filter_by(
+        id=property_id, owner_id=current_user.id
+    ).first()
+    if not property_obj:
+        return "Property not found", 404
+    if property_obj.status != "pending":
+        flash("Images can only be changed before Admin approves the property.", "danger")
+        return redirect(url_for("owner_dashboard"))
+
+    file = request.files.get("image")
+    if not file or not file.filename:
+        flash("Please select an image.", "danger")
+        return redirect(url_for("owner_dashboard"))
+
+    mime = (file.mimetype or "").lower()
+    if mime not in {"image/jpeg", "image/png", "image/webp", "image/gif"}:
+        flash("Unsupported image format.", "danger")
+        return redirect(url_for("owner_dashboard"))
+
+    data = file.read()
+    if not data:
+        flash("The uploaded image is empty.", "danger")
+        return redirect(url_for("owner_dashboard"))
+
+    image = PropertyImage.query.filter_by(
+        property_id=property_id, slot=slot
+    ).first()
+
+    if not image:
+        image = PropertyImage(property_id=property_id, slot=slot)
+        db.session.add(image)
+
+    image.filename = file.filename
+    image.mime_type = mime
+    image.image_data = data
+    image.status = "pending"
+    image.rejection_reason = None
+    db.session.commit()
+
+    flash(f"Image {slot} uploaded and sent to Admin for review.", "success")
+    return redirect(url_for("owner_dashboard"))
 
 
 # ==================================================
@@ -2818,164 +3024,90 @@ def owner_unblock_date():
 @login_required
 def add_property():
 
-    if current_user.role not in [
-        "owner",
-        "admin"
-    ]:
-
-        return (
-            "Access denied",
-            403
-        )
-
-    # ==================================================
-    # GET REQUEST
-    # ==================================================
+    if current_user.role not in ["owner", "admin"]:
+        return "Access denied", 403
 
     if request.method == "GET":
-
-        # Generate a unique token for this form.
-        #
-        # This prevents duplicate property creation
-        # if the browser/iPhone submits the same form
-        # more than once.
-
         submission_token = secrets.token_urlsafe(32)
-
-        session["add_property_token"] = (
-            submission_token
-        )
-
+        session["add_property_token"] = submission_token
         return render_template(
             "add_property.html",
             submission_token=submission_token
         )
 
-    # ==================================================
-    # POST REQUEST
-    # ==================================================
+    submitted_token = request.form.get("submission_token", "").strip()
+    session_token = session.pop("add_property_token", None)
 
-    submitted_token = request.form.get(
-        "submission_token",
-        ""
-    ).strip()
+    if not submitted_token or submitted_token != session_token:
+        return redirect(url_for("owner_dashboard"), code=303)
 
-    session_token = session.pop(
-        "add_property_token",
-        None
-    )
-
-    # ==================================================
-    # DUPLICATE SUBMISSION PROTECTION
-    # ==================================================
-
-    # If the token does not match, this request is
-    # either a duplicate submission or an old
-    # browser resubmission.
-
-    if (
-        not submitted_token
-        or submitted_token != session_token
-    ):
-
-        return redirect(
-            url_for("owner_dashboard"),
-            code=303
-        )
-
-    # ==================================================
-    # FORM DATA
-    # ==================================================
-
-    property_name = request.form.get(
-        "property_name",
-        ""
-    ).strip()
-
-    property_address = request.form.get(
-        "property_address",
-        ""
-    ).strip()
-
-    location = request.form.get(
-        "location",
-        ""
-    ).strip()
-
-    images = request.form.get(
-        "images",
-        ""
-    ).strip()
-
-    # ==================================================
-    # VALIDATION
-    # ==================================================
+    property_name = request.form.get("property_name", "").strip()
+    property_address = request.form.get("property_address", "").strip()
+    location = request.form.get("location", "").strip()
 
     if not property_name:
-
-        return (
-            "Property name is required",
-            400
-        )
-
+        return "Property name is required", 400
     if not property_address:
-
-        return (
-            "Property address is required",
-            400
-        )
-
+        return "Property address is required", 400
     if not location:
+        return "Location is required", 400
 
-        return (
-            "Location is required",
-            400
-        )
+    allowed_types = {
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "image/gif"
+    }
 
-    # ==================================================
-    # CREATE PROPERTY
-    # ==================================================
+    uploaded = []
+    for slot in range(1, 11):
+        file = request.files.get(f"image_{slot}")
+        if not file or not file.filename:
+            continue
+        mime = (file.mimetype or "").lower()
+        if mime not in allowed_types:
+            return f"Image {slot} has an unsupported format. Use JPG, JPEG, PNG, WEBP or GIF.", 400
+        data = file.read()
+        if not data:
+            continue
+        uploaded.append((slot, file.filename, mime, data))
+
+    if len(uploaded) == 0:
+        return "Please upload at least one property image.", 400
 
     property_obj = Property(
-
         owner_id=current_user.id,
-
         property_name=property_name,
-
         property_address=property_address,
-
         location=location,
-
-        images=images,
-
-        # Owner does NOT configure guests.
-        # Admin will configure max guests and pricing.
-
+        images=None,
         max_guests=0,
-
         pricing_method=None,
-
         pricing_data=None,
-
         availability_type="type1",
-
         status="pending"
     )
 
-    db.session.add(
-        property_obj
-    )
+    db.session.add(property_obj)
+    db.session.flush()
+
+    for slot, filename, mime, data in uploaded:
+        db.session.add(PropertyImage(
+            property_id=property_obj.id,
+            slot=slot,
+            filename=filename,
+            mime_type=mime,
+            image_data=data,
+            status="pending"
+        ))
 
     db.session.commit()
 
-    # ==================================================
-    # POST -> REDIRECT -> GET
-    # ==================================================
-
-    return redirect(
-        url_for("owner_dashboard"),
-        code=303
+    flash(
+        "Property created successfully. Admin will review each image before it is shown to customers.",
+        "success"
     )
+    return redirect(url_for("owner_dashboard"), code=303)
 
 
 # ==================================================
@@ -3503,12 +3635,28 @@ def set_property_price(property_id):
                 property_obj.price_5_guest = price
 
     # =================================================
-    # APPROVE
+    # APPROVE ONLY AFTER AT LEAST ONE IMAGE IS APPROVED
     # =================================================
+
+    approved_image_count = PropertyImage.query.filter_by(
+        property_id=property_obj.id,
+        status="approved"
+    ).count()
+
+    if approved_image_count < 1:
+        property_obj.status = "pending"
+        db.session.commit()
+        flash(
+            "Pricing saved, but the property remains Pending. Admin must approve at least one property image before the property can go live.",
+            "info"
+        )
+        return redirect(url_for("admin_dashboard"))
 
     property_obj.status = "approved"
 
     db.session.commit()
+
+    flash("Pricing saved and property approved successfully.", "success")
 
     return redirect(
         url_for("admin_dashboard")
@@ -3718,6 +3866,12 @@ def delete_user(user_id):
                 synchronize_session=False
             )
 
+            PropertyImage.query.filter_by(
+                property_id=property_obj.id
+            ).delete(
+                synchronize_session=False
+            )
+
             db.session.delete(
                 property_obj
             )
@@ -3815,6 +3969,12 @@ def delete_property_owner(owner_id):
             )
 
             PropertyBlockedDate.query.filter_by(
+                property_id=property_obj.id
+            ).delete(
+                synchronize_session=False
+            )
+
+            PropertyImage.query.filter_by(
                 property_id=property_obj.id
             ).delete(
                 synchronize_session=False
