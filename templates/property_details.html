@@ -905,6 +905,16 @@
 
 <style>
 .search-selection-card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:18px 20px;margin-bottom:22px;box-shadow:0 3px 15px rgba(0,0,0,.05)}
+
+.dates-guests-editor{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:12px;align-items:end;background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:16px}
+.edit-selection-field{display:flex;flex-direction:column;gap:7px}
+.edit-selection-field label{font-size:13px;font-weight:700;color:#475569}
+.edit-selection-field input{width:100%;min-height:44px;border:1px solid #cbd5e1;border-radius:10px;padding:0 12px;font-size:14px;background:#fff;color:#0f172a;box-sizing:border-box}
+.edit-selection-field input:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.update-selection-btn{min-height:44px;border:0;border-radius:10px;padding:0 18px;background:#2563eb;color:#fff;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.update-selection-btn:hover{background:#1d4ed8}
+.selection-error{min-height:20px;margin-top:8px;color:#dc2626;font-size:13px;font-weight:600}
+@media(max-width:760px){.dates-guests-editor{grid-template-columns:1fr}.update-selection-btn{width:100%}}
 .search-selection-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .search-selection-item{background:#f7f8fa;border:1px solid #eceef0;border-radius:11px;padding:13px 15px}
 .search-selection-label{font-size:11px;color:#777;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
@@ -1030,12 +1040,26 @@
          SEARCH SELECTION FROM HOME
     ================================================== -->
     <section class="search-selection-card">
-        <div class="section-title" style="margin-bottom:13px;">Your Selection</div>
-        <div class="search-selection-grid">
-            <div class="search-selection-item"><div class="search-selection-label">Check-in</div><div class="search-selection-value">{% if selected_check_in %}{{ selected_check_in }}{% else %}Not selected{% endif %}</div></div>
-            <div class="search-selection-item"><div class="search-selection-label">Check-out</div><div class="search-selection-value">{% if selected_check_out %}{{ selected_check_out }}{% else %}Not selected{% endif %}</div></div>
-            <div class="search-selection-item"><div class="search-selection-label">Guests</div><div class="search-selection-value">{% if selected_guests %}{{ selected_guests }} Guest{% if selected_guests|int > 1 %}s{% endif %}{% else %}Not selected{% endif %}</div></div>
+        <div class="section-title" style="margin-bottom:13px;">Dates &amp; Guests</div>
+        <div class="dates-guests-editor">
+            <div class="edit-selection-field">
+                <label for="propertyCheckIn">Check-in</label>
+                <input type="date" id="propertyCheckIn" value="{{ selected_check_in }}">
+            </div>
+
+            <div class="edit-selection-field">
+                <label for="propertyCheckOut">Check-out</label>
+                <input type="date" id="propertyCheckOut" value="{{ selected_check_out }}">
+            </div>
+
+            <div class="edit-selection-field">
+                <label for="propertyGuests">Guests</label>
+                <input type="number" id="propertyGuests" value="{{ selected_guests or 1 }}" min="1" {% if property.max_guests %}max="{{ property.max_guests }}"{% endif %} step="1">
+            </div>
+
+            <button type="button" class="update-selection-btn" onclick="updatePropertySelection()">Update</button>
         </div>
+        <div id="selectionError" class="selection-error" aria-live="polite"></div>
     </section>
 
 
@@ -1352,6 +1376,44 @@
 </div>
 
 <script>
+function updatePropertySelection(){
+    const checkIn=document.getElementById('propertyCheckIn').value;
+    const checkOut=document.getElementById('propertyCheckOut').value;
+    const guests=document.getElementById('propertyGuests').value;
+    const error=document.getElementById('selectionError');
+    error.textContent='';
+    if(!checkIn||!checkOut){error.textContent='Please select both check-in and check-out dates.';return;}
+    if(checkOut<=checkIn){error.textContent='Check-out must be after check-in.';return;}
+    const guestCount=parseInt(guests,10);
+    if(!Number.isInteger(guestCount)||guestCount<1){error.textContent='Please enter at least 1 guest.';return;}
+    const maxGuests={{ property.max_guests if property.max_guests else 0 }};
+    if(maxGuests>0&&guestCount>maxGuests){error.textContent='This property allows a maximum of '+maxGuests+' guests.';return;}
+    const url=new URL(window.location.href);
+    url.searchParams.set('check_in',checkIn);
+    url.searchParams.set('check_out',checkOut);
+    url.searchParams.set('guests',String(guestCount));
+    window.location.href=url.toString();
+}
+
+function syncCheckoutMinimum(){
+    const checkIn=document.getElementById('propertyCheckIn');
+    const checkOut=document.getElementById('propertyCheckOut');
+    if(!checkIn||!checkOut)return;
+    const today=new Date();
+    const yyyy=today.getFullYear();
+    const mm=String(today.getMonth()+1).padStart(2,'0');
+    const dd=String(today.getDate()).padStart(2,'0');
+    const todayValue=yyyy+'-'+mm+'-'+dd;
+    checkIn.min=todayValue;
+    checkOut.min=checkIn.value||todayValue;
+    if(checkIn.value&&checkOut.value&&checkOut.value<=checkIn.value)checkOut.value='';
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+    const checkIn=document.getElementById('propertyCheckIn');
+    if(checkIn){checkIn.addEventListener('change',syncCheckoutMinimum);syncCheckoutMinimum();}
+});
+
 function openBookingModal(){const m=document.getElementById('bookingModal');if(!m)return;m.classList.add('show');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}
 function closeBookingModal(){const m=document.getElementById('bookingModal');if(!m)return;m.classList.remove('show');m.setAttribute('aria-hidden','true');document.body.style.overflow='';}
 document.getElementById('bookingModal')?.addEventListener('click',function(e){if(e.target===this)closeBookingModal();});
