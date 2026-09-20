@@ -254,6 +254,11 @@ class Property(db.Model):
         nullable=False
     )
 
+    rejection_reason = db.Column(
+        db.Text,
+        nullable=True
+    )
+
     created_at = db.Column(
         db.DateTime,
         server_default=db.func.now()
@@ -536,6 +541,21 @@ def ensure_database_columns():
                     """
                     ALTER TABLE property
                     ADD COLUMN max_guests INTEGER
+                    """
+                )
+
+        # ------------------------------------------
+        # REJECTION REASON
+        # ------------------------------------------
+
+        if "rejection_reason" not in columns:
+
+            with db.engine.begin() as connection:
+
+                connection.exec_driver_sql(
+                    """
+                    ALTER TABLE property
+                    ADD COLUMN rejection_reason TEXT
                     """
                 )
 
@@ -3722,6 +3742,7 @@ def set_property_price(property_id):
         return redirect(url_for("admin_dashboard"))
 
     property_obj.status = "approved"
+    property_obj.rejection_reason = None
 
     db.session.commit()
 
@@ -3807,7 +3828,20 @@ def approve_property(property_id):
             400
         )
 
+    approved_image_count = PropertyImage.query.filter_by(
+        property_id=property_obj.id,
+        status="approved"
+    ).count()
+
+    if approved_image_count < 1:
+        return (
+            "At least one property image must be approved "
+            "before the property can be approved.",
+            400
+        )
+
     property_obj.status = "approved"
+    property_obj.rejection_reason = None
 
     db.session.commit()
 
@@ -3846,9 +3880,26 @@ def reject_property(property_id):
             404
         )
 
+    reason = request.form.get(
+        "reason",
+        ""
+    ).strip()
+
+    if not reason:
+        return (
+            "A rejection reason is required.",
+            400
+        )
+
     property_obj.status = "rejected"
+    property_obj.rejection_reason = reason[:2000]
 
     db.session.commit()
+
+    flash(
+        "Property rejected and the reason was saved.",
+        "info"
+    )
 
     return redirect(
         url_for("admin_dashboard")
