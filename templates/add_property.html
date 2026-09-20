@@ -563,6 +563,7 @@
 
         <form
             method="POST"
+            enctype="multipart/form-data"
             action="{{ url_for('add_property') }}"
         >
             <input
@@ -792,32 +793,32 @@
 
 
                 <div class="image-box">
-
-                    <div class="form-group"
-                         style="margin-bottom:0;">
-
-                        <label for="images">
-
-                            Property Images
-
-                        </label>
-
-                        <textarea
-                            id="images"
-                            name="images"
-                            placeholder="Image information can be added here."
-                        ></textarea>
-
-                        <span class="field-help">
-
-                            Image upload functionality will be
-                            enabled separately. Supported formats
-                            will include JPG, JPEG, PNG and WEBP.
-
-                        </span>
-
+                    <div class="image-help">
+                        Upload up to <strong>10 images</strong>. Each card represents one fixed image position.
+                        Admin will review every image separately. Only Admin-approved images will be shown to customers.
                     </div>
 
+                    <div class="image-slots">
+                        {% for slot in range(1, 11) %}
+                        <label class="image-slot" for="image_{{ slot }}">
+                            <input
+                                type="file"
+                                id="image_{{ slot }}"
+                                name="image_{{ slot }}"
+                                accept="image/jpeg,image/png,image/webp,image/gif"
+                            >
+                            <span class="slot-number">{{ slot }}</span>
+                            <span class="slot-icon">＋</span>
+                            <span class="slot-title">Image {{ slot }}</span>
+                            <span class="slot-name" id="image_name_{{ slot }}">Click to upload</span>
+                            <img id="image_preview_{{ slot }}" class="slot-preview" alt="Image {{ slot }} preview">
+                        </label>
+                        {% endfor %}
+                    </div>
+
+                    <span class="field-help">
+                        Supported: JPG, JPEG, PNG and WEBP/GIF. Maximum 10 images.
+                    </span>
                 </div>
 
             </div>
@@ -1006,6 +1007,14 @@
     
     </script>
 
+
+
+<style>
+.image-help{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:10px;padding:13px;margin-bottom:16px;font-size:14px;line-height:1.5}.image-slots{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.image-slot{position:relative;min-height:170px;border:2px dashed #cbd5e1;border-radius:14px;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:12px;cursor:pointer;overflow:hidden;transition:.2s}.image-slot:hover{border-color:#2563eb;background:#eff6ff}.image-slot input{display:none}.slot-number{position:absolute;top:8px;left:8px;background:#111827;color:#fff;border-radius:20px;width:27px;height:27px;line-height:27px;font-size:12px;font-weight:800}.slot-icon{font-size:30px;color:#2563eb;line-height:1}.slot-title{font-weight:800;margin-top:8px}.slot-name{font-size:11px;color:#6b7280;margin-top:5px;word-break:break-word}.slot-preview{display:none;width:100%;height:115px;object-fit:cover;border-radius:9px;margin-top:7px}.image-slot.has-image .slot-icon,.image-slot.has-image .slot-title{display:none}.image-slot.has-image .slot-preview{display:block}.image-slot.has-image{padding:8px}@media(max-width:900px){.image-slots{grid-template-columns:repeat(2,1fr)}}@media(max-width:500px){.image-slots{grid-template-columns:1fr 1fr}.image-slot{min-height:145px}}
+</style>
+<script>
+document.querySelectorAll('.image-slot input[type=file]').forEach(function(input){input.addEventListener('change',function(){const slot=this.id.replace('image_','');const card=this.closest('.image-slot');const name=document.getElementById('image_name_'+slot);const preview=document.getElementById('image_preview_'+slot);if(this.files&&this.files[0]){name.textContent=this.files[0].name;preview.src=URL.createObjectURL(this.files[0]);card.classList.add('has-image')}})});
+</script>
 
 </body>
 
