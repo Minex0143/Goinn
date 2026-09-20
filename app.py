@@ -1607,7 +1607,9 @@ def approve_booking(booking_id):
             "This booking overlaps with dates blocked by the property owner. The booking cannot be approved.",
             "danger"
         )
-        return redirect(url_for("admin_dashboard"))
+        return redirect(
+            url_for("admin_dashboard")
+        )
 
     existing_approved_booking = Booking.query.filter(
         Booking.id != booking.id,
@@ -2391,8 +2393,22 @@ def approve_property_image(image_id):
     image.status = "approved"
     image.rejection_reason = None
     db.session.commit()
+
+    property_obj = db.session.get(Property, image.property_id)
+    target_tab = (
+        "approved-properties"
+        if property_obj and property_obj.status == "approved"
+        else "pending-properties"
+    )
+
     flash(f"Image {image.slot} approved.", "success")
-    return redirect(url_for("admin_dashboard") + "#properties")
+
+    return redirect(
+        url_for(
+            "admin_dashboard",
+            tab=target_tab
+        )
+    )
 
 
 @app.route("/admin/property-image/<int:image_id>/request-reupload", methods=["POST"])
@@ -2407,8 +2423,25 @@ def request_property_image_reupload(image_id):
     image.status = "reupload_required"
     image.rejection_reason = reason[:1000] if reason else "Image needs to be replaced by the owner."
     db.session.commit()
-    flash(f"Image {image.slot} was removed and the owner was asked to re-upload it.", "info")
-    return redirect(url_for("admin_dashboard") + "#properties")
+
+    property_obj = db.session.get(Property, image.property_id)
+    target_tab = (
+        "approved-properties"
+        if property_obj and property_obj.status == "approved"
+        else "pending-properties"
+    )
+
+    flash(
+        f"Image {image.slot} was removed and the owner was asked to re-upload it.",
+        "info"
+    )
+
+    return redirect(
+        url_for(
+            "admin_dashboard",
+            tab=target_tab
+        )
+    )
 
 
 @app.route("/admin/property/<int:property_id>/image/<int:slot>/upload", methods=["POST"])
@@ -3739,7 +3772,12 @@ def set_property_price(property_id):
             "Pricing saved, but the property remains Pending. Admin must approve at least one property image before the property can go live.",
             "info"
         )
-        return redirect(url_for("admin_dashboard"))
+        return redirect(
+            url_for(
+                "admin_dashboard",
+                tab="pending-properties"
+            )
+        )
 
     property_obj.status = "approved"
     property_obj.rejection_reason = None
@@ -3749,7 +3787,10 @@ def set_property_price(property_id):
     flash("Pricing saved and property approved successfully.", "success")
 
     return redirect(
-        url_for("admin_dashboard")
+        url_for(
+            "admin_dashboard",
+            tab="approved-properties"
+        )
     )
 
 
@@ -3811,7 +3852,10 @@ def admin_edit_property_details(property_id):
     )
 
     return redirect(
-        url_for("admin_dashboard")
+        url_for(
+            "admin_dashboard",
+            tab="approved-properties"
+        )
     )
 
 
@@ -3908,7 +3952,10 @@ def approve_property(property_id):
     db.session.commit()
 
     return redirect(
-        url_for("admin_dashboard")
+        url_for(
+            "admin_dashboard",
+            tab="approved-properties"
+        )
     )
 
 
@@ -3964,7 +4011,10 @@ def reject_property(property_id):
     )
 
     return redirect(
-        url_for("admin_dashboard")
+        url_for(
+            "admin_dashboard",
+            tab="rejected-properties"
+        )
     )
 
 
