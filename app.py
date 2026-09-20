@@ -400,6 +400,11 @@ class Booking(db.Model):
         nullable=False
     )
 
+    rejection_reason = db.Column(
+        db.Text,
+        nullable=True
+    )
+
     created_at = db.Column(
         db.DateTime,
         server_default=db.func.now()
@@ -498,6 +503,27 @@ def ensure_database_columns():
                 "property"
             )
         }
+
+        # ------------------------------------------
+        # BOOKING REJECTION REASON
+        # ------------------------------------------
+
+        if "booking" in tables:
+
+            booking_columns = {
+                column["name"]
+                for column in inspector.get_columns(
+                    "booking"
+                )
+            }
+
+            if "rejection_reason" not in booking_columns:
+
+                with db.engine.begin() as connection:
+
+                    connection.exec_driver_sql(
+                        """ALTER TABLE booking ADD COLUMN rejection_reason TEXT"""
+                    )
 
         # ------------------------------------------
         # PRICING METHOD
@@ -1643,11 +1669,39 @@ def reject_booking(booking_id):
 
     booking = Booking.query.get_or_404(booking_id)
 
+    reason = request.form.get(
+        "rejection_reason",
+        ""
+    ).strip()
+
+    if not reason:
+        flash(
+            "A rejection reason is required.",
+            "danger"
+        )
+        return redirect(
+            url_for(
+                "admin_dashboard",
+                tab="bookings"
+            )
+        )
+
     booking.status = "rejected"
+    booking.rejection_reason = reason[:2000]
 
     db.session.commit()
 
-    return redirect(url_for("admin_dashboard"))
+    flash(
+        f"Booking #{booking.id} rejected.",
+        "info"
+    )
+
+    return redirect(
+        url_for(
+            "admin_dashboard",
+            tab="bookings"
+        )
+    )
 
 
 
@@ -2830,7 +2884,25 @@ def type3_not_available(booking_id):
         flash("This availability request has already been handled.", "info")
         return redirect(url_for("admin_dashboard"))
 
+    reason = request.form.get(
+        "rejection_reason",
+        ""
+    ).strip()
+
+    if not reason:
+        flash(
+            "A reason is required when marking a Type 3 request as not available.",
+            "danger"
+        )
+        return redirect(
+            url_for(
+                "admin_dashboard",
+                tab="bookings"
+            )
+        )
+
     booking.status = "rejected"
+    booking.rejection_reason = reason[:2000]
     db.session.commit()
 
     flash(
@@ -2838,7 +2910,126 @@ def type3_not_available(booking_id):
         "success"
     )
 
-    return redirect(url_for("admin_dashboard"))
+    return redirect(
+        url_for(
+            "admin_dashboard",
+            tab="bookings"
+        )
+    )
+
+
+# ==================================================
+# ADMIN PROPERTY BOOKINGS CALENDAR
+# ==================================================
+
+@app.route("/admin/property-bookings/data")
+@login_required
+def admin_property_bookings_data():
+
+    if not current_user.is_admin:
+        return {"status": "error", "message": "Unauthorized"}, 403
+
+    property_id = request.args.get("property_id", type=int)
+    year = request.args.get("year", type=int)
+    month = request.args.get("month", type=int)
+
+    if not property_id or not year or not month or month < 1 or month > 12:
+        return {"status": "error", "message": "Invalid calendar request."}, 400
+
+    property_obj = db.session.get(Property, property_id)
+
+    if not property_obj:
+        return {"status": "error", "message": "Property not found."}, 404
+
+    month_start = date(year, month, 1)
+
+    if month == 12:
+        next_month = date(year + 1, 1, 1)
+    else:
+        next_month = date(year, month + 1, 1)
+
+    blocked = PropertyBlockedDate.query.filter(
+        PropertyBlockedDate.property_id == property_id,
+        PropertyBlockedDate.block_date >= month_start,
+        PropertyBlockedDate.block_date < next_month
+    ).all()
+
+    owner_blocked_dates = []
+    goinn_blocked_dates = []
+
+    for item in blocked:
+
+        value = item.block_date.isoformat()
+
+        if item.blocked_by == "owner":
+            owner_blocked_dates.append(value)
+
+        elif item.blocked_by in ["goinn", "booking"]:
+            goinn_blocked_dates.append(value)
+
+    booking_rows = Booking.query.filter(
+        Booking.property_id == property_id,
+        Booking.status.in_([
+            "pending",
+            "availability_requested",
+            "approved"
+        ]),
+        Booking.check_in < next_month,
+        Booking.check_out > month_start
+    ).order_by(
+        Booking.check_in.asc()
+    ).all()
+
+    approved_dates = set()
+    pending_dates = set()
+    bookings_data = []
+
+    for booking in booking_rows:
+
+        bookings_data.append({
+            "id": booking.id,
+            "customer_name": booking.customer_name,
+            "customer_contact": booking.customer_contact,
+            "guests": booking.guests,
+            "check_in": booking.check_in.isoformat(),
+            "check_out": booking.check_out.isoformat(),
+            "status": booking.status,
+            "total_price": booking.total_price
+        })
+
+        current_date = max(
+            booking.check_in,
+            month_start
+        )
+
+        booking_end = min(
+            booking.check_out,
+            next_month
+        )
+
+        while current_date < booking_end:
+
+            if booking.status == "approved":
+                approved_dates.add(current_date.isoformat())
+            else:
+                pending_dates.add(current_date.isoformat())
+
+            current_date += timedelta(days=1)
+
+    return {
+        "status": "ok",
+        "property_id": property_id,
+        "property_name": property_obj.property_name,
+        "location": property_obj.location,
+        "year": year,
+        "month": month,
+        "today": date.today().isoformat(),
+        "approved_booking_dates": sorted(approved_dates),
+        "pending_booking_dates": sorted(pending_dates),
+        "owner_blocked_dates": sorted(set(owner_blocked_dates)),
+        "goinn_blocked_dates": sorted(set(goinn_blocked_dates)),
+        "bookings": bookings_data
+    }
 
 
 # ==================================================
