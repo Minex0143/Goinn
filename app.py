@@ -3754,6 +3754,68 @@ def set_property_price(property_id):
 
 
 # ==================================================
+# ADMIN EDIT PROPERTY DETAILS
+# ==================================================
+
+@app.route(
+    "/admin/property/<int:property_id>/edit-details",
+    methods=["POST"]
+)
+@login_required
+def admin_edit_property_details(property_id):
+
+    if current_user.role != "admin":
+        return "Access denied", 403
+
+    property_obj = db.session.get(
+        Property,
+        property_id
+    )
+
+    if not property_obj:
+        return "Property not found", 404
+
+    property_name = request.form.get(
+        "property_name",
+        ""
+    ).strip()
+
+    property_address = request.form.get(
+        "property_address",
+        ""
+    ).strip()
+
+    location = request.form.get(
+        "location",
+        ""
+    ).strip()
+
+    if not property_name:
+        return "Property name is required.", 400
+
+    if not property_address:
+        return "Property address is required.", 400
+
+    if not location:
+        return "Location is required.", 400
+
+    property_obj.property_name = property_name
+    property_obj.property_address = property_address
+    property_obj.location = location
+
+    db.session.commit()
+
+    flash(
+        "Property details updated successfully.",
+        "success"
+    )
+
+    return redirect(
+        url_for("admin_dashboard")
+    )
+
+
+# ==================================================
 # EDIT PRICE
 # ==================================================
 
