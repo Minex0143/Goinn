@@ -1310,18 +1310,24 @@ select{
                             <button
                                 type="button"
                                 class="btn blue"
-                                onclick='event.stopPropagation(); openEditPricing(
-                                    {{ property.id }},
-                                    {{ property.property_name|tojson }},
-                                    {{ property.location|tojson }},
-                                    {{ property.max_guests or 1 }},
-                                    {{ (property.pricing_method or "individual")|tojson }},
-                                    {{ (property.pricing_data|fromjson)|tojson }},
-                                    {{ (property.availability_type or "type1")|tojson }}
-                                )'
+                                data-property-id="{{ property.id }}"
+                                onclick="event.stopPropagation(); openEditPricingFromButton(this)"
                             >
                                 💰 Edit Type & Pricing
                             </button>
+
+                            <script type="application/json"
+                                    id="approved-pricing-{{ property.id }}">
+                                {{ {
+                                    "id": property.id,
+                                    "name": property.property_name,
+                                    "location": property.location,
+                                    "max_guests": property.max_guests or 1,
+                                    "pricing_method": property.pricing_method or "individual",
+                                    "pricing_items": (property.pricing_data|fromjson),
+                                    "availability_type": property.availability_type or "type1"
+                                }|tojson }}
+                            </script>
 
                         </div>
 
@@ -3062,6 +3068,58 @@ function openPriceForProperty(id, name, location){
     showModal(priceModal);
 }
 
+function openEditPricingFromButton(button){
+
+    const id =
+        button.dataset.propertyId;
+
+    const dataElement =
+        document.getElementById(
+            "approved-pricing-" + id
+        );
+
+    if(!dataElement){
+
+        alert(
+            "Unable to load the property's pricing details."
+        );
+
+        return;
+    }
+
+    let data;
+
+    try{
+
+        data = JSON.parse(
+            dataElement.textContent
+        );
+
+    }catch(error){
+
+        console.error(
+            "Pricing data parse error:",
+            error
+        );
+
+        alert(
+            "Unable to load the property's pricing details."
+        );
+
+        return;
+    }
+
+    openEditPricing(
+        data.id,
+        data.name,
+        data.location,
+        data.max_guests,
+        data.pricing_method,
+        data.pricing_items,
+        data.availability_type
+    );
+}
+
 function openEditPricing(
     id,
     name,
@@ -3080,8 +3138,13 @@ function openEditPricing(
     document.getElementById("modalProperty").textContent =
         name + " · " + location;
 
-    document.getElementById("priceForm").action =
+    const form =
+        document.getElementById("priceForm");
+
+    form.action =
         "/admin/property/" + id + "/edit-price";
+
+    form.method = "POST";
 
     document.getElementById("maxGuests").value =
         maxGuests || 1;
@@ -3146,6 +3209,38 @@ const maxInput = document.getElementById("maxGuests");
 const individualBox = document.getElementById("individualBox");
 const groupBox = document.getElementById("groupBox");
 const groups = document.getElementById("groups");
+
+const priceForm = document.getElementById("priceForm");
+
+priceForm.addEventListener("submit", function(event){
+
+    const method = selected("pricing_method");
+
+    /*
+     * Re-apply the disabled state immediately before submit.
+     * This guarantees inactive required fields cannot block
+     * the browser submission.
+     */
+    setSectionEnabled(
+        individualBox,
+        method === "individual"
+    );
+
+    setSectionEnabled(
+        groupBox,
+        method === "group"
+    );
+
+    if(!this.checkValidity()){
+
+        event.preventDefault();
+
+        this.reportValidity();
+
+        return;
+    }
+
+});
 
 let groupCount = 0;
 
@@ -3242,6 +3337,11 @@ function addGroup(min="", max="", price=""){
     `;
 
     groups.appendChild(row);
+
+    setSectionEnabled(
+        groupBox,
+        true
+    );
 }
 
 function resetGroups(){
@@ -3251,20 +3351,68 @@ function resetGroups(){
     addGroup();
 }
 
+function setSectionEnabled(section, enabled){
+
+    section
+        .querySelectorAll("input, select, textarea")
+        .forEach(input => {
+
+            input.disabled = !enabled;
+
+        });
+}
+
 function toggleMethod(){
 
     const method = selected("pricing_method");
 
+    const isIndividual =
+        method === "individual";
+
+    const isGroup =
+        method === "group";
+
     individualBox.style.display =
-        method === "individual" ? "block" : "none";
+        isIndividual ? "block" : "none";
 
     groupBox.style.display =
-        method === "group" ? "block" : "none";
+        isGroup ? "block" : "none";
 
-    if(method === "individual"){
+    /*
+     * IMPORTANT:
+     * Disabled fields are ignored by browser validation
+     * and are not submitted.
+     */
+    setSectionEnabled(
+        individualBox,
+        isIndividual
+    );
+
+    setSectionEnabled(
+        groupBox,
+        isGroup
+    );
+
+    if(isIndividual){
+
         generateIndividual();
-    }else if(method === "group" && !groups.children.length){
-        addGroup();
+
+        setSectionEnabled(
+            individualBox,
+            true
+        );
+
+    }else if(isGroup){
+
+        if(!groups.children.length){
+            addGroup();
+        }
+
+        setSectionEnabled(
+            groupBox,
+            true
+        );
+
     }
 }
 
