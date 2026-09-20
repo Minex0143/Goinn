@@ -4,139 +4,2616 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard - Goinn</title>
-<style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f6f8;color:#202124}.header{height:68px;background:#111;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:100}.logo{font-size:24px;font-weight:800}.header-right{display:flex;gap:14px;align-items:center}.admin-name{font-size:13px;color:#ddd}.logout{background:#2d2d2d;color:#fff;text-decoration:none;padding:9px 14px;border-radius:8px;font-size:13px;font-weight:700}.container{max-width:1280px;margin:28px auto;padding:0 18px}.page-title{margin-bottom:20px}.page-title h1{margin:0;font-size:29px}.page-title p{margin:6px 0;color:#777;font-size:14px}.tabs{background:#fff;border-radius:12px;padding:6px;display:flex;gap:5px;overflow-x:auto;box-shadow:0 3px 14px rgba(0,0,0,.06);margin-bottom:20px}.tab-button{border:0;background:transparent;padding:12px 16px;border-radius:8px;font-weight:700;color:#666;cursor:pointer;white-space:nowrap}.tab-button.active{background:#111;color:#fff}.tab-button:hover:not(.active){background:#f1f3f4}.tab-content{display:none}.tab-content.active{display:block}.subtabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.subtab{border:1px solid #ddd;background:#fff;padding:9px 13px;border-radius:8px;font-weight:700;cursor:pointer}.subtab.active{background:#111;color:#fff;border-color:#111}.subcontent{display:none}.subcontent.active{display:block}.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px}.stat-card,.section-card{background:#fff;border-radius:12px;box-shadow:0 3px 14px rgba(0,0,0,.06)}.stat-card{padding:18px}.stat-title{font-size:11px;color:#777;font-weight:700}.stat-number{font-size:28px;font-weight:800;margin-top:7px}.section-card{margin-bottom:20px;overflow:hidden}.section-header{padding:18px 20px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;gap:10px}.section-header h2{margin:0;font-size:18px}.section-header span{font-size:12px;color:#777}.list{padding:16px}.card{border:1px solid #e5e7eb;border-radius:11px;padding:16px;margin-bottom:12px;background:#fff}.card:last-child{margin-bottom:0}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.name{font-weight:800;font-size:17px}.muted{font-size:12px;color:#777;margin-top:4px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:15px}.box{background:#f7f8fa;border-radius:8px;padding:11px}.label{font-size:10px;color:#777;text-transform:uppercase;margin-bottom:5px}.value{font-size:13px;font-weight:700;word-break:break-word}.badge{display:inline-block;border-radius:20px;padding:5px 9px;font-size:10px;font-weight:800;white-space:nowrap}.pending{background:#fff3cd;color:#856404}.approved{background:#d8f3dc;color:#176b2c}.rejected{background:#f8d7da;color:#842029}.type1{background:#e8f0fe;color:#174ea6}.type2{background:#fff4e5;color:#9a5800}.type3{background:#f3e8ff;color:#6b21a8}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px;padding-top:14px;border-top:1px solid #eee}.btn{border:0;border-radius:8px;padding:9px 13px;font-weight:700;font-size:12px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.dark{background:#111;color:#fff}.gray{background:#eee;color:#222}.red{background:#dc3545;color:#fff}.green{background:#198754;color:#fff}.purple{background:#6f42c1;color:#fff}.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:800px}.table th,.table td{padding:12px;border-bottom:1px solid #eee;text-align:left;font-size:12px}.table th{background:#f7f8fa;color:#666;text-transform:uppercase;font-size:10px}.flash{padding:12px 15px;border-radius:9px;margin-bottom:14px;font-size:13px;font-weight:700}.flash-success{background:#ecfdf5;color:#047857}.flash-danger{background:#fef2f2;color:#b91c1c}.flash-info{background:#eff6ff;color:#1d4ed8}.empty{text-align:center;padding:35px;color:#777}.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;padding:20px;overflow:auto}.modal.show{display:flex;align-items:flex-start;justify-content:center}.modal-content{background:#fff;width:min(760px,100%);margin:20px auto;border-radius:14px;padding:22px}.modal-head{display:flex;justify-content:space-between;gap:15px;align-items:flex-start}.close{border:0;background:#eee;border-radius:8px;padding:8px 11px;cursor:pointer}.form-label{font-size:12px;font-weight:800;margin:16px 0 7px;display:block}.input,select{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;background:#fff}.radio-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.radio-card{border:1px solid #ddd;border-radius:9px;padding:12px;cursor:pointer}.radio-card input{margin-right:7px}.radio-card strong{font-size:13px}.radio-card small{display:block;color:#777;margin:5px 0 0 22px}.price-row,.group-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}.group-row{grid-template-columns:1fr 1fr 1fr}.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;padding-top:15px;border-top:1px solid #eee}.note{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;padding:10px;border-radius:8px;font-size:12px;margin-top:10px}.request-actions{display:flex;gap:7px;flex-wrap:wrap}.count{background:#ffc107;color:#111;border-radius:20px;padding:3px 7px;font-size:10px;margin-left:5px}
-@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.header{padding:0 14px}.admin-name{display:none}.container{padding:0 10px}.grid{grid-template-columns:1fr}.radio-row,.group-row,.price-row{grid-template-columns:1fr}.modal{padding:8px}.modal-content{padding:16px}.modal-footer{display:grid;grid-template-columns:1fr}.modal-footer .btn{width:100%}.stats{grid-template-columns:1fr 1fr}.top{display:block}.top .badge{margin-top:8px}}
-</style>
 
 <style>
-<style id="admin-image-ui-fix">
-.admin-images{margin-top:16px;padding-top:16px;border-top:1px solid #eee}
-.admin-images-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:14px}
-.admin-images-head span{font-size:11px;color:#777}
-.admin-image-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;align-items:stretch}
-.admin-image-card{position:relative;min-width:0;border:1px solid #e1e5ea;border-radius:12px;background:#f8fafc;padding:10px;overflow:hidden;display:flex;flex-direction:column;min-height:250px}
-.admin-image-card>img:not(.admin-upload-preview){width:100%;height:130px;object-fit:cover;border-radius:8px;display:block;cursor:pointer;background:#e9edf2}
-.admin-image-card>a{display:block}
-.admin-slot{position:absolute;top:13px;left:13px;background:#111827;color:#fff;border-radius:50%;width:28px;height:28px;line-height:28px;text-align:center;font-size:11px;font-weight:800;z-index:2}
-.admin-image-status{font-size:11px;font-weight:800;margin:7px 0}
-.admin-image-status.approved{color:#15803d}
-.admin-image-status.pending{color:#a16207}
-.admin-image-status.reupload_required{color:#b91c1c}
-.admin-image-actions{display:flex;flex-direction:column;gap:6px;margin-top:auto}
-.admin-image-actions .btn{width:100%;font-size:10px;padding:7px 6px;line-height:1.2}
-.admin-image-actions form{margin:0;width:100%}
-.image-reason{width:100%;padding:7px;border:1px solid #d8dde3;border-radius:7px;font-size:10px;margin-bottom:5px;min-height:32px}
-.admin-upload-label{display:block;font-size:10px;font-weight:700;color:#555;margin-top:2px;margin-bottom:4px}
-.admin-upload-input{display:block;width:100%;max-width:100%;font-size:10px;margin:0 0 5px;overflow:hidden}
-.admin-upload-preview{width:100%!important;height:90px!important;object-fit:cover;border-radius:7px;margin:0 0 6px;background:#eef1f4}
-.admin-image-card img.admin-upload-preview{display:none!important}
-.admin-upload-preview.preview-visible{display:block!important}
-.admin-empty-image{min-height:130px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#777;font-size:12px;padding:12px}
-.admin-empty-image strong{font-size:14px;color:#70757a}
-.admin-empty-image small{margin-top:5px;line-height:1.4}
-.image-preview-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:3000;padding:18px;align-items:center;justify-content:center}
-.image-preview-modal.show{display:flex}
-.image-preview-box{position:relative;width:min(1000px,96vw);max-height:94vh;background:#111;border-radius:14px;padding:12px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
-.image-preview-box img{display:block;width:100%;max-width:92vw;max-height:82vh;object-fit:contain;border-radius:9px}
-.image-preview-close{position:absolute;right:-8px;top:-8px;width:38px;height:38px;border:0;border-radius:50%;background:#fff;color:#111;font-size:22px;font-weight:800;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,.3)}
-.image-preview-caption{color:#fff;text-align:center;font-size:12px;font-weight:700;padding-top:8px}
-@media(max-width:1100px){.admin-image-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media(max-width:900px){.admin-image-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.admin-image-card{padding:9px;min-height:245px}.admin-image-card>img:not(.admin-upload-preview){height:115px}}
-@media(max-width:520px){.admin-images-head{display:block}.admin-images-head span{display:block;margin-top:4px;line-height:1.4}.admin-image-grid{grid-template-columns:1fr}.admin-image-card{min-height:230px}.admin-image-card>img:not(.admin-upload-preview){height:170px}}
-</style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f6f8;
+    color:#202124;
+}
+
+.header{
+    height:68px;
+    background:#111;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 28px;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:800;
+}
+
+.header-right{
+    display:flex;
+    gap:14px;
+    align-items:center;
+}
+
+.admin-name{
+    font-size:13px;
+    color:#ddd;
+}
+
+.logout{
+    background:#2d2d2d;
+    color:#fff;
+    text-decoration:none;
+    padding:9px 14px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:700;
+}
+
+.container{
+    max-width:1280px;
+    margin:28px auto;
+    padding:0 18px;
+}
+
+.page-title{
+    margin-bottom:20px;
+}
+
+.page-title h1{
+    margin:0;
+    font-size:29px;
+}
+
+.page-title p{
+    margin:6px 0;
+    color:#777;
+    font-size:14px;
+}
+
+.tabs{
+    background:#fff;
+    border-radius:12px;
+    padding:6px;
+    display:flex;
+    gap:5px;
+    overflow-x:auto;
+    box-shadow:0 3px 14px rgba(0,0,0,.06);
+    margin-bottom:20px;
+}
+
+.tab-button{
+    border:0;
+    background:transparent;
+    padding:12px 16px;
+    border-radius:8px;
+    font-weight:700;
+    color:#666;
+    cursor:pointer;
+    white-space:nowrap;
+}
+
+.tab-button.active{
+    background:#111;
+    color:#fff;
+}
+
+.tab-button:hover:not(.active){
+    background:#f1f3f4;
+}
+
+.tab-content{
+    display:none;
+}
+
+.tab-content.active{
+    display:block;
+}
+
+.subtabs{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+}
+
+.subtab{
+    border:1px solid #ddd;
+    background:#fff;
+    padding:9px 13px;
+    border-radius:8px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.subtab.active{
+    background:#111;
+    color:#fff;
+    border-color:#111;
+}
+
+.subcontent{
+    display:none;
+}
+
+.subcontent.active{
+    display:block;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:14px;
+    margin-bottom:20px;
+}
+
+.stat-card,
+.section-card{
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 3px 14px rgba(0,0,0,.06);
+}
+
+.stat-card{
+    padding:18px;
+}
+
+.stat-title{
+    font-size:11px;
+    color:#777;
+    font-weight:700;
+}
+
+.stat-number{
+    font-size:28px;
+    font-weight:800;
+    margin-top:7px;
+}
+
+.section-card{
+    margin-bottom:20px;
+    overflow:hidden;
+}
+
+.section-header{
+    padding:18px 20px;
+    border-bottom:1px solid #eee;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+}
+
+.section-header h2{
+    margin:0;
+    font-size:18px;
+}
+
+.section-header span{
+    font-size:12px;
+    color:#777;
+}
+
+.list{
+    padding:16px;
+}
+
+.card{
+    border:1px solid #e5e7eb;
+    border-radius:11px;
+    padding:16px;
+    margin-bottom:12px;
+    background:#fff;
+    transition:.15s;
+}
+
+.card:last-child{
+    margin-bottom:0;
+}
+
+.card.clickable{
+    cursor:pointer;
+}
+
+.card.clickable:hover{
+    border-color:#aaa;
+    box-shadow:0 5px 18px rgba(0,0,0,.07);
+    transform:translateY(-1px);
+}
+
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+}
+
+.name{
+    font-weight:800;
+    font-size:17px;
+}
+
+.muted{
+    font-size:12px;
+    color:#777;
+    margin-top:4px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-top:15px;
+}
+
+.box{
+    background:#f7f8fa;
+    border-radius:8px;
+    padding:11px;
+}
+
+.label{
+    font-size:10px;
+    color:#777;
+    text-transform:uppercase;
+    margin-bottom:5px;
+}
+
+.value{
+    font-size:13px;
+    font-weight:700;
+    word-break:break-word;
+}
+
+.badge{
+    display:inline-block;
+    border-radius:20px;
+    padding:5px 9px;
+    font-size:10px;
+    font-weight:800;
+    white-space:nowrap;
+}
+
+.pending{
+    background:#fff3cd;
+    color:#856404;
+}
+
+.approved{
+    background:#d8f3dc;
+    color:#176b2c;
+}
+
+.rejected{
+    background:#f8d7da;
+    color:#842029;
+}
+
+.type1{
+    background:#e8f0fe;
+    color:#174ea6;
+}
+
+.type2{
+    background:#fff4e5;
+    color:#9a5800;
+}
+
+.type3{
+    background:#f3e8ff;
+    color:#6b21a8;
+}
+
+.actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:15px;
+    padding-top:14px;
+    border-top:1px solid #eee;
+}
+
+.btn{
+    border:0;
+    border-radius:8px;
+    padding:9px 13px;
+    font-weight:700;
+    font-size:12px;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.dark{background:#111;color:#fff}
+.gray{background:#eee;color:#222}
+.red{background:#dc3545;color:#fff}
+.green{background:#198754;color:#fff}
+.purple{background:#6f42c1;color:#fff}
+.blue{background:#2563eb;color:#fff}
+
+.table-wrap{
+    overflow:auto;
+}
+
+.table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:800px;
+}
+
+.table th,
+.table td{
+    padding:12px;
+    border-bottom:1px solid #eee;
+    text-align:left;
+    font-size:12px;
+}
+
+.table th{
+    background:#f7f8fa;
+    color:#666;
+    text-transform:uppercase;
+    font-size:10px;
+}
+
+.flash{
+    padding:12px 15px;
+    border-radius:9px;
+    margin-bottom:14px;
+    font-size:13px;
+    font-weight:700;
+}
+
+.flash-success{background:#ecfdf5;color:#047857}
+.flash-danger{background:#fef2f2;color:#b91c1c}
+.flash-info{background:#eff6ff;color:#1d4ed8}
+
+.empty{
+    text-align:center;
+    padding:35px;
+    color:#777;
+}
+
+.count{
+    background:#ffc107;
+    color:#111;
+    border-radius:20px;
+    padding:3px 7px;
+    font-size:10px;
+    margin-left:5px;
+}
+
+.reason-box{
+    margin-top:12px;
+    padding:12px;
+    border-radius:9px;
+    background:#fff5f5;
+    border:1px solid #fecaca;
+}
+
+.reason-label{
+    color:#991b1b;
+    font-size:10px;
+    font-weight:800;
+    text-transform:uppercase;
+    margin-bottom:5px;
+}
+
+.reason-text{
+    color:#7f1d1d;
+    font-size:13px;
+    line-height:1.5;
+}
+
+/* --------------------------------------------------
+   PROPERTY DETAIL / REVIEW MODAL
+-------------------------------------------------- */
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.58);
+    z-index:1000;
+    padding:18px;
+    overflow:auto;
+}
+
+.modal.show{
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+}
+
+.modal-content{
+    background:#fff;
+    width:min(900px,100%);
+    margin:15px auto;
+    border-radius:16px;
+    padding:22px;
+}
+
+.modal-head{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    align-items:flex-start;
+    border-bottom:1px solid #eee;
+    padding-bottom:15px;
+}
+
+.close{
+    border:0;
+    background:#eee;
+    border-radius:8px;
+    padding:8px 11px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+.detail-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-top:18px;
+}
+
+.detail-box{
+    background:#f7f8fa;
+    border-radius:9px;
+    padding:12px;
+}
+
+.detail-box.full{
+    grid-column:1/-1;
+}
+
+.detail-title{
+    font-size:10px;
+    color:#777;
+    font-weight:800;
+    text-transform:uppercase;
+    margin-bottom:5px;
+}
+
+.detail-value{
+    font-size:13px;
+    font-weight:700;
+    line-height:1.5;
+    word-break:break-word;
+}
+
+.review-section{
+    margin-top:20px;
+    padding-top:18px;
+    border-top:1px solid #eee;
+}
+
+.review-section h3{
+    margin:0 0 10px;
+    font-size:16px;
+}
+
+.image-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+}
+
+.image-card{
+    border:1px solid #ddd;
+    border-radius:10px;
+    overflow:hidden;
+    background:#f8fafc;
+}
+
+.image-card img{
+    width:100%;
+    height:115px;
+    object-fit:cover;
+    display:block;
+    background:#e5e7eb;
+}
+
+.image-card-body{
+    padding:8px;
+}
+
+.image-slot{
+    font-weight:800;
+    font-size:12px;
+}
+
+.image-status{
+    font-size:10px;
+    font-weight:800;
+    margin-top:4px;
+}
+
+.image-status.pending{background:none;color:#856404;padding:0}
+.image-status.approved{background:none;color:#176b2c;padding:0}
+.image-status.reupload{background:none;color:#b91c1c;padding:0}
+
+.image-actions{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    margin-top:7px;
+}
+
+.image-actions .btn{
+    width:100%;
+    font-size:10px;
+    padding:7px 5px;
+}
+
+.image-download{
+    display:block;
+    text-decoration:none;
+}
+
+.step-box{
+    background:#f7f8fa;
+    border-radius:10px;
+    padding:14px;
+    margin-top:14px;
+}
+
+.step-number{
+    display:inline-flex;
+    width:28px;
+    height:28px;
+    align-items:center;
+    justify-content:center;
+    background:#111;
+    color:#fff;
+    border-radius:50%;
+    font-weight:800;
+    margin-right:7px;
+}
+
+.form-label{
+    font-size:12px;
+    font-weight:800;
+    margin:16px 0 7px;
+    display:block;
+}
+
+.input,
+select{
+    width:100%;
+    padding:10px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    background:#fff;
+}
+
+.radio-row{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+}
+
+.radio-card{
+    border:1px solid #ddd;
+    border-radius:9px;
+    padding:12px;
+    cursor:pointer;
+}
+
+.radio-card input{
+    margin-right:7px;
+}
+
+.radio-card strong{
+    font-size:13px;
+}
+
+.radio-card small{
+    display:block;
+    color:#777;
+    margin:5px 0 0 22px;
+}
+
+.price-row,
+.group-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+    margin-bottom:9px;
+}
+
+.group-row{
+    grid-template-columns:1fr 1fr 1fr;
+}
+
+.modal-footer{
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    margin-top:18px;
+    padding-top:15px;
+    border-top:1px solid #eee;
+}
+
+.note{
+    background:#eff6ff;
+    border:1px solid #bfdbfe;
+    color:#1e40af;
+    padding:10px;
+    border-radius:8px;
+    font-size:12px;
+    margin-top:10px;
+}
+
+.availability-note{
+    background:#faf5ff;
+    border:1px solid #e9d5ff;
+    color:#6b21a8;
+    padding:10px;
+    border-radius:8px;
+    font-size:12px;
+    margin-top:10px;
+}
+
+.booking-card{
+    border:1px solid #e5e7eb;
+    border-radius:11px;
+    padding:15px;
+    margin-bottom:12px;
+}
+
+.booking-card:last-child{
+    margin-bottom:0;
+}
+
+@media(max-width:1000px){
+    .stats{grid-template-columns:repeat(3,1fr)}
+    .grid{grid-template-columns:repeat(2,1fr)}
+    .image-grid{grid-template-columns:repeat(4,1fr)}
+}
+
+@media(max-width:700px){
+    .header{padding:0 14px}
+    .admin-name{display:none}
+    .container{padding:0 10px}
+    .stats{grid-template-columns:1fr 1fr}
+    .grid{grid-template-columns:1fr}
+    .detail-grid{grid-template-columns:1fr}
+    .image-grid{grid-template-columns:repeat(2,1fr)}
+    .radio-row{grid-template-columns:1fr}
+    .group-row,
+    .price-row{grid-template-columns:1fr}
+    .modal{padding:8px}
+    .modal-content{padding:16px}
+    .modal-footer{display:grid;grid-template-columns:1fr}
+    .modal-footer .btn{width:100%}
+    .top{display:block}
+    .top .badge{margin-top:8px}
+}
 </style>
 </head>
+
 <body>
-<header class="header"><div class="logo">Goinn</div><div class="header-right"><span class="admin-name">{{ current_user.name }}</span><a class="logout" href="{{ url_for('logout') }}">Logout</a></div></header>
+
+<header class="header">
+    <div class="logo">Goinn</div>
+    <div class="header-right">
+        <span class="admin-name">{{ current_user.name }}</span>
+        <a class="logout" href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</header>
+
 <main class="container">
-<div class="page-title"><h1>Admin Dashboard</h1><p>Manage properties, bookings and owner availability models.</p></div>
-{% with messages=get_flashed_messages(with_categories=true) %}{% for category,message in messages %}<div class="flash flash-{{ category }}">{{ message }}</div>{% endfor %}{% endwith %}
 
-<div class="tabs">
-<button class="tab-button active" data-tab="overview">Overview</button>
-<button class="tab-button" data-tab="properties">Properties <span class="count">{{ properties|length }}</span></button>
-<button class="tab-button" data-tab="bookings">Bookings <span class="count">{{ bookings|length }}</span></button>
-<button class="tab-button" data-tab="owner-types">Owner Types</button>
-<button class="tab-button" data-tab="rejections">Rejections</button>
-<button class="tab-button" data-tab="users">Users</button>
-<button class="tab-button" data-tab="property-owners">Property Owners</button>
-</div>
+    <div class="page-title">
+        <h1>Admin Dashboard</h1>
+        <p>Manage properties, accounts and bookings from one place.</p>
+    </div>
 
-<section id="overview" class="tab-content active">
-<div class="stats">
-<div class="stat-card"><div class="stat-title">TOTAL PROPERTIES</div><div class="stat-number">{{ properties|length }}</div></div>
-<div class="stat-card"><div class="stat-title">PENDING PROPERTIES</div><div class="stat-number">{{ properties|selectattr('status','equalto','pending')|list|length }}</div></div>
-<div class="stat-card"><div class="stat-title">TOTAL BOOKINGS</div><div class="stat-number">{{ bookings|length }}</div></div>
-<div class="stat-card"><div class="stat-title">TYPE 3 REQUESTS</div><div class="stat-number">{{ availability_requests }}</div></div>
-<div class="stat-card"><div class="stat-title">REJECTED</div><div class="stat-number">{{ rejected_properties + rejected_bookings }}</div></div>
-</div>
-<div class="section-card"><div class="section-header"><h2>Availability model</h2><span>How Goinn handles owners</span></div><div class="list"><div class="grid"><div class="box"><div class="label">Type 1</div><div class="value">Owner manages calendar</div></div><div class="box"><div class="label">Type 2</div><div class="value">Goinn manages calendar</div></div><div class="box"><div class="label">Type 3</div><div class="value">Availability confirmed before booking</div></div><div class="box"><div class="label">Shared engine</div><div class="value">Bookings + blocked dates</div></div></div></div></div>
-</section>
+    {% with messages=get_flashed_messages(with_categories=true) %}
+        {% for category,message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
 
-<section id="properties" class="tab-content"><div class="section-card"><div class="section-header"><h2>Properties</h2><span>{{ properties|length }} total</span></div><div class="list">
-{% for property in properties %}<div class="card"><div class="top"><div><div class="name">{{ property.property_name }}</div><div class="muted">📍 {{ property.location }}</div></div><div>{% if property.status=='pending' %}<span class="badge pending">Pending</span>{% elif property.status=='approved' %}<span class="badge approved">Approved</span>{% else %}<span class="badge rejected">Rejected</span>{% endif %} <span class="badge {{ property.availability_type or 'type1' }}">{{ (property.availability_type or 'type1')|upper }}</span></div></div>
-<div class="grid"><div class="box"><div class="label">Owner</div><div class="value">{{ property.owner.name if property.owner else 'N/A' }}</div></div><div class="box"><div class="label">Contact</div><div class="value">{{ property.owner.contact if property.owner else 'N/A' }}</div></div><div class="box"><div class="label">Max Guests</div><div class="value">{{ property.max_guests or 'Not configured' }}</div></div><div class="box"><div class="label">Pricing</div><div class="value">{{ property.pricing_method|title if property.pricing_method else 'Not configured' }}</div></div></div>
-<div class="admin-images"><div class="admin-images-head"><strong>Property Images</strong><span>Click an image for preview. Admin can upload/replace any slot.</span></div><div class="admin-image-grid">{% for slot in range(1,11) %}{% set img=(property.property_images|selectattr('slot','equalto',slot)|list|first) %}<div class="admin-image-card"><div class="admin-slot">{{ slot }}</div>{% if img and img.status != 'reupload_required' %}<img src="{{ url_for('admin_view_property_image',image_id=img.id) }}" alt="Image {{ slot }}" loading="lazy" onclick="openImagePreview(this.src, 'Image {{ slot }} — {{ property.property_name|e }}')"><div class="admin-image-status {{ img.status }}">{{ img.status|replace('_',' ')|title }}</div><div class="admin-image-actions"><a class="btn gray" href="{{ url_for('admin_download_property_image',image_id=img.id) }}">Download</a>{% if img.status != 'approved' %}<form method="POST" action="{{ url_for('approve_property_image',image_id=img.id) }}"><button class="btn green" type="submit">Approve</button></form>{% endif %}{% if img.status != 'reupload_required' %}<form method="POST" action="{{ url_for('request_property_image_reupload',image_id=img.id) }}"><input class="image-reason" name="reason" placeholder="Reason (optional)"><button class="btn red" type="submit" onclick="return confirm('Remove this image and ask the owner to re-upload slot {{ slot }}?')">Delete & Re-upload</button></form>{% endif %}<form method="POST" enctype="multipart/form-data" action="{{ url_for('admin_upload_property_image',property_id=property.id,slot=slot) }}"><label class="admin-upload-label">Upload / Replace</label><input class="admin-upload-input" type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif" required onchange="previewAdminUpload(this, 'admin-preview-{{ property.id }}-{{ slot }}')"><img id="admin-preview-{{ property.id }}-{{ slot }}" class="admin-upload-preview" alt="Selected image preview"><button class="btn dark" type="submit">Upload Image {{ slot }}</button></form></div>{% elif img and img.status == 'reupload_required' %}<div class="admin-empty-image"><strong>Re-upload requested</strong><small>{{ img.rejection_reason or 'Owner must upload a replacement.' }}</small></div><div class="admin-image-actions"><form method="POST" enctype="multipart/form-data" action="{{ url_for('admin_upload_property_image',property_id=property.id,slot=slot) }}"><label class="admin-upload-label">Admin Upload / Replace</label><input class="admin-upload-input" type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif" required onchange="previewAdminUpload(this, 'admin-preview-{{ property.id }}-{{ slot }}')"><img id="admin-preview-{{ property.id }}-{{ slot }}" class="admin-upload-preview" alt="Selected image preview"><button class="btn dark" type="submit">Upload Image {{ slot }}</button></form></div>{% else %}<div class="admin-empty-image"><strong>Image {{ slot }}</strong><small>Not uploaded</small></div><div class="admin-image-actions"><form method="POST" enctype="multipart/form-data" action="{{ url_for('admin_upload_property_image',property_id=property.id,slot=slot) }}"><label class="admin-upload-label">Admin Upload</label><input class="admin-upload-input" type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif" required onchange="previewAdminUpload(this, 'admin-preview-{{ property.id }}-{{ slot }}')"><img id="admin-preview-{{ property.id }}-{{ slot }}" class="admin-upload-preview" alt="Selected image preview"><button class="btn dark" type="submit">Upload Image {{ slot }}</button></form></div>{% endif %}</div>{% endfor %}</div></div>
-<div class="actions">{% if property.status=='pending' %}<button class="btn dark js-set-price" data-id="{{ property.id }}" data-name="{{ property.property_name|e }}" data-location="{{ property.location|e }}">Set Price & Approve</button><form method="POST" action="{{ url_for('reject_property',property_id=property.id) }}"><button class="btn red" onclick="return confirm('Reject this property?')">Reject</button></form>{% else %}<button class="btn gray js-edit-price" data-id="{{ property.id }}" data-name="{{ property.property_name|e }}" data-location="{{ property.location|e }}" data-max="{{ property.max_guests or 1 }}" data-method="{{ property.pricing_method or '' }}" data-pricing="{{ property.pricing_data|e if property.pricing_data else '' }}" data-type="{{ property.availability_type or 'type1' }}">Edit Pricing / Type</button>{% if property.status=='approved' and (property.availability_type or 'type1')=='type2' %}<a class="btn purple" href="{{ url_for('admin_type2_calendar',property_id=property.id) }}">Manage Calendar</a>{% endif %}{% endif %}</div>
-</div>{% else %}<div class="empty">No properties found.</div>{% endfor %}
-</div></div></section>
+    <!-- ==================================================
+         MAIN TABS
+    =================================================== -->
 
-<section id="bookings" class="tab-content"><div class="section-card"><div class="section-header"><h2>Bookings</h2><span>{{ bookings|length }}</span></div><div class="list">
-{% for booking in bookings %}<div class="card"><div class="top"><div><div class="name">Booking #{{ booking.id }} — {{ booking.property.property_name if booking.property else 'Property unavailable' }}</div><div class="muted">{{ booking.customer_name }} · {{ booking.customer_contact }}</div></div><span class="badge {% if booking.status=='approved' %}approved{% elif booking.status=='rejected' %}rejected{% else %}pending{% endif %}">{{ booking.status|replace('_',' ')|title }}</span></div><div class="grid"><div class="box"><div class="label">Dates</div><div class="value">{{ booking.check_in.strftime('%d-%m-%Y') }} → {{ booking.check_out.strftime('%d-%m-%Y') }}</div></div><div class="box"><div class="label">Guests</div><div class="value">{{ booking.guests }}</div></div><div class="box"><div class="label">Nights</div><div class="value">{{ booking.nights }}</div></div><div class="box"><div class="label">Initial Total</div><div class="value">₹{{ '%.2f'|format(booking.total_price|float) }}</div></div></div><div class="actions">{% if booking.status=='availability_requested' and booking.property and booking.property.availability_type=='type3' %}<a class="btn purple" href="#owner-types" onclick="document.querySelector('[data-tab=owner-types]').click();document.querySelector('[data-sub=type3]').click();">Handle Type 3 Availability</a>{% elif booking.status not in ['approved','rejected'] %}<form method="POST" action="{{ url_for('approve_booking',booking_id=booking.id) }}"><button class="btn green" onclick="return confirm('Approve this booking?')">Approve</button></form>{% endif %}{% if booking.status!='rejected' %}<form method="POST" action="{{ url_for('reject_booking',booking_id=booking.id) }}"><button class="btn red" onclick="return confirm('Reject this booking?')">Reject</button></form>{% endif %}</div></div>{% else %}<div class="empty">No bookings.</div>{% endfor %}
-</div></div></section>
+    <div class="tabs">
 
-<section id="owner-types" class="tab-content">
-<div class="subtabs"><button class="subtab active" data-sub="type1">Type 1</button><button class="subtab" data-sub="type2">Type 2</button><button class="subtab" data-sub="type3">Type 3</button></div>
-<div id="type1" class="subcontent active"><div class="section-card"><div class="section-header"><h2>Type 1 Properties</h2><span>Owner manages the calendar</span></div><div class="list">{% for p in properties if (p.availability_type or 'type1')=='type1' and p.status=='approved' %}<div class="card"><div class="top"><div><div class="name">{{ p.property_name }}</div><div class="muted">{{ p.location }}</div></div><span class="badge type1">TYPE 1</span></div><div class="grid"><div class="box"><div class="label">Owner</div><div class="value">{{ p.owner.name if p.owner else 'N/A' }}</div></div><div class="box"><div class="label">Max Guests</div><div class="value">{{ p.max_guests }}</div></div><div class="box"><div class="label">Pricing</div><div class="value">{{ p.pricing_method|title }}</div></div><div class="box"><div class="label">Action</div><div class="value">Owner calendar</div></div></div></div>{% else %}<div class="empty">No approved Type 1 properties.</div>{% endfor %}</div></div></div>
-<div id="type2" class="subcontent"><div class="section-card"><div class="section-header"><h2>Type 2 Properties</h2><span>Goinn manages availability</span></div><div class="list">{% for p in properties if p.availability_type=='type2' and p.status=='approved' %}<div class="card"><div class="top"><div><div class="name">{{ p.property_name }}</div><div class="muted">{{ p.location }}</div></div><span class="badge type2">TYPE 2</span></div><div class="actions"><a class="btn purple" href="{{ url_for('admin_type2_calendar',property_id=p.id) }}">Manage Goinn Calendar</a></div></div>{% else %}<div class="empty">No approved Type 2 properties.</div>{% endfor %}</div></div></div>
-<div id="type3" class="subcontent"><div class="section-card"><div class="section-header"><h2>Type 3 Availability Requests</h2><span>{{ availability_requests }} waiting</span></div><div class="list">{% for booking in bookings if booking.status=='availability_requested' and booking.property and booking.property.availability_type=='type3' %}<div class="card"><div class="top"><div><div class="name">Request #{{ booking.id }} — {{ booking.property.property_name }}</div><div class="muted">Customer: {{ booking.customer_name }} · {{ booking.customer_contact }}</div></div><span class="badge type3">WAITING FOR OWNER</span></div><div class="grid"><div class="box"><div class="label">Dates</div><div class="value">{{ booking.check_in.strftime('%d-%m-%Y') }} → {{ booking.check_out.strftime('%d-%m-%Y') }}</div></div><div class="box"><div class="label">Guests</div><div class="value">{{ booking.guests }}</div></div><div class="box"><div class="label">Email</div><div class="value">{{ booking.customer_email }}</div></div><div class="box"><div class="label">Estimated Total</div><div class="value">₹{{ '%.2f'|format(booking.total_price|float) }}</div></div></div><div class="note">Contact the Type 3 owner first. If the owner confirms availability, click Available. If the owner says the property is unavailable, click Not Available.</div><div class="actions"><form method="POST" action="{{ url_for('type3_available',booking_id=booking.id) }}"><button class="btn green" onclick="return confirm('Confirm owner availability and approve this booking?')">✓ Available — Approve & Block</button></form><form method="POST" action="{{ url_for('type3_not_available',booking_id=booking.id) }}"><button class="btn red" onclick="return confirm('Mark this request as not available?')">✕ Not Available</button></form></div></div>{% else %}<div class="empty">No pending Type 3 availability requests.</div>{% endfor %}</div></div></div>
-</section>
+        <button class="tab-button active" data-tab="overview">
+            Overview
+        </button>
 
-<section id="rejections" class="tab-content"><div class="section-card"><div class="section-header"><h2>Rejected Properties & Bookings</h2></div><div class="list">{% for p in properties if p.status=='rejected' %}<div class="card"><div class="top"><div><div class="name">{{ p.property_name }}</div><div class="muted">{{ p.location }}</div></div><span class="badge rejected">PROPERTY REJECTED</span></div></div>{% endfor %}{% for b in bookings if b.status=='rejected' %}<div class="card"><div class="top"><div><div class="name">Booking #{{ b.id }} — {{ b.property.property_name if b.property else 'N/A' }}</div><div class="muted">{{ b.customer_name }}</div></div><span class="badge rejected">BOOKING REJECTED</span></div></div>{% endfor %}{% if not (properties|selectattr('status','equalto','rejected')|list or bookings|selectattr('status','equalto','rejected')|list) %}<div class="empty">No rejected items.</div>{% endif %}</div></div></section>
+        <button class="tab-button" data-tab="approved-properties">
+            Approved Properties
+            <span class="count">
+                {{ properties|selectattr('status','equalto','approved')|list|length }}
+            </span>
+        </button>
 
-<section id="users" class="tab-content"><div class="section-card"><div class="section-header"><h2>Users</h2><span>{{ users|length }}</span></div><div class="table-wrap"><table class="table"><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Contact</th><th>Role</th><th>Action</th></tr></thead><tbody>{% for user in users %}<tr><td>{{ user.id }}</td><td>{{ user.name }}</td><td>{{ user.email }}</td><td>{{ user.contact or '-' }}</td><td>{{ user.role }}</td><td>{% if not user.is_admin %}<form method="POST" action="{{ url_for('delete_user',user_id=user.id) }}"><button class="btn red" onclick="return confirm('Delete this user and related data?')">Delete</button></form>{% else %}Protected{% endif %}</td></tr>{% endfor %}</tbody></table></div></div></section>
+        <button class="tab-button" data-tab="rejected-properties">
+            Rejected Properties
+            <span class="count">
+                {{ properties|selectattr('status','equalto','rejected')|list|length }}
+            </span>
+        </button>
 
-<section id="property-owners" class="tab-content"><div class="section-card"><div class="section-header"><h2>Property Owners</h2><span>{{ property_owners|length }}</span></div><div class="list">{% for owner in property_owners %}<div class="card"><div class="top"><div><div class="name">{{ owner.name }}</div><div class="muted">{{ owner.email }} · {{ owner.contact or 'No contact' }}</div></div><span class="badge type1">OWNER</span></div><div class="actions"><form method="POST" action="{{ url_for('delete_property_owner',owner_id=owner.id) }}"><button class="btn red" onclick="return confirm('Delete this owner and all associated properties/bookings?')">Delete Owner</button></form></div></div>{% else %}<div class="empty">No property owners.</div>{% endfor %}</div></div></section>
+        <button class="tab-button" data-tab="pending-properties">
+            Pending Properties
+            <span class="count">
+                {{ properties|selectattr('status','equalto','pending')|list|length }}
+            </span>
+        </button>
+
+        <button class="tab-button" data-tab="accounts">
+            Accounts
+            <span class="count">
+                {{ users|length }}
+            </span>
+        </button>
+
+        <button class="tab-button" data-tab="bookings">
+            Bookings
+            <span class="count">
+                {{ bookings|length }}
+            </span>
+        </button>
+
+    </div>
+
+    <!-- ==================================================
+         OVERVIEW
+    =================================================== -->
+
+    <section id="overview" class="tab-content active">
+
+        <div class="stats">
+
+            <div class="stat-card">
+                <div class="stat-title">TOTAL PROPERTIES</div>
+                <div class="stat-number">{{ properties|length }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">PENDING PROPERTIES</div>
+                <div class="stat-number">
+                    {{ properties|selectattr('status','equalto','pending')|list|length }}
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">APPROVED PROPERTIES</div>
+                <div class="stat-number">
+                    {{ properties|selectattr('status','equalto','approved')|list|length }}
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">TOTAL BOOKINGS</div>
+                <div class="stat-number">{{ bookings|length }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">TYPE 3 REQUESTS</div>
+                <div class="stat-number">{{ availability_requests }}</div>
+            </div>
+
+        </div>
+
+        <div class="section-card">
+
+            <div class="section-header">
+                <h2>Availability Model</h2>
+                <span>How Goinn handles owners</span>
+            </div>
+
+            <div class="list">
+
+                <div class="grid">
+
+                    <div class="box">
+                        <div class="label">Type 1</div>
+                        <div class="value">
+                            Owner manages calendar
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <div class="label">Type 2</div>
+                        <div class="value">
+                            Goinn manages calendar
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <div class="label">Type 3</div>
+                        <div class="value">
+                            Availability confirmed before booking
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <div class="label">Shared Engine</div>
+                        <div class="value">
+                            Bookings + blocked dates
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ==================================================
+         APPROVED PROPERTIES
+    =================================================== -->
+
+    <section id="approved-properties" class="tab-content">
+
+        <div class="section-card">
+
+            <div class="section-header">
+                <h2>Approved Properties</h2>
+                <span>Click a property to view all information</span>
+            </div>
+
+            <div class="list">
+
+                {% for property in properties if property.status == 'approved' %}
+
+                    <div
+                        class="card clickable"
+                        onclick="openPropertyDetails(this)"
+                        data-property-id="{{ property.id }}"
+                    >
+
+                        <div class="top">
+
+                            <div>
+                                <div class="name">
+                                    {{ property.property_name }}
+                                </div>
+
+                                <div class="muted">
+                                    📍 {{ property.location }}
+                                </div>
+                            </div>
+
+                            <div>
+                                <span class="badge approved">
+                                    APPROVED
+                                </span>
+
+                                <span class="badge {{ property.availability_type or 'type1' }}">
+                                    {{ (property.availability_type or 'type1')|upper }}
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div class="grid">
+
+                            <div class="box">
+                                <div class="label">Owner</div>
+                                <div class="value">
+                                    {{ property.owner.name if property.owner else 'N/A' }}
+                                </div>
+                            </div>
+
+                            <div class="box">
+                                <div class="label">Contact</div>
+                                <div class="value">
+                                    {{ property.owner.contact if property.owner else 'N/A' }}
+                                </div>
+                            </div>
+
+                            <div class="box">
+                                <div class="label">Max Guests</div>
+                                <div class="value">
+                                    {{ property.max_guests or 'Not configured' }}
+                                </div>
+                            </div>
+
+                            <div class="box">
+                                <div class="label">Pricing</div>
+                                <div class="value">
+                                    {{ property.pricing_method|title if property.pricing_method else 'Not configured' }}
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Hidden detail payload -->
+                    <div
+                        id="property-details-{{ property.id }}"
+                        class="property-payload"
+                        style="display:none"
+                    >
+
+                        <div class="detail-grid">
+
+                            <div class="detail-box">
+                                <div class="detail-title">Property Name</div>
+                                <div class="detail-value">
+                                    {{ property.property_name }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box">
+                                <div class="detail-title">Location</div>
+                                <div class="detail-value">
+                                    {{ property.location }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box full">
+                                <div class="detail-title">Address</div>
+                                <div class="detail-value">
+                                    {{ property.property_address }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box">
+                                <div class="detail-title">Owner</div>
+                                <div class="detail-value">
+                                    {{ property.owner.name if property.owner else 'N/A' }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box">
+                                <div class="detail-title">Owner Email</div>
+                                <div class="detail-value">
+                                    {{ property.owner.email if property.owner else 'N/A' }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box">
+                                <div class="detail-title">Owner Contact</div>
+                                <div class="detail-value">
+                                    {{ property.owner.contact if property.owner else 'N/A' }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box">
+                                <div class="detail-title">Maximum Guests</div>
+                                <div class="detail-value">
+                                    {{ property.max_guests or 'Not configured' }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box">
+                                <div class="detail-title">Availability Type</div>
+                                <div class="detail-value">
+                                    {{ (property.availability_type or 'type1')|upper }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box">
+                                <div class="detail-title">Pricing Method</div>
+                                <div class="detail-value">
+                                    {{ property.pricing_method|title if property.pricing_method else 'Not configured' }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box full">
+                                <div class="detail-title">Pricing Data</div>
+                                <div class="detail-value">
+                                    {{ property.pricing_data or 'Not configured' }}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="review-section">
+
+                            <h3>Approved Property Images</h3>
+
+                            <div class="image-grid">
+
+                                {% for image in property.property_images %}
+
+                                    {% if image.status == 'approved' %}
+
+                                        <div class="image-card">
+
+                                            <a
+                                                class="image-download"
+                                                href="{{ url_for('admin_download_property_image', image_id=image.id) }}"
+                                            >
+                                                <img
+                                                    src="{{ url_for('admin_view_property_image', image_id=image.id) }}"
+                                                    alt="Image {{ image.slot }}"
+                                                >
+                                            </a>
+
+                                            <div class="image-card-body">
+                                                <div class="image-slot">
+                                                    Image {{ image.slot }}
+                                                </div>
+
+                                                <div class="image-status approved">
+                                                    Approved
+                                                </div>
+
+                                                <a
+                                                    class="btn gray"
+                                                    style="margin-top:6px;width:100%;"
+                                                    href="{{ url_for('admin_download_property_image', image_id=image.id) }}"
+                                                >
+                                                    Download
+                                                </a>
+                                            </div>
+
+                                        </div>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty">
+                        No approved properties.
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ==================================================
+         REJECTED PROPERTIES
+    =================================================== -->
+
+    <section id="rejected-properties" class="tab-content">
+
+        <div class="section-card">
+
+            <div class="section-header">
+                <h2>Rejected Properties</h2>
+                <span>Click a property to view the rejection reason</span>
+            </div>
+
+            <div class="list">
+
+                {% for property in properties if property.status == 'rejected' %}
+
+                    <div
+                        class="card clickable"
+                        onclick="openRejectedProperty(this)"
+                        data-property-id="{{ property.id }}"
+                    >
+
+                        <div class="top">
+
+                            <div>
+                                <div class="name">
+                                    {{ property.property_name }}
+                                </div>
+
+                                <div class="muted">
+                                    📍 {{ property.location }}
+                                </div>
+                            </div>
+
+                            <span class="badge rejected">
+                                REJECTED
+                            </span>
+
+                        </div>
+
+                        <div class="grid">
+
+                            <div class="box">
+                                <div class="label">Owner</div>
+                                <div class="value">
+                                    {{ property.owner.name if property.owner else 'N/A' }}
+                                </div>
+                            </div>
+
+                            <div class="box">
+                                <div class="label">Contact</div>
+                                <div class="value">
+                                    {{ property.owner.contact if property.owner else 'N/A' }}
+                                </div>
+                            </div>
+
+                            <div class="box">
+                                <div class="label">Location</div>
+                                <div class="value">
+                                    {{ property.location }}
+                                </div>
+                            </div>
+
+                            <div class="box">
+                                <div class="label">Rejected</div>
+                                <div class="value">
+                                    Yes
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="rejected-details-{{ property.id }}"
+                        class="rejected-payload"
+                        style="display:none"
+                    >
+                        <div class="detail-grid">
+
+                            <div class="detail-box">
+                                <div class="detail-title">Property Name</div>
+                                <div class="detail-value">
+                                    {{ property.property_name }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box">
+                                <div class="detail-title">Location</div>
+                                <div class="detail-value">
+                                    {{ property.location }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box full">
+                                <div class="detail-title">Address</div>
+                                <div class="detail-value">
+                                    {{ property.property_address }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box">
+                                <div class="detail-title">Owner</div>
+                                <div class="detail-value">
+                                    {{ property.owner.name if property.owner else 'N/A' }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box">
+                                <div class="detail-title">Owner Email</div>
+                                <div class="detail-value">
+                                    {{ property.owner.email if property.owner else 'N/A' }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box">
+                                <div class="detail-title">Owner Contact</div>
+                                <div class="detail-value">
+                                    {{ property.owner.contact if property.owner else 'N/A' }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box full reason-box">
+                                <div class="reason-label">Rejection Reason</div>
+                                <div class="reason-text">
+                                    {{ property.rejection_reason or 'No rejection reason was recorded.' }}
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty">
+                        No rejected properties.
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ==================================================
+         PENDING PROPERTIES
+    =================================================== -->
+
+    <section id="pending-properties" class="tab-content">
+
+        <div class="section-card">
+
+            <div class="section-header">
+                <h2>Pending Properties</h2>
+                <span>Click a property to review images and continue approval</span>
+            </div>
+
+            <div class="list">
+
+                {% for property in properties if property.status == 'pending' %}
+
+                    <div
+                        class="card clickable"
+                        onclick="openPendingProperty(this)"
+                        data-property-id="{{ property.id }}"
+                    >
+
+                        <div class="top">
+
+                            <div>
+                                <div class="name">
+                                    {{ property.property_name }}
+                                </div>
+
+                                <div class="muted">
+                                    📍 {{ property.location }}
+                                </div>
+                            </div>
+
+                            <div>
+                                <span class="badge pending">
+                                    PENDING
+                                </span>
+
+                                <span class="badge {{ property.availability_type or 'type1' }}">
+                                    {{ (property.availability_type or 'type1')|upper }}
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div class="grid">
+
+                            <div class="box">
+                                <div class="label">Owner</div>
+                                <div class="value">
+                                    {{ property.owner.name if property.owner else 'N/A' }}
+                                </div>
+                            </div>
+
+                            <div class="box">
+                                <div class="label">Contact</div>
+                                <div class="value">
+                                    {{ property.owner.contact if property.owner else 'N/A' }}
+                                </div>
+                            </div>
+
+                            <div class="box">
+                                <div class="label">Images</div>
+                                <div class="value">
+                                    {{ property.property_images|length }}/10 uploaded
+                                </div>
+                            </div>
+
+                            <div class="box">
+                                <div class="label">Next Step</div>
+                                <div class="value">
+                                    Review Images
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="pending-details-{{ property.id }}"
+                        class="pending-payload"
+                        style="display:none"
+                    >
+
+                        <div class="detail-grid">
+
+                            <div class="detail-box">
+                                <div class="detail-title">Property Name</div>
+                                <div class="detail-value">
+                                    {{ property.property_name }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box">
+                                <div class="detail-title">Location</div>
+                                <div class="detail-value">
+                                    {{ property.location }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box full">
+                                <div class="detail-title">Address</div>
+                                <div class="detail-value">
+                                    {{ property.property_address }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box">
+                                <div class="detail-title">Owner</div>
+                                <div class="detail-value">
+                                    {{ property.owner.name if property.owner else 'N/A' }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box">
+                                <div class="detail-title">Owner Email</div>
+                                <div class="detail-value">
+                                    {{ property.owner.email if property.owner else 'N/A' }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box">
+                                <div class="detail-title">Owner Contact</div>
+                                <div class="detail-value">
+                                    {{ property.owner.contact if property.owner else 'N/A' }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box">
+                                <div class="detail-title">Current Availability</div>
+                                <div class="detail-value">
+                                    {{ (property.availability_type or 'type1')|upper }}
+                                </div>
+                            </div>
+
+                            <div class="detail-box">
+                                <div class="detail-title">Maximum Guests</div>
+                                <div class="detail-value">
+                                    {{ property.max_guests or 'Not configured' }}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="review-section">
+
+                            <h3>Step 1 — Review Property Images</h3>
+
+                            <div class="note">
+                                Click an image to download it. Approve good images.
+                                If an image is not acceptable, use Delete & Re-upload
+                                and enter the reason. The owner must replace it in
+                                the same numbered slot.
+                            </div>
+
+                            <div class="image-grid">
+
+                                {% for image in property.property_images %}
+
+                                    <div class="image-card">
+
+                                        <a
+                                            class="image-download"
+                                            href="{{ url_for('admin_download_property_image', image_id=image.id) }}"
+                                        >
+                                            <img
+                                                src="{{ url_for('admin_view_property_image', image_id=image.id) }}"
+                                                alt="Image {{ image.slot }}"
+                                            >
+                                        </a>
+
+                                        <div class="image-card-body">
+
+                                            <div class="image-slot">
+                                                Image {{ image.slot }}
+                                            </div>
+
+                                            {% if image.status == 'approved' %}
+
+                                                <div class="image-status approved">
+                                                    Approved
+                                                </div>
+
+                                            {% elif image.status == 'reupload_required' %}
+
+                                                <div class="image-status reupload">
+                                                    Re-upload required
+                                                </div>
+
+                                                <div class="muted">
+                                                    {{ image.rejection_reason or 'Replacement required.' }}
+                                                </div>
+
+                                            {% else %}
+
+                                                <div class="image-status pending">
+                                                    Under review
+                                                </div>
+
+                                            {% endif %}
+
+                                            <div class="image-actions">
+
+                                                {% if image.status != 'approved' %}
+
+                                                    <form
+                                                        method="POST"
+                                                        action="{{ url_for('approve_property_image', image_id=image.id) }}"
+                                                        onclick="event.stopPropagation()"
+                                                    >
+                                                        <button class="btn green" type="submit">
+                                                            ✓ Approve Image
+                                                        </button>
+                                                    </form>
+
+                                                {% endif %}
+
+                                                {% if image.status != 'reupload_required' %}
+
+                                                    <form
+                                                        method="POST"
+                                                        action="{{ url_for('request_property_image_reupload', image_id=image.id) }}"
+                                                        onclick="event.stopPropagation()"
+                                                    >
+                                                        <input
+                                                            class="input"
+                                                            type="text"
+                                                            name="reason"
+                                                            placeholder="Reason for re-upload"
+                                                            required
+                                                        >
+
+                                                        <button
+                                                            class="btn red"
+                                                            type="submit"
+                                                            style="margin-top:5px;"
+                                                            onclick="return confirm('Delete this image and request a replacement?')"
+                                                        >
+                                                            Delete & Re-upload
+                                                        </button>
+                                                    </form>
+
+                                                {% endif %}
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                            {% set approved_images = property.property_images
+                                |selectattr('status','equalto','approved')
+                                |list
+                                |length
+                            %}
+
+                            {% set reupload_images = property.property_images
+                                |selectattr('status','equalto','reupload_required')
+                                |list
+                                |length
+                            %}
+
+                            <div class="step-box">
+
+                                <strong>
+                                    Approved images: {{ approved_images }}
+                                </strong>
+
+                                &nbsp; | &nbsp;
+
+                                <strong>
+                                    Re-upload required: {{ reupload_images }}
+                                </strong>
+
+                                {% if approved_images < 1 %}
+
+                                    <div class="note">
+                                        Approve at least one image before moving
+                                        to Step 2.
+                                    </div>
+
+                                {% else %}
+
+                                    <div class="actions">
+
+                                        <button
+                                            class="btn dark"
+                                            type="button"
+                                            onclick="event.stopPropagation(); openPriceForProperty({{ property.id }}, '{{ property.property_name|e }}', '{{ property.location|e }}')"
+                                        >
+                                            Step 2 — Availability, Pricing & Approval
+                                        </button>
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty">
+                        No pending properties.
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ==================================================
+         ACCOUNTS
+    =================================================== -->
+
+    <section id="accounts" class="tab-content">
+
+        <div class="subtabs">
+
+            <button class="subtab active" data-sub="account-users">
+                Users
+                <span class="count">{{ users|length }}</span>
+            </button>
+
+            <button class="subtab" data-sub="account-owners">
+                Property Owners
+                <span class="count">{{ property_owners|length }}</span>
+            </button>
+
+        </div>
+
+        <div id="account-users" class="subcontent active">
+
+            <div class="section-card">
+
+                <div class="section-header">
+                    <h2>Users</h2>
+                    <span>Registered customer accounts</span>
+                </div>
+
+                <div class="table-wrap">
+
+                    <table class="table">
+
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Contact</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for user in users %}
+
+                                <tr>
+
+                                    <td>{{ user.id }}</td>
+                                    <td>{{ user.name }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.contact or '-' }}</td>
+                                    <td>{{ user.role }}</td>
+
+                                    <td>
+
+                                        {% if not user.is_admin %}
+
+                                            <form
+                                                method="POST"
+                                                action="{{ url_for('delete_user', user_id=user.id) }}"
+                                            >
+                                                <button
+                                                    class="btn red"
+                                                    type="submit"
+                                                    onclick="return confirm('Delete this user and related data?')"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </form>
+
+                                        {% else %}
+
+                                            Protected
+
+                                        {% endif %}
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="account-owners" class="subcontent">
+
+            <div class="section-card">
+
+                <div class="section-header">
+                    <h2>Property Owners</h2>
+                    <span>Owner accounts</span>
+                </div>
+
+                <div class="list">
+
+                    {% for owner in property_owners %}
+
+                        <div class="card">
+
+                            <div class="top">
+
+                                <div>
+                                    <div class="name">{{ owner.name }}</div>
+
+                                    <div class="muted">
+                                        {{ owner.email }}
+                                        ·
+                                        {{ owner.contact or 'No contact' }}
+                                    </div>
+                                </div>
+
+                                <span class="badge type1">
+                                    OWNER
+                                </span>
+
+                            </div>
+
+                            <div class="grid">
+
+                                <div class="box">
+                                    <div class="label">Owner ID</div>
+                                    <div class="value">{{ owner.id }}</div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Email</div>
+                                    <div class="value">{{ owner.email }}</div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Contact</div>
+                                    <div class="value">{{ owner.contact or '-' }}</div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Properties</div>
+                                    <div class="value">
+                                        {{ properties|selectattr('owner_id','equalto',owner.id)|list|length }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="actions">
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('delete_property_owner', owner_id=owner.id) }}"
+                                >
+                                    <button
+                                        class="btn red"
+                                        type="submit"
+                                        onclick="return confirm('Delete this owner and all associated properties/bookings?')"
+                                    >
+                                        Delete Owner
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="empty">
+                            No property owners.
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ==================================================
+         BOOKINGS
+    =================================================== -->
+
+    <section id="bookings" class="tab-content">
+
+        <div class="subtabs">
+
+            <button class="subtab active" data-sub="pending-bookings">
+                Pending Bookings
+                <span class="count">{{ pending_bookings }}</span>
+            </button>
+
+            <button class="subtab" data-sub="approved-bookings">
+                Approved Bookings
+                <span class="count">
+                    {{ bookings|selectattr('status','equalto','approved')|list|length }}
+                </span>
+            </button>
+
+        </div>
+
+        <div id="pending-bookings" class="subcontent active">
+
+            <div class="section-card">
+
+                <div class="section-header">
+                    <h2>Pending Bookings</h2>
+                    <span>Customer bookings waiting for action</span>
+                </div>
+
+                <div class="list">
+
+                    {% for booking in bookings
+                        if booking.status in ['pending','availability_requested']
+                    %}
+
+                        <div class="booking-card">
+
+                            <div class="top">
+
+                                <div>
+                                    <div class="name">
+                                        Booking #{{ booking.id }}
+                                    </div>
+
+                                    <div class="muted">
+                                        {{ booking.property.property_name if booking.property else 'N/A' }}
+                                    </div>
+                                </div>
+
+                                {% if booking.status == 'availability_requested' %}
+                                    <span class="badge type3">
+                                        AVAILABILITY REQUEST
+                                    </span>
+                                {% else %}
+                                    <span class="badge pending">
+                                        PENDING
+                                    </span>
+                                {% endif %}
+
+                            </div>
+
+                            <div class="grid">
+
+                                <div class="box">
+                                    <div class="label">Customer</div>
+                                    <div class="value">
+                                        {{ booking.customer_name }}
+                                    </div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Contact</div>
+                                    <div class="value">
+                                        {{ booking.customer_contact }}
+                                    </div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Dates</div>
+                                    <div class="value">
+                                        {{ booking.check_in }} → {{ booking.check_out }}
+                                    </div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Guests / Total</div>
+                                    <div class="value">
+                                        {{ booking.guests }}
+                                        /
+                                        ₹{{ "%.2f"|format(booking.total_price) }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            {% if booking.status == 'availability_requested' %}
+
+                                <div class="note">
+                                    Type 3 property. Contact the owner first.
+                                    If the owner confirms availability, choose
+                                    Available. Otherwise choose Not Available.
+                                </div>
+
+                                <div class="actions">
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for('type3_available', booking_id=booking.id) }}"
+                                    >
+                                        <button
+                                            class="btn green"
+                                            type="submit"
+                                            onclick="return confirm('Confirm availability and approve this booking?')"
+                                        >
+                                            ✓ Available — Approve
+                                        </button>
+                                    </form>
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for('type3_not_available', booking_id=booking.id) }}"
+                                    >
+                                        <button
+                                            class="btn red"
+                                            type="submit"
+                                            onclick="return confirm('Mark this availability request as not available?')"
+                                        >
+                                            ✕ Not Available
+                                        </button>
+                                    </form>
+
+                                </div>
+
+                            {% else %}
+
+                                <div class="actions">
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for('approve_booking', booking_id=booking.id) }}"
+                                    >
+                                        <button
+                                            class="btn green"
+                                            type="submit"
+                                            onclick="return confirm('Approve this booking?')"
+                                        >
+                                            ✓ Approve Booking
+                                        </button>
+                                    </form>
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for('reject_booking', booking_id=booking.id) }}"
+                                    >
+                                        <button
+                                            class="btn red"
+                                            type="submit"
+                                            onclick="return confirm('Reject this booking?')"
+                                        >
+                                            ✕ Reject Booking
+                                        </button>
+                                    </form>
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="empty">
+                            No pending bookings.
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="approved-bookings" class="subcontent">
+
+            <div class="section-card">
+
+                <div class="section-header">
+                    <h2>Approved Bookings</h2>
+                    <span>Confirmed customer bookings</span>
+                </div>
+
+                <div class="list">
+
+                    {% for booking in bookings if booking.status == 'approved' %}
+
+                        <div class="booking-card">
+
+                            <div class="top">
+
+                                <div>
+                                    <div class="name">
+                                        Booking #{{ booking.id }}
+                                    </div>
+
+                                    <div class="muted">
+                                        {{ booking.property.property_name if booking.property else 'N/A' }}
+                                    </div>
+                                </div>
+
+                                <span class="badge approved">
+                                    APPROVED
+                                </span>
+
+                            </div>
+
+                            <div class="grid">
+
+                                <div class="box">
+                                    <div class="label">Customer</div>
+                                    <div class="value">
+                                        {{ booking.customer_name }}
+                                    </div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Contact</div>
+                                    <div class="value">
+                                        {{ booking.customer_contact }}
+                                    </div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Dates</div>
+                                    <div class="value">
+                                        {{ booking.check_in }} → {{ booking.check_out }}
+                                    </div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Guests / Total</div>
+                                    <div class="value">
+                                        {{ booking.guests }}
+                                        /
+                                        ₹{{ "%.2f"|format(booking.total_price) }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="empty">
+                            No approved bookings.
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
 </main>
 
-<div id="imagePreviewModal" class="image-preview-modal" onclick="closeImagePreview(event)"><div class="image-preview-box"><button class="image-preview-close" type="button" onclick="closeImagePreview()">×</button><img id="imagePreviewTarget" src="" alt="Property image preview"><div id="imagePreviewCaption" class="image-preview-caption"></div></div></div>
+<!-- ======================================================
+     PROPERTY DETAIL MODAL
+======================================================= -->
 
-<div id="priceModal" class="modal"><div class="modal-content"><div class="modal-head"><div><h2 id="modalTitle" style="margin:0">Set Price & Approve</h2><div id="modalProperty" class="muted"></div></div><button class="close" onclick="closeModal()">✕</button></div><form id="priceForm" method="POST"><label class="form-label">Availability Type</label><div class="radio-row"><label class="radio-card"><input type="radio" name="availability_type" value="type1" checked><strong>Type 1</strong><small>Owner manages calendar.</small></label><label class="radio-card"><input type="radio" name="availability_type" value="type2"><strong>Type 2</strong><small>Goinn/admin manages calendar.</small></label><label class="radio-card"><input type="radio" name="availability_type" value="type3"><strong>Type 3</strong><small>Availability must be confirmed.</small></label></div><label class="form-label">Maximum Guests</label><input class="input" id="maxGuests" name="max_guests" type="number" min="1" max="100" required><div class="note">Pricing must cover every guest count from 1 through the maximum.</div><label class="form-label">Pricing Method</label><div class="radio-row"><label class="radio-card"><input type="radio" name="pricing_method" value="individual" checked><strong>Individual</strong><small>One price per guest count.</small></label><label class="radio-card"><input type="radio" name="pricing_method" value="group"><strong>Group</strong><small>One price per guest range.</small></label></div><div id="individualBox"></div><div id="groupBox" style="display:none"><div class="actions"><button type="button" class="btn gray" onclick="addGroup()">+ Add Group</button><button type="button" class="btn gray" onclick="resetGroups()">Reset Groups</button></div><div id="groups"></div></div><div class="modal-footer"><button type="button" class="btn gray" onclick="closeModal()">Cancel</button><button type="submit" class="btn dark" id="saveButton">Save Pricing & Approve</button></div></form></div></div>
+<div id="propertyModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-head">
+
+            <div>
+                <h2 id="propertyModalTitle" style="margin:0">
+                    Property Details
+                </h2>
+
+                <div id="propertyModalSubtitle" class="muted"></div>
+            </div>
+
+            <button class="close" onclick="closePropertyModal()">
+                ✕
+            </button>
+
+        </div>
+
+        <div id="propertyModalBody"></div>
+
+    </div>
+
+</div>
+
+<!-- ======================================================
+     REJECTED PROPERTY MODAL
+======================================================= -->
+
+<div id="rejectedModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-head">
+
+            <div>
+                <h2 id="rejectedModalTitle" style="margin:0">
+                    Rejected Property
+                </h2>
+            </div>
+
+            <button class="close" onclick="closeRejectedModal()">
+                ✕
+            </button>
+
+        </div>
+
+        <div id="rejectedModalBody"></div>
+
+    </div>
+
+</div>
+
+<!-- ======================================================
+     PENDING PROPERTY REVIEW MODAL
+======================================================= -->
+
+<div id="pendingModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-head">
+
+            <div>
+                <h2 id="pendingModalTitle" style="margin:0">
+                    Review Property
+                </h2>
+
+                <div id="pendingModalSubtitle" class="muted"></div>
+            </div>
+
+            <button class="close" onclick="closePendingModal()">
+                ✕
+            </button>
+
+        </div>
+
+        <div id="pendingModalBody"></div>
+
+    </div>
+
+</div>
+
+<!-- ======================================================
+     PRICING / AVAILABILITY MODAL
+======================================================= -->
+
+<div id="priceModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-head">
+
+            <div>
+                <h2 id="modalTitle" style="margin:0">
+                    Step 2 — Availability & Pricing
+                </h2>
+
+                <div id="modalProperty" class="muted"></div>
+            </div>
+
+            <button class="close" onclick="closePriceModal()">
+                ✕
+            </button>
+
+        </div>
+
+        <form id="priceForm" method="POST">
+
+            <label class="form-label">
+                Availability Type
+            </label>
+
+            <div class="radio-row">
+
+                <label class="radio-card">
+                    <input
+                        type="radio"
+                        name="availability_type"
+                        value="type1"
+                        checked
+                    >
+                    <strong>Type 1</strong>
+                    <small>
+                        Owner manages availability.
+                    </small>
+                </label>
+
+                <label class="radio-card">
+                    <input
+                        type="radio"
+                        name="availability_type"
+                        value="type2"
+                    >
+                    <strong>Type 2</strong>
+                    <small>
+                        Goinn manages availability.
+                    </small>
+                </label>
+
+                <label class="radio-card">
+                    <input
+                        type="radio"
+                        name="availability_type"
+                        value="type3"
+                    >
+                    <strong>Type 3</strong>
+                    <small>
+                        Availability confirmed before booking.
+                    </small>
+                </label>
+
+            </div>
+
+            <label class="form-label">
+                Maximum Guests
+            </label>
+
+            <input
+                class="input"
+                id="maxGuests"
+                name="max_guests"
+                type="number"
+                min="1"
+                max="100"
+                required
+            >
+
+            <div class="note">
+                Pricing must cover every guest count from 1 through the maximum.
+            </div>
+
+            <label class="form-label">
+                Pricing Method
+            </label>
+
+            <div class="radio-row">
+
+                <label class="radio-card">
+                    <input
+                        type="radio"
+                        name="pricing_method"
+                        value="individual"
+                        checked
+                    >
+                    <strong>Individual</strong>
+                    <small>
+                        One price per guest count.
+                    </small>
+                </label>
+
+                <label class="radio-card">
+                    <input
+                        type="radio"
+                        name="pricing_method"
+                        value="group"
+                    >
+                    <strong>Group</strong>
+                    <small>
+                        One price per guest range.
+                    </small>
+                </label>
+
+                <div></div>
+
+            </div>
+
+            <div id="individualBox"></div>
+
+            <div
+                id="groupBox"
+                style="display:none"
+            >
+
+                <div class="actions">
+
+                    <button
+                        type="button"
+                        class="btn gray"
+                        onclick="addGroup()"
+                    >
+                        + Add Group
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn gray"
+                        onclick="resetGroups()"
+                    >
+                        Reset Groups
+                    </button>
+
+                </div>
+
+                <div id="groups"></div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn gray"
+                    onclick="closePriceModal()"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn dark"
+                >
+                    Save Pricing & Approve
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
 
 <script>
-const modal=document.getElementById('priceModal'), form=document.getElementById('priceForm'), maxInput=document.getElementById('maxGuests'), individualBox=document.getElementById('individualBox'), groupBox=document.getElementById('groupBox'), groups=document.getElementById('groups');let editing=false,groupCount=0;
-function showModal(){modal.classList.add('show')};function closeModal(){modal.classList.remove('show')}
-function selected(name){return document.querySelector(`input[name="${name}"]:checked`)?.value}
-function generateIndividual(values=[]){let map={};values.forEach(x=>map[Number(x.guests)]=x.price);let max=Number(maxInput.value)||1;individualBox.innerHTML='';for(let i=1;i<=max;i++){let d=document.createElement('div');d.className='price-row';d.innerHTML=`<div class="box"><div class="label">Guests</div><div class="value">${i} guest${i>1?'s':''}</div></div><input class="input" type="number" min="0" step="0.01" name="price_${i}" placeholder="Price / day" value="${map[i]??''}" required>`;individualBox.appendChild(d)}}
-function addGroup(min='',max='',price=''){groupCount++;let d=document.createElement('div');d.className='group-row';d.dataset.n=groupCount;d.innerHTML=`<input class="input" type="number" min="1" name="group_${groupCount}_min" placeholder="From" value="${min}" required><input class="input" type="number" min="1" name="group_${groupCount}_max" placeholder="To" value="${max}" required><div style="display:flex;gap:6px"><input class="input" type="number" min="0" step="0.01" name="group_${groupCount}_price" placeholder="Price / day" value="${price}" required><button type="button" class="btn red" onclick="this.closest('.group-row').remove()">✕</button></div>`;groups.appendChild(d)}
-function resetGroups(){groups.innerHTML='';groupCount=0;addGroup()}
-function setType(t){document.querySelector(`input[name="availability_type"][value="${t}"]`).checked=true}
-function setMethod(m){document.querySelector(`input[name="pricing_method"][value="${m}"]`).checked=true;toggleMethod()}
-function toggleMethod(){let m=selected('pricing_method');individualBox.style.display=m==='individual'?'block':'none';groupBox.style.display=m==='group'?'block':'none';if(m==='individual')generateIndividual()}
-function openNew(btn){editing=false;document.getElementById('modalTitle').textContent='Set Price & Approve';document.getElementById('modalProperty').textContent=btn.dataset.name+' · '+btn.dataset.location;form.action='/admin/property/'+btn.dataset.id+'/set-price';document.getElementById('saveButton').textContent='Save Pricing & Approve';maxInput.value='1';setType('type1');setMethod('individual');groups.innerHTML='';groupCount=0;showModal()}
-function openEdit(btn){editing=true;document.getElementById('modalTitle').textContent='Edit Pricing & Availability Type';document.getElementById('modalProperty').textContent=btn.dataset.name+' · '+btn.dataset.location;form.action='/admin/property/'+btn.dataset.id+'/set-price';document.getElementById('saveButton').textContent='Save Changes';maxInput.value=btn.dataset.max||1;setType(btn.dataset.type||'type1');let data=[];try{data=btn.dataset.pricing?JSON.parse(btn.dataset.pricing):[]}catch(e){};setMethod(btn.dataset.method||'individual');if((btn.dataset.method||'individual')==='group'){groups.innerHTML='';groupCount=0;data.forEach(x=>addGroup(x.min_guests,x.max_guests,x.price));if(!data.length)addGroup()}else{generateIndividual(data)}showModal()}
-document.querySelectorAll('.js-set-price').forEach(b=>b.onclick=()=>openNew(b));document.querySelectorAll('.js-edit-price').forEach(b=>b.onclick=()=>openEdit(b));document.querySelectorAll('input[name="pricing_method"]').forEach(r=>r.addEventListener('change',toggleMethod));maxInput.addEventListener('change',()=>{if(selected('pricing_method')==='individual')generateIndividual()});form.addEventListener('submit',e=>{if(Number(maxInput.value)<1||Number(maxInput.value)>100){e.preventDefault();alert('Maximum guests must be between 1 and 100.')}});
-function activateTab(name){const btn=document.querySelector(`.tab-button[data-tab="${name}"]`);const section=document.getElementById(name);if(!btn||!section)return;document.querySelectorAll('.tab-button').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));btn.classList.add('active');section.classList.add('active');}
-function activateTabFromHash(){const name=location.hash.replace('#','');if(name)activateTab(name);else activateTab('overview');}
-document.querySelectorAll('.tab-button').forEach(b=>b.addEventListener('click',()=>{activateTab(b.dataset.tab);history.replaceState(null,'','#'+b.dataset.tab);}));document.querySelectorAll('.subtab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.subtab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.subcontent').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById(b.dataset.sub).classList.add('active')}));
-function openImagePreview(src,caption){const m=document.getElementById('imagePreviewModal');document.getElementById('imagePreviewTarget').src=src;document.getElementById('imagePreviewCaption').textContent=caption||'Property image';m.classList.add('show');document.body.style.overflow='hidden';}
-function closeImagePreview(event){if(event && event.target && event.target.id!=='imagePreviewModal')return;const m=document.getElementById('imagePreviewModal');m.classList.remove('show');document.getElementById('imagePreviewTarget').src='';document.body.style.overflow='';}
-function previewAdminUpload(input,id){
-    const p=document.getElementById(id);
-    if(!p) return;
-    if(!input.files || !input.files[0]){
-        p.removeAttribute('src');
-        p.classList.remove('preview-visible');
+const propertyModal = document.getElementById("propertyModal");
+const rejectedModal = document.getElementById("rejectedModal");
+const pendingModal = document.getElementById("pendingModal");
+const priceModal = document.getElementById("priceModal");
+
+function showModal(modal){
+    modal.classList.add("show");
+}
+
+function hideModal(modal){
+    modal.classList.remove("show");
+}
+
+function closePropertyModal(){
+    hideModal(propertyModal);
+}
+
+function closeRejectedModal(){
+    hideModal(rejectedModal);
+}
+
+function closePendingModal(){
+    hideModal(pendingModal);
+}
+
+function closePriceModal(){
+    hideModal(priceModal);
+}
+
+function openPropertyDetails(card){
+
+    const id = card.dataset.propertyId;
+    const source = document.getElementById("property-details-" + id);
+
+    if(!source){
         return;
     }
-    const r=new FileReader();
-    r.onload=e=>{
-        p.src=e.target.result;
-        p.classList.add('preview-visible');
-    };
-    r.readAsDataURL(input.files[0]);
+
+    document.getElementById("propertyModalTitle").textContent =
+        card.querySelector(".name")?.textContent.trim() || "Property Details";
+
+    document.getElementById("propertyModalSubtitle").textContent =
+        "Approved property details";
+
+    document.getElementById("propertyModalBody").innerHTML =
+        source.innerHTML;
+
+    showModal(propertyModal);
 }
-window.addEventListener('keydown',e=>{if(e.key==='Escape')closeImagePreview();if(e.key==='Escape')closeModal()});window.addEventListener('hashchange',activateTabFromHash);window.addEventListener('click',e=>{if(e.target===modal)closeModal()});generateIndividual();activateTabFromHash();
+
+function openRejectedProperty(card){
+
+    const id = card.dataset.propertyId;
+    const source = document.getElementById("rejected-details-" + id);
+
+    if(!source){
+        return;
+    }
+
+    document.getElementById("rejectedModalTitle").textContent =
+        card.querySelector(".name")?.textContent.trim() || "Rejected Property";
+
+    document.getElementById("rejectedModalBody").innerHTML =
+        source.innerHTML;
+
+    showModal(rejectedModal);
+}
+
+function openPendingProperty(card){
+
+    const id = card.dataset.propertyId;
+    const source = document.getElementById("pending-details-" + id);
+
+    if(!source){
+        return;
+    }
+
+    document.getElementById("pendingModalTitle").textContent =
+        card.querySelector(".name")?.textContent.trim() || "Review Property";
+
+    document.getElementById("pendingModalSubtitle").textContent =
+        "Step 1: Review images, then configure availability and pricing.";
+
+    document.getElementById("pendingModalBody").innerHTML =
+        source.innerHTML;
+
+    showModal(pendingModal);
+}
+
+function openPriceForProperty(id, name, location){
+
+    closePendingModal();
+
+    document.getElementById("modalProperty").textContent =
+        name + " · " + location;
+
+    document.getElementById("priceForm").action =
+        "/admin/property/" + id + "/set-price";
+
+    document.getElementById("maxGuests").value = 1;
+
+    document.querySelector(
+        'input[name="availability_type"][value="type1"]'
+    ).checked = true;
+
+    document.querySelector(
+        'input[name="pricing_method"][value="individual"]'
+    ).checked = true;
+
+    document.getElementById("groups").innerHTML = "";
+    groupCount = 0;
+
+    toggleMethod();
+
+    showModal(priceModal);
+}
+
+const maxInput = document.getElementById("maxGuests");
+const individualBox = document.getElementById("individualBox");
+const groupBox = document.getElementById("groupBox");
+const groups = document.getElementById("groups");
+
+let groupCount = 0;
+
+function selected(name){
+    return document.querySelector(
+        'input[name="' + name + '"]:checked'
+    )?.value;
+}
+
+function generateIndividual(){
+
+    const max = Number(maxInput.value) || 1;
+
+    individualBox.innerHTML = "";
+
+    for(let i = 1; i <= max; i++){
+
+        const row = document.createElement("div");
+
+        row.className = "price-row";
+
+        row.innerHTML = `
+            <div class="box">
+                <div class="label">Guests</div>
+                <div class="value">
+                    ${i} guest${i > 1 ? "s" : ""}
+                </div>
+            </div>
+
+            <input
+                class="input"
+                type="number"
+                min="0"
+                step="0.01"
+                name="price_${i}"
+                placeholder="Price / day"
+                required
+            >
+        `;
+
+        individualBox.appendChild(row);
+    }
+}
+
+function addGroup(min="", max="", price=""){
+
+    groupCount++;
+
+    const row = document.createElement("div");
+
+    row.className = "group-row";
+
+    row.innerHTML = `
+        <input
+            class="input"
+            type="number"
+            min="1"
+            name="group_${groupCount}_min"
+            placeholder="From"
+            value="${min}"
+            required
+        >
+
+        <input
+            class="input"
+            type="number"
+            min="1"
+            name="group_${groupCount}_max"
+            placeholder="To"
+            value="${max}"
+            required
+        >
+
+        <div style="display:flex;gap:6px">
+            <input
+                class="input"
+                type="number"
+                min="0"
+                step="0.01"
+                name="group_${groupCount}_price"
+                placeholder="Price / day"
+                value="${price}"
+                required
+            >
+
+            <button
+                type="button"
+                class="btn red"
+                onclick="this.closest('.group-row').remove()"
+            >
+                ✕
+            </button>
+        </div>
+    `;
+
+    groups.appendChild(row);
+}
+
+function resetGroups(){
+
+    groups.innerHTML = "";
+    groupCount = 0;
+    addGroup();
+}
+
+function toggleMethod(){
+
+    const method = selected("pricing_method");
+
+    individualBox.style.display =
+        method === "individual" ? "block" : "none";
+
+    groupBox.style.display =
+        method === "group" ? "block" : "none";
+
+    if(method === "individual"){
+        generateIndividual();
+    }else if(method === "group" && !groups.children.length){
+        addGroup();
+    }
+}
+
+document
+    .querySelectorAll(".tab-button")
+    .forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            document
+                .querySelectorAll(".tab-button")
+                .forEach(x => x.classList.remove("active"));
+
+            document
+                .querySelectorAll(".tab-content")
+                .forEach(x => x.classList.remove("active"));
+
+            button.classList.add("active");
+
+            document
+                .getElementById(button.dataset.tab)
+                .classList.add("active");
+        });
+
+    });
+
+document
+    .querySelectorAll(".subtab")
+    .forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            const parent = button.closest(".tab-content");
+
+            parent
+                .querySelectorAll(".subtab")
+                .forEach(x => x.classList.remove("active"));
+
+            parent
+                .querySelectorAll(".subcontent")
+                .forEach(x => x.classList.remove("active"));
+
+            button.classList.add("active");
+
+            parent
+                .querySelector("#" + button.dataset.sub)
+                .classList.add("active");
+        });
+
+    });
+
+document
+    .querySelectorAll('input[name="pricing_method"]')
+    .forEach(radio => {
+        radio.addEventListener("change", toggleMethod);
+    });
+
+maxInput.addEventListener("change", () => {
+
+    if(selected("pricing_method") === "individual"){
+        generateIndividual();
+    }
+
+});
+
+window.addEventListener("click", event => {
+
+    if(event.target === propertyModal){
+        closePropertyModal();
+    }
+
+    if(event.target === rejectedModal){
+        closeRejectedModal();
+    }
+
+    if(event.target === pendingModal){
+        closePendingModal();
+    }
+
+    if(event.target === priceModal){
+        closePriceModal();
+    }
+
+});
+
+toggleMethod();
 </script>
-</body></html>
+
+</body>
+</html>
