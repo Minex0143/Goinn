@@ -889,6 +889,8 @@
 
     </style>
 
+
+<style>.property-gallery{margin-bottom:22px}.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.gallery-grid img{width:100%;height:220px;object-fit:cover;border-radius:11px;display:block}@media(max-width:600px){.gallery-grid{grid-template-columns:1fr 1fr}.gallery-grid img{height:150px}}</style>
 </head>
 
 
@@ -990,6 +992,21 @@
 
     </section>
 
+
+    <!-- ==================================================
+         APPROVED PROPERTY IMAGES
+    ================================================== -->
+    {% set approved_images = property.property_images|selectattr('status','equalto','approved')|list %}
+    {% if approved_images %}
+    <section class="section-card property-gallery">
+        <h2 class="section-title">Property Images</h2>
+        <div class="gallery-grid">
+            {% for image in approved_images %}
+                <img src="{{ url_for('property_image', image_id=image.id) }}" alt="{{ property.property_name|e }} image {{ loop.index }}">
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
 
     <!-- ==================================================
          CONTENT
