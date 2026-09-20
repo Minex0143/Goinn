@@ -563,6 +563,7 @@
 
         <form
             method="POST"
+            enctype="multipart/form-data"
             action="{{ url_for('modify_property', property_id=property.id) }}"
         >
             <input
@@ -794,32 +795,31 @@
 
 
                 <div class="image-box">
-
-                    <div class="form-group"
-                         style="margin-bottom:0;">
-
-                        <label for="images">
-
-                            Property Images
-
-                        </label>
-
-                        <textarea
-                            id="images"
-                            name="images"
-                            placeholder="Image information can be added here."
-                        >{{ property.images|e if property.images else '' }}</textarea>
-
-                        <span class="field-help">
-
-                            Image upload functionality will be
-                            enabled separately. Supported formats
-                            will include JPG, JPEG, PNG and WEBP.
-
-                        </span>
-
+                    <div class="image-help">
+                        Manage the 10 fixed image positions. Approved images are locked after Admin approval.
+                        If Admin requests a re-upload, upload the replacement in the same numbered slot.
                     </div>
-
+                    <div class="modify-image-grid">
+                        {% for slot in range(1, 11) %}
+                            {% set img = (property.property_images|selectattr('slot','equalto',slot)|list|first) %}
+                            <div class="modify-image-card">
+                                <div class="modify-slot-number">{{ slot }}</div>
+                                {% if img and img.status == 'approved' %}
+                                    <img src="{{ url_for('property_image', image_id=img.id) }}" alt="Image {{ slot }}">
+                                    <div class="modify-status approved">Approved</div>
+                                {% elif img and img.status == 'reupload_required' %}
+                                    <div class="modify-placeholder"><strong>Re-upload required</strong><small>{{ img.rejection_reason or 'Admin requested a new image.' }}</small></div>
+                                    <input type="file" name="image_{{ slot }}" accept="image/jpeg,image/png,image/webp,image/gif">
+                                {% elif img %}
+                                    <div class="modify-placeholder"><strong>Under review</strong><small>Admin is reviewing this image.</small></div>
+                                {% else %}
+                                    <div class="modify-placeholder"><strong>Image {{ slot }}</strong><small>Not uploaded</small></div>
+                                    <input type="file" name="image_{{ slot }}" accept="image/jpeg,image/png,image/webp,image/gif">
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <span class="field-help">Only pending properties can have image changes.</span>
                 </div>
 
             </div>
