@@ -906,15 +906,12 @@
 <style>
 .search-selection-card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:18px 20px;margin-bottom:22px;box-shadow:0 3px 15px rgba(0,0,0,.05)}
 
-.dates-guests-editor{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:12px;align-items:end;background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:16px}
+.dates-guests-editor{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:end;background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:16px}
 .edit-selection-field{display:flex;flex-direction:column;gap:7px}
 .edit-selection-field label{font-size:13px;font-weight:700;color:#475569}
-.edit-selection-field input{width:100%;min-height:44px;border:1px solid #cbd5e1;border-radius:10px;padding:0 12px;font-size:14px;background:#fff;color:#0f172a;box-sizing:border-box}
+.edit-selection-field input,.edit-selection-field select{width:100%;min-height:44px;border:1px solid #cbd5e1;border-radius:10px;padding:0 12px;font-size:14px;background:#fff;color:#0f172a;box-sizing:border-box;cursor:pointer}
 .edit-selection-field input:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
-.update-selection-btn{min-height:44px;border:0;border-radius:10px;padding:0 18px;background:#2563eb;color:#fff;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
-.update-selection-btn:hover{background:#1d4ed8}
-.selection-error{min-height:20px;margin-top:8px;color:#dc2626;font-size:13px;font-weight:600}
-@media(max-width:760px){.dates-guests-editor{grid-template-columns:1fr}.update-selection-btn{width:100%}}
+.selection-error{min-height:20px;margin-top:8px;color:#dc2626;font-size:13px;font-weight:600}.property-capacity-note{margin-top:9px;font-size:13px;color:#64748b}.max-guests-label{font-weight:600;color:#64748b}@media(max-width:760px){.dates-guests-editor{grid-template-columns:1fr}}
 .search-selection-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .search-selection-item{background:#f7f8fa;border:1px solid #eceef0;border-radius:11px;padding:13px 15px}
 .search-selection-label{font-size:11px;color:#777;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
@@ -1044,21 +1041,23 @@
         <div class="dates-guests-editor">
             <div class="edit-selection-field">
                 <label for="propertyCheckIn">Check-in</label>
-                <input type="date" id="propertyCheckIn" value="{{ selected_check_in }}">
+                <input type="text" id="propertyCheckIn" value="{{ selected_check_in }}" placeholder="Select check-in" readonly>
             </div>
-
             <div class="edit-selection-field">
                 <label for="propertyCheckOut">Check-out</label>
-                <input type="date" id="propertyCheckOut" value="{{ selected_check_out }}">
+                <input type="text" id="propertyCheckOut" value="{{ selected_check_out }}" placeholder="Select check-out" readonly>
             </div>
-
             <div class="edit-selection-field">
-                <label for="propertyGuests">Guests</label>
-                <input type="number" id="propertyGuests" value="{{ selected_guests or 1 }}" min="1" {% if property.max_guests %}max="{{ property.max_guests }}"{% endif %} step="1">
+                <label for="propertyGuests">Guests {% if property.max_guests %}<span class="max-guests-label">(Maximum {{ property.max_guests }})</span>{% endif %}</label>
+                <select id="propertyGuests">
+                    {% set guest_limit = property.max_guests or 20 %}
+                    {% for n in range(1, guest_limit + 1) %}
+                    <option value="{{ n }}" {% if (selected_guests|int if selected_guests else 1) == n %}selected{% endif %}>{{ n }} Guest{% if n > 1 %}s{% endif %}</option>
+                    {% endfor %}
+                </select>
             </div>
-
-            <button type="button" class="update-selection-btn" onclick="updatePropertySelection()">Update</button>
         </div>
+        <div class="property-capacity-note">Maximum guests: <strong>{% if property.max_guests %}{{ property.max_guests }}{% else %}Not specified{% endif %}</strong></div>
         <div id="selectionError" class="selection-error" aria-live="polite"></div>
     </section>
 
@@ -1375,44 +1374,552 @@
     </div>
 </div>
 
-<script>
-function updatePropertySelection(){
-    const checkIn=document.getElementById('propertyCheckIn').value;
-    const checkOut=document.getElementById('propertyCheckOut').value;
-    const guests=document.getElementById('propertyGuests').value;
-    const error=document.getElementById('selectionError');
-    error.textContent='';
-    if(!checkIn||!checkOut){error.textContent='Please select both check-in and check-out dates.';return;}
-    if(checkOut<=checkIn){error.textContent='Check-out must be after check-in.';return;}
-    const guestCount=parseInt(guests,10);
-    if(!Number.isInteger(guestCount)||guestCount<1){error.textContent='Please enter at least 1 guest.';return;}
-    const maxGuests={{ property.max_guests if property.max_guests else 0 }};
-    if(maxGuests>0&&guestCount>maxGuests){error.textContent='This property allows a maximum of '+maxGuests+' guests.';return;}
-    const url=new URL(window.location.href);
-    url.searchParams.set('check_in',checkIn);
-    url.searchParams.set('check_out',checkOut);
-    url.searchParams.set('guests',String(guestCount));
-    window.location.href=url.toString();
+<style>
+/* ==========================================================
+   GOINN CUSTOM DATE PICKER
+   Fully custom calendar - no browser/Google/Apple calendar
+========================================================== */
+.goinn-date-input{
+    cursor:pointer !important;
+    background:#fff !important;
+    user-select:none;
 }
 
-function syncCheckoutMinimum(){
+.goinn-date-picker{
+    position:fixed;
+    z-index:2147483647;
+    width:360px;
+    max-width:calc(100vw - 32px);
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:18px;
+    box-shadow:0 20px 55px rgba(0,0,0,.20);
+    padding:16px;
+    display:none;
+    overflow:hidden;
+}
+
+.goinn-date-picker.show{display:block;}
+
+.goinn-calendar-head{
+    display:grid;
+    grid-template-columns:40px 1fr 40px;
+    align-items:center;
+    gap:8px;
+    margin-bottom:14px;
+}
+
+.goinn-calendar-title{
+    min-width:0;
+    text-align:center;
+    font-size:18px;
+    line-height:40px;
+    font-weight:800;
+    color:#111827;
+    white-space:nowrap;
+}
+
+.goinn-calendar-nav{
+    width:40px !important;
+    min-width:40px !important;
+    max-width:40px !important;
+    height:40px !important;
+    min-height:40px !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:0 !important;
+    border-radius:10px !important;
+    background:#f3f4f6 !important;
+    color:#111827 !important;
+    font-size:24px !important;
+    line-height:40px !important;
+    cursor:pointer !important;
+    box-shadow:none !important;
+}
+
+.goinn-calendar-nav:disabled{
+    opacity:.35;
+    cursor:not-allowed !important;
+}
+
+.goinn-calendar-weekdays,
+.goinn-calendar-grid{
+    width:100%;
+    display:grid !important;
+    grid-template-columns:repeat(7,minmax(0,1fr)) !important;
+    gap:5px !important;
+}
+
+.goinn-calendar-weekday{
+    min-width:0;
+    text-align:center;
+    font-size:11px;
+    line-height:30px;
+    font-weight:800;
+    color:#6b7280;
+}
+
+.goinn-calendar-day{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    height:40px !important;
+    min-height:40px !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:1px solid transparent !important;
+    border-radius:10px !important;
+    background:#f8fafc !important;
+    color:#111827 !important;
+    cursor:pointer !important;
+    font-family:inherit !important;
+    font-size:14px !important;
+    font-weight:700 !important;
+    line-height:40px !important;
+    box-shadow:none !important;
+}
+
+.goinn-calendar-day:hover:not(:disabled){
+    background:#e8f0ff !important;
+    border-color:#c7d7fe !important;
+}
+
+.goinn-calendar-day.today{
+    border-color:#2563eb !important;
+}
+
+.goinn-calendar-day.selected{
+    background:#2563eb !important;
+    border-color:#2563eb !important;
+    color:#fff !important;
+}
+
+.goinn-calendar-day.range{
+    background:#dbeafe !important;
+    border-color:#dbeafe !important;
+    color:#1e40af !important;
+}
+
+.goinn-calendar-day.disabled{
+    color:#c9cdd4 !important;
+    background:#f8fafc !important;
+    border-color:transparent !important;
+    cursor:not-allowed !important;
+}
+
+.goinn-calendar-day.empty{
+    background:transparent !important;
+    border-color:transparent !important;
+    cursor:default !important;
+}
+
+.goinn-calendar-hint{
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid #e5e7eb;
+    color:#6b7280;
+    font-size:12px;
+    line-height:18px;
+    text-align:center;
+}
+
+.goinn-calendar-clear{
+    width:100% !important;
+    height:40px !important;
+    min-height:40px !important;
+    margin:10px 0 0 !important;
+    padding:0 !important;
+    border:0 !important;
+    border-radius:10px !important;
+    background:#f3f4f6 !important;
+    color:#111827 !important;
+    font-family:inherit !important;
+    font-size:14px !important;
+    font-weight:700 !important;
+    cursor:pointer !important;
+    box-shadow:none !important;
+}
+
+.goinn-calendar-clear:hover{
+    background:#e5e7eb !important;
+}
+
+@media (max-width:600px){
+    .goinn-date-picker{
+        width:calc(100vw - 32px);
+        max-width:calc(100vw - 32px);
+        padding:14px;
+        border-radius:16px;
+    }
+
+    .goinn-calendar-head{
+        grid-template-columns:38px 1fr 38px;
+        gap:6px;
+        margin-bottom:12px;
+    }
+
+    .goinn-calendar-nav{
+        width:38px !important;
+        min-width:38px !important;
+        max-width:38px !important;
+        height:38px !important;
+        min-height:38px !important;
+        line-height:38px !important;
+    }
+
+    .goinn-calendar-title{
+        font-size:17px;
+        line-height:38px;
+    }
+
+    .goinn-calendar-weekdays,
+    .goinn-calendar-grid{
+        gap:4px !important;
+    }
+
+    .goinn-calendar-weekday{
+        line-height:28px;
+        font-size:10px;
+    }
+
+    .goinn-calendar-day{
+        height:38px !important;
+        min-height:38px !important;
+        line-height:38px !important;
+        border-radius:9px !important;
+        font-size:13px !important;
+    }
+}
+</style>
+<div id="goinnDatePicker" class="goinn-date-picker" role="dialog" aria-label="Goinn date picker">
+    <div class="goinn-calendar-head">
+        <button type="button" class="goinn-calendar-nav" id="goinnPrevMonth" aria-label="Previous month">‹</button>
+        <div class="goinn-calendar-title" id="goinnCalendarTitle"></div>
+        <button type="button" class="goinn-calendar-nav" id="goinnNextMonth" aria-label="Next month">›</button>
+    </div>
+
+    <div class="goinn-calendar-weekdays" aria-hidden="true">
+        <div class="goinn-calendar-weekday">Sun</div>
+        <div class="goinn-calendar-weekday">Mon</div>
+        <div class="goinn-calendar-weekday">Tue</div>
+        <div class="goinn-calendar-weekday">Wed</div>
+        <div class="goinn-calendar-weekday">Thu</div>
+        <div class="goinn-calendar-weekday">Fri</div>
+        <div class="goinn-calendar-weekday">Sat</div>
+    </div>
+
+    <div id="goinnCalendarGrid" class="goinn-calendar-grid"></div>
+
+    <div class="goinn-calendar-hint" id="goinnCalendarHint">Select a date</div>
+
+    <button type="button" class="goinn-calendar-clear" id="goinnClearDate">Clear</button>
+</div>
+
+<script>
+(function(){
+    const checkIn = document.getElementById("propertyCheckIn");
+    const checkOut = document.getElementById("propertyCheckOut");
+    const picker = document.getElementById("goinnDatePicker");
+
+    if (!checkIn || !checkOut || !picker) return;
+
+    const title = document.getElementById("goinnCalendarTitle");
+    const grid = document.getElementById("goinnCalendarGrid");
+    const hint = document.getElementById("goinnCalendarHint");
+    const prev = document.getElementById("goinnPrevMonth");
+    const next = document.getElementById("goinnNextMonth");
+    const clear = document.getElementById("goinnClearDate");
+
+    const todayText = "{{ today }}";
+    const tomorrowText = "{{ tomorrow }}";
+
+    let activeInput = null;
+    let viewDate = null;
+
+    function parseISO(value){
+        if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+        const parts = value.split("-").map(Number);
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+
+    function iso(date){
+        return date.getFullYear() + "-" +
+            String(date.getMonth() + 1).padStart(2,"0") + "-" +
+            String(date.getDate()).padStart(2,"0");
+    }
+
+    function startOfMonth(date){
+        return new Date(date.getFullYear(), date.getMonth(), 1);
+    }
+
+    function nextDay(value){
+        const date = parseISO(value);
+        if (!date) return tomorrowText;
+        date.setDate(date.getDate() + 1);
+        return iso(date);
+    }
+
+    function positionPicker(){
+        if (!activeInput) return;
+
+        const rect = activeInput.getBoundingClientRect();
+        const mobile = window.innerWidth <= 600;
+        const pickerWidth = mobile
+            ? window.innerWidth - 32
+            : Math.min(360, window.innerWidth - 32);
+
+        picker.style.width = pickerWidth + "px";
+
+        let left = mobile
+            ? 16
+            : rect.left;
+
+        left = Math.max(16, Math.min(left, window.innerWidth - pickerWidth - 16));
+
+        const pickerHeight = picker.offsetHeight || 390;
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const spaceAbove = rect.top;
+
+        let top;
+
+        if (spaceBelow >= pickerHeight + 10 || spaceBelow >= spaceAbove) {
+            top = rect.bottom + 8;
+        } else {
+            top = rect.top - pickerHeight - 8;
+        }
+
+        top = Math.max(8, Math.min(top, window.innerHeight - pickerHeight - 8));
+
+        picker.style.left = left + "px";
+        picker.style.top = top + "px";
+    }
+
+    function openPicker(input){
+        activeInput = input;
+
+        const selected = parseISO(input.value);
+        const fallback = parseISO(todayText) || new Date();
+        const base = selected || fallback;
+
+        viewDate = startOfMonth(base);
+
+        picker.classList.add("show");
+        render();
+
+        requestAnimationFrame(positionPicker);
+    }
+
+    function closePicker(){
+        picker.classList.remove("show");
+        activeInput = null;
+    }
+
+    function render(){
+        if (!activeInput || !viewDate) return;
+
+        const year = viewDate.getFullYear();
+        const month = viewDate.getMonth();
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        title.textContent = viewDate.toLocaleString("en-US", {
+            month:"long",
+            year:"numeric"
+        });
+
+        grid.innerHTML = "";
+
+        const minDate = activeInput === checkOut
+            ? (checkIn.value ? nextDay(checkIn.value) : tomorrowText)
+            : todayText;
+
+        for (let i = 0; i < firstDay; i++) {
+            const empty = document.createElement("div");
+            empty.className = "goinn-calendar-day empty";
+            empty.setAttribute("aria-hidden", "true");
+            grid.appendChild(empty);
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(year, month, day);
+            const value = iso(date);
+            const button = document.createElement("button");
+
+            button.type = "button";
+            button.className = "goinn-calendar-day";
+            button.textContent = day;
+            button.setAttribute("aria-label", value);
+
+            if (value === todayText) button.classList.add("today");
+            if (value === checkIn.value || value === checkOut.value) {
+                button.classList.add("selected");
+            }
+
+            if (checkIn.value && checkOut.value &&
+                value > checkIn.value && value < checkOut.value) {
+                button.classList.add("range");
+            }
+
+            if (value < minDate) {
+                button.disabled = true;
+                button.classList.add("disabled");
+            } else {
+                button.addEventListener("click", function(){
+                    if (activeInput === checkIn) {
+                        checkIn.value = value;
+
+                        if (checkOut.value && checkOut.value <= checkIn.value) {
+                            checkOut.value = "";
+                        }
+
+                        checkIn.dispatchEvent(new Event("change", {bubbles:true}));
+
+                        // Immediately move to checkout selection.
+                        openPicker(checkOut);
+                    } else {
+                        if (value <= checkIn.value) return;
+
+                        checkOut.value = value;
+                        checkOut.dispatchEvent(new Event("change", {bubbles:true}));
+                        closePicker();
+                    }
+                });
+            }
+
+            grid.appendChild(button);
+        }
+
+        const minMonth = startOfMonth(parseISO(todayText) || new Date());
+        const currentMonth = startOfMonth(viewDate);
+        prev.disabled = currentMonth <= minMonth;
+
+        hint.textContent = activeInput === checkIn
+            ? "Select check-in date"
+            : (checkIn.value ? "Select check-out date" : "Select check-in date first");
+
+        requestAnimationFrame(positionPicker);
+    }
+
+    checkIn.addEventListener("click", function(){
+        openPicker(checkIn);
+    });
+
+    checkOut.addEventListener("click", function(){
+        if (!checkIn.value) {
+            openPicker(checkIn);
+            return;
+        }
+        openPicker(checkOut);
+    });
+
+    checkIn.addEventListener("change", function(){
+        if (checkOut.value && checkOut.value <= checkIn.value) {
+            checkOut.value = "";
+        }
+    });
+
+    checkOut.addEventListener("change", function(){
+        if (checkIn.value && checkOut.value <= checkIn.value) {
+            checkOut.value = "";
+        }
+    });
+
+    prev.addEventListener("click", function(event){
+        event.preventDefault();
+        event.stopPropagation();
+
+        const candidate = new Date(
+            viewDate.getFullYear(),
+            viewDate.getMonth() - 1,
+            1
+        );
+
+        const minMonth = startOfMonth(parseISO(todayText) || new Date());
+
+        if (candidate >= minMonth) {
+            viewDate = candidate;
+            render();
+        }
+    });
+
+    next.addEventListener("click", function(event){
+        event.preventDefault();
+        event.stopPropagation();
+
+        viewDate = new Date(
+            viewDate.getFullYear(),
+            viewDate.getMonth() + 1,
+            1
+        );
+
+        render();
+    });
+
+    clear.addEventListener("click", function(event){
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (activeInput === checkIn) {
+            checkIn.value = "";
+            checkOut.value = "";
+        } else {
+            checkOut.value = "";
+        }
+
+        closePicker();
+    });
+
+    document.addEventListener("click", function(event){
+        if (!picker.classList.contains("show")) return;
+
+        if (!picker.contains(event.target) &&
+            event.target !== checkIn &&
+            event.target !== checkOut) {
+            closePicker();
+        }
+    });
+
+    window.addEventListener("resize", function(){
+        if (picker.classList.contains("show")) positionPicker();
+    });
+
+    window.addEventListener("scroll", function(){
+        if (picker.classList.contains("show")) positionPicker();
+    }, true);
+})();
+</script>
+<script>
+(function(){
     const checkIn=document.getElementById('propertyCheckIn');
     const checkOut=document.getElementById('propertyCheckOut');
-    if(!checkIn||!checkOut)return;
-    const today=new Date();
-    const yyyy=today.getFullYear();
-    const mm=String(today.getMonth()+1).padStart(2,'0');
-    const dd=String(today.getDate()).padStart(2,'0');
-    const todayValue=yyyy+'-'+mm+'-'+dd;
-    checkIn.min=todayValue;
-    checkOut.min=checkIn.value||todayValue;
-    if(checkIn.value&&checkOut.value&&checkOut.value<=checkIn.value)checkOut.value='';
-}
-
-document.addEventListener('DOMContentLoaded',function(){
-    const checkIn=document.getElementById('propertyCheckIn');
-    if(checkIn){checkIn.addEventListener('change',syncCheckoutMinimum);syncCheckoutMinimum();}
-});
+    const guests=document.getElementById('propertyGuests');
+    const error=document.getElementById('selectionError');
+    let timer=null;
+    function showError(msg){ if(error) error.textContent=msg||''; }
+    async function applySelection(){
+        if(!checkIn.value || !checkOut.value) return;
+        if(checkOut.value<=checkIn.value){showError('Check-out must be after check-in.');return;}
+        const guestCount=parseInt(guests.value,10);
+        const maxGuests={{ property.max_guests if property.max_guests else 0 }};
+        if(maxGuests>0 && guestCount>maxGuests){showError('This property allows a maximum of '+maxGuests+' guests.');return;}
+        showError('');
+        try{
+            const url=`{{ url_for('property_availability_check', property_id=property.id) }}?check_in=${encodeURIComponent(checkIn.value)}&check_out=${encodeURIComponent(checkOut.value)}&guests=${guestCount}`;
+            const response=await fetch(url,{headers:{'X-Requested-With':'XMLHttpRequest'}});
+            const data=await response.json();
+            if(!data.available){showError('No availability for the selected dates. Please choose different dates.');return;}
+            const current=new URL(window.location.href);
+            current.searchParams.set('check_in',checkIn.value);
+            current.searchParams.set('check_out',checkOut.value);
+            current.searchParams.set('guests',String(guestCount));
+            window.location.href=current.toString();
+        }catch(e){showError('Unable to check availability right now. Please try again.');}
+    }
+    function schedule(){clearTimeout(timer);timer=setTimeout(applySelection,180);}
+    checkIn.addEventListener('change',function(){if(checkIn.value&&checkOut.value&&checkOut.value<=checkIn.value)checkOut.value=''; if(checkIn.value&&!checkOut.value)showError('Please select check-out date.');else schedule();});
+    checkOut.addEventListener('change',schedule);
+    guests.addEventListener('change',schedule);
+})();
 
 function openBookingModal(){const m=document.getElementById('bookingModal');if(!m)return;m.classList.add('show');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}
 function closeBookingModal(){const m=document.getElementById('bookingModal');if(!m)return;m.classList.remove('show');m.setAttribute('aria-hidden','true');document.body.style.overflow='';}
