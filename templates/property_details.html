@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {{ property.property_name }} - Goinn
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f6f7f8;
+            color: #202124;
+        }
+
+
+        /* ==================================================
+           HEADER
+        ================================================== */
+
+        .header {
+
+            height: 72px;
+
+            background: #111;
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 45px;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 1000;
+
+            box-shadow:
+                0 2px 12px rgba(0,0,0,0.12);
+        }
+
+
+        .logo {
+
+            font-size: 25px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.7px;
+        }
+
+
+        .header-right {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 18px;
+        }
+
+
+        .home-link {
+
+            color: #ddd;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            padding: 9px 14px;
+
+            border-radius: 8px;
+
+            transition: 0.2s;
+        }
+
+
+        .home-link:hover {
+
+            background: #292929;
+
+            color: white;
+        }
+
+
+        /* ==================================================
+           MAIN CONTAINER
+        ================================================== */
+
+        .container {
+
+            max-width: 1180px;
+
+            margin: 0 auto;
+
+            padding: 35px 20px 60px;
+        }
+
+
+        /* ==================================================
+           BREADCRUMB
+        ================================================== */
+
+        .breadcrumb {
+
+            margin-bottom: 22px;
+
+            font-size: 13px;
+
+            color: #777;
+        }
+
+
+        .breadcrumb a {
+
+            color: #555;
+
+            text-decoration: none;
+
+            font-weight: 600;
+        }
+
+
+        .breadcrumb a:hover {
+
+            text-decoration: underline;
+        }
+
+
+        /* ==================================================
+           HERO
+        ================================================== */
+
+        .hero {
+
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 30px;
+
+            box-shadow:
+                0 4px 20px rgba(0,0,0,0.06);
+
+            margin-bottom: 22px;
+        }
+
+
+        .hero-top {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+
+            gap: 25px;
+        }
+
+
+        .property-title {
+
+            margin: 0;
+
+            font-size: 34px;
+
+            line-height: 1.2;
+
+            font-weight: 800;
+
+            letter-spacing: -0.7px;
+        }
+
+
+        .location {
+
+            margin-top: 12px;
+
+            color: #666;
+
+            font-size: 15px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+        }
+
+
+        .location-icon {
+
+            font-size: 17px;
+        }
+
+
+        .availability-badge {
+
+            background: #e7f6eb;
+
+            color: #176b2c;
+
+            padding: 8px 13px;
+
+            border-radius: 30px;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            white-space: nowrap;
+        }
+
+
+        /* ==================================================
+           CONTENT LAYOUT
+        ================================================== */
+
+        .content-layout {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                350px;
+
+            gap: 24px;
+
+            align-items: start;
+        }
+
+
+        /* ==================================================
+           LEFT CONTENT
+        ================================================== */
+
+        .main-content {
+
+            min-width: 0;
+        }
+
+
+        .section-card {
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 25px;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 3px 15px rgba(0,0,0,0.05);
+        }
+
+
+        .section-title {
+
+            margin: 0 0 18px;
+
+            font-size: 20px;
+
+            font-weight: 800;
+        }
+
+
+        /* ==================================================
+           PROPERTY OVERVIEW
+        ================================================== */
+
+        .overview-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 14px;
+        }
+
+
+        .overview-item {
+
+            background: #f7f8fa;
+
+            border: 1px solid #eceef0;
+
+            border-radius: 11px;
+
+            padding: 17px;
+        }
+
+
+        .overview-icon {
+
+            font-size: 22px;
+
+            margin-bottom: 9px;
+        }
+
+
+        .overview-label {
+
+            font-size: 12px;
+
+            color: #777;
+
+            margin-bottom: 5px;
+        }
+
+
+        .overview-value {
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            line-height: 1.4;
+
+            word-break: break-word;
+        }
+
+
+        /* ==================================================
+           ADDRESS
+        ================================================== */
+
+        .address-box {
+
+            background: #f7f8fa;
+
+            border-radius: 11px;
+
+            padding: 18px;
+
+            border: 1px solid #eceef0;
+
+            line-height: 1.6;
+
+            font-size: 14px;
+
+            color: #444;
+        }
+
+
+        /* ==================================================
+           PRICING
+        ================================================== */
+
+        .pricing-description {
+
+            color: #777;
+
+            font-size: 13px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .price-table {
+
+            width: 100%;
+
+            border-collapse: separate;
+
+            border-spacing: 0;
+
+            overflow: hidden;
+
+            border: 1px solid #e5e7ea;
+
+            border-radius: 11px;
+        }
+
+
+        .price-table th {
+
+            background: #f4f5f6;
+
+            color: #666;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.3px;
+
+            padding: 13px 15px;
+
+            text-align: left;
+        }
+
+
+        .price-table td {
+
+            padding: 15px;
+
+            border-top: 1px solid #eee;
+
+            font-size: 14px;
+        }
+
+
+        .price-table tr:first-child td {
+
+            border-top: none;
+        }
+
+
+        .guest-count {
+
+            font-weight: 700;
+        }
+
+
+        .price {
+
+            font-size: 16px;
+
+            font-weight: 800;
+        }
+
+
+        .price-unit {
+
+            color: #777;
+
+            font-size: 12px;
+
+            font-weight: normal;
+        }
+
+
+        .price-table tr:hover td {
+
+            background: #fafafa;
+        }
+
+
+        /* ==================================================
+           RIGHT BOOKING CARD
+        ================================================== */
+
+        .booking-card {
+
+            background: white;
+
+            border-radius: 17px;
+
+            padding: 24px;
+
+            box-shadow:
+                0 5px 22px rgba(0,0,0,0.08);
+
+            position: sticky;
+
+            top: 95px;
+        }
+
+
+        .booking-card-title {
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+            margin-bottom: 7px;
+        }
+
+
+        .booking-card-subtitle {
+
+            color: #777;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+
+            margin-bottom: 22px;
+        }
+
+
+        .booking-price-box {
+
+            background: #f7f8fa;
+
+            border: 1px solid #e8eaed;
+
+            border-radius: 11px;
+
+            padding: 17px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .starting-label {
+
+            color: #777;
+
+            font-size: 12px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .starting-price {
+
+            font-size: 25px;
+
+            font-weight: 800;
+        }
+
+
+        .starting-price span {
+
+            color: #777;
+
+            font-size: 12px;
+
+            font-weight: normal;
+        }
+
+
+        /* ==================================================
+           BOOK BUTTON
+        ================================================== */
+
+        .book-btn {
+
+            display: block;
+
+            width: 100%;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            background: #111;
+
+            color: white;
+
+            padding: 14px 18px;
+
+            border-radius: 10px;
+
+            font-size: 15px;
+
+            font-weight: 800;
+
+            transition:
+                background 0.2s,
+                transform 0.2s;
+        }
+
+
+        .book-btn:hover {
+
+            background: #333;
+
+            transform: translateY(-1px);
+        }
+
+
+        .booking-note {
+
+            text-align: center;
+
+            color: #777;
+
+            font-size: 11px;
+
+            margin-top: 12px;
+
+            line-height: 1.5;
+        }
+
+
+        /* ==================================================
+           CAPACITY
+        ================================================== */
+
+        .capacity-box {
+
+            margin-top: 18px;
+
+            padding-top: 18px;
+
+            border-top: 1px solid #eee;
+        }
+
+
+        .capacity-title {
+
+            font-size: 13px;
+
+            color: #666;
+
+            margin-bottom: 6px;
+        }
+
+
+        .capacity-value {
+
+            font-size: 17px;
+
+            font-weight: 800;
+        }
+
+
+        /* ==================================================
+           FOOTER
+        ================================================== */
+
+        .footer {
+
+            text-align: center;
+
+            margin-top: 15px;
+
+            color: #888;
+
+            font-size: 12px;
+        }
+
+
+        .back-link {
+
+            display: inline-block;
+
+            margin-top: 15px;
+
+            color: #555;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+
+        .back-link:hover {
+
+            color: #111;
+
+            text-decoration: underline;
+        }
+
+
+        /* ==================================================
+           MOBILE BOOKING BAR
+        ================================================== */
+
+        .mobile-book-bar {
+
+            display: none;
+
+            position: fixed;
+
+            left: 0;
+
+            right: 0;
+
+            bottom: 0;
+
+            background: white;
+
+            padding: 12px 15px;
+
+            box-shadow:
+                0 -3px 15px rgba(0,0,0,0.12);
+
+            z-index: 2000;
+        }
+
+
+        .mobile-book-inner {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .mobile-price {
+
+            flex: 1;
+        }
+
+
+        .mobile-price-label {
+
+            display: block;
+
+            color: #777;
+
+            font-size: 10px;
+        }
+
+
+        .mobile-price-value {
+
+            font-size: 18px;
+
+            font-weight: 800;
+        }
+
+
+        .mobile-book-btn {
+
+            flex: 1.3;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            background: #111;
+
+            color: white;
+
+            padding: 12px;
+
+            border-radius: 9px;
+
+            font-size: 13px;
+
+            font-weight: 800;
+        }
+
+
+        /* ==================================================
+           RESPONSIVE
+        ================================================== */
+
+        @media (max-width: 850px) {
+
+            .header {
+
+                padding: 0 20px;
+            }
+
+
+            .container {
+
+                padding:
+                    22px 14px 80px;
+            }
+
+
+            .property-title {
+
+                font-size: 28px;
+            }
+
+
+            .content-layout {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .booking-card {
+
+                display: none;
+            }
+
+
+            .mobile-book-bar {
+
+                display: block;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .header {
+
+                height: 64px;
+            }
+
+
+            .logo {
+
+                font-size: 21px;
+            }
+
+
+            .home-link {
+
+                padding: 7px 9px;
+
+                font-size: 12px;
+            }
+
+
+            .hero {
+
+                padding: 21px;
+
+                border-radius: 14px;
+            }
+
+
+            .hero-top {
+
+                display: block;
+            }
+
+
+            .property-title {
+
+                font-size: 25px;
+            }
+
+
+            .availability-badge {
+
+                display: inline-block;
+
+                margin-top: 13px;
+            }
+
+
+            .section-card {
+
+                padding: 19px;
+
+                border-radius: 13px;
+            }
+
+
+            .overview-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .price-table th,
+            .price-table td {
+
+                padding: 11px 10px;
+            }
+
+
+            .footer {
+
+                margin-bottom: 20px;
+            }
+
+        }
+
+    </style>
+
+
+<style>.property-gallery{margin-bottom:22px}.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.gallery-grid img{width:100%;height:220px;object-fit:cover;border-radius:11px;display:block}@media(max-width:600px){.gallery-grid{grid-template-columns:1fr 1fr}.gallery-grid img{height:150px}}        /* ==================================================
+           AMENITIES + TERMS
+        ================================================== */
+        .amenities-category-public{margin-bottom:20px}
+        .amenities-category-public:last-child{margin-bottom:0}
+        .amenities-category-public h3{margin:0 0 10px;font-size:15px}
+        .amenities-list-public{display:grid;grid-template-columns:repeat(2,1fr);gap:9px 14px}
+        .amenity-public-item{background:#f7f8fa;border:1px solid #eceef0;border-radius:9px;padding:10px 12px;font-size:13px;line-height:1.4}
+        .terms-public{white-space:pre-wrap;background:#f7f8fa;border:1px solid #eceef0;border-radius:11px;padding:16px;font-size:14px;line-height:1.7;color:#444}
+        @media(max-width:600px){.amenities-list-public{grid-template-columns:1fr}}
+
+</style>
+
+<style>
+.search-selection-card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:18px 20px;margin-bottom:22px;box-shadow:0 3px 15px rgba(0,0,0,.05)}
+
+.dates-guests-editor{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:end;background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:16px}
+.edit-selection-field{display:flex;flex-direction:column;gap:7px}
+.edit-selection-field label{font-size:13px;font-weight:700;color:#475569}
+.edit-selection-field input,.edit-selection-field select{width:100%;min-height:44px;border:1px solid #cbd5e1;border-radius:10px;padding:0 12px;font-size:14px;background:#fff;color:#0f172a;box-sizing:border-box;cursor:pointer}
+.edit-selection-field input:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.selection-error{min-height:20px;margin-top:8px;color:#dc2626;font-size:13px;font-weight:600}.property-capacity-note{margin-top:9px;font-size:13px;color:#64748b}.max-guests-label{font-weight:600;color:#64748b}@media(max-width:760px){.dates-guests-editor{grid-template-columns:1fr}}
+.search-selection-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.search-selection-item{background:#f7f8fa;border:1px solid #eceef0;border-radius:11px;padding:13px 15px}
+.search-selection-label{font-size:11px;color:#777;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.search-selection-value{font-size:15px;font-weight:800;color:#111827}
+.booking-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(15,23,42,.60);z-index:99999}
+.booking-modal.show{display:flex}
+.booking-modal-card{width:100%;max-width:560px;max-height:90vh;overflow:auto;background:#fff;border-radius:20px;box-shadow:0 25px 80px rgba(0,0,0,.25);padding:25px}
+.booking-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:18px}
+.booking-modal-head h2{margin:0;font-size:23px}
+.booking-modal-close{border:0;background:#f1f5f9;color:#111827;width:38px;height:38px;border-radius:50%;font-size:22px;cursor:pointer}
+.booking-modal-property{background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:14px;margin-bottom:15px}.booking-modal-property strong{font-size:17px}
+.booking-readonly-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.booking-readonly-item{background:#f8fafc;border:1px solid #e5e7eb;border-radius:11px;padding:12px}
+.booking-readonly-label{display:block;font-size:11px;color:#64748b;font-weight:800;text-transform:uppercase;margin-bottom:4px}.booking-readonly-value{font-size:14px;font-weight:750;color:#0f172a;word-break:break-word}
+.booking-modal-summary{margin-top:15px;background:#eff6ff;border:1px solid #dbeafe;border-radius:12px;padding:15px}.booking-modal-summary p{margin:6px 0}
+.booking-modal-note{margin:14px 0 0;color:#64748b;font-size:12px;line-height:1.5}.whatsapp-submit{width:100%;border:0;border-radius:11px;background:#25D366;color:#fff;padding:14px 18px;font-size:16px;font-weight:800;cursor:pointer;margin-top:18px}.whatsapp-submit:hover{opacity:.92}
+.login-required-box{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:12px;padding:14px;line-height:1.5}.login-required-box a{font-weight:800;color:#9a3412}
+@media(max-width:700px){.search-selection-grid{grid-template-columns:1fr}.booking-readonly-grid{grid-template-columns:1fr}}
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==================================================
+     HEADER
+================================================== -->
+
+<header class="header">
+
+    <div class="logo">
+        Goinn
+    </div>
+
+
+    <div class="header-right">
+
+        <a
+            href="/"
+            class="home-link"
+        >
+            Home
+        </a>
+
+    </div>
+
+</header>
+
+
+<!-- ==================================================
+     MAIN
+================================================== -->
+
+<main class="container">
+
+
+    <!-- ==================================================
+         BREADCRUMB
+    ================================================== -->
+
+    <div class="breadcrumb">
+
+        <a href="/">
+            Home
+        </a>
+
+        <span>
+            &nbsp; / &nbsp;
+        </span>
+
+        Property Details
+
+    </div>
+
+
+    <!-- ==================================================
+         HERO
+    ================================================== -->
+
+    <section class="hero">
+
+        <div class="hero-top">
+
+
+            <div>
+
+                <h1 class="property-title">
+
+                    {{ property.property_name }}
+
+                </h1>
+
+
+                <div class="location">
+
+                    <span class="location-icon">
+                        📍
+                    </span>
+
+                    <span>
+                        {{ property.location }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="availability-badge">
+
+                ✓ Available for Booking
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         SEARCH SELECTION FROM HOME
+    ================================================== -->
+    <section class="search-selection-card">
+        <div class="section-title" style="margin-bottom:13px;">Dates &amp; Guests</div>
+        <div class="dates-guests-editor">
+            <div class="edit-selection-field">
+                <label for="propertyCheckIn">Check-in</label>
+                <input type="text" id="propertyCheckIn" value="{{ selected_check_in }}" placeholder="Select check-in" readonly>
+            </div>
+            <div class="edit-selection-field">
+                <label for="propertyCheckOut">Check-out</label>
+                <input type="text" id="propertyCheckOut" value="{{ selected_check_out }}" placeholder="Select check-out" readonly>
+            </div>
+            <div class="edit-selection-field">
+                <label for="propertyGuests">Guests {% if property.max_guests %}<span class="max-guests-label">(Maximum {{ property.max_guests }})</span>{% endif %}</label>
+                <select id="propertyGuests">
+                    {% set guest_limit = property.max_guests or 20 %}
+                    {% for n in range(1, guest_limit + 1) %}
+                    <option value="{{ n }}" {% if (selected_guests|int if selected_guests else 1) == n %}selected{% endif %}>{{ n }} Guest{% if n > 1 %}s{% endif %}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="property-capacity-note">Maximum guests: <strong>{% if property.max_guests %}{{ property.max_guests }}{% else %}Not specified{% endif %}</strong></div>
+        <div id="selectionError" class="selection-error" aria-live="polite"></div>
+    </section>
+
+
+    <!-- ==================================================
+         APPROVED PROPERTY IMAGES
+    ================================================== -->
+    {% set approved_images = property.property_images|selectattr('status','equalto','approved')|list %}
+    {% if approved_images %}
+    <section class="section-card property-gallery">
+        <h2 class="section-title">Property Images</h2>
+        <div class="gallery-grid">
+            {% for image in approved_images %}
+                <img src="{{ url_for('property_image', image_id=image.id) }}" alt="{{ property.property_name|e }} image {{ loop.index }}">
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- ==================================================
+         CONTENT
+    ================================================== -->
+
+    <div class="content-layout">
+
+
+        <!-- ==================================================
+             LEFT
+        ================================================== -->
+
+        <div class="main-content">
+
+
+            <!-- ==================================================
+                 OVERVIEW
+            ================================================== -->
+
+            <section class="section-card">
+
+                <h2 class="section-title">
+                    Property Overview
+                </h2>
+
+
+                <div class="overview-grid">
+
+
+                    <div class="overview-item">
+
+                        <div class="overview-icon">
+                            👥
+                        </div>
+
+                        <div class="overview-label">
+                            Maximum Guests
+                        </div>
+
+                        <div class="overview-value">
+
+                            {% if property.max_guests %}
+
+                                {{ property.max_guests }}
+                                guests
+
+                            {% else %}
+
+                                Not specified
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="overview-item">
+
+                        <div class="overview-icon">
+                            📍
+                        </div>
+
+                        <div class="overview-label">
+                            Location
+                        </div>
+
+                        <div class="overview-value">
+
+                            {{ property.location }}
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================================================
+                 ADDRESS
+            ================================================== -->
+
+            <section class="section-card">
+
+                <h2 class="section-title">
+                    Property Address
+                </h2>
+
+
+                <div class="address-box">
+
+                    {{ property.property_address }}
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================================================
+                 AMENITIES
+            ================================================== -->
+            {% set public_amenities = public_amenities or {} %}
+            <section class="section-card">
+                <h2 class="section-title">Amenities</h2>
+
+                {% if public_amenities %}
+                    {% for category, items in public_amenities.items() %}
+                        <div class="amenities-category-public">
+                            <h3>{{ category }}</h3>
+                            <div class="amenities-list-public">
+                                {% for item in items %}
+                                    <div class="amenity-public-item">✓ {{ item }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="muted">Amenities have not been configured for this property yet.</div>
+                {% endif %}
+            </section>
+
+            <!-- ==================================================
+                 TERMS & CONDITIONS
+            ================================================== -->
+            <section class="section-card">
+                <h2 class="section-title">Terms & Conditions</h2>
+
+                {% if property.terms_conditions %}
+                    <div class="terms-public">{{ property.terms_conditions }}</div>
+                {% else %}
+                    <div class="muted">Terms & Conditions have not been configured for this property yet.</div>
+                {% endif %}
+            </section>
+
+
+            <!-- ==================================================
+                 PRICING
+            ================================================== -->
+
+            <section class="section-card">
+
+                <h2 class="section-title">
+                    Pricing
+                </h2>
+
+
+                <div class="pricing-description">
+
+                    Pricing is based on the number of guests
+                    staying at the property.
+
+                </div>
+
+
+                <table class="price-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Guests
+                            </th>
+
+                            <th>
+                                Price
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+                        {% if selected_guests and selected_price is not none %}
+                        <tr>
+                            <td class="guest-count">{{ selected_guests }} Guest{% if selected_guests|int > 1 %}s{% endif %}</td>
+                            <td class="price">₹{{ "%.2f"|format(selected_price) }} <span class="price-unit">/ day</span></td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="2" style="color:#777;text-align:center;">Pricing will be shown for the guest count selected on the Home page.</td></tr>
+                        {% endif %}
+                    </tbody>
+
+                </table>
+
+            </section>
+
+
+        </div>
+
+
+        <!-- ==================================================
+             RIGHT BOOKING CARD
+        ================================================== -->
+
+        <aside class="booking-card">
+            <div class="booking-card-title">Book this property</div>
+            <div class="booking-card-subtitle">Your dates, guest count and account details are taken from the previous step. Review them before continuing to WhatsApp.</div>
+
+            <div class="booking-price-box">
+                <div class="starting-label">Price for your selection</div>
+                <div class="starting-price">
+                    {% if selected_price is not none %}₹{{ "%.2f"|format(selected_price) }} <span>/ day</span>{% else %}Select dates & guests on Home{% endif %}
+                </div>
+            </div>
+
+            <button type="button" class="book-btn" onclick="openBookingModal()">Book</button>
+            <div class="booking-note">You cannot edit booking information here. To make changes, go back to the Home page.</div>
+
+            <div class="capacity-box">
+                <div class="capacity-title">Guest capacity</div>
+                <div class="capacity-value">{% if property.max_guests %}Up to {{ property.max_guests }} guests{% else %}Contact property{% endif %}</div>
+            </div>
+        </aside>
+
+
+    </div>
+
+
+    <!-- ==================================================
+         BACK
+    ================================================== -->
+
+    <div class="footer">
+
+        <a
+            href="{{ url_for(
+                'home',
+                location=search_location,
+                check_in=selected_check_in,
+                check_out=selected_check_out,
+                guests=selected_guests
+            ) }}"
+            class="back-link"
+        >
+
+            ← Back to all properties
+
+        </a>
+
+    </div>
+
+
+</main>
+
+
+<!-- ==================================================
+     MOBILE BOOKING BAR
+================================================== -->
+<div class="mobile-book-bar">
+    <div class="mobile-book-inner">
+        <div class="mobile-price">
+            <span class="mobile-price-label">Your price / day</span>
+            <span class="mobile-price-value">{% if selected_price is not none %}₹{{ "%.0f"|format(selected_price) }}{% else %}Select{% endif %}</span>
+        </div>
+        <button type="button" class="mobile-book-btn" onclick="openBookingModal()">Book</button>
+    </div>
+</div>
+
+<!-- ==================================================
+     BOOKING CONFIRMATION POPUP
+================================================== -->
+<div id="bookingModal" class="booking-modal" aria-hidden="true">
+    <div class="booking-modal-card" role="dialog" aria-modal="true" aria-labelledby="bookingModalTitle">
+        <div class="booking-modal-head">
+            <h2 id="bookingModalTitle">Confirm Your Booking</h2>
+            <button type="button" class="booking-modal-close" onclick="closeBookingModal()" aria-label="Close">×</button>
+        </div>
+        <div class="booking-modal-property"><strong>{{ property.property_name }}</strong><br><span>{{ property.location }}</span></div>
+
+        {% if current_user.is_authenticated %}
+        <form method="POST" action="{{ url_for('book_property', property_id=property.id) }}" id="propertyBookingConfirmForm">
+            <div class="booking-readonly-grid">
+                <div class="booking-readonly-item"><span class="booking-readonly-label">Check-in</span><span class="booking-readonly-value">{{ selected_check_in or 'Not selected' }}</span></div>
+                <div class="booking-readonly-item"><span class="booking-readonly-label">Check-out</span><span class="booking-readonly-value">{{ selected_check_out or 'Not selected' }}</span></div>
+                <div class="booking-readonly-item"><span class="booking-readonly-label">Guests</span><span class="booking-readonly-value">{% if selected_guests %}{{ selected_guests }} Guest{% if selected_guests|int > 1 %}s{% endif %}{% else %}Not selected{% endif %}</span></div>
+                <div class="booking-readonly-item"><span class="booking-readonly-label">Name</span><span class="booking-readonly-value">{{ current_user.name or 'Not available' }}</span></div>
+                <div class="booking-readonly-item"><span class="booking-readonly-label">Contact</span><span class="booking-readonly-value">{{ current_user.contact or 'Not available' }}</span></div>
+                <div class="booking-readonly-item"><span class="booking-readonly-label">Email</span><span class="booking-readonly-value">{{ current_user.email or 'Not available' }}</span></div>
+            </div>
+            <div class="booking-modal-summary">
+                <p><strong>Nights:</strong> {{ selected_nights if selected_nights is not none else '—' }}</p>
+                <p><strong>Price per day:</strong> {% if selected_price is not none %}₹{{ "%.2f"|format(selected_price) }}{% else %}Not configured{% endif %}</p>
+                <p><strong>Estimated total:</strong> {% if selected_total is not none %}₹{{ "%.2f"|format(selected_total) }}{% else %}Not available{% endif %}</p>
+            </div>
+            <input type="hidden" name="check_in" value="{{ selected_check_in }}">
+            <input type="hidden" name="check_out" value="{{ selected_check_out }}">
+            <input type="hidden" name="guests" value="{{ selected_guests }}">
+            <input type="hidden" name="customer_name" value="{{ current_user.name or '' }}">
+            <input type="hidden" name="customer_contact" value="{{ current_user.contact or '' }}">
+            <input type="hidden" name="customer_email" value="{{ current_user.email or '' }}">
+            <div class="booking-modal-note">These details are read-only. If anything is incorrect, close this popup and change the dates or guest count from the Home page before opening this property again.</div>
+            <button type="submit" class="whatsapp-submit">Continue to WhatsApp for Payment</button>
+        </form>
+        {% else %}
+        <div class="login-required-box">Please sign in or sign up before continuing with the booking. <a href="{{ url_for('login', next=request.full_path) }}">Sign in / Sign up</a></div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+/* ==========================================================
+   GOINN CUSTOM DATE PICKER
+   Fully custom calendar - no browser/Google/Apple calendar
+========================================================== */
+.goinn-date-input{
+    cursor:pointer !important;
+    background:#fff !important;
+    user-select:none;
+}
+
+.goinn-date-picker{
+    position:fixed;
+    z-index:2147483647;
+    width:360px;
+    max-width:calc(100vw - 32px);
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:18px;
+    box-shadow:0 20px 55px rgba(0,0,0,.20);
+    padding:16px;
+    display:none;
+    overflow:hidden;
+}
+
+.goinn-date-picker.show{display:block;}
+
+.goinn-calendar-head{
+    display:grid;
+    grid-template-columns:40px 1fr 40px;
+    align-items:center;
+    gap:8px;
+    margin-bottom:14px;
+}
+
+.goinn-calendar-title{
+    min-width:0;
+    text-align:center;
+    font-size:18px;
+    line-height:40px;
+    font-weight:800;
+    color:#111827;
+    white-space:nowrap;
+}
+
+.goinn-calendar-nav{
+    width:40px !important;
+    min-width:40px !important;
+    max-width:40px !important;
+    height:40px !important;
+    min-height:40px !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:0 !important;
+    border-radius:10px !important;
+    background:#f3f4f6 !important;
+    color:#111827 !important;
+    font-size:24px !important;
+    line-height:40px !important;
+    cursor:pointer !important;
+    box-shadow:none !important;
+}
+
+.goinn-calendar-nav:disabled{
+    opacity:.35;
+    cursor:not-allowed !important;
+}
+
+.goinn-calendar-weekdays,
+.goinn-calendar-grid{
+    width:100%;
+    display:grid !important;
+    grid-template-columns:repeat(7,minmax(0,1fr)) !important;
+    gap:5px !important;
+}
+
+.goinn-calendar-weekday{
+    min-width:0;
+    text-align:center;
+    font-size:11px;
+    line-height:30px;
+    font-weight:800;
+    color:#6b7280;
+}
+
+.goinn-calendar-day{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    height:40px !important;
+    min-height:40px !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:1px solid transparent !important;
+    border-radius:10px !important;
+    background:#f8fafc !important;
+    color:#111827 !important;
+    cursor:pointer !important;
+    font-family:inherit !important;
+    font-size:14px !important;
+    font-weight:700 !important;
+    line-height:40px !important;
+    box-shadow:none !important;
+}
+
+.goinn-calendar-day:hover:not(:disabled){
+    background:#e8f0ff !important;
+    border-color:#c7d7fe !important;
+}
+
+.goinn-calendar-day.today{
+    border-color:#2563eb !important;
+}
+
+.goinn-calendar-day.selected{
+    background:#2563eb !important;
+    border-color:#2563eb !important;
+    color:#fff !important;
+}
+
+.goinn-calendar-day.range{
+    background:#dbeafe !important;
+    border-color:#dbeafe !important;
+    color:#1e40af !important;
+}
+
+.goinn-calendar-day.disabled{
+    color:#c9cdd4 !important;
+    background:#f8fafc !important;
+    border-color:transparent !important;
+    cursor:not-allowed !important;
+}
+
+.goinn-calendar-day.empty{
+    background:transparent !important;
+    border-color:transparent !important;
+    cursor:default !important;
+}
+
+.goinn-calendar-hint{
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid #e5e7eb;
+    color:#6b7280;
+    font-size:12px;
+    line-height:18px;
+    text-align:center;
+}
+
+.goinn-calendar-clear{
+    width:100% !important;
+    height:40px !important;
+    min-height:40px !important;
+    margin:10px 0 0 !important;
+    padding:0 !important;
+    border:0 !important;
+    border-radius:10px !important;
+    background:#f3f4f6 !important;
+    color:#111827 !important;
+    font-family:inherit !important;
+    font-size:14px !important;
+    font-weight:700 !important;
+    cursor:pointer !important;
+    box-shadow:none !important;
+}
+
+.goinn-calendar-clear:hover{
+    background:#e5e7eb !important;
+}
+
+@media (max-width:600px){
+    .goinn-date-picker{
+        width:calc(100vw - 32px);
+        max-width:calc(100vw - 32px);
+        padding:14px;
+        border-radius:16px;
+    }
+
+    .goinn-calendar-head{
+        grid-template-columns:38px 1fr 38px;
+        gap:6px;
+        margin-bottom:12px;
+    }
+
+    .goinn-calendar-nav{
+        width:38px !important;
+        min-width:38px !important;
+        max-width:38px !important;
+        height:38px !important;
+        min-height:38px !important;
+        line-height:38px !important;
+    }
+
+    .goinn-calendar-title{
+        font-size:17px;
+        line-height:38px;
+    }
+
+    .goinn-calendar-weekdays,
+    .goinn-calendar-grid{
+        gap:4px !important;
+    }
+
+    .goinn-calendar-weekday{
+        line-height:28px;
+        font-size:10px;
+    }
+
+    .goinn-calendar-day{
+        height:38px !important;
+        min-height:38px !important;
+        line-height:38px !important;
+        border-radius:9px !important;
+        font-size:13px !important;
+    }
+}
+</style>
+<div id="goinnDatePicker" class="goinn-date-picker" role="dialog" aria-label="Goinn date picker">
+    <div class="goinn-calendar-head">
+        <button type="button" class="goinn-calendar-nav" id="goinnPrevMonth" aria-label="Previous month">‹</button>
+        <div class="goinn-calendar-title" id="goinnCalendarTitle"></div>
+        <button type="button" class="goinn-calendar-nav" id="goinnNextMonth" aria-label="Next month">›</button>
+    </div>
+
+    <div class="goinn-calendar-weekdays" aria-hidden="true">
+        <div class="goinn-calendar-weekday">Sun</div>
+        <div class="goinn-calendar-weekday">Mon</div>
+        <div class="goinn-calendar-weekday">Tue</div>
+        <div class="goinn-calendar-weekday">Wed</div>
+        <div class="goinn-calendar-weekday">Thu</div>
+        <div class="goinn-calendar-weekday">Fri</div>
+        <div class="goinn-calendar-weekday">Sat</div>
+    </div>
+
+    <div id="goinnCalendarGrid" class="goinn-calendar-grid"></div>
+
+    <div class="goinn-calendar-hint" id="goinnCalendarHint">Select a date</div>
+
+    <button type="button" class="goinn-calendar-clear" id="goinnClearDate">Clear</button>
+</div>
+
+<script>
+(function(){
+    const checkIn = document.getElementById("propertyCheckIn");
+    const checkOut = document.getElementById("propertyCheckOut");
+    const picker = document.getElementById("goinnDatePicker");
+
+    if (!checkIn || !checkOut || !picker) return;
+
+    const title = document.getElementById("goinnCalendarTitle");
+    const grid = document.getElementById("goinnCalendarGrid");
+    const hint = document.getElementById("goinnCalendarHint");
+    const prev = document.getElementById("goinnPrevMonth");
+    const next = document.getElementById("goinnNextMonth");
+    const clear = document.getElementById("goinnClearDate");
+
+    const todayText = "{{ today }}";
+    const tomorrowText = "{{ tomorrow }}";
+
+    let activeInput = null;
+    let viewDate = null;
+
+    function parseISO(value){
+        if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+        const parts = value.split("-").map(Number);
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+
+    function iso(date){
+        return date.getFullYear() + "-" +
+            String(date.getMonth() + 1).padStart(2,"0") + "-" +
+            String(date.getDate()).padStart(2,"0");
+    }
+
+    function startOfMonth(date){
+        return new Date(date.getFullYear(), date.getMonth(), 1);
+    }
+
+    function nextDay(value){
+        const date = parseISO(value);
+        if (!date) return tomorrowText;
+        date.setDate(date.getDate() + 1);
+        return iso(date);
+    }
+
+    function positionPicker(){
+        if (!activeInput) return;
+
+        const rect = activeInput.getBoundingClientRect();
+        const mobile = window.innerWidth <= 600;
+        const pickerWidth = mobile
+            ? window.innerWidth - 32
+            : Math.min(360, window.innerWidth - 32);
+
+        picker.style.width = pickerWidth + "px";
+
+        let left = mobile
+            ? 16
+            : rect.left;
+
+        left = Math.max(16, Math.min(left, window.innerWidth - pickerWidth - 16));
+
+        const pickerHeight = picker.offsetHeight || 390;
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const spaceAbove = rect.top;
+
+        let top;
+
+        if (spaceBelow >= pickerHeight + 10 || spaceBelow >= spaceAbove) {
+            top = rect.bottom + 8;
+        } else {
+            top = rect.top - pickerHeight - 8;
+        }
+
+        top = Math.max(8, Math.min(top, window.innerHeight - pickerHeight - 8));
+
+        picker.style.left = left + "px";
+        picker.style.top = top + "px";
+    }
+
+    function openPicker(input){
+        activeInput = input;
+
+        const selected = parseISO(input.value);
+        const fallback = parseISO(todayText) || new Date();
+        const base = selected || fallback;
+
+        viewDate = startOfMonth(base);
+
+        picker.classList.add("show");
+        render();
+
+        requestAnimationFrame(positionPicker);
+    }
+
+    function closePicker(){
+        picker.classList.remove("show");
+        activeInput = null;
+    }
+
+    function render(){
+        if (!activeInput || !viewDate) return;
+
+        const year = viewDate.getFullYear();
+        const month = viewDate.getMonth();
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        title.textContent = viewDate.toLocaleString("en-US", {
+            month:"long",
+            year:"numeric"
+        });
+
+        grid.innerHTML = "";
+
+        const minDate = activeInput === checkOut
+            ? (checkIn.value ? nextDay(checkIn.value) : tomorrowText)
+            : todayText;
+
+        for (let i = 0; i < firstDay; i++) {
+            const empty = document.createElement("div");
+            empty.className = "goinn-calendar-day empty";
+            empty.setAttribute("aria-hidden", "true");
+            grid.appendChild(empty);
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(year, month, day);
+            const value = iso(date);
+            const button = document.createElement("button");
+
+            button.type = "button";
+            button.className = "goinn-calendar-day";
+            button.textContent = day;
+            button.setAttribute("aria-label", value);
+
+            if (value === todayText) button.classList.add("today");
+            if (value === checkIn.value || value === checkOut.value) {
+                button.classList.add("selected");
+            }
+
+            if (checkIn.value && checkOut.value &&
+                value > checkIn.value && value < checkOut.value) {
+                button.classList.add("range");
+            }
+
+            if (value < minDate) {
+                button.disabled = true;
+                button.classList.add("disabled");
+            } else {
+                button.addEventListener("click", function(){
+                    if (activeInput === checkIn) {
+                        checkIn.value = value;
+
+                        if (checkOut.value && checkOut.value <= checkIn.value) {
+                            checkOut.value = "";
+                        }
+
+                        checkIn.dispatchEvent(new Event("change", {bubbles:true}));
+
+                        // Immediately move to checkout selection.
+                        openPicker(checkOut);
+                    } else {
+                        if (value <= checkIn.value) return;
+
+                        checkOut.value = value;
+                        checkOut.dispatchEvent(new Event("change", {bubbles:true}));
+                        closePicker();
+                    }
+                });
+            }
+
+            grid.appendChild(button);
+        }
+
+        const minMonth = startOfMonth(parseISO(todayText) || new Date());
+        const currentMonth = startOfMonth(viewDate);
+        prev.disabled = currentMonth <= minMonth;
+
+        hint.textContent = activeInput === checkIn
+            ? "Select check-in date"
+            : (checkIn.value ? "Select check-out date" : "Select check-in date first");
+
+        requestAnimationFrame(positionPicker);
+    }
+
+    checkIn.addEventListener("click", function(){
+        openPicker(checkIn);
+    });
+
+    checkOut.addEventListener("click", function(){
+        if (!checkIn.value) {
+            openPicker(checkIn);
+            return;
+        }
+        openPicker(checkOut);
+    });
+
+    checkIn.addEventListener("change", function(){
+        if (checkOut.value && checkOut.value <= checkIn.value) {
+            checkOut.value = "";
+        }
+    });
+
+    checkOut.addEventListener("change", function(){
+        if (checkIn.value && checkOut.value <= checkIn.value) {
+            checkOut.value = "";
+        }
+    });
+
+    prev.addEventListener("click", function(event){
+        event.preventDefault();
+        event.stopPropagation();
+
+        const candidate = new Date(
+            viewDate.getFullYear(),
+            viewDate.getMonth() - 1,
+            1
+        );
+
+        const minMonth = startOfMonth(parseISO(todayText) || new Date());
+
+        if (candidate >= minMonth) {
+            viewDate = candidate;
+            render();
+        }
+    });
+
+    next.addEventListener("click", function(event){
+        event.preventDefault();
+        event.stopPropagation();
+
+        viewDate = new Date(
+            viewDate.getFullYear(),
+            viewDate.getMonth() + 1,
+            1
+        );
+
+        render();
+    });
+
+    clear.addEventListener("click", function(event){
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (activeInput === checkIn) {
+            checkIn.value = "";
+            checkOut.value = "";
+        } else {
+            checkOut.value = "";
+        }
+
+        closePicker();
+    });
+
+    document.addEventListener("click", function(event){
+        if (!picker.classList.contains("show")) return;
+
+        if (!picker.contains(event.target) &&
+            event.target !== checkIn &&
+            event.target !== checkOut) {
+            closePicker();
+        }
+    });
+
+    window.addEventListener("resize", function(){
+        if (picker.classList.contains("show")) positionPicker();
+    });
+
+    window.addEventListener("scroll", function(){
+        if (picker.classList.contains("show")) positionPicker();
+    }, true);
+})();
+</script>
+<script>
+(function(){
+    const checkIn=document.getElementById('propertyCheckIn');
+    const checkOut=document.getElementById('propertyCheckOut');
+    const guests=document.getElementById('propertyGuests');
+    const error=document.getElementById('selectionError');
+    let timer=null;
+    function showError(msg){ if(error) error.textContent=msg||''; }
+    async function applySelection(){
+        if(!checkIn.value || !checkOut.value) return;
+        if(checkOut.value<=checkIn.value){showError('Check-out must be after check-in.');return;}
+        const guestCount=parseInt(guests.value,10);
+        const maxGuests={{ property.max_guests if property.max_guests else 0 }};
+        if(maxGuests>0 && guestCount>maxGuests){showError('This property allows a maximum of '+maxGuests+' guests.');return;}
+        showError('');
+        try{
+            const url=`{{ url_for('property_availability_check', property_id=property.id) }}?check_in=${encodeURIComponent(checkIn.value)}&check_out=${encodeURIComponent(checkOut.value)}&guests=${guestCount}`;
+            const response=await fetch(url,{headers:{'X-Requested-With':'XMLHttpRequest'}});
+            const data=await response.json();
+            if(!data.available){showError('No availability for the selected dates. Please choose different dates.');return;}
+            const current=new URL(window.location.href);
+            current.searchParams.set('check_in',checkIn.value);
+            current.searchParams.set('check_out',checkOut.value);
+            current.searchParams.set('guests',String(guestCount));
+            window.location.href=current.toString();
+        }catch(e){showError('Unable to check availability right now. Please try again.');}
+    }
+    function schedule(){clearTimeout(timer);timer=setTimeout(applySelection,180);}
+    checkIn.addEventListener('change',function(){if(checkIn.value&&checkOut.value&&checkOut.value<=checkIn.value)checkOut.value=''; if(checkIn.value&&!checkOut.value)showError('Please select check-out date.');else schedule();});
+    checkOut.addEventListener('change',schedule);
+    guests.addEventListener('change',schedule);
+})();
+
+function openBookingModal(){const m=document.getElementById('bookingModal');if(!m)return;m.classList.add('show');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}
+function closeBookingModal(){const m=document.getElementById('bookingModal');if(!m)return;m.classList.remove('show');m.setAttribute('aria-hidden','true');document.body.style.overflow='';}
+document.getElementById('bookingModal')?.addEventListener('click',function(e){if(e.target===this)closeBookingModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeBookingModal();});
+</script>
+
+</body>
+
+</html>
