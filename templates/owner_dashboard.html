@@ -922,6 +922,34 @@
 .owner-upload-preview{width:100%;height:150px;object-fit:cover;border-radius:10px;margin:8px 0;}
 .owner-image-file-note{display:block;font-size:11px;color:#777;margin:4px 0 8px;word-break:break-word;}
 </style>
+
+<style id="modify-property-button-style">
+.modify-property-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    text-decoration:none;
+    background:#2563eb;
+    color:#fff;
+    padding:10px 15px;
+    border-radius:9px;
+    font-size:13px;
+    font-weight:800;
+    white-space:nowrap;
+    transition:background .2s, transform .1s;
+    margin-top:2px;
+}
+.modify-property-btn:hover{background:#1d4ed8}
+.modify-property-btn:active{transform:scale(.98)}
+@media(max-width:700px){
+    .modify-property-btn{
+        width:100%;
+        margin-top:2px;
+        text-align:center;
+    }
+}
+</style>
+
 </head>
 
 
@@ -1143,6 +1171,15 @@
 
 
                 </div>
+
+                {% if property.status == "pending" %}
+                    <a
+                        href="{{ url_for('modify_property', property_id=property.id) }}"
+                        class="modify-property-btn"
+                    >
+                        ✏️ Modify Property
+                    </a>
+                {% endif %}
 
 
                 <!-- ======================================
