@@ -941,6 +941,13 @@ select{
             </span>
         </button>
 
+        <button class="tab-button" data-tab="owner-types">
+            Owner Types
+            <span class="count">
+                {{ properties|selectattr('status','equalto','approved')|list|length }}
+            </span>
+        </button>
+
         <button class="tab-button" data-tab="bookings">
             Bookings
             <span class="count">
@@ -1988,6 +1995,306 @@ select{
                     </div>
 
                 {% endfor %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ==================================================
+         OWNER TYPES
+    =================================================== -->
+
+    <section id="owner-types" class="tab-content">
+
+        <div class="section-card">
+
+            <div class="section-header">
+                <div>
+                    <h2>Owner Types</h2>
+                    <span>Manage approved properties by availability type.</span>
+                </div>
+            </div>
+
+            <div class="subtabs">
+
+                <button class="subtab active" data-sub="owner-type1">
+                    Type 1
+                    <span class="count">
+                        {{ properties
+                           |selectattr('status','equalto','approved')
+                           |selectattr('availability_type','equalto','type1')
+                           |list|length }}
+                    </span>
+                </button>
+
+                <button class="subtab" data-sub="owner-type2">
+                    Type 2
+                    <span class="count">
+                        {{ properties
+                           |selectattr('status','equalto','approved')
+                           |selectattr('availability_type','equalto','type2')
+                           |list|length }}
+                    </span>
+                </button>
+
+                <button class="subtab" data-sub="owner-type3">
+                    Type 3
+                    <span class="count">
+                        {{ properties
+                           |selectattr('status','equalto','approved')
+                           |selectattr('availability_type','equalto','type3')
+                           |list|length }}
+                    </span>
+                </button>
+
+            </div>
+
+            <div id="owner-type1" class="subcontent active">
+
+                <div class="section-header">
+                    <h2>Type 1 — Owner Managed</h2>
+                    <span>Owner manages availability from the website.</span>
+                </div>
+
+                <div class="list">
+
+                    {% for property in properties
+                        if property.status == 'approved'
+                        and (property.availability_type or 'type1') == 'type1'
+                    %}
+
+                        <div class="card">
+
+                            <div class="top">
+
+                                <div>
+                                    <div class="name">
+                                        {{ property.property_name }}
+                                    </div>
+
+                                    <div class="muted">
+                                        📍 {{ property.location }}
+                                    </div>
+                                </div>
+
+                                <span class="badge type1">TYPE 1</span>
+
+                            </div>
+
+                            <div class="grid">
+
+                                <div class="box">
+                                    <div class="label">Owner</div>
+                                    <div class="value">
+                                        {{ property.owner.name if property.owner else '-' }}
+                                    </div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Contact</div>
+                                    <div class="value">
+                                        {{ property.owner.contact if property.owner and property.owner.contact else '-' }}
+                                    </div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Location</div>
+                                    <div class="value">
+                                        {{ property.location }}
+                                    </div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Maximum Guests</div>
+                                    <div class="value">
+                                        {{ property.max_guests or 'Not configured' }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="empty">No approved Type 1 properties.</div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            <div id="owner-type2" class="subcontent">
+
+                <div class="section-header">
+                    <h2>Type 2 — Goinn Managed Calendar</h2>
+                    <span>Admin manages availability for owners who do not use the website.</span>
+                </div>
+
+                <div class="list">
+
+                    {% for property in properties
+                        if property.status == 'approved'
+                        and property.availability_type == 'type2'
+                    %}
+
+                        <div class="card">
+
+                            <div class="top">
+
+                                <div>
+                                    <div class="name">
+                                        {{ property.property_name }}
+                                    </div>
+
+                                    <div class="muted">
+                                        📍 {{ property.location }}
+                                    </div>
+                                </div>
+
+                                <span class="badge type2">TYPE 2</span>
+
+                            </div>
+
+                            <div class="grid">
+
+                                <div class="box">
+                                    <div class="label">Owner</div>
+                                    <div class="value">
+                                        {{ property.owner.name if property.owner else '-' }}
+                                    </div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Contact</div>
+                                    <div class="value">
+                                        {{ property.owner.contact if property.owner and property.owner.contact else '-' }}
+                                    </div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Location</div>
+                                    <div class="value">
+                                        {{ property.location }}
+                                    </div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Maximum Guests</div>
+                                    <div class="value">
+                                        {{ property.max_guests or 'Not configured' }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="actions">
+
+                                <a
+                                    class="btn blue"
+                                    href="{{ url_for('admin_type2_calendar', property_id=property.id) }}"
+                                >
+                                    📅 Manage Calendar
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="empty">No approved Type 2 properties.</div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            <div id="owner-type3" class="subcontent">
+
+                <div class="section-header">
+                    <h2>Type 3 — Owner Confirmation</h2>
+                    <span>Goinn contacts the owner before confirming customer availability.</span>
+                </div>
+
+                <div class="list">
+
+                    {% for property in properties
+                        if property.status == 'approved'
+                        and property.availability_type == 'type3'
+                    %}
+
+                        <div class="card">
+
+                            <div class="top">
+
+                                <div>
+                                    <div class="name">
+                                        {{ property.property_name }}
+                                    </div>
+
+                                    <div class="muted">
+                                        📍 {{ property.location }}
+                                    </div>
+                                </div>
+
+                                <span class="badge type3">TYPE 3</span>
+
+                            </div>
+
+                            <div class="grid">
+
+                                <div class="box">
+                                    <div class="label">Owner</div>
+                                    <div class="value">
+                                        {{ property.owner.name if property.owner else '-' }}
+                                    </div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Contact</div>
+                                    <div class="value">
+                                        {{ property.owner.contact if property.owner and property.owner.contact else '-' }}
+                                    </div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Location</div>
+                                    <div class="value">
+                                        {{ property.location }}
+                                    </div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Pending Requests</div>
+                                    <div class="value">
+                                        {{ bookings
+                                           |selectattr('property_id','equalto',property.id)
+                                           |selectattr('status','equalto','availability_requested')
+                                           |list|length }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="note">
+                                Type 3 availability requests are handled from
+                                <strong>Bookings → Pending Bookings</strong>.
+                            </div>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="empty">No approved Type 3 properties.</div>
+
+                    {% endfor %}
+
+                </div>
 
             </div>
 
