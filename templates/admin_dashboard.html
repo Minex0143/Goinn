@@ -464,6 +464,228 @@ body{
     margin-top:15px;
 }
 
+.reject-booking-form{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    min-width:220px;
+}
+
+.rejection-note{
+    border-left:4px solid #dc2626;
+    background:#fff5f5;
+}
+
+.property-booking-search{
+    margin-top:18px;
+}
+
+.search-label{
+    display:block;
+    font-size:12px;
+    font-weight:800;
+    color:#555;
+    margin-bottom:7px;
+}
+
+.property-booking-results{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    margin-top:8px;
+    max-height:280px;
+    overflow:auto;
+}
+
+.property-booking-result{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:12px;
+    border:1px solid #e1e5eb;
+    border-radius:10px;
+    background:#fff;
+}
+
+.property-booking-result-name{
+    font-weight:800;
+}
+
+.property-booking-result-location{
+    color:#777;
+    font-size:12px;
+    margin-top:3px;
+}
+
+.property-booking-selected{
+    margin-top:20px;
+    border-top:1px solid #e5e7eb;
+    padding-top:18px;
+}
+
+.property-booking-toolbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+}
+
+.property-booking-title{
+    font-size:20px;
+    font-weight:900;
+}
+
+.calendar-legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin:12px 0;
+    font-size:11px;
+    color:#555;
+}
+
+.calendar-legend span{
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+
+.legend-dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    display:inline-block;
+}
+
+.legend-dot.approved-booking{background:#16a34a}
+.legend-dot.pending-booking{background:#f59e0b}
+.legend-dot.owner-block{background:#dc2626}
+.legend-dot.goinn-block{background:#7c3aed}
+
+.calendar-toolbar{
+    display:grid;
+    grid-template-columns:42px 1fr 42px;
+    gap:10px;
+    align-items:center;
+    margin:12px 0;
+}
+
+.calendar-nav{
+    height:38px;
+    border:0;
+    border-radius:9px;
+    background:#111827;
+    color:#fff;
+    font-size:25px;
+}
+
+.calendar-month-title{
+    text-align:center;
+    font-weight:900;
+}
+
+.calendar-weekdays,
+.property-booking-calendar{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:5px;
+}
+
+.calendar-weekdays div{
+    text-align:center;
+    font-size:10px;
+    font-weight:800;
+    color:#777;
+    padding:6px 2px;
+}
+
+.property-calendar-day{
+    min-height:78px;
+    border:1px solid #e5e7eb;
+    border-radius:8px;
+    background:#fff;
+    padding:7px;
+    cursor:pointer;
+}
+
+.property-calendar-day.empty{
+    border-color:transparent;
+    background:transparent;
+    cursor:default;
+}
+
+.property-calendar-day.today{
+    outline:2px solid #2563eb;
+}
+
+.property-calendar-day .day-number{
+    font-weight:900;
+    font-size:12px;
+    margin-bottom:7px;
+}
+
+.property-calendar-day .day-status{
+    font-size:9px;
+    font-weight:800;
+    line-height:1.25;
+}
+
+.property-calendar-day.approved-booking{
+    background:#ecfdf3;
+    border-color:#86efac;
+}
+
+.property-calendar-day.pending-booking{
+    background:#fffbeb;
+    border-color:#fcd34d;
+}
+
+.property-calendar-day.owner-blocked{
+    background:#fef2f2;
+    border-color:#fca5a5;
+}
+
+.property-calendar-day.goinn-blocked{
+    background:#f5f3ff;
+    border-color:#c4b5fd;
+}
+
+.property-calendar-day.conflict{
+    background:#fff1f2;
+    border-color:#fb7185;
+}
+
+.booking-detail-card{
+    margin-top:12px;
+    border:1px solid #e5e7eb;
+    border-radius:10px;
+    padding:12px;
+    background:#fafafa;
+}
+
+@media(max-width:700px){
+    .property-booking-result,
+    .property-booking-toolbar{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .property-calendar-day{
+        min-height:62px;
+        padding:5px;
+    }
+
+    .property-calendar-day .day-status{
+        font-size:8px;
+    }
+
+    .reject-booking-form{
+        width:100%;
+    }
+}
+
+
 .approved-edit-actions{
     margin:14px 0 18px;
     padding:12px;
@@ -952,6 +1174,13 @@ select{
             Bookings
             <span class="count">
                 {{ bookings|length }}
+            </span>
+        </button>
+
+        <button class="tab-button" data-tab="property-bookings">
+            Property Bookings
+            <span class="count">
+                {{ properties|selectattr('status','equalto','approved')|list|length }}
             </span>
         </button>
 
@@ -2511,6 +2740,13 @@ select{
                 </span>
             </button>
 
+            <button class="subtab" data-sub="rejected-bookings">
+                Rejected Bookings
+                <span class="count">
+                    {{ bookings|selectattr('status','equalto','rejected')|list|length }}
+                </span>
+            </button>
+
         </div>
 
         <div id="pending-bookings" class="subcontent active">
@@ -2614,11 +2850,21 @@ select{
                                     <form
                                         method="POST"
                                         action="{{ url_for('type3_not_available', booking_id=booking.id) }}"
+                                        class="reject-booking-form"
                                     >
+                                        <input
+                                            class="input"
+                                            type="text"
+                                            name="rejection_reason"
+                                            placeholder="Purpose / reason for not available"
+                                            maxlength="2000"
+                                            required
+                                        >
+
                                         <button
                                             class="btn red"
                                             type="submit"
-                                            onclick="return confirm('Mark this availability request as not available?')"
+                                            onclick="return confirm('Mark this request as not available with the entered reason?')"
                                         >
                                             ✕ Not Available
                                         </button>
@@ -2646,11 +2892,21 @@ select{
                                     <form
                                         method="POST"
                                         action="{{ url_for('reject_booking', booking_id=booking.id) }}"
+                                        class="reject-booking-form"
                                     >
+                                        <input
+                                            class="input"
+                                            type="text"
+                                            name="rejection_reason"
+                                            placeholder="Purpose / reason for rejection"
+                                            maxlength="2000"
+                                            required
+                                        >
+
                                         <button
                                             class="btn red"
                                             type="submit"
-                                            onclick="return confirm('Reject this booking?')"
+                                            onclick="return confirm('Reject this booking with the entered reason?')"
                                         >
                                             ✕ Reject Booking
                                         </button>
@@ -2754,6 +3010,232 @@ select{
                     {% endfor %}
 
                 </div>
+
+            </div>
+
+        </div>
+
+        <div id="rejected-bookings" class="subcontent">
+
+            <div class="section-card">
+
+                <div class="section-header">
+                    <h2>Rejected Bookings</h2>
+                    <span>Rejected bookings with recorded reason</span>
+                </div>
+
+                <div class="list">
+
+                    {% for booking in bookings if booking.status == 'rejected' %}
+
+                        <div class="booking-card">
+
+                            <div class="top">
+
+                                <div>
+                                    <div class="name">
+                                        Booking #{{ booking.id }}
+                                    </div>
+
+                                    <div class="muted">
+                                        {{ booking.property.property_name if booking.property else 'N/A' }}
+                                    </div>
+                                </div>
+
+                                <span class="badge rejected">
+                                    REJECTED
+                                </span>
+
+                            </div>
+
+                            <div class="grid">
+
+                                <div class="box">
+                                    <div class="label">Customer</div>
+                                    <div class="value">{{ booking.customer_name }}</div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Dates</div>
+                                    <div class="value">
+                                        {{ booking.check_in }} → {{ booking.check_out }}
+                                    </div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Guests</div>
+                                    <div class="value">{{ booking.guests }}</div>
+                                </div>
+
+                                <div class="box">
+                                    <div class="label">Total</div>
+                                    <div class="value">
+                                        ₹{{ "%.2f"|format(booking.total_price) }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="note rejection-note">
+                                <strong>Purpose / Rejection Reason</strong><br>
+                                {{ booking.rejection_reason or 'No reason recorded.' }}
+                            </div>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="empty">
+                            No rejected bookings.
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ==================================================
+         PROPERTY BOOKINGS
+    =================================================== -->
+
+    <section id="property-bookings" class="tab-content">
+
+        <div class="section-card">
+
+            <div class="section-header">
+                <div>
+                    <h2>Property Bookings</h2>
+                    <span>
+                        Search a resort and view customer bookings,
+                        owner blocks and Goinn blocks.
+                    </span>
+                </div>
+            </div>
+
+            <div class="property-booking-search">
+
+                <label class="search-label">
+                    Search Resort / Property
+                </label>
+
+                <input
+                    id="propertyBookingSearch"
+                    class="input"
+                    type="search"
+                    placeholder="Enter resort name..."
+                    autocomplete="off"
+                >
+
+                <div
+                    id="propertyBookingResults"
+                    class="property-booking-results"
+                ></div>
+
+            </div>
+
+            <div
+                id="propertyBookingSelected"
+                class="property-booking-selected"
+                style="display:none;"
+            >
+
+                <div class="property-booking-toolbar">
+
+                    <div>
+                        <div
+                            id="propertyBookingName"
+                            class="property-booking-title"
+                        ></div>
+
+                        <div
+                            id="propertyBookingLocation"
+                            class="muted"
+                        ></div>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="btn gray"
+                        onclick="clearPropertyBookingSelection()"
+                    >
+                        Change Property
+                    </button>
+
+                </div>
+
+                <div class="calendar-legend">
+
+                    <span>
+                        <i class="legend-dot approved-booking"></i>
+                        Approved Booking
+                    </span>
+
+                    <span>
+                        <i class="legend-dot pending-booking"></i>
+                        Customer Request
+                    </span>
+
+                    <span>
+                        <i class="legend-dot owner-block"></i>
+                        Owner Blocked
+                    </span>
+
+                    <span>
+                        <i class="legend-dot goinn-block"></i>
+                        Goinn / Booking Blocked
+                    </span>
+
+                </div>
+
+                <div class="calendar-toolbar">
+
+                    <button
+                        type="button"
+                        class="calendar-nav"
+                        onclick="changePropertyBookingMonth(-1)"
+                    >
+                        ‹
+                    </button>
+
+                    <div
+                        id="propertyBookingMonthTitle"
+                        class="calendar-month-title"
+                    ></div>
+
+                    <button
+                        type="button"
+                        class="calendar-nav"
+                        onclick="changePropertyBookingMonth(1)"
+                    >
+                        ›
+                    </button>
+
+                </div>
+
+                <div class="calendar-weekdays">
+                    <div>Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                </div>
+
+                <div
+                    id="propertyBookingCalendar"
+                    class="property-booking-calendar"
+                ></div>
+
+                <div
+                    id="propertyBookingDetails"
+                    class="property-booking-details"
+                ></div>
 
             </div>
 
@@ -3723,150 +4205,120 @@ function toggleMethod(){
     }
 }
 
-function activateMainTab(tabId){
+const propertyBookingProperties = [
+{% for property in properties if property.status == 'approved' %}
+    {
+        id: {{ property.id }},
+        name: {{ property.property_name|tojson }},
+        location: {{ property.location|tojson }}
+    },
+{% endfor %}
+];
 
-    const button = document.querySelector(
-        '.tab-button[data-tab="' + tabId + '"]'
-    );
+let propertyBookingSelectedId = null;
+let propertyBookingYear = new Date().getFullYear();
+let propertyBookingMonth = new Date().getMonth() + 1;
+let propertyBookingCalendarData = null;
 
-    const content = document.getElementById(tabId);
-
-    if(!button || !content){
-        return false;
-    }
-
-    document
-        .querySelectorAll(".tab-button")
-        .forEach(x => x.classList.remove("active"));
-
-    document
-        .querySelectorAll(".tab-content")
-        .forEach(x => x.classList.remove("active"));
-
-    button.classList.add("active");
-    content.classList.add("active");
-
-    localStorage.setItem("goinn_admin_active_tab", tabId);
-
-    return true;
+function escapeHtmlPropertyBooking(value){
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
-document
-    .querySelectorAll(".tab-button")
-    .forEach(button => {
+function renderPropertyBookingResults(){
 
-        button.addEventListener("click", () => {
-            activateMainTab(button.dataset.tab);
-        });
+    const input =
+        document.getElementById("propertyBookingSearch");
 
+    const results =
+        document.getElementById("propertyBookingResults");
+
+    if(!input || !results){
+        return;
+    }
+
+    const query =
+        (input.value || "").trim().toLowerCase();
+
+    results.innerHTML = "";
+
+    const matches =
+        propertyBookingProperties
+            .filter(property =>
+                !query
+                ||
+                property.name.toLowerCase().includes(query)
+                ||
+                property.location.toLowerCase().includes(query)
+            )
+            .slice(0, 20);
+
+    if(!matches.length){
+
+        results.innerHTML =
+            '<div class="empty">No approved property found.</div>';
+
+        return;
+    }
+
+    matches.forEach(property => {
+
+        const row =
+            document.createElement("div");
+
+        row.className =
+            "property-booking-result";
+
+        row.innerHTML = `
+            <div>
+                <div class="property-booking-result-name">
+                    ${escapeHtmlPropertyBooking(property.name)}
+                </div>
+                <div class="property-booking-result-location">
+                    📍 ${escapeHtmlPropertyBooking(property.location)}
+                </div>
+            </div>
+
+            <button
+                type="button"
+                class="btn blue"
+                onclick="selectPropertyBooking(${property.id})"
+            >
+                View Calendar
+            </button>
+        `;
+
+        results.appendChild(row);
     });
-
-const requestedTab =
-    new URLSearchParams(window.location.search).get("tab");
-
-const savedTab =
-    localStorage.getItem("goinn_admin_active_tab");
-
-if(requestedTab && activateMainTab(requestedTab)){
-    // URL-selected tab has priority.
-}else if(savedTab){
-    activateMainTab(savedTab);
 }
 
-document
-    .querySelectorAll(".subtab")
-    .forEach(button => {
+async function selectPropertyBooking(propertyId){
 
-        button.addEventListener("click", () => {
+    const property =
+        propertyBookingProperties.find(
+            item => item.id === Number(propertyId)
+        );
 
-            const parent = button.closest(".tab-content");
-
-            parent
-                .querySelectorAll(".subtab")
-                .forEach(x => x.classList.remove("active"));
-
-            parent
-                .querySelectorAll(".subcontent")
-                .forEach(x => x.classList.remove("active"));
-
-            button.classList.add("active");
-
-            parent
-                .querySelector("#" + button.dataset.sub)
-                .classList.add("active");
-        });
-
-    });
-
-document
-    .querySelectorAll('input[name="pricing_method"]')
-    .forEach(radio => {
-        radio.addEventListener("change", toggleMethod);
-    });
-
-maxInput.addEventListener("change", () => {
-
-    if(selected("pricing_method") === "individual"){
-        generateIndividual();
+    if(!property){
+        return;
     }
 
-});
+    propertyBookingSelectedId = property.id;
+    propertyBookingYear = new Date().getFullYear();
+    propertyBookingMonth = new Date().getMonth() + 1;
 
-window.addEventListener("click", event => {
+    document.getElementById(
+        "propertyBookingName"
+    ).textContent = property.name;
 
-    const editPropertyModal =
-        document.getElementById("editPropertyModal");
+    document.getElementById(
+        "propertyBookingLocation"
+    ).textContent = "📍 " + property.location;
 
-    if(event.target === editPropertyModal){
-        closeEditProperty();
-    }
-
-    if(event.target === imagePreviewModal){
-        closeImagePreview();
-    }
-
-    if(event.target === propertyModal){
-        closePropertyModal();
-    }
-
-    if(event.target === rejectedModal){
-        closeRejectedModal();
-    }
-
-    if(event.target === pendingModal){
-        closePendingModal();
-    }
-
-    if(event.target === priceModal){
-        closePriceModal();
-    }
-
-});
-
-toggleMethod();
-
-document.addEventListener("keydown", event => {
-
-    if(event.key === "Escape"){
-
-        if(document.getElementById("editPropertyModal").classList.contains("show")){
-            closeEditProperty();
-        }else if(imagePreviewModal.classList.contains("show")){
-            closeImagePreview();
-        }else if(priceModal.classList.contains("show")){
-            closePriceModal();
-        }else if(pendingModal.classList.contains("show")){
-            closePendingModal();
-        }else if(rejectedModal.classList.contains("show")){
-            closeRejectedModal();
-        }else if(propertyModal.classList.contains("show")){
-            closePropertyModal();
-        }
-
-    }
-
-});
-</script>
-
-</body>
-</html>
+    document.getElementById(
+        "propertyBookingSelect
+Preview truncated for large file
