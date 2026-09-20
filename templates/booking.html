@@ -323,14 +323,11 @@
             </label>
 
 
-            <input
-                type="date"
-                id="check_in"
-                name="check_in"
+            <input type="text" id="check_in" name="check_in"
                 min="{{ today }}"
                 value="{{ selected_check_in or '' }}"
                 required
-            >
+             readonly autocomplete="off" class="goinn-date-input" placeholder="Select check-in date">
 
 
             <small class="date-note">
@@ -347,14 +344,11 @@
             </label>
 
 
-            <input
-                type="date"
-                id="check_out"
-                name="check_out"
+            <input type="text" id="check_out" name="check_out"
                 min="{{ tomorrow }}"
                 value="{{ selected_check_out or '' }}"
                 required
-            >
+             readonly autocomplete="off" class="goinn-date-input" placeholder="Select check-out date">
 
 
             <small class="date-note">
@@ -1106,6 +1100,314 @@
 
 </script>
 
+
+
+<style>
+.goinn-date-input{
+    cursor:pointer !important;
+    background:#fff !important;
+}
+.goinn-date-picker{
+    position:fixed;
+    z-index:99999;
+    width:min(360px,calc(100vw - 24px));
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:16px;
+    box-shadow:0 15px 45px rgba(0,0,0,.18);
+    padding:16px;
+    display:none;
+}
+.goinn-date-picker.show{display:block}
+.goinn-calendar-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:12px;
+}
+.goinn-calendar-title{
+    flex:1;
+    text-align:center;
+    font-size:17px;
+    font-weight:800;
+}
+.goinn-calendar-nav{
+    width:38px;
+    height:38px;
+    border:0;
+    border-radius:9px;
+    background:#f3f4f6;
+    cursor:pointer;
+    font-size:20px;
+}
+.goinn-calendar-weekdays,
+.goinn-calendar-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:4px;
+}
+.goinn-calendar-weekday{
+    text-align:center;
+    font-size:11px;
+    font-weight:800;
+    color:#6b7280;
+    padding:7px 0;
+}
+.goinn-calendar-day{
+    min-height:40px;
+    border:0;
+    border-radius:9px;
+    background:#f9fafb;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:700;
+}
+.goinn-calendar-day:hover:not(:disabled){background:#e0f2fe}
+.goinn-calendar-day.today{box-shadow:inset 0 0 0 2px #2563eb}
+.goinn-calendar-day.selected{background:#2563eb;color:#fff}
+.goinn-calendar-day.range{background:#dbeafe;color:#1e40af}
+.goinn-calendar-day.disabled{
+    color:#c7cbd1;
+    background:#f9fafb;
+    cursor:not-allowed;
+}
+.goinn-calendar-day.empty{
+    background:transparent;
+    cursor:default;
+}
+.goinn-calendar-hint{
+    margin-top:12px;
+    padding-top:10px;
+    border-top:1px solid #eee;
+    color:#6b7280;
+    font-size:11px;
+    text-align:center;
+}
+.goinn-calendar-clear{
+    width:100%;
+    margin-top:10px;
+    padding:9px;
+    border:0;
+    border-radius:8px;
+    background:#f3f4f6;
+    cursor:pointer;
+    font-weight:700;
+}
+</style>
+
+<div id="goinnDatePicker" class="goinn-date-picker">
+    <div class="goinn-calendar-head">
+        <button type="button" class="goinn-calendar-nav" id="goinnPrevMonth">‹</button>
+        <div class="goinn-calendar-title" id="goinnCalendarTitle"></div>
+        <button type="button" class="goinn-calendar-nav" id="goinnNextMonth">›</button>
+    </div>
+
+    <div class="goinn-calendar-weekdays">
+        <div class="goinn-calendar-weekday">Sun</div>
+        <div class="goinn-calendar-weekday">Mon</div>
+        <div class="goinn-calendar-weekday">Tue</div>
+        <div class="goinn-calendar-weekday">Wed</div>
+        <div class="goinn-calendar-weekday">Thu</div>
+        <div class="goinn-calendar-weekday">Fri</div>
+        <div class="goinn-calendar-weekday">Sat</div>
+    </div>
+
+    <div id="goinnCalendarGrid" class="goinn-calendar-grid"></div>
+
+    <div class="goinn-calendar-hint" id="goinnCalendarHint">
+        Select a date
+    </div>
+
+    <button type="button" class="goinn-calendar-clear" id="goinnClearDate">
+        Clear
+    </button>
+</div>
+
+<script>
+(function(){
+    const checkIn=document.getElementById("check_in");
+    const checkOut=document.getElementById("check_out");
+    if(!checkIn || !checkOut) return;
+
+    const picker=document.getElementById("goinnDatePicker");
+    const title=document.getElementById("goinnCalendarTitle");
+    const grid=document.getElementById("goinnCalendarGrid");
+    const hint=document.getElementById("goinnCalendarHint");
+    const prev=document.getElementById("goinnPrevMonth");
+    const next=document.getElementById("goinnNextMonth");
+    const clear=document.getElementById("goinnClearDate");
+
+    const todayText="{{ today }}";
+    const tomorrowText="{{ tomorrow }}";
+    let activeInput=null;
+    let viewDate=null;
+
+    function parseISO(v){
+        if(!v || !/^\\d{4}-\\d{2}-\\d{2}$/.test(v)) return null;
+        const p=v.split("-");
+        return new Date(Number(p[0]),Number(p[1])-1,Number(p[2]));
+    }
+
+    function iso(d){
+        return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+    }
+
+    function nextDay(v){
+        const d=parseISO(v);
+        if(!d) return tomorrowText;
+        d.setDate(d.getDate()+1);
+        return iso(d);
+    }
+
+    function positionPicker(){
+        if(!activeInput) return;
+        const r=activeInput.getBoundingClientRect();
+        const w=Math.min(360,window.innerWidth-24);
+        let left=Math.max(12,Math.min(r.left,window.innerWidth-w-12));
+        let top=r.bottom+8;
+        if(top+430>window.innerHeight && r.top>430) top=r.top-438;
+        picker.style.left=left+"px";
+        picker.style.top=top+"px";
+    }
+
+    function openPicker(input){
+        activeInput=input;
+        const selected=parseISO(input.value);
+        const base=selected || parseISO(todayText) || new Date();
+        viewDate=new Date(base.getFullYear(),base.getMonth(),1);
+        picker.classList.add("show");
+        positionPicker();
+        render();
+    }
+
+    function closePicker(){
+        picker.classList.remove("show");
+        activeInput=null;
+    }
+
+    function render(){
+        if(!activeInput) return;
+
+        const y=viewDate.getFullYear();
+        const m=viewDate.getMonth();
+        title.textContent=viewDate.toLocaleString("default",{month:"long",year:"numeric"});
+        grid.innerHTML="";
+
+        const first=new Date(y,m,1).getDay();
+        const days=new Date(y,m+1,0).getDate();
+        const minDate=activeInput===checkOut
+            ?(checkIn.value ? nextDay(checkIn.value) : tomorrowText)
+            :todayText;
+
+        for(let i=0;i<first;i++){
+            const b=document.createElement("button");
+            b.type="button";
+            b.disabled=true;
+            b.className="goinn-calendar-day empty";
+            grid.appendChild(b);
+        }
+
+        for(let day=1;day<=days;day++){
+            const d=new Date(y,m,day);
+            const value=iso(d);
+            const b=document.createElement("button");
+            b.type="button";
+            b.className="goinn-calendar-day";
+            b.textContent=day;
+
+            if(value===todayText) b.classList.add("today");
+            if(value===activeInput.value) b.classList.add("selected");
+
+            if(checkIn.value && checkOut.value &&
+               value>checkIn.value && value<checkOut.value){
+                b.classList.add("range");
+            }
+
+            if(value<minDate){
+                b.disabled=true;
+                b.classList.add("disabled");
+            }else{
+                b.addEventListener("click",function(){
+                    activeInput.value=value;
+
+                    if(activeInput===checkIn){
+                        if(checkOut.value && checkOut.value<=checkIn.value){
+                            checkOut.value="";
+                        }
+                        hint.textContent="Now select your check-out date";
+                        setTimeout(function(){openPicker(checkOut)},100);
+                    }else{
+                        checkOut.value=value;
+                        closePicker();
+                        checkOut.dispatchEvent(new Event("change",{bubbles:true}));
+                    }
+                });
+            }
+            grid.appendChild(b);
+        }
+
+        hint.textContent=activeInput===checkIn
+            ?"Select check-in date"
+            :(checkIn.value?"Select check-out date":"Select check-in date first");
+    }
+
+    checkIn.addEventListener("click",function(){openPicker(checkIn)});
+    checkOut.addEventListener("click",function(){
+        if(!checkIn.value){openPicker(checkIn);return;}
+        openPicker(checkOut);
+    });
+
+    checkIn.addEventListener("change",function(){
+        if(checkOut.value && checkOut.value<=checkIn.value) checkOut.value="";
+    });
+
+    checkOut.addEventListener("change",function(){
+        if(checkIn.value && checkOut.value<=checkIn.value){
+            alert("Check-out date must be after check-in date.");
+            checkOut.value="";
+        }
+    });
+
+    prev.addEventListener("click",function(){
+        const min=parseISO(todayText);
+        const candidate=new Date(viewDate.getFullYear(),viewDate.getMonth()-1,1);
+        const minMonth=new Date(min.getFullYear(),min.getMonth(),1);
+        if(candidate>=minMonth){viewDate=candidate;render();}
+    });
+
+    next.addEventListener("click",function(){
+        viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()+1,1);
+        render();
+    });
+
+    clear.addEventListener("click",function(){
+        if(activeInput===checkIn){
+            checkIn.value="";
+            checkOut.value="";
+        }else if(activeInput===checkOut){
+            checkOut.value="";
+        }
+        closePicker();
+    });
+
+    document.addEventListener("click",function(e){
+        if(picker.classList.contains("show") &&
+           !picker.contains(e.target) &&
+           e.target!==checkIn &&
+           e.target!==checkOut){
+            closePicker();
+        }
+    });
+
+    window.addEventListener("resize",positionPicker);
+
+    if(checkIn.value){
+        const original=checkIn.value;
+        checkIn.value=original;
+    }
+})();
+</script>
 
 </body>
 
