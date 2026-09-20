@@ -610,6 +610,8 @@
 
     </style>
 
+
+<style>.property-image img{width:100%;height:190px;object-fit:cover;display:block}</style>
 </head>
 
 
@@ -903,9 +905,12 @@
                     <!-- PROPERTY IMAGE -->
 
                     <div class="property-image">
-
-                        Property Image
-
+                        {% set approved_images = property.property_images|selectattr('status','equalto','approved')|list %}
+                        {% if approved_images %}
+                            <img src="{{ url_for('property_image', image_id=approved_images[0].id) }}" alt="{{ property.property_name|e }}">
+                        {% else %}
+                            Property Image
+                        {% endif %}
                     </div>
 
 
