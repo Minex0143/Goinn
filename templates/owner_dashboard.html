@@ -765,21 +765,6 @@
             opacity: 0.9;
         }
 
-        .modify-btn {
-            display: inline-block;
-            background: #2563eb;
-            color: white;
-            text-decoration: none;
-            padding: 11px 17px;
-            border-radius: 9px;
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .modify-btn:hover {
-            background: #1d4ed8;
-        }
-
         .footer-links {
 
             text-align: center;
@@ -1156,24 +1141,49 @@
 
 
                 <!-- ======================================
-                     MODIFY PROPERTY
+                     PROPERTY IMAGES
                 ====================================== -->
-
-                {% if property.status == "pending" %}
-
-                    <div style="margin-bottom:18px;">
-
-                        <a
-                            href="{{ url_for('modify_property', property_id=property.id) }}"
-                            class="modify-btn"
-                        >
-                            ✏️ Modify Property
-                        </a>
-
+                <div class="owner-images-section">
+                    <div class="owner-images-title">Property Images</div>
+                    <div class="owner-image-grid">
+                        {% for slot in range(1, 11) %}
+                            {% set img = (property.property_images|selectattr('slot','equalto',slot)|list|first) %}
+                            <div class="owner-image-card">
+                                <div class="owner-slot-number">{{ slot }}</div>
+                                {% if img %}
+                                    {% if img.status == 'approved' %}
+                                        <img src="{{ url_for('property_image', image_id=img.id) }}" alt="Image {{ slot }}">
+                                        <span class="owner-image-status approved-image">Approved</span>
+                                    {% elif img.status == 'reupload_required' %}
+                                        <div class="owner-image-placeholder">
+                                            <strong>Re-upload required</strong>
+                                            <small>{{ img.rejection_reason or 'Admin requested a new image.' }}</small>
+                                        </div>
+                                        {% if property.status == 'pending' %}
+                                        <form method="POST" enctype="multipart/form-data" action="{{ url_for('owner_reupload_property_image', property_id=property.id, slot=slot) }}" class="reupload-form">
+                                            <input type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif" required>
+                                            <button type="submit">Re-upload Image {{ slot }}</button>
+                                        </form>
+                                        {% endif %}
+                                    {% else %}
+                                        <div class="owner-image-placeholder">
+                                            <strong>Waiting for Admin</strong>
+                                            <small>Image uploaded and under review.</small>
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="owner-image-placeholder">
+                                        <strong>Image {{ slot }}</strong>
+                                        <small>Not uploaded</small>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
                     </div>
-
-                {% endif %}
-
+                    {% if property.status == 'pending' %}
+                    <div class="owner-image-note">You can replace images while the property is pending. After Admin approval, image changes are disabled.</div>
+                    {% endif %}
+                </div>
 
                 <!-- ======================================
                      PROPERTY INFORMATION
@@ -1588,6 +1598,11 @@
 
 </main>
 
+
+
+<style>
+.owner-images-section{border-top:1px solid #e5e7eb;padding-top:22px;margin-bottom:22px}.owner-images-title{font-size:19px;font-weight:800;margin-bottom:14px}.owner-image-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.owner-image-card{position:relative;min-height:150px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:11px;padding:8px;overflow:hidden}.owner-image-card img{width:100%;height:110px;object-fit:cover;border-radius:8px}.owner-slot-number{position:absolute;top:5px;left:5px;z-index:2;background:#111827;color:#fff;border-radius:20px;width:24px;height:24px;line-height:24px;text-align:center;font-size:10px;font-weight:800}.owner-image-status{display:block;font-size:10px;font-weight:800;margin-top:4px}.approved-image{color:#15803d}.owner-image-placeholder{min-height:125px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#6b7280;font-size:12px}.owner-image-placeholder small{margin-top:6px;line-height:1.3}.reupload-form{margin-top:5px}.reupload-form input{width:100%;font-size:10px}.reupload-form button{width:100%;margin-top:5px;border:0;background:#2563eb;color:#fff;border-radius:7px;padding:6px;font-size:10px;font-weight:700;cursor:pointer}.owner-image-note{margin-top:10px;color:#6b7280;font-size:12px}@media(max-width:900px){.owner-image-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
 
 </body>
 
