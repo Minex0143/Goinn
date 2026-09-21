@@ -1,0 +1,2006 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        User Profile - Goinn
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f5f6f8;
+
+            color: #202124;
+        }
+
+
+        /* ==================================================
+           HEADER
+        ================================================== */
+
+        .header {
+
+            height: 72px;
+
+            background: #111;
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 45px;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 1000;
+
+            box-shadow:
+                0 2px 12px rgba(0,0,0,0.14);
+        }
+
+
+        .logo {
+
+            font-size: 25px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.7px;
+        }
+
+
+        .header-right {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+
+        .dashboard-link {
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            text-decoration: none !important;
+            color: #ffffff !important;
+            background: #292929;
+
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+
+        .dashboard-link:hover {
+
+            background: #3b3b3b;
+            color: #ffffff !important;
+        }
+
+
+        .user-mini {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            font-size: 14px;
+
+            color: #ddd;
+        }
+
+
+        .user-avatar {
+
+            width: 34px;
+
+            height: 34px;
+
+            border-radius: 50%;
+
+            background: #333;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 14px;
+
+            font-weight: 800;
+
+            color: white;
+        }
+
+
+        .logout {
+
+            text-decoration: none;
+
+            color: white;
+
+            background: #292929;
+
+            padding: 9px 14px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            transition: 0.2s;
+        }
+
+
+        .logout:hover {
+
+            background: #3b3b3b;
+        }
+
+
+        /* ==================================================
+           PAGE
+        ================================================== */
+
+        .container {
+
+            max-width: 1180px;
+
+            margin: 0 auto;
+
+            padding: 35px 20px 60px;
+        }
+
+
+        /* ==================================================
+           WELCOME
+        ================================================== */
+
+        .welcome {
+
+            margin-bottom: 28px;
+        }
+
+
+        .welcome h1 {
+
+            margin: 0;
+
+            font-size: 30px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.5px;
+        }
+
+
+        .welcome p {
+
+            margin: 8px 0 0;
+
+            color: #73777c;
+
+            font-size: 14px;
+        }
+
+
+        /* ==================================================
+           PROFILE
+        ================================================== */
+
+        .profile-card {
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 4px 18px rgba(0,0,0,0.06);
+
+            margin-bottom: 22px;
+        }
+
+
+        .profile-header {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 18px;
+
+            padding-bottom: 20px;
+
+            border-bottom: 1px solid #eee;
+        }
+
+
+        .large-avatar {
+
+            width: 62px;
+
+            height: 62px;
+
+            border-radius: 50%;
+
+            background: #111;
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 24px;
+
+            font-weight: 800;
+
+            flex-shrink: 0;
+        }
+
+
+        .profile-name {
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+            margin-bottom: 5px;
+        }
+
+
+        .profile-email {
+
+            font-size: 13px;
+
+            color: #777;
+        }
+
+
+        .profile-info {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+
+            margin-top: 20px;
+        }
+
+
+        .info-box {
+
+            background: #f7f8fa;
+
+            border: 1px solid #eceef0;
+
+            border-radius: 11px;
+
+            padding: 15px;
+        }
+
+
+        .info-label {
+
+            color: #777;
+
+            font-size: 11px;
+
+            font-weight: 600;
+
+            margin-bottom: 6px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.3px;
+        }
+
+
+        .info-value {
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            word-break: break-word;
+        }
+
+
+        .role-badge {
+
+            display: inline-block;
+
+            background: #eef0f2;
+
+            color: #333;
+
+            padding: 5px 9px;
+
+            border-radius: 20px;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            text-transform: capitalize;
+        }
+
+
+        /* ==================================================
+           BOOKINGS SECTION
+        ================================================== */
+
+        .bookings-card {
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 4px 18px rgba(0,0,0,0.05);
+
+            margin-bottom: 22px;
+        }
+
+
+        .card-header {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 14px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .card-icon {
+
+            width: 43px;
+
+            height: 43px;
+
+            border-radius: 11px;
+
+            background: #f0f1f3;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 20px;
+
+            flex-shrink: 0;
+        }
+
+
+        .card-title {
+
+            font-size: 18px;
+
+            font-weight: 800;
+
+            margin: 0 0 5px;
+        }
+
+
+        .card-subtitle {
+
+            font-size: 12px;
+
+            color: #777;
+
+            line-height: 1.5;
+        }
+
+
+        /* ==================================================
+           NO BOOKINGS
+        ================================================== */
+
+        .booking-empty {
+
+            background: #f8f9fa;
+
+            border: 1px dashed #d8dadd;
+
+            border-radius: 11px;
+
+            padding: 30px;
+
+            text-align: center;
+        }
+
+
+        .booking-empty-icon {
+
+            font-size: 34px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .booking-empty-title {
+
+            font-weight: 800;
+
+            font-size: 15px;
+
+            margin-bottom: 6px;
+        }
+
+
+        .booking-empty-text {
+
+            color: #777;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+
+            margin-bottom: 18px;
+        }
+
+
+        .primary-btn {
+
+            display: inline-block;
+
+            text-decoration: none;
+
+            background: #111;
+
+            color: white;
+
+            padding: 11px 17px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+            transition: 0.2s;
+        }
+
+
+        .primary-btn:hover {
+
+            background: #333;
+        }
+
+
+        /* ==================================================
+           BOOKING LIST
+        ================================================== */
+
+        .booking-list {
+
+            display: grid;
+
+            gap: 16px;
+        }
+
+
+        .booking-card {
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 13px;
+
+            padding: 20px;
+
+            background: #fff;
+
+            transition: 0.2s;
+        }
+
+
+        .booking-card:hover {
+
+            box-shadow:
+                0 4px 15px rgba(0,0,0,0.06);
+        }
+
+
+        .booking-top {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+
+            gap: 15px;
+
+            margin-bottom: 17px;
+        }
+
+
+        .booking-property {
+
+            font-size: 18px;
+
+            font-weight: 800;
+
+            margin-bottom: 5px;
+        }
+
+
+        .booking-location {
+
+            color: #777;
+
+            font-size: 12px;
+        }
+
+
+        /* ==================================================
+           STATUS
+        ================================================== */
+
+        .status {
+
+            padding: 7px 12px;
+
+            border-radius: 20px;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            text-transform: capitalize;
+
+            white-space: nowrap;
+        }
+
+
+        .status-pending {
+
+            background: #fff4d6;
+
+            color: #8a6100;
+        }
+
+
+        .status-approved {
+
+            background: #e2f7e9;
+
+            color: #187a3d;
+        }
+
+
+        .status-rejected {
+
+            background: #ffe5e5;
+
+            color: #b00020;
+        }
+
+
+        /* ==================================================
+           BOOKING DETAILS
+        ================================================== */
+
+        .booking-details {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 12px;
+
+            margin-top: 15px;
+        }
+
+
+        .booking-info {
+
+            background: #f7f8fa;
+
+            border: 1px solid #eceef0;
+
+            border-radius: 9px;
+
+            padding: 12px;
+        }
+
+
+        .booking-info-label {
+
+            font-size: 10px;
+
+            color: #777;
+
+            text-transform: uppercase;
+
+            font-weight: 700;
+
+            margin-bottom: 5px;
+        }
+
+
+        .booking-info-value {
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+        }
+
+
+        /* ==================================================
+           PRICE
+        ================================================== */
+
+        .booking-price {
+
+            margin-top: 15px;
+
+            padding-top: 15px;
+
+            border-top: 1px solid #eee;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 10px;
+
+        }
+
+
+        .price-label {
+
+            font-size: 12px;
+
+            color: #777;
+
+        }
+
+
+        .total-price {
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+        }
+
+
+        /* ==================================================
+           STATUS MESSAGE
+        ================================================== */
+
+        .status-message {
+
+            margin-top: 15px;
+
+            padding: 12px 14px;
+
+            border-radius: 9px;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+        }
+
+
+        .pending-message {
+
+            background: #fff9e8;
+
+            color: #795700;
+
+            border: 1px solid #f3df9c;
+        }
+
+
+        .approved-message {
+
+            background: #eefaf2;
+
+            color: #176b36;
+
+            border: 1px solid #c9ead4;
+        }
+
+
+        .rejected-message {
+
+            background: #fff0f0;
+
+            color: #a0001d;
+
+            border: 1px solid #f0c7c7;
+        }
+
+
+        /* ==================================================
+           DASHBOARD GRID
+        ================================================== */
+
+        .dashboard-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1.4fr
+                1fr;
+
+            gap: 22px;
+
+            align-items: stretch;
+        }
+
+
+        .dashboard-card {
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 4px 18px rgba(0,0,0,0.05);
+        }
+
+
+        /* ==================================================
+           OWNER CARD
+        ================================================== */
+
+        .owner-card {
+
+            background: #111;
+
+            color: white;
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+
+        .owner-card .card-icon {
+
+            background: #292929;
+
+            color: white;
+        }
+
+
+        .owner-card .card-title {
+
+            color: white;
+        }
+
+
+        .owner-card .card-subtitle {
+
+            color: #bdbdbd;
+        }
+
+
+        .owner-description {
+
+            color: #d4d4d4;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+
+            margin-bottom: 20px;
+        }
+
+
+        .owner-features {
+
+            display: grid;
+
+            gap: 9px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .owner-feature {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            font-size: 12px;
+
+            color: #ddd;
+        }
+
+
+        .check {
+
+            width: 20px;
+
+            height: 20px;
+
+            border-radius: 50%;
+
+            background: #333;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 10px;
+
+            flex-shrink: 0;
+        }
+
+
+        .owner-btn {
+
+            display: block;
+
+            width: 100%;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            background: white;
+
+            color: #111;
+
+            padding: 12px;
+
+            border-radius: 9px;
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+            transition: 0.2s;
+        }
+
+
+        .owner-btn:hover {
+
+            background: #e9e9e9;
+        }
+
+
+        /* ==================================================
+           QUICK ACTIONS
+        ================================================== */
+
+        .quick-actions {
+
+            margin-top: 22px;
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 4px 18px rgba(0,0,0,0.05);
+        }
+
+
+        .quick-title {
+
+            font-size: 18px;
+
+            font-weight: 800;
+
+            margin-bottom: 18px;
+        }
+
+
+        .actions-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 13px;
+        }
+
+
+        .action-item {
+
+            text-decoration: none;
+
+            color: #222;
+
+            border: 1px solid #e4e6e8;
+
+            border-radius: 11px;
+
+            padding: 17px;
+
+            transition: 0.2s;
+
+            background: #fff;
+        }
+
+
+        .action-item:hover {
+
+            border-color: #bbb;
+
+            background: #fafafa;
+
+            transform: translateY(-1px);
+        }
+
+
+        .action-icon {
+
+            font-size: 21px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .action-title {
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+            margin-bottom: 4px;
+        }
+
+
+        .action-description {
+
+            font-size: 11px;
+
+            color: #777;
+
+            line-height: 1.4;
+        }
+
+
+        /* ==================================================
+           FOOTER
+        ================================================== */
+
+        .footer {
+
+            text-align: center;
+
+            color: #999;
+
+            font-size: 11px;
+
+            margin-top: 35px;
+        }
+
+
+        /* ==================================================
+           RESPONSIVE
+        ================================================== */
+
+        @media (max-width: 850px) {
+
+            .header {
+
+                padding: 0 20px;
+            }
+
+
+            .container {
+
+                padding:
+                    25px 15px 50px;
+            }
+
+
+            .dashboard-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .profile-info {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .booking-details {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .actions-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .header {
+
+                height: 64px;
+
+                padding: 0 15px;
+            }
+
+
+            .logo {
+
+                font-size: 22px;
+            }
+
+
+            .user-mini span {
+
+                display: none;
+            }
+
+
+            .logout {
+
+                padding: 8px 11px;
+
+                font-size: 12px;
+            }
+
+
+            .container {
+
+                padding:
+                    22px 12px 45px;
+            }
+
+
+            .welcome h1 {
+
+                font-size: 25px;
+            }
+
+
+            .profile-card,
+            .dashboard-card,
+            .bookings-card,
+            .quick-actions {
+
+                padding: 19px;
+
+                border-radius: 13px;
+            }
+
+
+            .profile-header {
+
+                align-items: flex-start;
+            }
+
+
+            .large-avatar {
+
+                width: 52px;
+
+                height: 52px;
+
+                font-size: 20px;
+            }
+
+
+            .profile-name {
+
+                font-size: 17px;
+            }
+
+
+            .profile-info {
+
+                grid-template-columns: 1fr;
+
+                gap: 10px;
+            }
+
+
+            .booking-top {
+
+                flex-direction: column;
+
+                gap: 10px;
+            }
+
+
+            .booking-details {
+
+                grid-template-columns: 1fr 1fr;
+
+                gap: 8px;
+            }
+
+
+            .booking-price {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+
+            .actions-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        .booking-clickable {
+            cursor: pointer;
+        }
+
+        .booking-clickable:hover {
+            border-color: #bfc3c8;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.08);
+        }
+
+        .edit-profile-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .edit-profile-modal.show { display: flex; }
+
+        .edit-profile-box {
+            width: 100%;
+            max-width: 470px;
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.2);
+        }
+
+        .edit-profile-box h2 { margin: 0 0 6px; }
+        .edit-profile-note { color:#777; font-size:12px; margin-bottom:20px; }
+        .edit-field { margin-bottom:15px; }
+        .edit-field label { display:block; font-size:12px; font-weight:700; margin-bottom:6px; }
+        .edit-field input { width:100%; padding:11px 12px; border:1px solid #ddd; border-radius:8px; font-size:14px; }
+        .edit-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+        .secondary-btn { border:1px solid #ddd; background:#fff; color:#222; padding:11px 16px; border-radius:8px; font-weight:700; cursor:pointer; }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==================================================
+     HEADER
+================================================== -->
+
+<header class="header">
+
+
+    <div class="logo">
+        Goinn
+    </div>
+
+
+    <div class="header-right">
+
+        <a
+            href="{{ url_for('home') }}"
+            class="dashboard-link"
+        >
+            Home
+        </a>
+
+        {% if user.role == "owner" %}
+            <a
+                href="{{ url_for('owner_dashboard') }}"
+                class="dashboard-link"
+            >
+                Owner Profile
+            </a>
+        {% endif %}
+
+        <div class="user-mini">
+
+            <div class="user-avatar">
+
+                {{ (user.name or 'User')[0]|upper }}
+
+            </div>
+
+            <span>
+                {{ user.name or 'User' }}
+            </span>
+
+        </div>
+
+
+        <a
+            href="{{ url_for('logout') }}"
+            class="logout"
+        >
+
+            Logout
+
+        </a>
+
+    </div>
+
+</header>
+
+
+
+<!-- ==================================================
+     MAIN
+================================================== -->
+
+<main class="container">
+
+
+    <!-- ==================================================
+         WELCOME
+    ================================================== -->
+
+    <section class="welcome">
+
+        <h1>
+
+            User Profile
+
+        </h1>
+
+
+        <p>
+
+            Manage your profile and
+            track your bookings.
+
+        </p>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         PROFILE
+    ================================================== -->
+
+    <section class="profile-card">
+
+
+        <div class="profile-header">
+
+
+            <div class="large-avatar">
+
+                {{ (user.name or 'User')[0]|upper }}
+
+            </div>
+
+
+            <div>
+
+                <div class="profile-name">
+
+                    {{ user.name or 'User' }}
+
+                </div>
+
+
+                <div class="profile-email">
+
+                    {{ user.email }}
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <div style="margin-top:18px;">
+            <button type="button" class="primary-btn" onclick="openEditProfile()">
+                Edit Profile
+            </button>
+        </div>
+
+
+        <div class="profile-info">
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Name
+                </div>
+
+                <div class="info-value">
+                    {{ user.name or 'User' }}
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Contact
+                </div>
+
+                <div class="info-value">
+
+                    {% if user.contact %}
+
+                        {{ user.contact }}
+
+                    {% else %}
+
+                        Not added yet
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ==================================================
+         MY BOOKINGS
+    ================================================== -->
+
+    <section class="bookings-card">
+
+
+        <div class="card-header">
+
+
+            <div class="card-icon">
+                📅
+            </div>
+
+
+            <div>
+
+                <div class="card-title">
+
+                    My Bookings
+
+                </div>
+
+
+                <div class="card-subtitle">
+
+                    Track your booking requests
+                    and their current status.
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        {% if bookings %}
+
+
+            <div class="booking-list">
+
+
+                {% for booking in bookings %}
+
+
+                    <div class="booking-card booking-clickable"
+                         onclick="window.location.href='{{ url_for('user_booking_details', booking_id=booking.id) }}'"
+                         role="button"
+                         tabindex="0"
+                         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.href='{{ url_for('user_booking_details', booking_id=booking.id) }}';}">
+
+
+                        <!-- ==================================================
+                             BOOKING HEADER
+                        ================================================== -->
+
+                        <div class="booking-top">
+
+
+                            <div>
+
+                                <div class="booking-property">
+
+                                    {{ booking.property.property_name }}
+
+                                </div>
+
+
+                                <div class="booking-location">
+
+                                    📍
+                                    {{ booking.property.location }}
+
+                                </div>
+
+                            </div>
+
+
+                            {% if booking.status == "approved" %}
+
+                                <span
+                                    class="status status-approved"
+                                >
+                                    Approved
+                                </span>
+
+                            {% elif booking.status == "rejected" %}
+
+                                <span
+                                    class="status status-rejected"
+                                >
+                                    Rejected
+                                </span>
+
+                            {% else %}
+
+                                <span
+                                    class="status status-pending"
+                                >
+                                    Pending
+                                </span>
+
+                            {% endif %}
+
+
+                        </div>
+
+
+
+                        <!-- ==================================================
+                             BOOKING DETAILS
+                        ================================================== -->
+
+                        <div class="booking-details">
+
+
+                            <div class="booking-info">
+
+                                <div class="booking-info-label">
+                                    Booking ID
+                                </div>
+
+                                <div class="booking-info-value">
+
+                                    #{{ booking.id }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="booking-info">
+
+                                <div class="booking-info-label">
+                                    Check-in
+                                </div>
+
+                                <div class="booking-info-value">
+
+                                    {{ booking.check_in.strftime("%d-%m-%Y") }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="booking-info">
+
+                                <div class="booking-info-label">
+                                    Check-out
+                                </div>
+
+                                <div class="booking-info-value">
+
+                                    {{ booking.check_out.strftime("%d-%m-%Y") }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="booking-info">
+
+                                <div class="booking-info-label">
+                                    Guests
+                                </div>
+
+                                <div class="booking-info-value">
+
+                                    {{ booking.guests }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="booking-info">
+
+                                <div class="booking-info-label">
+                                    Nights
+                                </div>
+
+                                <div class="booking-info-value">
+
+                                    {{ booking.nights }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="booking-info">
+
+                                <div class="booking-info-label">
+                                    Price / Day
+                                </div>
+
+                                <div class="booking-info-value">
+
+                                    ₹{{ "%.2f"|format(booking.price_per_day) }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="booking-info">
+
+                                <div class="booking-info-label">
+                                    Customer
+                                </div>
+
+                                <div class="booking-info-value">
+
+                                    {{ booking.customer_name }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="booking-info">
+
+                                <div class="booking-info-label">
+                                    Contact
+                                </div>
+
+                                <div class="booking-info-value">
+
+                                    {{ booking.customer_contact }}
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- ==================================================
+                             PRICE
+                        ================================================== -->
+
+                        <div class="booking-price">
+
+
+                            <div>
+
+                                <div class="price-label">
+                                    Estimated Booking Total
+                                </div>
+
+                                <div class="price-label">
+
+                                    {{ booking.nights }}
+                                    night{% if booking.nights != 1 %}s{% endif %}
+                                    ×
+                                    ₹{{ "%.2f"|format(booking.price_per_day) }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="total-price">
+
+                                ₹{{ "%.2f"|format(booking.total_price) }}
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- ==================================================
+                             STATUS MESSAGE
+                        ================================================== -->
+
+                        {% if booking.status == "approved" %}
+
+                            <div
+                                class="
+                                    status-message
+                                    approved-message
+                                "
+                            >
+
+                                <strong>
+                                    Booking approved.
+                                </strong>
+
+                                The property owner has approved
+                                your booking request. You can
+                                contact the owner to finalize
+                                the booking details and price.
+
+                                {% if booking.property.owner
+                                      and booking.property.owner.contact %}
+
+                                    <br><br>
+
+                                    Owner Contact:
+                                    <strong>
+                                        {{ booking.property.owner.contact }}
+                                    </strong>
+
+                                {% endif %}
+
+                            </div>
+
+
+                        {% elif booking.status == "rejected" %}
+
+                            <div
+                                class="
+                                    status-message
+                                    rejected-message
+                                "
+                            >
+
+                                <strong>
+                                    Booking rejected.
+                                </strong>
+
+                                Unfortunately, this booking
+                                request was rejected by the
+                                administrator/property management.
+
+                                You can explore other available
+                                properties on Goinn.
+
+                            </div>
+
+
+                        {% else %}
+
+                            <div
+                                class="
+                                    status-message
+                                    pending-message
+                                "
+                            >
+
+                                <strong>
+                                    Booking request submitted.
+                                </strong>
+
+                                Your booking is currently waiting
+                                for administrator approval.
+                                This page will show the updated
+                                status once the booking is reviewed.
+
+                            </div>
+
+                        {% endif %}
+
+
+                    </div>
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+        {% else %}
+
+
+            <div class="booking-empty">
+
+
+                <div class="booking-empty-icon">
+                    🏡
+                </div>
+
+
+                <div class="booking-empty-title">
+
+                    No bookings yet
+
+                </div>
+
+
+                <div class="booking-empty-text">
+
+                    You haven't made any booking requests yet.
+                    Explore available properties and find
+                    your next stay.
+
+                </div>
+
+
+                <a
+                    href="{{ url_for('home') }}"
+                    class="primary-btn"
+                >
+
+                    Explore Properties
+
+                </a>
+
+
+            </div>
+
+
+        {% endif %}
+
+
+    </section>
+
+
+
+    <!-- ==================================================
+         OTHER DASHBOARD CARDS
+    ================================================== -->
+
+    <section class="dashboard-grid">
+
+        <!-- ==================================================
+             OWNER
+        ================================================== -->
+
+        {% if user.role == "user" %}
+        <div class="dashboard-card owner-card">
+
+
+            <div class="card-header">
+
+
+                <div class="card-icon">
+                    🏠
+                </div>
+
+
+                <div>
+
+                    <div class="card-title">
+
+                        List Your Property
+
+                    </div>
+
+
+                    <div class="card-subtitle">
+
+                        Become a Goinn property owner.
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="owner-description">
+
+                Have a property you'd like to list?
+                Join Goinn and make your property
+                available to guests.
+
+            </div>
+
+
+            <div class="owner-features">
+
+
+                <div class="owner-feature">
+
+                    <span class="check">
+                        ✓
+                    </span>
+
+                    List your property
+
+                </div>
+
+
+                <div class="owner-feature">
+
+                    <span class="check">
+                        ✓
+                    </span>
+
+                    Manage your property
+
+                </div>
+
+
+                <div class="owner-feature">
+
+                    <span class="check">
+                        ✓
+                    </span>
+
+                    Receive booking requests
+
+                </div>
+
+
+            </div>
+
+
+            <a
+                href="{{ url_for('become_owner') }}"
+                class="owner-btn"
+            >
+
+                Become a Property Owner
+
+            </a>
+
+
+        </div>
+        {% endif %}
+
+
+    </section>
+
+
+    <div id="editProfileModal" class="edit-profile-modal" onclick="if(event.target===this) closeEditProfile()">
+        <div class="edit-profile-box">
+            <h2>Edit Profile</h2>
+            <div class="edit-profile-note">You can update your name and contact number. Email is linked to your account and cannot be changed here.</div>
+            <form method="POST" action="{{ url_for('edit_user_profile') }}">
+                <div class="edit-field">
+                    <label for="profileName">Name</label>
+                    <input id="profileName" type="text" name="name" value="{{ user.name }}" maxlength="120" required>
+                </div>
+                <div class="edit-field">
+                    <label for="profileContact">Contact</label>
+                    <input id="profileContact" type="tel" name="contact" value="{{ user.contact or '' }}" maxlength="30" required>
+                </div>
+                <div class="edit-actions">
+                    <button type="button" class="secondary-btn" onclick="closeEditProfile()">Cancel</button>
+                    <button type="submit" class="primary-btn" style="border:0;cursor:pointer;">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================================================
+         FOOTER
+    ================================================== -->
+
+    <div class="footer">
+
+        Goinn · Your stay, your way.
+
+    </div>
+
+
+</main>
+
+
+<script>
+function openEditProfile(){
+    document.getElementById('editProfileModal').classList.add('show');
+}
+function closeEditProfile(){
+    document.getElementById('editProfileModal').classList.remove('show');
+}
+document.addEventListener('keydown', function(event){
+    if(event.key === 'Escape') closeEditProfile();
+});
+</script>
+
+</body>
+
+</html>
