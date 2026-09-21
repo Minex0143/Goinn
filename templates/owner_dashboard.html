@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Owner Profile - Goinn</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        .header {
+
+            background: #111;
+            color: white;
+
+            padding: 18px 30px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            box-shadow:
+                0 2px 12px rgba(0,0,0,0.08);
+
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+
+        .logo {
+
+            font-size: 26px;
+            font-weight: 800;
+
+            color: #ffffff;
+        }
+
+
+        .header-right {
+
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+
+        .dashboard-link {
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            text-decoration: none !important;
+            color: #ffffff !important;
+            background: #292929;
+
+            font-weight: 700;
+
+            padding: 9px 14px;
+
+            border-radius: 8px;
+
+            transition: 0.2s;
+            font-size: 13px;
+        }
+
+
+        .dashboard-link:hover {
+
+            background: #3b3b3b;
+            color: #ffffff !important;
+        }
+
+
+        .logout-btn {
+
+            text-decoration: none !important;
+
+            background: #292929;
+
+            color: white;
+
+            padding: 9px 16px;
+
+            border-radius: 8px;
+
+            font-weight: 600;
+        }
+
+
+        .logout-btn:hover {
+
+            background: #3b3b3b;
+        }
+
+
+        /* =========================================
+           MAIN
+        ========================================= */
+
+        .container {
+
+            max-width: 1100px;
+
+            margin: 35px auto;
+
+            padding: 0 20px;
+        }
+
+
+        /* =========================================
+           WELCOME
+        ========================================= */
+
+        .welcome-card {
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 28px;
+
+            margin-bottom: 28px;
+
+            box-shadow:
+                0 5px 20px rgba(0,0,0,0.06);
+        }
+
+
+        .welcome-card h1 {
+
+            margin: 0 0 8px;
+
+            font-size: 30px;
+
+            color: #111827;
+        }
+
+
+        .welcome-text {
+
+            color: #6b7280;
+
+            margin-bottom: 22px;
+        }
+
+
+        .owner-details {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+        }
+
+
+        .owner-detail {
+
+            background: #f8fafc;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 10px;
+
+            padding: 15px;
+        }
+
+
+        .detail-label {
+
+            font-size: 12px;
+
+            color: #6b7280;
+
+            text-transform: uppercase;
+
+            font-weight: 700;
+
+            margin-bottom: 5px;
+        }
+
+
+        .detail-value {
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            color: #111827;
+
+            word-break: break-word;
+        }
+
+
+        /* =========================================
+           SECTION HEADER
+        ========================================= */
+
+        .section-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 18px;
+        }
+
+
+        .section-header h2 {
+
+            margin: 0;
+
+            font-size: 24px;
+
+            color: #111827;
+        }
+
+
+        .add-btn {
+
+            text-decoration: none;
+
+            background: #111827;
+
+            color: white;
+
+            padding: 11px 18px;
+
+            border-radius: 9px;
+
+            font-weight: 700;
+
+            font-size: 14px;
+        }
+
+
+        .add-btn:hover {
+
+            background: #374151;
+        }
+
+
+        /* =========================================
+           PROPERTY CARD
+        ========================================= */
+
+        .property-card {
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 25px;
+
+            margin-bottom: 22px;
+
+            box-shadow:
+                0 5px 20px rgba(0,0,0,0.06);
+
+            border: 1px solid #eef0f4;
+        }
+
+
+        .property-top {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .property-name {
+
+            margin: 0 0 7px;
+
+            font-size: 22px;
+
+            color: #111827;
+        }
+
+
+        .property-location {
+
+            color: #6b7280;
+
+            font-size: 14px;
+
+            margin: 0;
+        }
+
+
+        /* =========================================
+           STATUS
+        ========================================= */
+
+        .status {
+
+            display: inline-block;
+
+            padding: 6px 12px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+
+            white-space: nowrap;
+        }
+
+
+        .status-approved {
+
+            background: #dcfce7;
+
+            color: #166534;
+        }
+
+
+        .status-pending {
+
+            background: #fef3c7;
+
+            color: #92400e;
+        }
+
+
+        .status-rejected {
+
+            background: #fee2e2;
+
+            color: #991b1b;
+        }
+
+
+        .status-default {
+
+            background: #e5e7eb;
+
+            color: #374151;
+        }
+
+
+        /* =========================================
+           PROPERTY INFORMATION
+        ========================================= */
+
+        .property-info {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 15px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .info-item {
+
+            background: #f8fafc;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 10px;
+
+            padding: 15px;
+        }
+
+
+        .info-label {
+
+            font-size: 12px;
+
+            color: #6b7280;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            margin-bottom: 6px;
+        }
+
+
+        .info-value {
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            color: #111827;
+        }
+
+
+        /* =========================================
+           CAPACITY BOX
+        ========================================= */
+
+        .capacity-box {
+
+            background: #f8fafc;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 12px;
+
+            padding: 18px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .capacity-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .capacity-title {
+
+            font-weight: 800;
+
+            font-size: 16px;
+        }
+
+
+        .capacity-number {
+
+            font-size: 24px;
+
+            font-weight: 800;
+
+            color: #111827;
+        }
+
+
+        .admin-note {
+
+            margin-top: 8px;
+
+            color: #6b7280;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================================
+           PRICING
+        ========================================= */
+
+        .pricing-section {
+
+            border-top: 1px solid #e5e7eb;
+
+            padding-top: 22px;
+        }
+
+
+        .pricing-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 15px;
+        }
+
+
+        .pricing-title {
+
+            margin: 0;
+
+            font-size: 19px;
+
+            font-weight: 800;
+        }
+
+
+        .pricing-method {
+
+            padding: 5px 10px;
+
+            border-radius: 7px;
+
+            background: #eef2ff;
+
+            color: #3730a3;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+        }
+
+
+        /* =========================================
+           INDIVIDUAL PRICING TABLE
+        ========================================= */
+
+        .pricing-table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            overflow: hidden;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 10px;
+        }
+
+
+        .pricing-table th {
+
+            background: #f8fafc;
+
+            color: #6b7280;
+
+            font-size: 12px;
+
+            text-transform: uppercase;
+
+            text-align: left;
+
+            padding: 12px 15px;
+
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+
+        .pricing-table td {
+
+            padding: 13px 15px;
+
+            border-bottom: 1px solid #f0f1f3;
+
+            font-size: 15px;
+        }
+
+
+        .pricing-table tr:last-child td {
+
+            border-bottom: none;
+        }
+
+
+        .guest-count {
+
+            font-weight: 700;
+        }
+
+
+        .price {
+
+            font-weight: 800;
+        }
+
+
+        /* =========================================
+           GROUP PRICING
+        ========================================= */
+
+        .group-list {
+
+            display: grid;
+
+            gap: 10px;
+        }
+
+
+        .group-row {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            background: #f8fafc;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 10px;
+
+            padding: 14px 16px;
+        }
+
+
+        .group-range {
+
+            font-weight: 700;
+
+            color: #374151;
+        }
+
+
+        .group-price {
+
+            font-weight: 800;
+
+            font-size: 16px;
+
+            color: #111827;
+        }
+
+
+        /* =========================================
+           NOT CONFIGURED
+        ========================================= */
+
+        .not-configured {
+
+            background: #fff7ed;
+
+            border: 1px solid #fed7aa;
+
+            color: #9a3412;
+
+            border-radius: 10px;
+
+            padding: 16px;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================================
+           REJECTED MESSAGE
+        ========================================= */
+
+        .rejected-box {
+
+            margin-top: 18px;
+
+            background: #fef2f2;
+
+            border: 1px solid #fecaca;
+
+            color: #991b1b;
+
+            padding: 14px;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================================
+           EMPTY STATE
+        ========================================= */
+
+        .empty-card {
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 45px 25px;
+
+            text-align: center;
+
+            box-shadow:
+                0 5px 20px rgba(0,0,0,0.05);
+        }
+
+
+        .empty-icon {
+
+            font-size: 45px;
+
+            margin-bottom: 12px;
+        }
+
+
+        .empty-card h3 {
+
+            margin: 0 0 8px;
+
+            font-size: 20px;
+        }
+
+
+        .empty-card p {
+
+            color: #6b7280;
+
+            margin-bottom: 20px;
+        }
+
+
+        /* =========================================
+           FOOTER LINKS
+        ========================================= */
+
+
+
+        .section-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .calendar-btn {
+            display: inline-block;
+            background: #111827;
+            color: white;
+            text-decoration: none;
+            padding: 11px 17px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .calendar-btn:hover {
+            opacity: 0.9;
+        }
+
+        .footer-links {
+
+            text-align: center;
+
+            margin: 35px 0;
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 20px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .footer-links a {
+
+            color: #4b5563;
+
+            text-decoration: none;
+
+            font-weight: 600;
+
+            font-size: 14px;
+        }
+
+
+        .footer-links a:hover {
+
+            text-decoration: underline;
+        }
+
+
+        /* =========================================
+           MOBILE
+        ========================================= */
+
+        @media (max-width: 700px) {
+
+            .header {
+
+                padding: 15px 18px;
+            }
+
+
+            .logo {
+
+                font-size: 23px;
+            }
+
+
+            .header-right {
+
+                gap: 5px;
+            }
+
+
+            .dashboard-link {
+
+                display: none;
+            }
+
+
+            .container {
+
+                margin: 20px auto;
+
+                padding: 0 12px;
+            }
+
+
+            .welcome-card {
+
+                padding: 20px;
+            }
+
+
+            .welcome-card h1 {
+
+                font-size: 25px;
+            }
+
+
+            .owner-details {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .section-header {
+
+                align-items: stretch;
+
+                flex-direction: column;
+
+                gap: 12px;
+            }
+
+
+            .section-actions {
+                flex-direction: column;
+            }
+
+            .calendar-btn,
+            .add-btn {
+                text-align: center;
+            }
+
+
+            .property-card {
+
+                padding: 18px;
+            }
+
+
+            .property-top {
+
+                flex-direction: column;
+            }
+
+
+            .property-info {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .capacity-header {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+            }
+
+
+            .pricing-table th,
+            .pricing-table td {
+
+                padding: 11px 10px;
+            }
+
+
+            .group-row {
+
+                padding: 13px;
+            }
+
+        }
+
+    </style>
+
+<style>
+.owner-image-card img{width:100%;height:150px;object-fit:cover;border-radius:10px;display:block;margin-bottom:8px;}
+.owner-upload-preview{width:100%;height:150px;object-fit:cover;border-radius:10px;margin:8px 0;}
+.owner-image-file-note{display:block;font-size:11px;color:#777;margin:4px 0 8px;word-break:break-word;}
+</style>
+</head>
+
+
+<body>
+
+
+<!-- ==================================================
+     HEADER
+================================================== -->
+
+<header class="header">
+
+    <div class="logo">
+        Goinn
+    </div>
+
+
+    <div class="header-right">
+
+        <a
+            href="{{ url_for('home') }}"
+            class="dashboard-link"
+        >
+            Home
+        </a>
+
+        <a
+            href="{{ url_for('user_dashboard') }}"
+            class="dashboard-link"
+        >
+            User Profile
+        </a>
+
+
+        <a
+            href="{{ url_for('logout') }}"
+            class="logout-btn"
+        >
+            Logout
+        </a>
+
+    </div>
+
+</header>
+
+
+<!-- ==================================================
+     MAIN
+================================================== -->
+
+<main class="container">
+
+
+    <!-- ==================================================
+         WELCOME
+    ================================================== -->
+
+    <section class="welcome-card">
+
+        <h1>
+            Owner Profile
+        </h1>
+
+        <p class="welcome-text">
+
+            Welcome back,
+            <strong>{{ user.name }}</strong>.
+
+            Manage your properties and view
+            the pricing configured by Goinn Admin.
+
+        </p>
+
+
+        <div class="owner-details">
+
+
+            <div class="owner-detail">
+
+                <div class="detail-label">
+                    Name
+                </div>
+
+                <div class="detail-value">
+                    {{ user.name }}
+                </div>
+
+            </div>
+
+
+            <div class="owner-detail">
+
+                <div class="detail-label">
+                    Email
+                </div>
+
+                <div class="detail-value">
+                    {{ user.email }}
+                </div>
+
+            </div>
+
+
+            <div class="owner-detail">
+
+                <div class="detail-label">
+                    Contact
+                </div>
+
+                <div class="detail-value">
+
+                    {% if user.contact %}
+
+                        {{ user.contact }}
+
+                    {% else %}
+
+                        Not provided
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         PROPERTY HEADER
+    ================================================== -->
+
+    <div class="section-header">
+
+        <h2>
+            Your Properties
+        </h2>
+
+        <div class="section-actions">
+
+            <a
+                href="{{ url_for('owner_calendar') }}"
+                class="calendar-btn"
+            >
+                📅 Calendar
+            </a>
+
+            <a
+                href="{{ url_for('add_property') }}"
+                class="add-btn"
+            >
+                + Add New Property
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         PROPERTIES
+    ================================================== -->
+
+    {% if properties %}
+
+
+        {% for property in properties %}
+
+
+            <div class="property-card">
+
+
+                <!-- ======================================
+                     PROPERTY HEADER
+                ====================================== -->
+
+                <div class="property-top">
+
+
+                    <div>
+
+                        <h3 class="property-name">
+
+                            {{ property.property_name }}
+
+                        </h3>
+
+
+                        <p class="property-location">
+
+                            📍 {{ property.location }}
+
+                        </p>
+
+                    </div>
+
+
+                    {% if property.status == "approved" %}
+
+                        <span class="status status-approved">
+                            Approved
+                        </span>
+
+                    {% elif property.status == "pending" %}
+
+                        <span class="status status-pending">
+                            Pending
+                        </span>
+
+                    {% elif property.status == "rejected" %}
+
+                        <span class="status status-rejected">
+                            Rejected
+                        </span>
+
+                    {% else %}
+
+                        <span class="status status-default">
+                            {{ property.status }}
+                        </span>
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <!-- ======================================
+                     PROPERTY IMAGES
+                ====================================== -->
+                <div class="owner-images-section">
+                    <div class="owner-images-title">Property Images</div>
+                    <div class="owner-image-grid">
+                        {% for slot in range(1, 11) %}
+                            {% set img = (property.property_images|selectattr('slot','equalto',slot)|list|first) %}
+                            <div class="owner-image-card">
+                                <div class="owner-slot-number">{{ slot }}</div>
+                                {% if img %}
+                                    {% if img.status == 'approved' %}
+                                        <img src="{{ url_for('property_image', image_id=img.id) }}" alt="Image {{ slot }}">
+                                        <span class="owner-image-status approved-image">Approved</span>
+                                    {% elif img.status == 'reupload_required' %}
+                                        <div class="owner-image-placeholder">
+                                            <strong>Re-upload required</strong>
+                                            <small>{{ img.rejection_reason or 'Admin requested a new image.' }}</small>
+                                        </div>
+                                        {% if property.status == 'pending' %}
+                                        <form method="POST" enctype="multipart/form-data" action="{{ url_for('owner_reupload_property_image', property_id=property.id, slot=slot) }}" class="reupload-form">
+                                            <input type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif" required onchange="previewOwnerUpload(this, 'owner-preview-{{ property.id }}-{{ slot }}')">
+                                            <img id="owner-preview-{{ property.id }}-{{ slot }}" class="owner-upload-preview" alt="Selected image preview" style="display:none;">
+                                            <button type="submit">Re-upload Image {{ slot }}</button>
+                                        </form>
+                                        {% endif %}
+                                    {% else %}
+                                        <img src="{{ url_for('owner_view_property_image', image_id=img.id) }}" alt="Image {{ slot }}">
+                                        <span class="owner-image-status pending-image">Waiting for Admin</span>
+                                        <small class="owner-image-file-note">Uploaded: {{ img.filename }}</small>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="owner-image-placeholder">
+                                        <strong>Image {{ slot }}</strong>
+                                        <small>Not uploaded</small>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if property.status == 'pending' %}
+                    <div class="owner-image-note">You can replace images while the property is pending. After Admin approval, image changes are disabled.</div>
+                    {% endif %}
+                </div>
+
+                <!-- ======================================
+                     PROPERTY INFORMATION
+                ====================================== -->
+
+                <div class="property-info">
+
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Property Address
+                        </div>
+
+                        <div class="info-value">
+
+                            {{ property.property_address }}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Location
+                        </div>
+
+                        <div class="info-value">
+
+                            {{ property.location }}
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- ======================================
+                     MAX GUESTS
+                ====================================== -->
+
+                <div class="capacity-box">
+
+    <div class="capacity-header">
+
+        <div>
+
+            <div class="capacity-title">
+                Maximum Guest Capacity
+            </div>
+
+            <div class="admin-note">
+                This value is configured by Goinn Admin.
+                Owners cannot change the maximum guest capacity.
+            </div>
+
+        </div>
+
+
+        <div class="capacity-number">
+
+            {% if property.pricing_method and property.pricing_data %}
+
+                {{ property.max_guests }}
+
+                {% if property.max_guests == 1 %}
+                    Guest
+                {% else %}
+                    Guests
+                {% endif %}
+
+            {% else %}
+
+                Not configured
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+                <!-- ======================================
+                     PRICING
+                ====================================== -->
+
+                <div class="pricing-section">
+
+
+                    <div class="pricing-header">
+
+                        <h3 class="pricing-title">
+                            Pricing
+                        </h3>
+
+
+                        {% if property.pricing_method %}
+
+                            <span class="pricing-method">
+
+                                {{ property.pricing_method }}
+
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- ==================================
+                         NO PRICING
+                    ================================== -->
+
+                    {% if not property.pricing_method
+                          or not property.pricing_data %}
+
+
+                        <div class="not-configured">
+
+                            <strong>
+                                Pricing not configured yet.
+                            </strong>
+
+                            <br>
+
+                            Goinn Admin will configure the
+                            maximum guest capacity and pricing
+                            before approving this property.
+
+                        </div>
+
+
+                    {% else %}
+
+
+                        {% set pricing =
+                            property.pricing_data
+                            |fromjson
+                        %}
+
+
+                        <!-- ==============================
+                             INDIVIDUAL PRICING
+                        =============================== -->
+
+                        {% if property.pricing_method
+                              == "individual" %}
+
+
+                            {% if pricing %}
+
+                                <table class="pricing-table">
+
+                                    <thead>
+
+                                        <tr>
+
+                                            <th>
+                                                Guests
+                                            </th>
+
+                                            <th>
+                                                Price / Day
+                                            </th>
+
+                                        </tr>
+
+                                    </thead>
+
+
+                                    <tbody>
+
+
+                                        {% for item in pricing %}
+
+
+                                            <tr>
+
+                                                <td class="guest-count">
+
+                                                    {{ item.guests }}
+
+                                                    {% if item.guests == 1 %}
+
+                                                        Guest
+
+                                                    {% else %}
+
+                                                        Guests
+
+                                                    {% endif %}
+
+                                                </td>
+
+
+                                                <td class="price">
+
+                                                    ₹{{ "%.2f"|format(
+                                                        item.price|float
+                                                    ) }}
+
+                                                </td>
+
+                                            </tr>
+
+
+                                        {% endfor %}
+
+
+                                    </tbody>
+
+                                </table>
+
+                            {% else %}
+
+                                <div class="not-configured">
+
+                                    Individual pricing data
+                                    is not available.
+
+                                </div>
+
+                            {% endif %}
+
+
+                        <!-- ==============================
+                             GROUP PRICING
+                        =============================== -->
+
+                        {% elif property.pricing_method
+                              == "group" %}
+
+
+                            {% if pricing %}
+
+                                <div class="group-list">
+
+
+                                    {% for item in pricing %}
+
+
+                                        <div class="group-row">
+
+
+                                            <div class="group-range">
+
+                                                {{ item.min_guests }}
+
+                                                -
+
+                                                {{ item.max_guests }}
+
+                                                {% if item.min_guests == 1
+                                                      and item.max_guests == 1 %}
+
+                                                    Guest
+
+                                                {% else %}
+
+                                                    Guests
+
+                                                {% endif %}
+
+                                            </div>
+
+
+                                            <div class="group-price">
+
+                                                ₹{{ "%.2f"|format(
+                                                    item.price|float
+                                                ) }}
+                                                / day
+
+                                            </div>
+
+
+                                        </div>
+
+
+                                    {% endfor %}
+
+
+                                </div>
+
+                            {% else %}
+
+                                <div class="not-configured">
+
+                                    Group pricing data
+                                    is not available.
+
+                                </div>
+
+                            {% endif %}
+
+
+                        {% else %}
+
+
+                            <div class="not-configured">
+
+                                Unknown pricing method.
+
+                            </div>
+
+
+                        {% endif %}
+
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <!-- ======================================
+                     REJECTED
+                ====================================== -->
+
+                {% if property.status == "rejected" %}
+
+                    <div class="rejected-box">
+
+                        <strong>
+                            Property rejected
+                        </strong>
+
+                        <br>
+
+                        Please contact Goinn Admin if you
+                        need clarification or want the
+                        property reviewed again.
+
+                    </div>
+
+                {% endif %}
+
+
+            </div>
+
+
+        {% endfor %}
+
+
+    {% else %}
+
+
+        <!-- ==========================================
+             EMPTY STATE
+        ========================================== -->
+
+        <div class="empty-card">
+
+            <div class="empty-icon">
+                🏡
+            </div>
+
+
+            <h3>
+                No Properties Yet
+            </h3>
+
+
+            <p>
+
+                You haven't added any properties.
+                Add your first property to get started.
+
+            </p>
+
+
+            <a
+                href="{{ url_for('add_property') }}"
+                class="add-btn"
+            >
+                + Add New Property
+            </a>
+
+        </div>
+
+
+    {% endif %}
+
+
+    <!-- ==================================================
+         FOOTER LINKS
+    ================================================== -->
+
+    <div class="footer-links">
+
+        <a
+            href="{{ url_for('user_dashboard') }}"
+        >
+            ← Back to User Profile
+        </a>
+
+
+        <a
+            href="{{ url_for('logout') }}"
+        >
+            Logout
+        </a>
+
+    </div>
+
+
+    <section class="owner-profile-danger">
+        <h3>Delete Owner Profile</h3>
+        <p>
+            If you listed a property by mistake and no longer want to use the Owner Profile,
+            you can remove it and return to your User Profile. Your user account will remain active.
+        </p>
+        <button type="button" class="delete-owner-btn" onclick="openOwnerDeleteModal()">
+            Delete Owner Profile
+        </button>
+    </section>
+
+</main>
+
+
+
+
+<style>
+.owner-profile-danger { margin-top: 26px; background: #fff; border: 1px solid #fecaca; border-radius: 14px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+.owner-profile-danger h3 { margin: 0 0 8px; color: #991b1b; font-size: 18px; }
+.owner-profile-danger p { margin: 0 0 14px; color: #6b7280; line-height: 1.55; font-size: 13px; }
+.delete-owner-btn { border: 0; background: #dc2626; color: #fff; padding: 10px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+.delete-owner-btn:hover { background: #b91c1c; }
+.owner-delete-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+.owner-delete-modal.show { display: flex; }
+.owner-delete-box { width: min(520px, 100%); background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+.owner-delete-box h3 { margin: 0 0 10px; color: #991b1b; }
+.owner-delete-box p { color: #4b5563; line-height: 1.55; font-size: 14px; }
+.owner-delete-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+.owner-delete-cancel { border: 1px solid #d1d5db; background: #fff; color: #374151; padding: 10px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+.owner-delete-confirm { border: 0; background: #dc2626; color: #fff; padding: 10px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+</style>
+
+<style>
+.owner-images-section{border-top:1px solid #e5e7eb;padding-top:22px;margin-bottom:22px}.owner-images-title{font-size:19px;font-weight:800;margin-bottom:14px}.owner-image-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.owner-image-card{position:relative;min-height:150px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:11px;padding:8px;overflow:hidden}.owner-image-card img{width:100%;height:110px;object-fit:cover;border-radius:8px}.owner-slot-number{position:absolute;top:5px;left:5px;z-index:2;background:#111827;color:#fff;border-radius:20px;width:24px;height:24px;line-height:24px;text-align:center;font-size:10px;font-weight:800}.owner-image-status{display:block;font-size:10px;font-weight:800;margin-top:4px}.approved-image{color:#15803d}.owner-image-placeholder{min-height:125px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#6b7280;font-size:12px}.owner-image-placeholder small{margin-top:6px;line-height:1.3}.reupload-form{margin-top:5px}.reupload-form input{width:100%;font-size:10px}.reupload-form button{width:100%;margin-top:5px;border:0;background:#2563eb;color:#fff;border-radius:7px;padding:6px;font-size:10px;font-weight:700;cursor:pointer}.owner-image-note{margin-top:10px;color:#6b7280;font-size:12px}@media(max-width:900px){.owner-image-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+
+
+<script>
+function previewOwnerUpload(input, previewId){
+    const preview=document.getElementById(previewId);
+    if(!preview || !input.files || !input.files[0]) return;
+    const reader=new FileReader();
+    reader.onload=function(e){ preview.src=e.target.result; preview.style.display='block'; };
+    reader.readAsDataURL(input.files[0]);
+}
+</script>
+
+<div id="ownerDeleteModal" class="owner-delete-modal" onclick="closeOwnerDeleteModal(event)">
+    <div class="owner-delete-box" onclick="event.stopPropagation()">
+        <h3>Delete Owner Profile?</h3>
+        <p>
+            This will remove your Owner Profile and permanently delete all properties you listed,
+            their property images, blocked dates, and bookings associated with those properties.
+            Your Goinn user account and unrelated user bookings will remain.
+        </p>
+        <p><strong>This action cannot be undone.</strong></p>
+        <div class="owner-delete-actions">
+            <button type="button" class="owner-delete-cancel" onclick="closeOwnerDeleteModal()">Cancel</button>
+            <form method="POST" action="{{ url_for('delete_owner_profile') }}">
+                <button type="submit" class="owner-delete-confirm">Yes, Delete Owner Profile</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function openOwnerDeleteModal() {
+    document.getElementById('ownerDeleteModal').classList.add('show');
+}
+function closeOwnerDeleteModal(event) {
+    if (event && event.target !== event.currentTarget) return;
+    document.getElementById('ownerDeleteModal').classList.remove('show');
+}
+</script>
+
+</body>
+
+</html>

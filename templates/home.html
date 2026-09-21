@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Goinn - Find Your Stay
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7fb;
+            color: #222;
+        }
+
+
+        /* ==================================================
+           NAVBAR
+        ================================================== */
+
+        .navbar {
+            background: #111827;
+            color: white;
+            padding: 18px 30px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+
+        .nav-links {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+
+        .nav-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white !important;
+            text-decoration: none !important;
+            background: transparent;
+            padding: 9px 14px;
+            border-radius: 7px;
+            font-weight: 600;
+        }
+
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.1);
+            color: white !important;
+        }
+
+
+        /* ==================================================
+           HERO
+        ================================================== */
+
+        .hero {
+            background: white;
+            text-align: center;
+            padding: 70px 20px 55px;
+        }
+
+
+        .hero h1 {
+            font-size: 42px;
+            margin: 0 0 15px;
+        }
+
+
+        .hero p {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+
+        /* ==================================================
+           SEARCH BOX
+        ================================================== */
+
+        .search-box {
+            max-width: 1100px;
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns:
+                1.5fr
+                1fr
+                1fr
+                0.8fr
+                auto;
+
+            gap: 10px;
+
+            align-items: end;
+        }
+
+
+        .search-field {
+            text-align: left;
+        }
+
+
+        .search-field label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+
+        .search-field input,
+        .search-field select {
+
+            width: 100%;
+
+            padding: 14px;
+
+            border:
+                1px solid #ccc;
+
+            border-radius: 8px;
+
+            font-size: 16px;
+
+            background: white;
+        }
+
+
+        .search-field input:focus,
+        .search-field select:focus {
+
+            outline: none;
+
+            border-color: #111827;
+
+            box-shadow:
+                0 0 0 2px
+                rgba(17,24,39,0.08);
+        }
+
+
+        .search-button {
+
+            padding: 14px 24px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #111827;
+
+            color: white;
+
+            font-size: 16px;
+
+            cursor: pointer;
+
+            height: 48px;
+        }
+
+
+        .search-button:hover {
+            opacity: 0.9;
+        }
+
+
+        .clear-search {
+
+            display: inline-block;
+
+            margin-top: 12px;
+
+            color: #666;
+
+            font-size: 13px;
+
+            text-decoration: none;
+        }
+
+
+        .clear-search:hover {
+            text-decoration: underline;
+        }
+
+
+        /* ==================================================
+           SEARCH ERROR
+        ================================================== */
+
+        .search-error {
+
+            max-width: 1100px;
+
+            margin: 18px auto 0;
+
+            background: #ffe5e5;
+
+            color: #b00020;
+
+            padding: 12px 15px;
+
+            border-radius: 8px;
+
+            text-align: left;
+
+            font-size: 14px;
+        }
+
+
+        /* ==================================================
+           CONTAINER
+        ================================================== */
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+
+        .results-title {
+            margin-bottom: 25px;
+        }
+
+
+        .results-title h2 {
+            margin-bottom: 5px;
+        }
+
+
+        .results-title p {
+            color: #666;
+        }
+
+
+        /* ==================================================
+           PROPERTY GRID
+        ================================================== */
+
+        .property-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fill,
+                    minmax(280px, 1fr)
+                );
+
+            gap: 25px;
+        }
+
+
+        /* ==================================================
+           PROPERTY CARD
+        ================================================== */
+
+        .property-card {
+
+            background: white;
+
+            border-radius: 14px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 3px 12px
+                rgba(0,0,0,0.08);
+        }
+
+
+        .property-image {
+
+            height: 190px;
+
+            background: #e5e7eb;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            color: #777;
+        }
+
+        .property-slider{
+            position:relative;
+            height:190px;
+            background:#e5e7eb;
+            overflow:hidden;
+        }
+        .slider-track{
+            width:100%;
+            height:100%;
+            position:relative;
+        }
+        .slider-slide{
+            position:absolute;
+            inset:0;
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            opacity:0;
+            transition:opacity .35s ease;
+        }
+        .slider-slide.active{opacity:1;}
+        .slider-arrow{
+            position:absolute;
+            top:50%;
+            transform:translateY(-50%);
+            width:38px;
+            height:38px;
+            border:0;
+            border-radius:50%;
+            background:rgba(17,24,39,.72);
+            color:#fff;
+            font-size:28px;
+            line-height:34px;
+            cursor:pointer;
+            z-index:3;
+        }
+        .slider-prev{left:10px;}
+        .slider-next{right:10px;}
+        .slider-dots{
+            position:absolute;
+            left:0;
+            right:0;
+            bottom:10px;
+            display:flex;
+            justify-content:center;
+            gap:5px;
+            z-index:3;
+        }
+        .slider-dot{
+            width:8px;
+            height:8px;
+            border:0;
+            padding:0;
+            border-radius:50%;
+            background:rgba(255,255,255,.65);
+            cursor:pointer;
+        }
+        .slider-dot.active{background:#fff;transform:scale(1.2);}
+        .property-image-empty{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#777;}
+
+
+        .property-content {
+            padding: 20px;
+        }
+
+
+        .property-content h3 {
+
+            margin-top: 0;
+
+            margin-bottom: 8px;
+        }
+
+
+        .location {
+
+            color: #666;
+
+            margin-bottom: 15px;
+        }
+
+
+        .guest-info {
+
+            margin-bottom: 10px;
+        }
+
+
+        .price {
+
+            font-size: 20px;
+
+            font-weight: bold;
+        }
+
+
+        .price-note {
+
+            font-size: 13px;
+
+            font-weight: normal;
+
+            color: #777;
+        }
+
+
+        /* ==================================================
+           AVAILABILITY
+        ================================================== */
+
+        .availability-type-badge {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #eef2ff;
+            color: #3730a3;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .request-badge {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #fff7ed;
+            color: #9a3412;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .available-badge {
+
+            display: inline-block;
+
+            margin-top: 10px;
+
+            padding: 6px 10px;
+
+            background: #e8f7ee;
+
+            color: #187a3d;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+        }
+
+
+        /* ==================================================
+           VIEW BUTTON
+        ================================================== */
+
+        .view-button {
+
+            display: block;
+
+            text-align: center;
+
+            background: #111827;
+
+            color: white;
+
+            padding: 12px;
+
+            margin-top: 18px;
+
+            border-radius: 8px;
+
+            text-decoration: none;
+        }
+
+
+        .view-button:hover {
+            opacity: 0.9;
+        }
+
+
+        /* ==================================================
+           EMPTY
+        ================================================== */
+
+        .empty {
+
+            background: white;
+
+            padding: 50px;
+
+            text-align: center;
+
+            border-radius: 12px;
+
+            color: #666;
+        }
+
+
+        .empty h3 {
+
+            margin-top: 0;
+
+            color: #333;
+        }
+
+
+        /* ==================================================
+           ABOUT
+        ================================================== */
+
+        .about {
+
+            background: white;
+
+            margin-top: 50px;
+
+            padding: 50px 20px;
+
+            text-align: center;
+        }
+
+
+        .about-content {
+
+            max-width: 800px;
+
+            margin: auto;
+        }
+
+
+        .about h2 {
+            margin-bottom: 15px;
+        }
+
+
+        /* ==================================================
+           FOOTER
+        ================================================== */
+
+        .footer {
+
+            background: #111827;
+
+            color: white;
+
+            text-align: center;
+
+            padding: 25px;
+        }
+
+
+        /* ==================================================
+           MOBILE
+        ================================================== */
+
+        @media (max-width: 850px) {
+
+            .search-box {
+
+                grid-template-columns:
+                    1fr 1fr;
+
+            }
+
+
+            .search-field:first-child {
+
+                grid-column:
+                    1 / -1;
+
+            }
+
+
+            .search-button {
+
+                width: 100%;
+
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .navbar {
+
+                padding:
+                    15px 20px;
+            }
+
+
+            .logo {
+
+                font-size:
+                    24px;
+            }
+
+
+            .nav-links {
+
+                gap: 3px;
+            }
+
+
+            .nav-links a {
+
+                padding:
+                    7px 8px;
+
+                font-size:
+                    13px;
+            }
+
+
+            .hero {
+
+                padding:
+                    50px 15px;
+            }
+
+
+            .hero h1 {
+
+                font-size:
+                    32px;
+            }
+
+
+            .search-box {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .search-field:first-child {
+
+                grid-column:
+                    auto;
+
+            }
+
+
+            .search-button {
+
+                width:
+                    100%;
+            }
+
+
+            .container {
+
+                padding:
+                    0 15px;
+            }
+
+        }
+
+    </style>
+
+
+<style>.property-image img{width:100%;height:190px;object-fit:cover;display:block}</style>
+</head>
+
+
+<body>
+
+
+<!-- ==================================================
+     NAVIGATION
+================================================== -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        Goinn
+    </div>
+
+
+    <div class="nav-links">
+
+        {% if current_user.is_authenticated %}
+
+            {% if current_user.role == "admin" %}
+
+                <a href="{{ url_for('admin_dashboard') }}">
+                    Admin
+                </a>
+
+            {% else %}
+
+                <a href="{{ url_for('user_dashboard') }}" class="profile-nav-link">
+                    User Profile
+                </a>
+
+                {% if current_user.role == "owner" %}
+
+                    <a href="{{ url_for('owner_dashboard') }}" class="profile-nav-link">
+                        Owner Profile
+                    </a>
+
+                {% endif %}
+
+            {% endif %}
+
+
+            <a href="{{ url_for('logout') }}" class="profile-nav-link">
+                Logout
+            </a>
+
+        {% else %}
+
+            <a href="{{ url_for('login') }}">
+                Sign in
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</nav>
+
+
+<!-- ==================================================
+     HERO
+================================================== -->
+
+<section class="hero">
+
+    <h1>
+        Find Your Perfect Stay
+    </h1>
+
+
+    <p>
+        Search available properties by location,
+        dates and number of guests.
+    </p>
+
+
+    <!-- ==================================================
+         SEARCH FORM
+    ================================================== -->
+
+    <form
+        method="GET"
+        action="{{ url_for('home') }}"
+        class="search-box"
+    >
+
+
+        <!-- LOCATION -->
+
+        <div class="search-field">
+
+            <label for="location">
+                Location
+            </label>
+
+            <input
+                type="text"
+                id="location"
+                name="location"
+                value="{{ search_location }}"
+                placeholder="e.g. Hyderabad"
+                required
+            >
+
+        </div>
+
+
+        <!-- CHECK-IN -->
+
+        <div class="search-field">
+
+            <label for="check_in">
+                Check-in
+            </label>
+
+            <input type="text" id="check_in" name="check_in"
+                value="{{ check_in }}"
+                min="{{ today }}"
+                required
+             readonly autocomplete="off" class="goinn-date-input" placeholder="Select check-in date">
+
+        </div>
+
+
+        <!-- CHECK-OUT -->
+
+        <div class="search-field">
+
+            <label for="check_out">
+                Check-out
+            </label>
+
+            <input type="text" id="check_out" name="check_out"
+                value="{{ check_out }}"
+                min="{{ tomorrow }}"
+                required
+             readonly autocomplete="off" class="goinn-date-input" placeholder="Select check-out date">
+
+        </div>
+
+
+        <!-- GUESTS -->
+
+        <div class="search-field">
+
+            <label for="guests">
+                Guests
+            </label>
+
+            <select
+                id="guests"
+                name="guests"
+                required
+            >
+
+                <option value="">
+                    Guests
+                </option>
+
+
+                {% for number in range(1, 101) %}
+
+                    <option
+                        value="{{ number }}"
+                        {% if search_guests|string == number|string %}
+                            selected
+                        {% endif %}
+                    >
+
+                        {{ number }}
+                        Guest{% if number > 1 %}s{% endif %}
+
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <!-- SEARCH -->
+
+        <button
+            type="submit"
+            class="search-button"
+        >
+            Search
+        </button>
+
+
+    </form>
+
+
+    {% if search_error %}
+
+        <div class="search-error">
+
+            {{ search_error }}
+
+        </div>
+
+    {% endif %}
+
+
+    {% if search_performed %}
+
+        <a
+            href="{{ url_for('home') }}"
+            class="clear-search"
+        >
+            Clear search
+        </a>
+
+    {% endif %}
+
+</section>
+
+
+<!-- ==================================================
+     SEARCH RESULTS
+================================================== -->
+
+{% if search_performed %}
+
+<div class="container">
+
+
+    <div class="results-title">
+
+        <h2>
+            Available Properties
+        </h2>
+
+
+        {% if search_location %}
+
+            <p>
+
+                Properties available in
+                <strong>
+                    {{ search_location }}
+                </strong>
+
+                {% if check_in and check_out %}
+
+                    from
+                    <strong>
+                        {{ check_in }}
+                    </strong>
+
+                    to
+
+                    <strong>
+                        {{ check_out }}
+                    </strong>
+
+                {% endif %}
+
+
+                {% if search_guests %}
+
+                    for
+
+                    <strong>
+                        {{ search_guests }}
+                        guest{% if search_guests|int > 1 %}s{% endif %}
+                    </strong>
+
+                {% endif %}
+
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    {% if properties %}
+
+
+        <div class="property-grid">
+
+
+            {% for property in properties %}
+
+
+                <div class="property-card">
+
+
+                    <!-- PROPERTY IMAGE -->
+
+                    {% set approved_images = property.property_images|selectattr('status','equalto','approved')|list %}
+                    <div class="property-slider" data-slider>
+                        {% if approved_images %}
+                            <div class="slider-track">
+                                {% for img in approved_images %}
+                                    <img class="slider-slide{% if loop.first %} active{% endif %}" src="{{ url_for('property_image', image_id=img.id) }}" alt="{{ property.property_name|e }} image {{ loop.index }}" loading="lazy">
+                                {% endfor %}
+                            </div>
+                            {% if approved_images|length > 1 %}
+                                <button class="slider-arrow slider-prev" type="button" aria-label="Previous image">‹</button>
+                                <button class="slider-arrow slider-next" type="button" aria-label="Next image">›</button>
+                                <div class="slider-dots">
+                                    {% for img in approved_images %}
+                                        <button type="button" class="slider-dot{% if loop.first %} active{% endif %}" aria-label="Image {{ loop.index }}"></button>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="property-image-empty">Property Image</div>
+                        {% endif %}
+                    </div>
+
+
+                    <div class="property-content">
+
+
+                        <h3>
+
+                            {{ property.property_name }}
+
+                        </h3>
+
+
+                        <div class="location">
+
+                            📍 {{ property.location }}
+
+                        </div>
+
+
+                        <div class="guest-info">
+
+                            Maximum guests:
+
+                            <strong>
+
+                                {{ property.max_guests }}
+
+                            </strong>
+
+                        </div>
+
+
+                        <!-- PRICE FOR SEARCHED GUESTS -->
+
+                        {% if search_guests %}
+
+                            {% set selected_price =
+                                get_property_price(
+                                    property,
+                                    search_guests|int
+                                )
+                            %}
+
+
+                            <div class="price">
+
+                                {% if selected_price is not none %}
+
+                                    ₹{{ "%.2f"|format(
+                                        selected_price
+                                    ) }}
+
+                                    <span class="price-note">
+
+                                        / day for
+                                        {{ search_guests }}
+                                        guest{% if search_guests|int > 1 %}s{% endif %}
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="price-note">
+
+                                        Price not configured
+
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endif %}
+
+
+                        {% if property.availability_type == "type3" %}
+
+                            <span class="request-badge">
+                                ☎ Availability confirmation required
+                            </span>
+
+                        {% else %}
+
+                            <span class="available-badge">
+                                ✓ Available for selected dates
+                            </span>
+
+                        {% endif %}
+
+                        <span class="availability-type-badge">
+                            {% if property.availability_type == "type2" %}
+                                Type 2 · Goinn Managed
+                            {% elif property.availability_type == "type3" %}
+                                Type 3 · Check Availability
+                            {% else %}
+                                Type 1 · Owner Managed
+                            {% endif %}
+                        </span>
+
+
+                        <!-- VIEW PROPERTY -->
+
+                        <a
+                            href="{{ url_for(
+                                'property_details',
+                                property_id=property.id
+                            ) }}"
+                            class="view-button"
+                        >
+
+                            View Property
+
+                        </a>
+
+
+                    </div>
+
+                </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
+
+    {% else %}
+
+
+        <div class="empty">
+
+            <h3>
+                No properties available
+            </h3>
+
+
+            <p>
+
+                No approved property matches your
+                location, dates and number of guests.
+
+            </p>
+
+
+            <p>
+
+                Try different dates, another location,
+                or a different number of guests.
+
+            </p>
+
+        </div>
+
+
+    {% endif %}
+
+
+</div>
+
+{% endif %}
+
+
+<!-- ==================================================
+     ABOUT GOINN
+================================================== -->
+
+<section class="about">
+
+    <div class="about-content">
+
+
+        <h2>
+            About Goinn
+        </h2>
+
+
+        <p>
+
+            Goinn is a platform that connects guests
+            looking for comfortable stays with property
+            owners offering unique places to stay.
+
+        </p>
+
+
+        <p>
+
+            Search for a location, select your dates
+            and number of guests, explore available
+            properties and connect with the owner.
+
+        </p>
+
+
+    </div>
+
+</section>
+
+
+<!-- ==================================================
+     FOOTER
+================================================== -->
+
+<footer class="footer">
+
+    © 2026 Goinn.
+    All rights reserved.
+
+</footer>
+
+
+
+
+
+
+<style>
+/* ==========================================================
+   GOINN CUSTOM DATE PICKER
+   Fully custom calendar - no browser/Google/Apple calendar
+========================================================== */
+.goinn-date-input{
+    cursor:pointer !important;
+    background:#fff !important;
+    user-select:none;
+}
+
+.goinn-date-picker{
+    position:fixed;
+    z-index:2147483647;
+    width:360px;
+    max-width:calc(100vw - 32px);
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:18px;
+    box-shadow:0 20px 55px rgba(0,0,0,.20);
+    padding:16px;
+    display:none;
+    overflow:hidden;
+}
+
+.goinn-date-picker.show{display:block;}
+
+.goinn-calendar-head{
+    display:grid;
+    grid-template-columns:40px 1fr 40px;
+    align-items:center;
+    gap:8px;
+    margin-bottom:14px;
+}
+
+.goinn-calendar-title{
+    min-width:0;
+    text-align:center;
+    font-size:18px;
+    line-height:40px;
+    font-weight:800;
+    color:#111827;
+    white-space:nowrap;
+}
+
+.goinn-calendar-nav{
+    width:40px !important;
+    min-width:40px !important;
+    max-width:40px !important;
+    height:40px !important;
+    min-height:40px !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:0 !important;
+    border-radius:10px !important;
+    background:#f3f4f6 !important;
+    color:#111827 !important;
+    font-size:24px !important;
+    line-height:40px !important;
+    cursor:pointer !important;
+    box-shadow:none !important;
+}
+
+.goinn-calendar-nav:disabled{
+    opacity:.35;
+    cursor:not-allowed !important;
+}
+
+.goinn-calendar-weekdays,
+.goinn-calendar-grid{
+    width:100%;
+    display:grid !important;
+    grid-template-columns:repeat(7,minmax(0,1fr)) !important;
+    gap:5px !important;
+}
+
+.goinn-calendar-weekday{
+    min-width:0;
+    text-align:center;
+    font-size:11px;
+    line-height:30px;
+    font-weight:800;
+    color:#6b7280;
+}
+
+.goinn-calendar-day{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    height:40px !important;
+    min-height:40px !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:1px solid transparent !important;
+    border-radius:10px !important;
+    background:#f8fafc !important;
+    color:#111827 !important;
+    cursor:pointer !important;
+    font-family:inherit !important;
+    font-size:14px !important;
+    font-weight:700 !important;
+    line-height:40px !important;
+    box-shadow:none !important;
+}
+
+.goinn-calendar-day:hover:not(:disabled){
+    background:#e8f0ff !important;
+    border-color:#c7d7fe !important;
+}
+
+.goinn-calendar-day.today{
+    border-color:#2563eb !important;
+}
+
+.goinn-calendar-day.selected{
+    background:#2563eb !important;
+    border-color:#2563eb !important;
+    color:#fff !important;
+}
+
+.goinn-calendar-day.range{
+    background:#dbeafe !important;
+    border-color:#dbeafe !important;
+    color:#1e40af !important;
+}
+
+.goinn-calendar-day.disabled{
+    color:#c9cdd4 !important;
+    background:#f8fafc !important;
+    border-color:transparent !important;
+    cursor:not-allowed !important;
+}
+
+.goinn-calendar-day.empty{
+    background:transparent !important;
+    border-color:transparent !important;
+    cursor:default !important;
+}
+
+.goinn-calendar-hint{
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid #e5e7eb;
+    color:#6b7280;
+    font-size:12px;
+    line-height:18px;
+    text-align:center;
+}
+
+.goinn-calendar-clear{
+    width:100% !important;
+    height:40px !important;
+    min-height:40px !important;
+    margin:10px 0 0 !important;
+    padding:0 !important;
+    border:0 !important;
+    border-radius:10px !important;
+    background:#f3f4f6 !important;
+    color:#111827 !important;
+    font-family:inherit !important;
+    font-size:14px !important;
+    font-weight:700 !important;
+    cursor:pointer !important;
+    box-shadow:none !important;
+}
+
+.goinn-calendar-clear:hover{
+    background:#e5e7eb !important;
+}
+
+@media (max-width:600px){
+    .goinn-date-picker{
+        width:calc(100vw - 32px);
+        max-width:calc(100vw - 32px);
+        padding:14px;
+        border-radius:16px;
+    }
+
+    .goinn-calendar-head{
+        grid-template-columns:38px 1fr 38px;
+        gap:6px;
+        margin-bottom:12px;
+    }
+
+    .goinn-calendar-nav{
+        width:38px !important;
+        min-width:38px !important;
+        max-width:38px !important;
+        height:38px !important;
+        min-height:38px !important;
+        line-height:38px !important;
+    }
+
+    .goinn-calendar-title{
+        font-size:17px;
+        line-height:38px;
+    }
+
+    .goinn-calendar-weekdays,
+    .goinn-calendar-grid{
+        gap:4px !important;
+    }
+
+    .goinn-calendar-weekday{
+        line-height:28px;
+        font-size:10px;
+    }
+
+    .goinn-calendar-day{
+        height:38px !important;
+        min-height:38px !important;
+        line-height:38px !important;
+        border-radius:9px !important;
+        font-size:13px !important;
+    }
+}
+</style>
+
+<div id="goinnDatePicker" class="goinn-date-picker" role="dialog" aria-label="Goinn date picker">
+    <div class="goinn-calendar-head">
+        <button type="button" class="goinn-calendar-nav" id="goinnPrevMonth" aria-label="Previous month">‹</button>
+        <div class="goinn-calendar-title" id="goinnCalendarTitle"></div>
+        <button type="button" class="goinn-calendar-nav" id="goinnNextMonth" aria-label="Next month">›</button>
+    </div>
+
+    <div class="goinn-calendar-weekdays" aria-hidden="true">
+        <div class="goinn-calendar-weekday">Sun</div>
+        <div class="goinn-calendar-weekday">Mon</div>
+        <div class="goinn-calendar-weekday">Tue</div>
+        <div class="goinn-calendar-weekday">Wed</div>
+        <div class="goinn-calendar-weekday">Thu</div>
+        <div class="goinn-calendar-weekday">Fri</div>
+        <div class="goinn-calendar-weekday">Sat</div>
+    </div>
+
+    <div id="goinnCalendarGrid" class="goinn-calendar-grid"></div>
+
+    <div class="goinn-calendar-hint" id="goinnCalendarHint">Select a date</div>
+
+    <button type="button" class="goinn-calendar-clear" id="goinnClearDate">Clear</button>
+</div>
+
+<script>
+(function(){
+    const checkIn = document.getElementById("check_in");
+    const checkOut = document.getElementById("check_out");
+    const picker = document.getElementById("goinnDatePicker");
+
+    if (!checkIn || !checkOut || !picker) return;
+
+    const title = document.getElementById("goinnCalendarTitle");
+    const grid = document.getElementById("goinnCalendarGrid");
+    const hint = document.getElementById("goinnCalendarHint");
+    const prev = document.getElementById("goinnPrevMonth");
+    const next = document.getElementById("goinnNextMonth");
+    const clear = document.getElementById("goinnClearDate");
+
+    const todayText = "{{ today }}";
+    const tomorrowText = "{{ tomorrow }}";
+
+    let activeInput = null;
+    let viewDate = null;
+
+    function parseISO(value){
+        if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+        const parts = value.split("-").map(Number);
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+
+    function iso(date){
+        return date.getFullYear() + "-" +
+            String(date.getMonth() + 1).padStart(2,"0") + "-" +
+            String(date.getDate()).padStart(2,"0");
+    }
+
+    function startOfMonth(date){
+        return new Date(date.getFullYear(), date.getMonth(), 1);
+    }
+
+    function nextDay(value){
+        const date = parseISO(value);
+        if (!date) return tomorrowText;
+        date.setDate(date.getDate() + 1);
+        return iso(date);
+    }
+
+    function positionPicker(){
+        if (!activeInput) return;
+
+        const rect = activeInput.getBoundingClientRect();
+        const mobile = window.innerWidth <= 600;
+        const pickerWidth = mobile
+            ? window.innerWidth - 32
+            : Math.min(360, window.innerWidth - 32);
+
+        picker.style.width = pickerWidth + "px";
+
+        let left = mobile
+            ? 16
+            : rect.left;
+
+        left = Math.max(16, Math.min(left, window.innerWidth - pickerWidth - 16));
+
+        const pickerHeight = picker.offsetHeight || 390;
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const spaceAbove = rect.top;
+
+        let top;
+
+        if (spaceBelow >= pickerHeight + 10 || spaceBelow >= spaceAbove) {
+            top = rect.bottom + 8;
+        } else {
+            top = rect.top - pickerHeight - 8;
+        }
+
+        top = Math.max(8, Math.min(top, window.innerHeight - pickerHeight - 8));
+
+        picker.style.left = left + "px";
+        picker.style.top = top + "px";
+    }
+
+    function openPicker(input){
+        activeInput = input;
+
+        const selected = parseISO(input.value);
+        const fallback = parseISO(todayText) || new Date();
+        const base = selected || fallback;
+
+        viewDate = startOfMonth(base);
+
+        picker.classList.add("show");
+        render();
+
+        requestAnimationFrame(positionPicker);
+    }
+
+    function closePicker(){
+        picker.classList.remove("show");
+        activeInput = null;
+    }
+
+    function render(){
+        if (!activeInput || !viewDate) return;
+
+        const year = viewDate.getFullYear();
+        const month = viewDate.getMonth();
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        title.textContent = viewDate.toLocaleString("en-US", {
+            month:"long",
+            year:"numeric"
+        });
+
+        grid.innerHTML = "";
+
+        const minDate = activeInput === checkOut
+            ? (checkIn.value ? nextDay(checkIn.value) : tomorrowText)
+            : todayText;
+
+        for (let i = 0; i < firstDay; i++) {
+            const empty = document.createElement("div");
+            empty.className = "goinn-calendar-day empty";
+            empty.setAttribute("aria-hidden", "true");
+            grid.appendChild(empty);
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(year, month, day);
+            const value = iso(date);
+            const button = document.createElement("button");
+
+            button.type = "button";
+            button.className = "goinn-calendar-day";
+            button.textContent = day;
+            button.setAttribute("aria-label", value);
+
+            if (value === todayText) button.classList.add("today");
+            if (value === checkIn.value || value === checkOut.value) {
+                button.classList.add("selected");
+            }
+
+            if (checkIn.value && checkOut.value &&
+                value > checkIn.value && value < checkOut.value) {
+                button.classList.add("range");
+            }
+
+            if (value < minDate) {
+                button.disabled = true;
+                button.classList.add("disabled");
+            } else {
+                button.addEventListener("click", function(){
+                    if (activeInput === checkIn) {
+                        checkIn.value = value;
+
+                        if (checkOut.value && checkOut.value <= checkIn.value) {
+                            checkOut.value = "";
+                        }
+
+                        checkIn.dispatchEvent(new Event("change", {bubbles:true}));
+
+                        // Immediately move to checkout selection.
+                        openPicker(checkOut);
+                    } else {
+                        if (value <= checkIn.value) return;
+
+                        checkOut.value = value;
+                        checkOut.dispatchEvent(new Event("change", {bubbles:true}));
+                        closePicker();
+                    }
+                });
+            }
+
+            grid.appendChild(button);
+        }
+
+        const minMonth = startOfMonth(parseISO(todayText) || new Date());
+        const currentMonth = startOfMonth(viewDate);
+        prev.disabled = currentMonth <= minMonth;
+
+        hint.textContent = activeInput === checkIn
+            ? "Select check-in date"
+            : (checkIn.value ? "Select check-out date" : "Select check-in date first");
+
+        requestAnimationFrame(positionPicker);
+    }
+
+    checkIn.addEventListener("click", function(){
+        openPicker(checkIn);
+    });
+
+    checkOut.addEventListener("click", function(){
+        if (!checkIn.value) {
+            openPicker(checkIn);
+            return;
+        }
+        openPicker(checkOut);
+    });
+
+    checkIn.addEventListener("change", function(){
+        if (checkOut.value && checkOut.value <= checkIn.value) {
+            checkOut.value = "";
+        }
+    });
+
+    checkOut.addEventListener("change", function(){
+        if (checkIn.value && checkOut.value <= checkIn.value) {
+            checkOut.value = "";
+        }
+    });
+
+    prev.addEventListener("click", function(event){
+        event.preventDefault();
+        event.stopPropagation();
+
+        const candidate = new Date(
+            viewDate.getFullYear(),
+            viewDate.getMonth() - 1,
+            1
+        );
+
+        const minMonth = startOfMonth(parseISO(todayText) || new Date());
+
+        if (candidate >= minMonth) {
+            viewDate = candidate;
+            render();
+        }
+    });
+
+    next.addEventListener("click", function(event){
+        event.preventDefault();
+        event.stopPropagation();
+
+        viewDate = new Date(
+            viewDate.getFullYear(),
+            viewDate.getMonth() + 1,
+            1
+        );
+
+        render();
+    });
+
+    clear.addEventListener("click", function(event){
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (activeInput === checkIn) {
+            checkIn.value = "";
+            checkOut.value = "";
+        } else {
+            checkOut.value = "";
+        }
+
+        closePicker();
+    });
+
+    document.addEventListener("click", function(event){
+        if (!picker.classList.contains("show")) return;
+
+        if (!picker.contains(event.target) &&
+            event.target !== checkIn &&
+            event.target !== checkOut) {
+            closePicker();
+        }
+    });
+
+    window.addEventListener("resize", function(){
+        if (picker.classList.contains("show")) positionPicker();
+    });
+
+    window.addEventListener("scroll", function(){
+        if (picker.classList.contains("show")) positionPicker();
+    }, true);
+})();
+</script>
+
+
+<script>
+(function(){
+    document.querySelectorAll('[data-slider]').forEach(function(slider){
+        const slides=Array.from(slider.querySelectorAll('.slider-slide'));
+        const dots=Array.from(slider.querySelectorAll('.slider-dot'));
+        if(slides.length<=1)return;
+        let index=0;
+        function show(i){
+            index=(i+slides.length)%slides.length;
+            slides.forEach((s,n)=>s.classList.toggle('active',n===index));
+            dots.forEach((d,n)=>d.classList.toggle('active',n===index));
+        }
+        const prev=slider.querySelector('.slider-prev');
+        const next=slider.querySelector('.slider-next');
+        if(prev)prev.addEventListener('click',function(e){e.preventDefault();show(index-1);});
+        if(next)next.addEventListener('click',function(e){e.preventDefault();show(index+1);});
+        dots.forEach((d,n)=>d.addEventListener('click',function(e){e.preventDefault();show(n);}));
+        let timer=setInterval(function(){show(index+1);},4000);
+        slider.addEventListener('mouseenter',function(){clearInterval(timer);});
+        slider.addEventListener('mouseleave',function(){timer=setInterval(function(){show(index+1);},4000);});
+    });
+})();
+</script>
+</body>
+
+</html>
