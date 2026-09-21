@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Availability - Goinn</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        .header {
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 16px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .header-btn {
+            text-decoration: none;
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            background: #f3f4f6;
+        }
+
+        .logout {
+            background: #111827;
+            color: white;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 18px;
+        }
+
+        .page-header {
+            margin-bottom: 20px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 7px;
+            font-size: 28px;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #6b7280;
+        }
+
+        .type-badge {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #dbeafe;
+            color: #1d4ed8;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 5px 22px rgba(0,0,0,.05);
+            margin-bottom: 20px;
+        }
+
+        .property-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .property-selector label {
+            font-weight: 700;
+        }
+
+        .property-selector select {
+            min-width: 320px;
+            padding: 11px 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 9px;
+            background: white;
+            font-size: 14px;
+        }
+
+        .instructions {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            gap: 10px;
+        }
+
+        .month-title {
+            font-size: 21px;
+            font-weight: 800;
+            text-align: center;
+            flex: 1;
+        }
+
+        .month-btn {
+            border: none;
+            background: #111827;
+            color: white;
+            border-radius: 9px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .month-btn:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        .weekdays,
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+
+        .weekday {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 800;
+            color: #6b7280;
+            padding: 10px 4px;
+        }
+
+        .calendar-day {
+            min-height: 92px;
+            border: 1px solid #edf0f3;
+            padding: 7px;
+            position: relative;
+        }
+
+        .day-button {
+            width: 100%;
+            min-height: 76px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            padding: 8px;
+            text-align: left;
+            background: transparent;
+        }
+
+        .day-number {
+            font-size: 13px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .available {
+            background: #ecfdf5;
+        }
+
+        .available:hover {
+            background: #d1fae5;
+        }
+
+        .blocked {
+            background: #fff7ed;
+        }
+
+        .blocked:hover {
+            background: #ffedd5;
+        }
+
+        .booked {
+            background: #fee2e2;
+        }
+
+        .past {
+            background: #f3f4f6;
+            color: #9ca3af;
+        }
+
+        .outside {
+            background: #fafafa;
+            border-color: #fafafa;
+        }
+
+        .day-button:disabled {
+            cursor: not-allowed;
+        }
+
+        .status-text {
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .available .status-text {
+            color: #047857;
+        }
+
+        .blocked .status-text {
+            color: #c2410c;
+        }
+
+        .booked .status-text {
+            color: #b91c1c;
+        }
+
+        .past .status-text {
+            color: #9ca3af;
+        }
+
+        .legend {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid #eee;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+        .legend-box {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .legend-available {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+        }
+
+        .legend-blocked {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+        }
+
+        .legend-booked {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+        }
+
+        .legend-past {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 25px;
+            color: #6b7280;
+            font-size: 14px;
+            grid-column: 1 / -1;
+        }
+
+        .empty {
+            text-align: center;
+            color: #6b7280;
+            padding: 30px;
+        }
+
+        @media (max-width: 700px) {
+            .header {
+                padding: 14px 15px;
+            }
+
+            .logo {
+                font-size: 21px;
+            }
+
+            .header-btn {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            .container {
+                margin: 20px auto;
+                padding: 0 10px;
+            }
+
+            .card {
+                padding: 14px;
+                overflow-x: auto;
+            }
+
+            .property-selector {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .property-selector select {
+                min-width: 100%;
+            }
+
+            .calendar-day {
+                min-height: 65px;
+                padding: 3px;
+            }
+
+            .day-button {
+                min-height: 57px;
+                padding: 5px;
+            }
+
+            .day-number {
+                font-size: 11px;
+            }
+
+            .status-text {
+                font-size: 8px;
+            }
+
+            .weekday {
+                font-size: 9px;
+                padding: 7px 2px;
+            }
+
+            .calendar-header {
+                gap: 5px;
+            }
+
+            .month-btn {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            .month-title {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="logo">Goinn</div>
+
+    <div class="header-right">
+        <a href="{{ url_for('admin_dashboard') }}" class="header-btn">
+            Admin Dashboard
+        </a>
+
+        <a href="{{ url_for('logout') }}" class="header-btn logout">
+            Logout
+        </a>
+    </div>
+</header>
+
+<main class="container">
+
+    <div class="page-header">
+        <h1>Property Availability Calendar</h1>
+
+        <p>
+            Manage availability for properties where Goinn manually coordinates
+            with the property owner.
+        </p>
+
+        <span class="type-badge">
+            TYPE 2 — GOINN MANAGED
+        </span>
+    </div>
+
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div class="instructions"
+                     style="
+                        {% if category == 'danger' %}
+                            background:#fef2f2;
+                            border-color:#fecaca;
+                            color:#b91c1c;
+                        {% elif category == 'success' %}
+                            background:#ecfdf5;
+                            border-color:#a7f3d0;
+                            color:#047857;
+                        {% endif %}
+                     ">
+
+                    {{ message }}
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+    {% endwith %}
+
+
+    {% if properties %}
+
+        <div class="card">
+
+            <div class="property-selector">
+
+                <label for="propertySelect">
+                    Property
+                </label>
+
+                <select
+                    id="propertySelect"
+                    onchange="changeProperty(this.value)"
+                >
+
+                    {% for p in properties %}
+
+                        <option
+                            value="{{ p.id }}"
+                            {% if selected_property and selected_property.id == p.id %}
+                                selected
+                            {% endif %}
+                        >
+
+                            {{ p.property_name }} — {{ p.location }}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        {% if selected_property %}
+
+            <div class="instructions">
+
+                <strong>How Property availability works:</strong><br>
+
+                Click an available future date to block it when the property
+                owner confirms that the property is unavailable.
+
+                Click a date marked <strong>Blocked by Goinn</strong> to make
+                it available again.
+
+                Approved booking dates are locked automatically.
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="calendar-header">
+
+                    <button
+                        type="button"
+                        id="previousButton"
+                        class="month-btn"
+                        onclick="previousMonth()"
+                    >
+                        ←
+                    </button>
+
+                    <div
+                        id="monthTitle"
+                        class="month-title"
+                    ></div>
+
+                    <button
+                        type="button"
+                        class="month-btn"
+                        onclick="nextMonth()"
+                    >
+                        →
+                    </button>
+
+                </div>
+
+
+                <div class="weekdays">
+
+                    <div class="weekday">Sun</div>
+                    <div class="weekday">Mon</div>
+                    <div class="weekday">Tue</div>
+                    <div class="weekday">Wed</div>
+                    <div class="weekday">Thu</div>
+                    <div class="weekday">Fri</div>
+                    <div class="weekday">Sat</div>
+
+                </div>
+
+
+                <div
+                    id="calendarGrid"
+                    class="calendar-grid"
+                ></div>
+
+
+                <div class="legend">
+
+                    <div class="legend-item">
+                        <span class="legend-box legend-available"></span>
+                        Available
+                    </div>
+
+                    <div class="legend-item">
+                        <span class="legend-box legend-blocked"></span>
+                        Blocked by Goinn
+                    </div>
+
+                    <div class="legend-item">
+                        <span class="legend-box legend-booked"></span>
+                        Approved Booking
+                    </div>
+
+                    <div class="legend-item">
+                        <span class="legend-box legend-past"></span>
+                        Past Date
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+    {% else %}
+
+        <div class="card empty">
+
+            <h3>No approved properties available</h3>
+
+            <p>
+                Approve a property from the Admin Dashboard
+                to manage its calendar here.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</main>
+
+
+<script>
+
+    const propertyId =
+        {{ selected_property.id if selected_property else 'null' }};
+
+    const today = new Date();
+
+    today.setHours(0, 0, 0, 0);
+
+    let currentMonth =
+        new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            1
+        );
+
+
+    function formatDate(date) {
+
+        const year =
+            date.getFullYear();
+
+        const month =
+            String(
+                date.getMonth() + 1
+            ).padStart(2, "0");
+
+        const day =
+            String(
+                date.getDate()
+            ).padStart(2, "0");
+
+        return (
+            year +
+            "-" +
+            month +
+            "-" +
+            day
+        );
+    }
+
+
+    function changeProperty(id) {
+
+        if (!id) {
+            return;
+        }
+
+        /*
+         * IMPORTANT:
+         * The Flask route requires property_id.
+         *
+         * Do NOT use:
+         * url_for('admin_type2_calendar')
+         *
+         * because property_id is mandatory.
+         */
+
+        window.location.href =
+            "/admin/property/" +
+            encodeURIComponent(id) +
+            "/calendar";
+    }
+
+
+    function previousMonth() {
+
+        currentMonth =
+            new Date(
+                currentMonth.getFullYear(),
+                currentMonth.getMonth() - 1,
+                1
+            );
+
+        renderCalendar();
+    }
+
+
+    function nextMonth() {
+
+        currentMonth =
+            new Date(
+                currentMonth.getFullYear(),
+                currentMonth.getMonth() + 1,
+                1
+            );
+
+        renderCalendar();
+    }
+
+
+    function renderCalendar() {
+
+        const grid =
+            document.getElementById(
+                "calendarGrid"
+            );
+
+        const title =
+            document.getElementById(
+                "monthTitle"
+            );
+
+        const previousButton =
+            document.getElementById(
+                "previousButton"
+            );
+
+
+        if (
+            !grid ||
+            !title ||
+            !propertyId
+        ) {
+            return;
+        }
+
+
+        title.textContent =
+            currentMonth.toLocaleString(
+                "default",
+                {
+                    month: "long",
+                    year: "numeric"
+                }
+            );
+
+
+        previousButton.disabled =
+            currentMonth.getFullYear()
+                === today.getFullYear()
+            &&
+            currentMonth.getMonth()
+                === today.getMonth();
+
+
+        grid.innerHTML =
+            '<div class="loading">Loading calendar...</div>';
+
+
+        const year =
+            currentMonth.getFullYear();
+
+        const month =
+            currentMonth.getMonth() + 1;
+
+
+        fetch(
+            "/admin/property/" +
+            encodeURIComponent(propertyId) +
+            "/calendar/data?year=" +
+            encodeURIComponent(year) +
+            "&month=" +
+            encodeURIComponent(month)
+        )
+
+        .then(function(response) {
+
+            if (!response.ok) {
+                throw new Error(
+                    "Calendar request failed"
+                );
+            }
+
+            return response.json();
+
+        })
+
+        .then(function(data) {
+
+            if (data.status !== "ok") {
+
+                throw new Error(
+                    data.message ||
+                    "Calendar error"
+                );
+
+            }
+
+            drawMonth(data);
+
+        })
+
+        .catch(function(error) {
+
+            console.error(error);
+
+            grid.innerHTML =
+                '<div class="loading">' +
+                'Unable to load this month. Please try again.' +
+                '</div>';
+
+        });
+    }
+
+
+    function drawMonth(data) {
+
+        const grid =
+            document.getElementById(
+                "calendarGrid"
+            );
+
+        grid.innerHTML = "";
+
+
+        const year =
+            data.year;
+
+        const monthIndex =
+            data.month - 1;
+
+        const firstDay =
+            new Date(
+                year,
+                monthIndex,
+                1
+            ).getDay();
+
+        const daysInMonth =
+            new Date(
+                year,
+                monthIndex + 1,
+                0
+            ).getDate();
+
+
+        const todayString =
+            data.today;
+
+
+        /*
+         * Backend returns:
+         * - booked_dates
+         * - goinn_blocked_dates
+         *
+         * Keep fallback support for owner_blocked_dates
+         * in case an older response is still running.
+         */
+
+        const bookedDates =
+            new Set(
+                data.booked_dates || []
+            );
+
+
+        const goinnBlockedDates =
+            new Set(
+                data.goinn_blocked_dates ||
+                data.owner_blocked_dates ||
+                []
+            );
+
+
+        for (
+            let i = 0;
+            i < firstDay;
+            i++
+        ) {
+
+            const empty =
+                document.createElement(
+                    "div"
+                );
+
+            empty.className =
+                "calendar-day outside";
+
+            grid.appendChild(empty);
+        }
+
+
+        for (
+            let day = 1;
+            day <= daysInMonth;
+            day++
+        ) {
+
+            const currentDate =
+                new Date(
+                    year,
+                    monthIndex,
+                    day
+                );
+
+
+            const dateString =
+                formatDate(
+                    currentDate
+                );
+
+
+            const cell =
+                document.createElement(
+                    "div"
+                );
+
+            cell.className =
+                "calendar-day";
+
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+            button.type = "button";
+
+            button.className =
+                "day-button";
+
+
+            const number =
+                document.createElement(
+                    "div"
+                );
+
+            number.className =
+                "day-number";
+
+            number.textContent =
+                day;
+
+            button.appendChild(number);
+
+
+            const status =
+                document.createElement(
+                    "div"
+                );
+
+            status.className =
+                "status-text";
+
+
+            /*
+             * PAST
+             */
+
+            if (
+                dateString <
+                todayString
+            ) {
+
+                cell.classList.add(
+                    "past"
+                );
+
+                status.textContent =
+                    "Past";
+
+                button.disabled = true;
+
+            }
+
+
+            /*
+             * APPROVED BOOKING
+             */
+
+            else if (
+                bookedDates.has(
+                    dateString
+                )
+            ) {
+
+                cell.classList.add(
+                    "booked"
+                );
+
+                status.textContent =
+                    "Approved Booking";
+
+                button.disabled = true;
+
+            }
+
+
+            /*
+             * GOINN BLOCKED
+             */
+
+            else if (
+                goinnBlockedDates.has(
+                    dateString
+                )
+            ) {
+
+                cell.classList.add(
+                    "blocked"
+                );
+
+                status.textContent =
+                    "Blocked by Goinn";
+
+                button.title =
+                    "Click to unblock this date";
+
+                button.addEventListener(
+                    "click",
+                    function() {
+
+                        unblockDate(
+                            dateString
+                        );
+
+                    }
+                );
+
+            }
+
+
+            /*
+             * AVAILABLE
+             */
+
+            else {
+
+                cell.classList.add(
+                    "available"
+                );
+
+                status.textContent =
+                    "Available";
+
+                button.title =
+                    "Click to block this date";
+
+                button.addEventListener(
+                    "click",
+                    function() {
+
+                        blockDate(
+                            dateString
+                        );
+
+                    }
+                );
+
+            }
+
+
+            button.appendChild(
+                status
+            );
+
+            cell.appendChild(
+                button
+            );
+
+            grid.appendChild(
+                cell
+            );
+        }
+    }
+
+
+    function blockDate(dateString) {
+
+        if (!propertyId) {
+            return;
+        }
+
+
+        if (
+            !confirm(
+                "Block " +
+                dateString +
+                " for this property?"
+            )
+        ) {
+            return;
+        }
+
+
+        sendCalendarAction(
+            "/admin/property/" +
+            propertyId +
+            "/calendar/block",
+            dateString
+        );
+    }
+
+
+    function unblockDate(dateString) {
+
+        if (!propertyId) {
+            return;
+        }
+
+
+        if (
+            !confirm(
+                "Make " +
+                dateString +
+                " available again?"
+            )
+        ) {
+            return;
+        }
+
+
+        sendCalendarAction(
+            "/admin/property/" +
+            propertyId +
+            "/calendar/unblock",
+            dateString
+        );
+    }
+
+
+    function sendCalendarAction(
+        endpoint,
+        dateString
+    ) {
+
+        const formData =
+            new FormData();
+
+        formData.append(
+            "block_date",
+            dateString
+        );
+
+
+        fetch(
+            endpoint,
+            {
+                method: "POST",
+                body: formData
+            }
+        )
+
+        .then(function(response) {
+
+            if (!response.ok) {
+
+                return response.text()
+                    .then(function(text) {
+
+                        throw new Error(
+                            text ||
+                            "Calendar update failed"
+                        );
+
+                    });
+
+            }
+
+            /*
+             * The Flask routes redirect back
+             * to the calendar after the action.
+             *
+             * Reloading here also guarantees that
+             * the database state is displayed.
+             */
+
+            window.location.reload();
+
+        })
+
+        .catch(function(error) {
+
+            console.error(error);
+
+            alert(
+                "Unable to update the calendar. " +
+                "Please try again."
+            );
+
+        });
+    }
+
+
+    /*
+     * Initial calendar load
+     */
+
+    renderCalendar();
+
+</script>
+
+</body>
+</html>
