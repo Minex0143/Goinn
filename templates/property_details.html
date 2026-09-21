@@ -2102,14 +2102,64 @@ function closeBookingModal(){
     document.body.style.overflow='';
 }
 
-const bookingModal=document.getElementById('bookingModal');
+const bookingModal = document.getElementById('bookingModal');
+
 if(bookingModal){
-    bookingModal.addEventListener('click',function(e){if(e.target===this)closeBookingModal();});
-    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeBookingModal();});
+    bookingModal.addEventListener('click', function(e){
+        if(e.target === this){
+            closeBookingModal();
+        }
+    });
+
+    document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape'){
+            closeBookingModal();
+        }
+    });
 }
+
+
+/* ==================================================
+   BOOKING SUBMITTED / WHATSAPP RETURN STATE
+
+   The booking form submits to Flask and Flask redirects
+   to WhatsApp. When the user comes back from WhatsApp,
+   the browser can restore this page from its old state.
+   Keep a temporary flag so the page reloads and Flask
+   can render the real "Booking request sent" state.
+
+   This does not change the page UI or booking logic.
+================================================== */
 
 const propertyBookingConfirmForm =
     document.getElementById('propertyBookingConfirmForm');
+
+const bookingReturnKey =
+    'goinn_booking_submitted_{{ property.id }}';
+
+function markBookingSubmitted(){
+    try{
+        sessionStorage.setItem(bookingReturnKey, '1');
+    }catch(error){
+        // Ignore storage restrictions.
+    }
+}
+
+function reloadAfterReturningFromWhatsApp(){
+    try{
+        if(sessionStorage.getItem(bookingReturnKey) === '1'){
+
+            // Remove first so the reload cannot loop forever.
+            sessionStorage.removeItem(bookingReturnKey);
+
+            // Flask will now detect the created booking and
+            // render "Booking request sent" + WhatsApp.
+            window.location.reload();
+        }
+    }catch(error){
+        // Ignore storage restrictions.
+    }
+}
 
 if(propertyBookingConfirmForm){
 
@@ -2117,16 +2167,45 @@ if(propertyBookingConfirmForm){
         'submit',
         function(){
 
-            // Close confirmation popup immediately
+            // Remember that this booking was submitted.
+            markBookingSubmitted();
+
+            // Close the confirmation popup immediately.
             closeBookingModal();
 
-            // Restore page scrolling
+            // Restore page scrolling.
             document.body.style.overflow = '';
 
         }
     );
-
 }
+
+
+/*
+ * Mobile browsers/apps commonly return to this page through
+ * visibilitychange after WhatsApp is opened.
+ */
+document.addEventListener('visibilitychange', function(){
+
+    if(document.visibilityState === 'visible'){
+        reloadAfterReturningFromWhatsApp();
+    }
+
+});
+
+
+/*
+ * Desktop/mobile browser Back button may restore the page
+ * from the browser back-forward cache instead of reloading it.
+ */
+window.addEventListener('pageshow', function(event){
+
+    if(event.persisted){
+        reloadAfterReturningFromWhatsApp();
+    }
+
+});
+
 </script>
 
 </body>
