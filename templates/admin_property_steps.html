@@ -266,17 +266,32 @@ function normalizeGroups(addButton=true){
   rows.forEach((row,i)=>{
     const min=row.querySelector('[data-min]'),to=row.querySelector('[data-max]');
     if(!min||!to)return;
-    min.value=start; min.readOnly=true; to.max=max;
+
+    min.value=start;
+    min.readOnly=true;
+    to.max=max;
+
     let end=parseInt(to.value||start,10);
-    if(end<start)end=start;
-    if(i===rows.length-1)end=max;
-    if(end>max)end=max;
+    if(Number.isNaN(end)) end=start;
+    if(end<start) end=start;
+    if(end>max) end=max;
+
+    // Do NOT force the final group to maximum guests.
+    // The admin can set 1-3 for a 5-guest property and then add 4-5.
     to.value=end;
     start=end+1;
   });
-  const old=document.getElementById('addGroupBtn'); if(old)old.remove();
+
+  const old=document.getElementById('addGroupBtn');
+  if(old)old.remove();
+
   if(rows.length && start<=max){
-    const b=document.createElement('button'); b.type='button'; b.id='addGroupBtn'; b.className='btn gray'; b.textContent='+ Add guest group'; b.onclick=()=>addGroupRow();
+    const b=document.createElement('button');
+    b.type='button';
+    b.id='addGroupBtn';
+    b.className='btn gray';
+    b.textContent='+ Add guest group';
+    b.onclick=()=>addGroupRow();
     document.getElementById('groupPricing').appendChild(b);
   }
 }
@@ -288,6 +303,14 @@ if(mg){
   });
   const initialMethod=document.getElementById('pricingMethod')?.value||'individual';
   setPricingMethod(initialMethod);
+
+  // When the admin changes the last group's "To" value (e.g. 5 -> 3),
+  // immediately expose the Add Guest Group button for the remaining guests.
+  document.getElementById('groupPricing')?.addEventListener('input', function(e){
+    if(e.target.matches('input[data-max]')){
+      normalizeGroups(true);
+    }
+  });
 }
 function initTimeDisplays(){for(const [target,inputId,displayId] of [['checkin','checkinValue','checkinDisplay'],['checkout','checkoutValue','checkoutDisplay']]){let input=document.getElementById(inputId),display=document.getElementById(displayId);if(input&&display){let [h,m,ap]=parseTime(input.value);display.textContent=format12(h,m,ap)}}}initTimeDisplays();
 const guestForm=document.getElementById('guestPricingForm');
