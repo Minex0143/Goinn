@@ -70,7 +70,27 @@ body{margin:0;background:#f5f7fb;color:#172033;font-family:Inter,Arial,Helvetica
 <section class="step" id="step5"><button class="step-head" type="button" onclick="toggleStep(5)"><span class="step-num">5</span><span class="step-title"><strong>Property Type</strong><small>Select Guesthouse/Farmhouse, Resort, Hotel or Service Apartment.</small></span><span class="chev">⌄</span></button><div class="step-body"><form method="POST" action="{{ url_for('save_property_type', property_id=property.id) }}"><div class="choice-grid">{% for value,label in property_types %}<label class="choice"><input type="radio" name="property_type" value="{{ value }}" {% if property.property_type==value %}checked{% endif %} required><strong>{{ label }}</strong><small>{% if value=='guesthouse' %}Single property with guest capacity pricing.{% elif value=='resort' %}Multiple units with unit-level pricing.{% elif value=='hotel' %}Room-type inventory and pricing.{% else %}BHK inventory and pricing.{% endif %}</small></label>{% endfor %}</div><div class="actions"><button class="btn primary" type="submit">Save Property Type</button></div></form></div></section>
 
 <!-- STEP 6 -->
-<section class="step" id="step6"><button class="step-head" type="button" onclick="toggleStep(6)"><span class="step-num">6</span><span class="step-title"><strong>Accommodation Details & Images</strong><small>Configure inventory and upload accommodation images.</small></span><span class="chev">⌄</span></button><div class="step-body">
+<section class="step" id="step6"><button class="step-head" type="button" onclick="toggleStep(6)"><span class="step-num">6</span><span class="step-title"><strong>Accommodation Details & Images</strong><small>Configure inventory and manage all property and accommodation images.</small></span><span class="chev">⌄</span></button><div class="step-body">
+<div class="subcard" style="margin-bottom:16px">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+    <div><h4 style="margin:0">Existing Property Gallery</h4><div class="note" style="margin:6px 0 0">These are the original property gallery images uploaded by the owner. They are shown here for reference and are managed through Step 1 approval/re-upload.</div></div>
+    <div class="badge">{{ property.property_images|length }} image{% if property.property_images|length != 1 %}s{% endif %}</div>
+  </div>
+  {% if property.property_images %}
+  <div class="image-grid" style="margin-top:12px">
+    {% for image in property.property_images %}
+    <div class="img-card">
+      <a href="{{ url_for('admin_view_property_image', image_id=image.id) }}" target="_blank"><img src="{{ url_for('admin_view_property_image', image_id=image.id) }}" alt="Property image {{ image.slot }}"></a>
+      <div class="img-body">
+        <div class="img-title">Property Image {{ image.slot }}</div>
+        <div class="img-status {% if image.status=='approved' %}approved{% elif image.status in ['reupload','reupload_required'] %}reupload{% else %}pending{% endif %}">{{ image.status|replace('_',' ')|title }}</div>
+        <div class="mini-actions"><a class="btn gray" href="{{ url_for('admin_view_property_image', image_id=image.id) }}" target="_blank">View</a><a class="btn gray" href="{{ url_for('admin_download_property_image', image_id=image.id) }}">Download</a></div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}<div class="empty-image" style="margin-top:12px">No property gallery images found.</div>{% endif %}
+</div>
 {% if not property.property_type %}<div class="note warn">Select the Property Type in Step 5 first.</div>{% else %}
 <form method="POST" action="{{ url_for('save_property_step_details', property_id=property.id) }}">
 {% if property.property_type=='guesthouse' %}<div class="grid2"><div class="field"><label>Bedrooms</label><input type="number" name="bedrooms" min="1" value="{{ details.get('bedrooms',1) }}" required></div><div class="field"><label>Washrooms</label><input type="number" name="washrooms" min="1" value="{{ details.get('washrooms',1) }}" required></div><div class="field"><label>Swimming Pool</label><select name="swimming_pool" required><option value="">Select</option><option value="yes" {% if details.get('swimming_pool')=='yes' %}selected{% endif %}>Yes</option><option value="no" {% if details.get('swimming_pool')=='no' %}selected{% endif %}>No</option></select></div><div class="field"><label>Kitchen</label><select name="kitchen" required><option value="">Select</option><option value="yes" {% if details.get('kitchen')=='yes' %}selected{% endif %}>Yes</option><option value="no" {% if details.get('kitchen')=='no' %}selected{% endif %}>No</option></select></div></div>
