@@ -1,0 +1,2692 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {{ property.property_name }} - Goinn
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f6f7f8;
+            color: #202124;
+        }
+
+
+        /* ==================================================
+           HEADER
+        ================================================== */
+
+        .header {
+
+            height: 72px;
+
+            background: #111;
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 45px;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 1000;
+
+            box-shadow:
+                0 2px 12px rgba(0,0,0,0.12);
+        }
+
+
+        .logo {
+
+            font-size: 25px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.7px;
+        }
+
+
+        .header-right {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 18px;
+        }
+
+
+        .home-link {
+
+            color: #ddd;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            padding: 9px 14px;
+
+            border-radius: 8px;
+
+            transition: 0.2s;
+        }
+
+
+        .home-link:hover {
+
+            background: #292929;
+
+            color: white;
+        }
+
+
+        /* ==================================================
+           MAIN CONTAINER
+        ================================================== */
+
+        .container {
+
+            max-width: 1180px;
+
+            margin: 0 auto;
+
+            padding: 35px 20px 60px;
+        }
+
+
+        /* ==================================================
+           BREADCRUMB
+        ================================================== */
+
+        .breadcrumb {
+
+            margin-bottom: 22px;
+
+            font-size: 13px;
+
+            color: #777;
+        }
+
+
+        .breadcrumb a {
+
+            color: #555;
+
+            text-decoration: none;
+
+            font-weight: 600;
+        }
+
+
+        .breadcrumb a:hover {
+
+            text-decoration: underline;
+        }
+
+
+        /* ==================================================
+           HERO
+        ================================================== */
+
+        .hero {
+
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 30px;
+
+            box-shadow:
+                0 4px 20px rgba(0,0,0,0.06);
+
+            margin-bottom: 22px;
+        }
+
+
+        .hero-top {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+
+            gap: 25px;
+        }
+
+
+        .property-title {
+
+            margin: 0;
+
+            font-size: 34px;
+
+            line-height: 1.2;
+
+            font-weight: 800;
+
+            letter-spacing: -0.7px;
+        }
+
+
+        .location {
+
+            margin-top: 12px;
+
+            color: #666;
+
+            font-size: 15px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+        }
+
+
+        .location-icon {
+
+            font-size: 17px;
+        }
+
+
+        .availability-badge {
+
+            background: #e7f6eb;
+
+            color: #176b2c;
+
+            padding: 8px 13px;
+
+            border-radius: 30px;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            white-space: nowrap;
+        }
+
+
+        /* ==================================================
+           CONTENT LAYOUT
+        ================================================== */
+
+        .content-layout {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                350px;
+
+            gap: 24px;
+
+            align-items: start;
+        }
+
+
+        /* ==================================================
+           LEFT CONTENT
+        ================================================== */
+
+        .main-content {
+
+            min-width: 0;
+        }
+
+
+        .section-card {
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 25px;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 3px 15px rgba(0,0,0,0.05);
+        }
+
+
+        .section-title {
+
+            margin: 0 0 18px;
+
+            font-size: 20px;
+
+            font-weight: 800;
+        }
+
+
+        /* ==================================================
+           PROPERTY OVERVIEW
+        ================================================== */
+
+        .overview-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 14px;
+        }
+
+
+        .overview-item {
+
+            background: #f7f8fa;
+
+            border: 1px solid #eceef0;
+
+            border-radius: 11px;
+
+            padding: 17px;
+        }
+
+
+        .overview-icon {
+
+            font-size: 22px;
+
+            margin-bottom: 9px;
+        }
+
+
+        .overview-label {
+
+            font-size: 12px;
+
+            color: #777;
+
+            margin-bottom: 5px;
+        }
+
+
+        .overview-value {
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            line-height: 1.4;
+
+            word-break: break-word;
+        }
+
+
+        /* ==================================================
+           ADDRESS
+        ================================================== */
+
+        .address-box {
+
+            background: #f7f8fa;
+
+            border-radius: 11px;
+
+            padding: 18px;
+
+            border: 1px solid #eceef0;
+
+            line-height: 1.6;
+
+            font-size: 14px;
+
+            color: #444;
+        }
+
+
+        /* ==================================================
+           PRICING
+        ================================================== */
+
+        .pricing-description {
+
+            color: #777;
+
+            font-size: 13px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .price-table {
+
+            width: 100%;
+
+            border-collapse: separate;
+
+            border-spacing: 0;
+
+            overflow: hidden;
+
+            border: 1px solid #e5e7ea;
+
+            border-radius: 11px;
+        }
+
+
+        .price-table th {
+
+            background: #f4f5f6;
+
+            color: #666;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.3px;
+
+            padding: 13px 15px;
+
+            text-align: left;
+        }
+
+
+        .price-table td {
+
+            padding: 15px;
+
+            border-top: 1px solid #eee;
+
+            font-size: 14px;
+        }
+
+
+        .price-table tr:first-child td {
+
+            border-top: none;
+        }
+
+
+        .guest-count {
+
+            font-weight: 700;
+        }
+
+
+        .price {
+
+            font-size: 16px;
+
+            font-weight: 800;
+        }
+
+
+        .price-unit {
+
+            color: #777;
+
+            font-size: 12px;
+
+            font-weight: normal;
+        }
+
+
+        .price-table tr:hover td {
+
+            background: #fafafa;
+        }
+
+
+        /* ==================================================
+           RIGHT BOOKING CARD
+        ================================================== */
+
+        .booking-card {
+
+            background: white;
+
+            border-radius: 17px;
+
+            padding: 24px;
+
+            box-shadow:
+                0 5px 22px rgba(0,0,0,0.08);
+
+            position: sticky;
+
+            top: 95px;
+        }
+
+
+        .booking-card-title {
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+            margin-bottom: 7px;
+        }
+
+
+        .booking-card-subtitle {
+
+            color: #777;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+
+            margin-bottom: 22px;
+        }
+
+
+        .booking-price-box {
+
+            background: #f7f8fa;
+
+            border: 1px solid #e8eaed;
+
+            border-radius: 11px;
+
+            padding: 17px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .starting-label {
+
+            color: #777;
+
+            font-size: 12px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .starting-price {
+
+            font-size: 25px;
+
+            font-weight: 800;
+        }
+
+
+        .starting-price span {
+
+            color: #777;
+
+            font-size: 12px;
+
+            font-weight: normal;
+        }
+
+
+        /* ==================================================
+           BOOK BUTTON
+        ================================================== */
+
+        .book-btn {
+
+            display: block;
+
+            width: 100%;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            background: #111;
+
+            color: white;
+
+            padding: 14px 18px;
+
+            border-radius: 10px;
+
+            font-size: 15px;
+
+            font-weight: 800;
+
+            transition:
+                background 0.2s,
+                transform 0.2s;
+        }
+
+
+        .book-btn:hover {
+
+            background: #333;
+
+            transform: translateY(-1px);
+        }
+
+
+        .booking-note {
+
+            text-align: center;
+
+            color: #777;
+
+            font-size: 11px;
+
+            margin-top: 12px;
+
+            line-height: 1.5;
+        }
+
+
+        /* ==================================================
+           CAPACITY
+        ================================================== */
+
+        .capacity-box {
+
+            margin-top: 18px;
+
+            padding-top: 18px;
+
+            border-top: 1px solid #eee;
+        }
+
+
+        .capacity-title {
+
+            font-size: 13px;
+
+            color: #666;
+
+            margin-bottom: 6px;
+        }
+
+
+        .capacity-value {
+
+            font-size: 17px;
+
+            font-weight: 800;
+        }
+
+
+        /* ==================================================
+           FOOTER
+        ================================================== */
+
+        .footer {
+
+            text-align: center;
+
+            margin-top: 15px;
+
+            color: #888;
+
+            font-size: 12px;
+        }
+
+
+        .back-link {
+
+            display: inline-block;
+
+            margin-top: 15px;
+
+            color: #555;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+
+        .back-link:hover {
+
+            color: #111;
+
+            text-decoration: underline;
+        }
+
+
+        /* ==================================================
+           BOOKING REQUEST SENT
+        ================================================== */
+
+        .booking-request-sent {
+            margin-top: 14px;
+            padding: 14px;
+            border-radius: 12px;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+        }
+
+        .booking-request-sent-title {
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .booking-request-sent-text {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #047857;
+        }
+
+        .booking-whatsapp-btn {
+            display: block;
+            width: 100%;
+            margin-top: 12px;
+            padding: 13px 16px;
+            border-radius: 10px;
+            background: #25D366;
+            color: #fff;
+            text-decoration: none;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 800;
+            box-sizing: border-box;
+        }
+
+        .booking-whatsapp-btn:hover {
+            opacity: .92;
+        }
+
+
+        /* ==================================================
+           MOBILE BOOKING BAR
+        ================================================== */
+
+        .mobile-book-bar {
+
+            display: none;
+
+            position: fixed;
+
+            left: 0;
+
+            right: 0;
+
+            bottom: 0;
+
+            background: white;
+
+            padding: 10px 15px calc(10px + env(safe-area-inset-bottom));
+
+            box-shadow:
+                0 -3px 15px rgba(0,0,0,0.12);
+
+            z-index: 2000;
+        }
+
+
+        .mobile-book-inner {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .mobile-price {
+
+            flex: 1;
+        }
+
+
+        .mobile-price-label {
+
+            display: block;
+
+            color: #777;
+
+            font-size: 10px;
+        }
+
+
+        .mobile-price-value {
+
+            font-size: 18px;
+
+            font-weight: 800;
+        }
+
+
+        .mobile-book-btn {
+
+            flex: 1.3;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            background: #111;
+
+            color: white;
+
+            padding: 12px;
+
+            border-radius: 9px;
+
+            font-size: 13px;
+
+            font-weight: 800;
+        }
+
+        .mobile-terms-row {
+            margin-bottom: 9px;
+            padding: 9px 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 9px;
+        }
+
+        .mobile-terms-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            color: #333;
+            font-size: 11px;
+            line-height: 1.35;
+            font-weight: 700;
+        }
+
+        .mobile-terms-label input {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            flex: 0 0 auto;
+        }
+
+        .mobile-terms-label a {
+            color: #111;
+            text-decoration: underline;
+            font-weight: 800;
+        }
+
+        .mobile-book-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .mobile-release-btn {
+            display: block;
+            width: 100%;
+            margin-top: 7px;
+            border: 1px solid #f1b7b7;
+            background: #fff7f7;
+            color: #a61b1b;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+
+
+        /* ==================================================
+           RESPONSIVE
+        ================================================== */
+
+        @media (max-width: 850px) {
+
+            .header {
+
+                padding: 0 20px;
+            }
+
+
+            .container {
+
+                padding:
+                    22px 14px 180px;
+            }
+
+
+            .property-title {
+
+                font-size: 28px;
+            }
+
+
+            .content-layout {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .booking-card {
+
+                display: none;
+            }
+
+
+            .mobile-book-bar {
+
+                display: block;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .header {
+
+                height: 64px;
+            }
+
+
+            .logo {
+
+                font-size: 21px;
+            }
+
+
+            .home-link {
+
+                padding: 7px 9px;
+
+                font-size: 12px;
+            }
+
+
+            .hero {
+
+                padding: 21px;
+
+                border-radius: 14px;
+            }
+
+
+            .hero-top {
+
+                display: block;
+            }
+
+
+            .property-title {
+
+                font-size: 25px;
+            }
+
+
+            .availability-badge {
+
+                display: inline-block;
+
+                margin-top: 13px;
+            }
+
+
+            .section-card {
+
+                padding: 19px;
+
+                border-radius: 13px;
+            }
+
+
+            .overview-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .price-table th,
+            .price-table td {
+
+                padding: 11px 10px;
+            }
+
+
+            .footer {
+
+                margin-bottom: 20px;
+            }
+
+        }
+
+    
+
+        /* ==================================================
+           TERMS ACCEPTANCE / RELEASE BOOKING
+        ================================================== */
+
+        .terms-acceptance-box {
+            margin-top: 15px;
+            padding: 13px 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .terms-checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            color: #333;
+            font-size: 12px;
+            line-height: 1.5;
+            cursor: pointer;
+        }
+
+        .terms-checkbox-label input {
+            margin-top: 3px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            flex: 0 0 auto;
+        }
+
+        .terms-checkbox-label a {
+            color: #111;
+            font-weight: 800;
+            text-decoration: underline;
+        }
+
+        .terms-error {
+            margin-top: 9px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            color: #be123c;
+            font-size: 11px;
+            line-height: 1.45;
+        }
+
+        .terms-missing-box {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 9px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #9a3412;
+            font-size: 11px;
+            line-height: 1.45;
+        }
+
+        .book-btn:disabled,
+        .book-btn-disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .release-booking-form {
+            margin-top: 11px;
+        }
+
+        .release-booking-btn {
+            width: 100%;
+            border: 1px solid #f1b7b7;
+            background: #fff7f7;
+            color: #a61b1b;
+            padding: 10px 13px;
+            border-radius: 9px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .release-booking-btn:hover {
+            background: #ffecec;
+        }
+
+
+/* ==================================================
+   ACCOMMODATION CART
+================================================== */
+.accommodation-cart{margin:0 0 24px;background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:20px;box-shadow:0 8px 30px rgba(15,23,42,.06)}
+.accommodation-cart h2{margin:0 0 6px;font-size:22px}.accommodation-cart-sub{color:#64748b;font-size:13px;line-height:1.5;margin-bottom:18px}
+.accommodation-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.accommodation-option{border:1px solid #e2e8f0;border-radius:16px;padding:16px;background:#fff;display:flex;flex-direction:column;gap:11px;transition:.2s}
+.accommodation-option.selected{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+.accommodation-option-head{display:flex;justify-content:space-between;gap:10px}.accommodation-option-title{font-weight:800;color:#0f172a}.accommodation-option-price{font-weight:800;color:#166534}
+.accommodation-meta{display:flex;flex-wrap:wrap;gap:7px}.accommodation-chip{padding:5px 8px;border-radius:999px;background:#f1f5f9;color:#475569;font-size:11px;font-weight:700}
+.accommodation-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto}.quantity-control{display:flex;align-items:center;border:1px solid #cbd5e1;border-radius:10px;overflow:hidden}.quantity-control button{border:0;background:#f8fafc;width:38px;height:38px;cursor:pointer;font-size:20px}.quantity-control span{min-width:36px;text-align:center;font-weight:800}.add-accommodation{border:0;background:#2563eb;color:#fff;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}.add-accommodation:disabled{background:#cbd5e1;cursor:not-allowed}
+.accommodation-cart-summary{margin-top:18px;padding:16px;border-radius:14px;background:#f8fafc;border:1px solid #e2e8f0}.cart-row{display:flex;justify-content:space-between;gap:15px;padding:8px 0;border-bottom:1px solid #e5e7eb}.cart-row:last-child{border-bottom:0}.cart-total{display:flex;justify-content:space-between;font-weight:900;font-size:17px;margin-top:10px}.cart-warning{margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff7ed;color:#9a3412;font-size:13px}.cart-ok{margin-top:10px;padding:10px 12px;border-radius:10px;background:#ecfdf5;color:#166534;font-size:13px}
+@media(max-width:600px){.accommodation-cart{padding:15px;border-radius:14px}.accommodation-options{grid-template-columns:1fr}.accommodation-option{padding:14px}.accommodation-actions{align-items:stretch;flex-direction:column}.add-accommodation{width:100%}}
+
+        /* ==================================================
+           CLEAN CUSTOMER UI
+        ================================================== */
+        .map-location-card{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:14px;
+            background:#f8fafc;
+            border:1px solid #e5e7eb;
+            border-radius:12px;
+            padding:15px 16px;
+        }
+        .map-location-text{font-size:14px;color:#475569;line-height:1.45}
+        .map-icon-link{
+            flex:0 0 auto;
+            width:44px;height:44px;border-radius:50%;
+            display:inline-flex;align-items:center;justify-content:center;
+            background:#111827;color:#fff;text-decoration:none;
+            font-size:21px;box-shadow:0 5px 14px rgba(15,23,42,.14);
+            transition:transform .18s ease,background .18s ease;
+        }
+        .map-icon-link:hover{transform:translateY(-1px);background:#2563eb}
+        .amenities-more-btn{
+            margin-top:12px;border:1px solid #dbe2ea;background:#fff;
+            color:#111827;border-radius:9px;padding:9px 13px;font-size:12px;
+            font-weight:800;cursor:pointer;
+        }
+        .amenities-more-btn:hover{background:#f8fafc}
+        .amenity-extra{display:none}
+        .accommodation-image-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+        .accommodation-image-gallery img{
+            width:100%;height:190px;object-fit:cover;border-radius:12px;
+            display:block;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease;
+        }
+        .accommodation-image-gallery img:hover{transform:scale(1.015);box-shadow:0 8px 22px rgba(0,0,0,.14)}
+        .accommodation-preview-modal{
+            display:none;position:fixed;inset:0;z-index:100000;
+            background:rgba(2,6,23,.9);align-items:center;justify-content:center;padding:24px;
+        }
+        .accommodation-preview-modal.show{display:flex}
+        .accommodation-preview-content{
+            position:relative;width:min(1100px,94vw);height:min(760px,90vh);
+            display:flex;align-items:center;justify-content:center;
+        }
+        .accommodation-preview-main{max-width:100%;max-height:100%;object-fit:contain;border-radius:12px}
+        .accommodation-preview-close{
+            position:absolute;right:0;top:-12px;width:42px;height:42px;border:0;
+            border-radius:50%;background:#fff;color:#111;font-size:26px;cursor:pointer;z-index:3
+        }
+        .accommodation-preview-arrow{
+            position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;
+            border:0;border-radius:50%;background:rgba(255,255,255,.95);color:#111;
+            font-size:30px;cursor:pointer;z-index:3
+        }
+        .accommodation-preview-arrow.prev{left:10px}
+        .accommodation-preview-arrow.next{right:10px}
+        .accommodation-preview-counter{
+            position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);
+            background:rgba(0,0,0,.72);color:#fff;padding:7px 12px;border-radius:20px;
+            font-size:12px;font-weight:700
+        }
+        .dynamic-price-list{display:grid;gap:9px}
+        .dynamic-price-row{
+            display:flex;align-items:center;justify-content:space-between;gap:14px;
+            padding:12px 14px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;
+            font-size:13px
+        }
+        .dynamic-price-row strong{font-size:14px}
+        .dynamic-price-total{
+            display:flex;justify-content:space-between;gap:14px;margin-top:12px;
+            padding-top:12px;border-top:1px solid #e5e7eb;font-weight:900
+        }
+        @media(max-width:700px){
+            .accommodation-image-gallery{grid-template-columns:repeat(2,1fr)}
+            .accommodation-image-gallery img{height:150px}
+            .map-location-card{align-items:flex-start}
+        }
+        @media(max-width:480px){
+            .accommodation-image-gallery{grid-template-columns:1fr 1fr;gap:8px}
+            .accommodation-image-gallery img{height:125px}
+            .header{padding:0 15px;height:64px}
+            .header-right{gap:4px}
+            .home-link{font-size:12px;padding:8px 9px}
+        }
+
+</style>
+
+
+<style>.property-gallery{margin-bottom:22px}
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.gallery-grid img{width:100%;height:220px;object-fit:cover;border-radius:11px;display:block;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
+.gallery-grid img:hover{transform:scale(1.015);box-shadow:0 8px 22px rgba(0,0,0,.16)}
+.image-preview-modal{display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.88);align-items:center;justify-content:center;padding:28px}
+.image-preview-modal.show{display:flex}
+.image-preview-content{position:relative;width:min(1100px,94vw);height:min(760px,90vh);display:flex;align-items:center;justify-content:center}
+.image-preview-main{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px}
+.image-preview-close{position:absolute;right:0;top:-18px;width:42px;height:42px;border:0;border-radius:50%;background:#fff;color:#111;font-size:27px;line-height:42px;cursor:pointer;z-index:3}
+.image-preview-arrow{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border:0;border-radius:50%;background:rgba(255,255,255,.94);color:#111;font-size:30px;line-height:48px;cursor:pointer;z-index:3}
+.image-preview-arrow.prev{left:12px}
+.image-preview-arrow.next{right:12px}
+.image-preview-counter{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:700}
+@media(max-width:600px){
+.gallery-grid{grid-template-columns:1fr 1fr}
+.gallery-grid img{height:150px}
+.image-preview-modal{padding:12px}
+.image-preview-content{width:100%;height:82vh}
+.image-preview-arrow{width:42px;height:42px;font-size:25px;line-height:42px}
+.image-preview-arrow.prev{left:4px}
+.image-preview-arrow.next{right:4px}
+.image-preview-close{right:2px;top:-6px}
+}        /* ==================================================
+           AMENITIES + TERMS
+        ================================================== */
+        .amenities-category-public{margin-bottom:20px}
+        .amenities-category-public:last-child{margin-bottom:0}
+        .amenities-category-public h3{margin:0 0 10px;font-size:15px}
+        .amenities-list-public{display:grid;grid-template-columns:repeat(2,1fr);gap:9px 14px}
+        .amenity-public-item{background:#f7f8fa;border:1px solid #eceef0;border-radius:9px;padding:10px 12px;font-size:13px;line-height:1.4}
+        .terms-public{white-space:pre-wrap;background:#f7f8fa;border:1px solid #eceef0;border-radius:11px;padding:16px;font-size:14px;line-height:1.7;color:#444}
+        @media(max-width:600px){.amenities-list-public{grid-template-columns:1fr}}
+
+</style>
+
+<style>
+.search-selection-card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:18px 20px;margin-bottom:22px;box-shadow:0 3px 15px rgba(0,0,0,.05)}
+.search-selection-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}.edit-selection-btn{border:0;background:#111827;color:#fff;border-radius:9px;padding:9px 15px;font-size:13px;font-weight:800;cursor:pointer}.edit-selection-btn:hover{opacity:.9}
+.search-selection-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.selection-editor{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(15,23,42,.60);z-index:99998}.selection-editor.show{display:flex}.selection-editor-card{width:100%;max-width:480px;background:#fff;border-radius:20px;padding:24px;box-shadow:0 25px 80px rgba(0,0,0,.25)}.selection-editor-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:20px}.selection-editor-head h2{margin:0;font-size:22px}.selection-editor-close{border:0;background:#f1f5f9;color:#111827;width:38px;height:38px;border-radius:50%;font-size:22px;cursor:pointer}.selection-editor-field{margin-bottom:15px}.selection-editor-field label{display:block;font-size:12px;font-weight:800;color:#475569;text-transform:uppercase;margin-bottom:7px}.selection-editor-field input{width:100%;box-sizing:border-box;border:1px solid #dbe0e6;border-radius:10px;padding:13px 12px;font-size:15px;color:#111827;background:#fff}.selection-editor-field input:focus{outline:none;border-color:#111827;box-shadow:0 0 0 3px rgba(17,24,39,.08)}.selection-editor-field small{display:block;margin-top:5px;color:#64748b;font-size:11px}.selection-editor-error{background:#fff1f2;border:1px solid #fecdd3;color:#be123c;border-radius:9px;padding:10px 12px;font-size:12px;margin-bottom:14px}.selection-editor-actions{display:flex;gap:10px;margin-top:20px}.selection-editor-cancel,.selection-editor-save{flex:1;border:0;border-radius:10px;padding:13px 15px;font-size:14px;font-weight:800;cursor:pointer}.selection-editor-cancel{background:#f1f5f9;color:#334155}.selection-editor-save{background:#111827;color:#fff}.custom-date-input{width:100%;box-sizing:border-box;border:1px solid #dbe0e6;border-radius:10px;padding:13px 12px;font-size:15px;color:#111827;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;cursor:pointer}.custom-date-input:hover{border-color:#111827}.custom-date-input:focus{outline:none;border-color:#111827;box-shadow:0 0 0 3px rgba(17,24,39,.08)}.custom-date-icon{font-size:17px;color:#64748b}.edit-calendar{display:none;border:1px solid #e2e8f0;border-radius:14px;background:#fff;padding:13px;margin:-2px 0 16px;box-shadow:0 12px 30px rgba(15,23,42,.10)}.edit-calendar.show{display:block}.edit-calendar-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.edit-calendar-month{font-size:15px;font-weight:800;color:#111827}.edit-calendar-nav{width:34px;height:34px;border:0;border-radius:9px;background:#f1f5f9;color:#111827;font-size:23px;line-height:1;cursor:pointer}.edit-calendar-nav:disabled{opacity:.35;cursor:not-allowed}.edit-calendar-weekdays,.edit-calendar-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.edit-calendar-weekdays span{text-align:center;font-size:10px;font-weight:800;color:#64748b;padding:5px 0}.edit-calendar-day{border:0;background:transparent;border-radius:8px;min-height:38px;font-size:13px;color:#111827;cursor:pointer}.edit-calendar-day:hover:not(:disabled){background:#f1f5f9}.edit-calendar-day.other-month{color:#cbd5e1}.edit-calendar-day:disabled{color:#cbd5e1;cursor:not-allowed}.edit-calendar-day.today{box-shadow:inset 0 0 0 1px #111827}.edit-calendar-day.selected{background:#111827;color:#fff;font-weight:800}.edit-calendar-day.range{background:#e2e8f0}.edit-calendar-day.checkout-min{box-shadow:inset 0 0 0 1px #64748b}.edit-calendar-hint{margin-top:10px;font-size:11px;color:#64748b;text-align:center}
+
+.search-selection-item{background:#f7f8fa;border:1px solid #eceef0;border-radius:11px;padding:13px 15px}
+.search-selection-label{font-size:11px;color:#777;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.search-selection-value{font-size:15px;font-weight:800;color:#111827}
+.booking-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(15,23,42,.60);z-index:99999}
+.booking-modal.show{display:flex}
+.booking-modal-card{width:100%;max-width:560px;max-height:90vh;overflow:auto;background:#fff;border-radius:20px;box-shadow:0 25px 80px rgba(0,0,0,.25);padding:25px}
+.booking-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:18px}
+.booking-modal-head h2{margin:0;font-size:23px}
+.booking-modal-close{border:0;background:#f1f5f9;color:#111827;width:38px;height:38px;border-radius:50%;font-size:22px;cursor:pointer}
+.booking-modal-property{background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:14px;margin-bottom:15px}.booking-modal-property strong{font-size:17px}
+.booking-readonly-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.booking-readonly-item{background:#f8fafc;border:1px solid #e5e7eb;border-radius:11px;padding:12px}
+.booking-readonly-label{display:block;font-size:11px;color:#64748b;font-weight:800;text-transform:uppercase;margin-bottom:4px}.booking-readonly-value{font-size:14px;font-weight:750;color:#0f172a;word-break:break-word}
+.booking-modal-summary{margin-top:15px;background:#eff6ff;border:1px solid #dbeafe;border-radius:12px;padding:15px}.booking-modal-summary p{margin:6px 0}
+.booking-modal-note{margin:14px 0 0;color:#64748b;font-size:12px;line-height:1.5}.whatsapp-submit{width:100%;border:0;border-radius:11px;background:#25D366;color:#fff;padding:14px 18px;font-size:16px;font-weight:800;cursor:pointer;margin-top:18px}.whatsapp-submit:hover{opacity:.92}
+.login-required-box{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:12px;padding:14px;line-height:1.5}.login-required-box a{font-weight:800;color:#9a3412}
+@media(max-width:700px){.search-selection-grid{grid-template-columns:1fr}.booking-readonly-grid{grid-template-columns:1fr}.search-selection-head{align-items:flex-start}.edit-selection-btn{padding:8px 12px}.selection-editor-card{max-height:90vh;overflow:auto;padding:20px}.selection-editor-actions{flex-direction:column-reverse}}
+
+/* FINAL CLEAN CUSTOMER UI */
+.hero{padding:0;overflow:hidden}
+.hero-top{padding:26px 30px 22px;align-items:center}
+.hero-top > div:first-child{min-width:0}
+.property-gallery{margin-top:0}
+.property-gallery .gallery-grid{grid-template-columns:repeat(4,1fr)}
+.overview-grid-three{grid-template-columns:repeat(3,1fr)}
+.booking-card .booking-card-subtitle{margin-bottom:18px}
+.mobile-price-label{font-size:11px}
+.mobile-price{min-width:0}
+@media(max-width:900px){
+  .property-gallery .gallery-grid{grid-template-columns:repeat(3,1fr)}
+  .overview-grid-three{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .hero-top{padding:20px 18px}
+  .property-gallery{padding:14px}
+  .property-gallery .gallery-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  .property-gallery .gallery-grid img{height:150px}
+  .overview-grid-three{grid-template-columns:1fr}
+  .property-title{font-size:24px}
+}
+@media(max-width:380px){
+  .property-gallery .gallery-grid img{height:125px}
+  .home-link{padding:7px 8px;font-size:11px}
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==================================================
+     HEADER
+================================================== -->
+
+<header class="header">
+
+    <div class="logo">
+        Goinn
+    </div>
+
+
+    <div class="header-right">
+
+        <a
+            href="/"
+            class="home-link"
+        >
+            Home
+        </a>
+
+        {% if current_user.is_authenticated %}
+        <a
+            href="{{ url_for('user_dashboard') }}"
+            class="home-link"
+        >
+            Dashboard
+        </a>
+        {% endif %}
+
+    </div>
+
+</header>
+
+
+<!-- ==================================================
+     MAIN
+================================================== -->
+
+<main class="container">
+
+
+    <!-- ==================================================
+         BREADCRUMB
+    ================================================== -->
+
+    <div class="breadcrumb">
+
+        <a href="/">
+            Home
+        </a>
+
+        <span>
+            &nbsp; / &nbsp;
+        </span>
+
+        Property Details
+
+    </div>
+
+
+    <!-- ==================================================
+         HERO
+    ================================================== -->
+
+    <section class="hero">
+
+        <div class="hero-top">
+
+
+            <div>
+
+                <h1 class="property-title">
+
+                    {{ property.property_name }}
+
+                </h1>
+</div>
+
+
+            <div class="availability-badge">
+
+                ✓ Available for Booking
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         SEARCH SELECTION FROM HOME
+    ================================================== -->
+    
+
+
+    <!-- ==================================================
+         APPROVED PROPERTY IMAGES
+    ================================================== -->
+    {% set approved_images = property.property_images|selectattr('status','equalto','approved')|list %}
+    {% if approved_images %}
+    <section class="section-card property-gallery">
+<div class="gallery-grid" id="propertyGallery">
+            {% for image in approved_images %}
+                <img
+                    src="{{ url_for('property_image', image_id=image.id) }}"
+                    alt="{{ property.property_name|e }} image {{ loop.index }}"
+                    onclick="openPropertyImagePreview({{ loop.index0 }})"
+                >
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- PROPERTY IMAGE PREVIEW -->
+    <div id="imagePreviewModal" class="image-preview-modal" aria-hidden="true" onclick="closePropertyImagePreview(event)">
+        <div class="image-preview-content">
+            <button type="button" class="image-preview-close" aria-label="Close image preview" onclick="closePropertyImagePreview()">×</button>
+
+            <button type="button" class="image-preview-arrow prev" aria-label="Previous image" onclick="changePropertyImage(-1, event)">‹</button>
+
+            <img id="imagePreviewMain" class="image-preview-main" src="" alt="Property image preview">
+
+            <button type="button" class="image-preview-arrow next" aria-label="Next image" onclick="changePropertyImage(1, event)">›</button>
+
+            <div id="imagePreviewCounter" class="image-preview-counter"></div>
+        </div>
+    </div>
+    {% endif %}
+
+    
+            <section class="search-selection-card">
+        <div class="search-selection-head">
+            <div class="section-title" style="margin-bottom:0;">Dates &amp; Guests</div>
+            {% if not booking_request_sent and selected_booking_state != "booked" %}
+            <button type="button" class="edit-selection-btn" onclick="openSelectionEditor()">✎ Edit</button>
+            {% endif %}
+        </div>
+        <div class="search-selection-grid">
+            <div class="search-selection-item"><div class="search-selection-label">Check-in</div><div class="search-selection-value">{% if selected_check_in %}{{ selected_check_in }}{% else %}Not selected{% endif %}</div></div>
+            <div class="search-selection-item"><div class="search-selection-label">Check-out</div><div class="search-selection-value">{% if selected_check_out %}{{ selected_check_out }}{% else %}Not selected{% endif %}</div></div>
+            <div class="search-selection-item"><div class="search-selection-label">Guests</div><div class="search-selection-value">{% if selected_guests %}{{ selected_guests }} Guest{% if selected_guests|int > 1 %}s{% endif %}{% else %}Not selected{% endif %}</div></div>
+        </div>
+    </section>
+
+    <!-- ==================================================
+         EDIT DATES & GUESTS
+    ================================================== -->
+    {% if not booking_request_sent and selected_booking_state != "booked" %}
+    <div id="selectionEditor" class="selection-editor" aria-hidden="true">
+        <div class="selection-editor-card" role="dialog" aria-modal="true" aria-labelledby="selectionEditorTitle">
+            <div class="selection-editor-head">
+                <h2 id="selectionEditorTitle">Edit Dates &amp; Guests</h2>
+                <button type="button" class="selection-editor-close" onclick="closeSelectionEditor()" aria-label="Close">×</button>
+            </div>
+
+            <form method="GET" action="{{ url_for('property_details', property_id=property.id) }}" id="selectionEditForm">
+                <input type="hidden" name="location" value="{{ search_location }}">
+                <input type="hidden" name="edit_selection" value="1">
+
+                <div class="selection-editor-field">
+                    <label for="editCheckInDisplay">Check-in</label>
+                    <button type="button" class="custom-date-input" id="editCheckInDisplay" onclick="openEditCalendar('check_in')">
+                        <span id="editCheckInText">{{ selected_check_in or 'Select check-in date' }}</span>
+                        <span class="custom-date-icon">▣</span>
+                    </button>
+                    <input type="hidden" id="editCheckIn" name="check_in" value="{{ selected_check_in }}" required>
+                </div>
+
+                <div class="selection-editor-field">
+                    <label for="editCheckOutDisplay">Check-out</label>
+                    <button type="button" class="custom-date-input" id="editCheckOutDisplay" onclick="openEditCalendar('check_out')">
+                        <span id="editCheckOutText">{{ selected_check_out or 'Select check-out date' }}</span>
+                        <span class="custom-date-icon">▣</span>
+                    </button>
+                    <input type="hidden" id="editCheckOut" name="check_out" value="{{ selected_check_out }}" required>
+                </div>
+
+                <div id="editCalendar" class="edit-calendar" aria-hidden="true">
+                    <div class="edit-calendar-head">
+                        <button type="button" class="edit-calendar-nav" onclick="changeEditCalendarMonth(-1)" aria-label="Previous month">‹</button>
+                        <div id="editCalendarMonth" class="edit-calendar-month"></div>
+                        <button type="button" class="edit-calendar-nav" onclick="changeEditCalendarMonth(1)" aria-label="Next month">›</button>
+                    </div>
+                    <div class="edit-calendar-weekdays">
+                        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                    </div>
+                    <div id="editCalendarDays" class="edit-calendar-days"></div>
+                    <div class="edit-calendar-hint" id="editCalendarHint">Select a check-in date.</div>
+                </div>
+
+                <div class="selection-editor-field">
+                    <label for="editGuests">Guests</label>
+                    <input type="number" id="editGuests" name="guests" value="{{ selected_guests }}" min="1" required>
+                </div>
+
+                <div
+                    id="selectionEditError"
+                    class="selection-editor-error"
+                    {% if edit_error %}style="display:block;"{% else %}style="display:none;"{% endif %}
+                >{{ edit_error }}</div>
+
+                <div class="selection-editor-actions">
+                    <button type="button" class="selection-editor-cancel" onclick="closeSelectionEditor()">Cancel</button>
+                    <button type="submit" class="selection-editor-save">Update Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}{% if property.property_type in ['resort','hotel','service_apartment'] and accommodation_options %}
+    <section class="accommodation-cart" id="accommodationCart">
+        <h2>Select your accommodation</h2>
+        <div class="accommodation-cart-sub">Choose the rooms, units or flats you need. Your selections work like a cart and are checked against availability for your dates.</div>
+        <div class="accommodation-options" id="accommodationOptions">
+            {% for option in accommodation_options %}
+            <article class="accommodation-option" data-key="{{ option.key }}" data-price="{{ option.price }}" data-capacity="{{ option.max_guests }}" data-count="{{ option.count }}">
+                <div class="accommodation-option-head"><div class="accommodation-option-title">{{ option.label }}</div><div class="accommodation-option-price">₹{{ '%.2f'|format(option.price) }}/day</div></div>
+                <div class="accommodation-meta"><span class="accommodation-chip">Up to {{ option.max_guests }} guests</span><span class="accommodation-chip"><span class="available-count">{{ option.count }}</span> available</span></div>
+                <div class="accommodation-actions">
+                    <div class="quantity-control"><button type="button" onclick="changeAccommodation('{{ option.key }}',-1)">−</button><span id="qty-{{ option.key|replace(':','-') }}">0</span><button type="button" onclick="changeAccommodation('{{ option.key }}',1)">+</button></div>
+                    <button type="button" class="add-accommodation" onclick="addAccommodation('{{ option.key }}')">Add</button>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        <div class="accommodation-cart-summary" id="cartSummary"></div>
+    </section>
+    {% endif %}
+
+    <!-- ==================================================
+         CONTENT
+    ================================================== -->
+
+    <div class="content-layout">
+
+
+        <!-- ==================================================
+             LEFT
+        ================================================== -->
+
+        <div class="main-content">
+
+
+            <!-- ==================================================
+                 PROPERTY OVERVIEW
+            ================================================== -->
+            <section class="section-card">
+                <h2 class="section-title">Property Overview</h2>
+                <div class="overview-grid overview-grid-three">
+                    <div class="overview-item">
+                        <div class="overview-icon">📍</div>
+                        <div class="overview-label">Location</div>
+                        <div class="overview-value">{{ property.location }}</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-icon">🏠</div>
+                        <div class="overview-label">Property Type</div>
+                        <div class="overview-value">
+                            {% if property.property_type == 'guesthouse' %}Guesthouse / Farmhouse
+                            {% elif property.property_type == 'resort' %}Resort
+                            {% elif property.property_type == 'hotel' %}Hotel
+                            {% else %}Service Apartment{% endif %}
+                        </div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-icon">🛏️</div>
+                        <div class="overview-label">
+                            {% if property.property_type == 'resort' %}Total Units
+                            {% elif property.property_type == 'service_apartment' %}Total Flats
+                            {% else %}Total Rooms{% endif %}
+                        </div>
+                        <div class="overview-value">
+                            {% if property.property_type == 'guesthouse' %}
+                                {{ (property_step_details or {}).get('bedrooms','-') }}
+                            {% elif property.property_type == 'resort' %}
+                                {{ (property_step_details or {}).get('unit_count','-') }}
+                            {% elif property.property_type == 'hotel' %}
+                                {{ (property_step_details or {}).get('total_rooms','-') }}
+                            {% else %}
+                                {{ (property_step_details or {}).get('total_flats','-') }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </section>
+<!-- ==================================================
+                 ACCOMMODATION IMAGES
+            ================================================== -->
+            {% if property_step_images %}
+            <section class="section-card">
+                <h2 class="section-title">Accommodation Images</h2>
+                <div class="accommodation-image-gallery" id="accommodationGallery">
+                    {% for image in property_step_images %}
+                    <img
+                        src="{{ url_for('public_property_step_image', image_id=image.id) }}"
+                        alt="Accommodation image {{ loop.index }}"
+                        loading="lazy"
+                        onclick="openAccommodationImagePreview({{ loop.index0 }})"
+                    >
+                    {% endfor %}
+                </div>
+            </section>
+
+            <div id="accommodationPreviewModal" class="accommodation-preview-modal" aria-hidden="true" onclick="closeAccommodationImagePreview(event)">
+                <div class="accommodation-preview-content">
+                    <button type="button" class="accommodation-preview-close" onclick="closeAccommodationImagePreview()" aria-label="Close">×</button>
+                    <button type="button" class="accommodation-preview-arrow prev" onclick="changeAccommodationImage(-1,event)" aria-label="Previous image">‹</button>
+                    <img id="accommodationPreviewMain" class="accommodation-preview-main" src="" alt="Accommodation image preview">
+                    <button type="button" class="accommodation-preview-arrow next" onclick="changeAccommodationImage(1,event)" aria-label="Next image">›</button>
+                    <div id="accommodationPreviewCounter" class="accommodation-preview-counter"></div>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+
+            <!-- ==================================================
+                 AMENITIES
+            ================================================== -->
+            {% set public_amenities = public_amenities or {} %}
+            <section class="section-card" id="amenitiesSection">
+                <h2 class="section-title">Amenities</h2>
+                {% if public_amenities %}
+                    {% set ns = namespace(count=0) %}
+                    {% for category, items in public_amenities.items() %}
+                        {% if items %}
+                        <div class="amenities-category-public">
+                            <h3>{{ category }}</h3>
+                            <div class="amenities-list-public">
+                                {% for item in items %}
+                                    <div class="amenity-public-item {% if ns.count >= 6 %}amenity-extra{% endif %}">
+                                        ✓ {{ item }}
+                                    </div>
+                                    {% set ns.count = ns.count + 1 %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                    {% if ns.count > 6 %}
+                    <button type="button" class="amenities-more-btn" id="amenitiesMoreBtn" onclick="toggleAllAmenities()">
+                        View all amenities
+                    </button>
+                    {% endif %}
+                {% else %}
+                    <div class="muted">Amenities have not been configured for this property yet.</div>
+                {% endif %}
+            </section>
+
+            <!-- ==================================================
+                 TERMS & CONDITIONS
+            ================================================== -->
+            <section class="section-card" id="propertyTerms">
+                <h2 class="section-title">Terms & Conditions</h2>
+
+                {% if property.terms_conditions %}
+                    <div class="terms-public">{{ property.terms_conditions }}</div>
+                {% else %}
+                    <div class="muted">Terms & Conditions have not been configured for this property yet.</div>
+                {% endif %}
+            </section>
+
+
+            <!-- ==================================================
+                 PRICING
+            ================================================== -->
+            <section class="section-card" id="pricingSection">
+                <h2 class="section-title">Pricing</h2>
+                <div class="pricing-description" id="pricingDescription">
+                    {% if property.property_type in ['resort','hotel','service_apartment'] %}
+                        Your price updates automatically when you select rooms, units or flats above.
+                    {% else %}
+                        Price based on your selected guest count.
+                    {% endif %}
+                </div>
+
+                <div id="dynamicPricing">
+                    {% if property.property_type in ['resort','hotel','service_apartment'] %}
+                        <div class="muted">Select your accommodation above to see the price.</div>
+                    {% elif selected_guests and selected_price is not none %}
+                        <div class="dynamic-price-list">
+                            <div class="dynamic-price-row">
+                                <span>{{ selected_guests }} Guest{% if selected_guests|int > 1 %}s{% endif %}</span>
+                                <strong>₹{{ "%.2f"|format(selected_price) }} / day</strong>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="muted">Pricing will be shown for the guest count selected on Home.</div>
+                    {% endif %}
+                </div>
+            </section>
+
+        </div>
+
+
+        <!-- ==================================================
+             RIGHT BOOKING CARD
+        ================================================== -->
+
+        <aside class="booking-card">
+            <div class="booking-card-title">Book this property</div>
+
+            {% if booking_request_sent %}
+
+                <div class="booking-request-sent">
+                    <div class="booking-request-sent-title">✓ Booking request sent</div>
+                    <div class="booking-request-sent-text">
+                        Your booking request for the selected dates has been recorded.
+                        These dates are reserved for this request until it is approved,
+                        rejected, or released.
+                    </div>
+                </div>
+<a
+                    href="{{ booking_whatsapp_url }}"
+                    class="booking-whatsapp-btn"
+                    target="_blank"
+                    rel="noopener"
+                >
+                    💬 WhatsApp
+                </a>
+
+                <form
+                    method="POST"
+                    action="{{ url_for('user_release_booking', booking_id=booking_request.id) }}"
+                    class="release-booking-form"
+                    onsubmit="return confirm('Did you return without sending the WhatsApp message? Release this booking request and make these dates available again?');"
+                >
+                    <button type="submit" class="release-booking-btn">
+                        I didn't send the WhatsApp message — Release dates
+                    </button>
+                </form>
+
+                <div class="booking-note">
+                    If you did not send the WhatsApp message, release the request above.
+                    The property will then become available to everyone again.
+                </div>
+
+            {% else %}
+
+                {% if selected_booking_state == "booked" %}
+
+                    <div class="booking-request-sent" style="background:#fff1f2;border-color:#fecdd3;">
+                        <div class="booking-request-sent-title" style="color:#be123c;">🔒 Booked for selected dates</div>
+                        <div class="booking-request-sent-text">
+                            This property has already been approved/booked for the dates you selected.
+                            Please go back to Home and choose another property or different dates.
+                        </div>
+                    </div>
+
+                {% elif selected_booking_state == "freezing" %}
+
+                    <div class="booking-request-sent" style="background:#fff7ed;border-color:#fed7aa;">
+                        <div class="booking-request-sent-title" style="color:#c2410c;">⏳ Property temporarily frozen</div>
+                        <div class="booking-request-sent-text">
+                            Another user is currently trying to book this property for the selected dates.
+                            The booking request is held for up to 15 minutes. If it is not completed,
+                            the dates will become available again.
+                        </div>
+                    </div>
+
+                {% elif selected_booking_state == "unavailable" %}
+
+                    <div class="booking-request-sent" style="background:#f8fafc;border-color:#cbd5e1;">
+                        <div class="booking-request-sent-title" style="color:#475569;">Unavailable for selected dates</div>
+                        <div class="booking-request-sent-text">
+                            These dates are currently unavailable. Please select different dates.
+                        </div>
+                    </div>
+
+                {% else %}
+
+                <div class="booking-card-subtitle">
+                    Your dates, guest count and account details are taken from the previous step.
+                    Review them before continuing to WhatsApp.
+                </div>
+{% if property.terms_conditions %}
+
+                    <div class="terms-acceptance-box">
+                        <label class="terms-checkbox-label">
+                            <input
+                                type="checkbox"
+                                id="acceptTerms"
+                                onchange="updateBookButton()"
+                            >
+                            <span>
+                                I have read and agree to the
+                                <a href="#propertyTerms">Terms & Conditions</a>
+                                of this property.
+                            </span>
+                        </label>
+                    </div>
+
+                    {% if terms_error %}
+                        <div class="terms-error">
+                            {{ terms_error }}
+                        </div>
+                    {% endif %}
+
+                    <button
+                        type="button"
+                        id="bookButton"
+                        class="book-btn"
+                        onclick="openBookingModal()"
+                        disabled
+                    >
+                        Book
+                    </button>
+
+                {% else %}
+
+                    <div class="terms-missing-box">
+                        Terms & Conditions have not been configured for this property.
+                        Booking cannot continue until they are configured.
+                    </div>
+
+                    <button
+                        type="button"
+                        class="book-btn book-btn-disabled"
+                        disabled
+                    >
+                        Book
+                    </button>
+
+                {% endif %}
+
+                <div class="booking-note">
+                    You must accept the Terms & Conditions before the booking confirmation popup can be opened.
+                    To change dates or guests, go back to the Home page.
+                </div>
+
+                {% endif %}
+
+            {% endif %}
+
+        </aside>
+
+
+    </div>
+
+
+    <!-- ==================================================
+         BACK
+    ================================================== -->
+
+    <div class="footer">
+
+        <a
+            href="/"
+            class="back-link"
+        >
+
+            ← Back to all properties
+
+        </a>
+
+    </div>
+
+
+</main>
+
+
+<!-- ==================================================
+     MOBILE BOOKING BAR
+================================================== -->
+<div class="mobile-book-bar">
+
+    {% if not booking_request_sent and selected_booking_state not in ["booked", "freezing", "unavailable"] and property.terms_conditions %}
+        <div class="mobile-terms-row">
+            <label class="mobile-terms-label">
+                <input
+                    type="checkbox"
+                    id="acceptTermsMobile"
+                    onchange="syncTermsFromMobile()"
+                >
+                <span>
+                    I have read and agree to the
+                    <a href="#propertyTerms">Terms &amp; Conditions</a>.
+                </span>
+            </label>
+        </div>
+    {% endif %}
+
+    <div class="mobile-book-inner">
+        <div class="mobile-price"><span class="mobile-price-label">Ready to book?</span></div>
+{% if booking_request_sent %}
+            <a
+                href="{{ booking_whatsapp_url }}"
+                class="mobile-book-btn"
+                target="_blank"
+                rel="noopener"
+            >
+                WhatsApp
+            </a>
+        {% elif selected_booking_state == "booked" %}
+            <button type="button" class="mobile-book-btn" disabled>Booked</button>
+        {% elif selected_booking_state == "freezing" %}
+            <button type="button" class="mobile-book-btn" disabled>Freezing</button>
+        {% elif selected_booking_state == "unavailable" %}
+            <button type="button" class="mobile-book-btn" disabled>Unavailable</button>
+        {% elif property.terms_conditions %}
+            <button
+                type="button"
+                id="mobileBookButton"
+                class="mobile-book-btn"
+                onclick="openBookingModal()"
+                disabled
+            >
+                Book
+            </button>
+        {% else %}
+            <button type="button" class="mobile-book-btn" disabled>Book</button>
+        {% endif %}
+    </div>
+
+    {% if booking_request_sent and booking_request %}
+        <form
+            method="POST"
+            action="{{ url_for('user_release_booking', booking_id=booking_request.id) }}"
+            class="mobile-release-form"
+            onsubmit="return confirm('Did you return without sending the WhatsApp message? Release this booking request and make these dates available again?');"
+        >
+            <button type="submit" class="mobile-release-btn">
+                I didn't send WhatsApp — Release dates
+            </button>
+        </form>
+    {% endif %}
+
+</div>
+
+<!-- ==================================================
+     BOOKING CONFIRMATION POPUP
+================================================== -->
+{% if not booking_request_sent %}
+<div id="bookingModal" class="booking-modal" aria-hidden="true">
+    <div class="booking-modal-card" role="dialog" aria-modal="true" aria-labelledby="bookingModalTitle">
+        <div class="booking-modal-head">
+            <h2 id="bookingModalTitle">Confirm Your Booking</h2>
+            <button type="button" class="booking-modal-close" onclick="closeBookingModal()" aria-label="Close">×</button>
+        </div>
+        <div class="booking-modal-property"><strong>{{ property.property_name }}</strong><br><span>{{ property.location }}</span></div>
+
+        {% if current_user.is_authenticated %}
+        <form method="POST" action="{{ url_for('book_property', property_id=property.id) }}" id="propertyBookingConfirmForm">
+            <input type="hidden" name="accept_terms" id="acceptTermsHidden" value="no">
+            <div class="booking-readonly-grid">
+                <div class="booking-readonly-item"><span class="booking-readonly-label">Check-in</span><span class="booking-readonly-value">{{ selected_check_in or 'Not selected' }}</span></div>
+                <div class="booking-readonly-item"><span class="booking-readonly-label">Check-out</span><span class="booking-readonly-value">{{ selected_check_out or 'Not selected' }}</span></div>
+                <div class="booking-readonly-item"><span class="booking-readonly-label">Guests</span><span class="booking-readonly-value">{% if selected_guests %}{{ selected_guests }} Guest{% if selected_guests|int > 1 %}s{% endif %}{% else %}Not selected{% endif %}</span></div>
+                <div class="booking-readonly-item"><span class="booking-readonly-label">Name</span><span class="booking-readonly-value">{{ current_user.name or 'Not available' }}</span></div>
+                <div class="booking-readonly-item"><span class="booking-readonly-label">Contact</span><span class="booking-readonly-value">{{ current_user.contact or 'Not available' }}</span></div>
+                <div class="booking-readonly-item"><span class="booking-readonly-label">Email</span><span class="booking-readonly-value">{{ current_user.email or 'Not available' }}</span></div>
+            </div>
+            <div class="booking-modal-summary" id="bookingModalSummary">
+                <p><strong>Nights:</strong> <span id="modalNights">{{ selected_nights if selected_nights is not none else '—' }}</span></p>
+<div id="modalAccommodationList"></div>
+            </div>
+            <input type="hidden" name="check_in" value="{{ selected_check_in }}">
+            <input type="hidden" name="check_out" value="{{ selected_check_out }}">
+            <input type="hidden" name="guests" value="{{ selected_guests }}">
+            <input type="hidden" name="selected_accommodations" id="selectedAccommodationsInput" value="[]">
+            <input type="hidden" name="customer_name" value="{{ current_user.name or '' }}">
+            <input type="hidden" name="customer_contact" value="{{ current_user.contact or '' }}">
+            <input type="hidden" name="customer_email" value="{{ current_user.email or '' }}">
+            <div class="booking-modal-note">These details are read-only. If anything is incorrect, close this popup and change the dates or guest count from the Home page before opening this property again.</div>
+            <button type="submit" class="whatsapp-submit">Continue to WhatsApp for Payment</button>
+        </form>
+        {% else %}
+        <div class="login-required-box">Please sign in or sign up before continuing with the booking. <a href="{{ url_for('login', next=request.full_path) }}">Sign in / Sign up</a></div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<script>
+function openSelectionEditor(){
+    const editor = document.getElementById('selectionEditor');
+    if(!editor) return;
+    editor.classList.add('show');
+    editor.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+
+    const checkIn = document.getElementById('editCheckIn');
+    const checkOut = document.getElementById('editCheckOut');
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const todayIso = `${yyyy}-${mm}-${dd}`;
+
+    if(checkIn){
+        checkIn.min = todayIso;
+    }
+    if(checkOut){
+        checkOut.min = checkIn && checkIn.value ? checkIn.value : todayIso;
+    }
+}
+
+function closeSelectionEditor(){
+    const editor = document.getElementById('selectionEditor');
+    if(!editor) return;
+    editor.classList.remove('show');
+    editor.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+}
+
+const selectionEditor = document.getElementById('selectionEditor');
+if(selectionEditor){
+    selectionEditor.addEventListener('click', function(e){
+        if(e.target === this) closeSelectionEditor();
+    });
+}
+
+{% if edit_error %}
+// Re-open the custom editor when the server rejects the new dates so
+// the user immediately sees why the selection was not updated.
+document.addEventListener('DOMContentLoaded', function(){
+    openSelectionEditor();
+});
+{% endif %}
+
+let editCalendarDate = new Date();
+let editCalendarMode = 'check_in';
+
+function isoToday(){
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function parseIsoDate(value){
+    if(!value) return null;
+    const parts = value.split('-').map(Number);
+    if(parts.length !== 3 || parts.some(Number.isNaN)) return null;
+    return new Date(parts[0], parts[1]-1, parts[2]);
+}
+
+function formatIsoDate(date){
+    return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+}
+
+function formatDisplayDate(value){
+    const d = parseIsoDate(value);
+    if(!d) return '';
+    return d.toLocaleDateString(undefined, {day:'2-digit', month:'short', year:'numeric'});
+}
+
+function openEditCalendar(mode){
+    const calendar = document.getElementById('editCalendar');
+    if(!calendar) return;
+    editCalendarMode = mode;
+    const current = parseIsoDate(mode === 'check_in' ? document.getElementById('editCheckIn').value : document.getElementById('editCheckOut').value);
+    const checkIn = parseIsoDate(document.getElementById('editCheckIn').value);
+    editCalendarDate = current || checkIn || new Date();
+    calendar.classList.add('show');
+    calendar.setAttribute('aria-hidden','false');
+    renderEditCalendar();
+}
+
+function closeEditCalendar(){
+    const calendar = document.getElementById('editCalendar');
+    if(!calendar) return;
+    calendar.classList.remove('show');
+    calendar.setAttribute('aria-hidden','true');
+}
+
+function changeEditCalendarMonth(delta){
+    editCalendarDate = new Date(editCalendarDate.getFullYear(), editCalendarDate.getMonth()+delta, 1);
+    renderEditCalendar();
+}
+
+function renderEditCalendar(){
+    const title = document.getElementById('editCalendarMonth');
+    const days = document.getElementById('editCalendarDays');
+    const hint = document.getElementById('editCalendarHint');
+    const prev = document.querySelector('.edit-calendar-nav');
+    if(!title || !days) return;
+
+    const year = editCalendarDate.getFullYear();
+    const month = editCalendarDate.getMonth();
+    title.textContent = editCalendarDate.toLocaleDateString(undefined, {month:'long', year:'numeric'});
+    days.innerHTML = '';
+
+    const today = isoToday();
+    const first = new Date(year, month, 1);
+    const startDay = first.getDay();
+    const lastDate = new Date(year, month+1, 0).getDate();
+    const prevLastDate = new Date(year, month, 0).getDate();
+    const selectedIn = document.getElementById('editCheckIn').value;
+    const selectedOut = document.getElementById('editCheckOut').value;
+
+    for(let i=0; i<42; i++){
+        let cellDate;
+        let other = false;
+        if(i < startDay){
+            cellDate = new Date(year, month-1, prevLastDate-(startDay-i-1));
+            other = true;
+        } else if(i >= startDay + lastDate){
+            cellDate = new Date(year, month+1, i-(startDay+lastDate)+1);
+            other = true;
+        } else {
+            cellDate = new Date(year, month, i-startDay+1);
+        }
+
+        const iso = formatIsoDate(cellDate);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'edit-calendar-day' + (other ? ' other-month' : '');
+        btn.textContent = cellDate.getDate();
+
+        if(iso === today) btn.classList.add('today');
+        if(iso === selectedIn || iso === selectedOut) btn.classList.add('selected');
+        if(selectedIn && selectedOut && iso > selectedIn && iso < selectedOut) btn.classList.add('range');
+
+        let disabled = iso < today;
+        if(editCalendarMode === 'check_out' && selectedIn && iso <= selectedIn) disabled = true;
+        btn.disabled = disabled;
+        if(editCalendarMode === 'check_out' && selectedIn && iso === selectedIn) btn.classList.add('checkout-min');
+
+        if(!disabled){
+            btn.addEventListener('click', function(){ selectEditCalendarDate(iso); });
+        }
+        days.appendChild(btn);
+    }
+
+    if(prev){
+        const todayDate = parseIsoDate(today);
+        const monthStart = new Date(year, month, 1);
+        prev.disabled = monthStart <= new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
+    }
+
+    if(hint){
+        hint.textContent = editCalendarMode === 'check_in'
+            ? 'Select a check-in date. Past dates are disabled.'
+            : 'Select a check-out date after check-in.';
+    }
+}
+
+function selectEditCalendarDate(iso){
+    const checkIn = document.getElementById('editCheckIn');
+    const checkOut = document.getElementById('editCheckOut');
+    const inText = document.getElementById('editCheckInText');
+    const outText = document.getElementById('editCheckOutText');
+
+    if(editCalendarMode === 'check_in'){
+        checkIn.value = iso;
+        inText.textContent = formatDisplayDate(iso);
+        if(checkOut.value && checkOut.value <= iso){
+            checkOut.value = '';
+            outText.textContent = 'Select check-out date';
+        }
+        closeEditCalendar();
+        openEditCalendar('check_out');
+        return;
+    }
+
+    if(checkIn.value && iso <= checkIn.value) return;
+    checkOut.value = iso;
+    outText.textContent = formatDisplayDate(iso);
+    closeEditCalendar();
+}
+
+const editCheckIn = document.getElementById('editCheckIn');
+const editCheckOut = document.getElementById('editCheckOut');
+if(editCheckIn && editCheckOut){
+    const inText = document.getElementById('editCheckInText');
+    const outText = document.getElementById('editCheckOutText');
+    if(editCheckIn.value) inText.textContent = formatDisplayDate(editCheckIn.value);
+    if(editCheckOut.value) outText.textContent = formatDisplayDate(editCheckOut.value);
+}
+
+const selectionEditForm = document.getElementById('selectionEditForm');
+if(selectionEditForm){
+    selectionEditForm.addEventListener('submit', function(e){
+        const checkIn = document.getElementById('editCheckIn');
+        const checkOut = document.getElementById('editCheckOut');
+        const guests = document.getElementById('editGuests');
+        const error = document.getElementById('selectionEditError');
+
+        if(!checkIn || !checkOut || !guests) return;
+
+        if(checkIn.value && checkOut.value && checkOut.value <= checkIn.value){
+            e.preventDefault();
+            if(error){
+                error.textContent = 'Check-out date must be after the check-in date.';
+                error.style.display = 'block';
+            }
+            return;
+        }
+
+        const guestCount = parseInt(guests.value, 10);
+        const maxGuests = parseInt(guests.max || '0', 10);
+        if(!guestCount || guestCount < 1 || (maxGuests && guestCount > maxGuests)){
+            e.preventDefault();
+            if(error){
+                error.textContent = maxGuests ? `Guests must be between 1 and ${maxGuests}.` : 'Please enter at least 1 guest.';
+                error.style.display = 'block';
+            }
+        }
+    });
+}
+
+function updateBookButton(){
+    const checkbox = document.getElementById('acceptTerms');
+    const mobileCheckbox = document.getElementById('acceptTermsMobile');
+    const bookButton = document.getElementById('bookButton');
+    const mobileBookButton = document.getElementById('mobileBookButton');
+
+    const accepted = !!checkbox && checkbox.checked;
+    const mobileAccepted = !!mobileCheckbox && mobileCheckbox.checked;
+
+    if(bookButton){
+        bookButton.disabled = !accepted;
+    }
+
+    if(mobileBookButton){
+        mobileBookButton.disabled = !mobileAccepted;
+    }
+}
+
+function syncTermsFromMobile(){
+    const mobileCheckbox = document.getElementById('acceptTermsMobile');
+    const desktopCheckbox = document.getElementById('acceptTerms');
+
+    if(mobileCheckbox && desktopCheckbox){
+        desktopCheckbox.checked = mobileCheckbox.checked;
+    }
+
+    updateBookButton();
+}
+
+function openBookingModal(){
+    const checkbox = document.getElementById('acceptTerms');
+    const mobileCheckbox = document.getElementById('acceptTermsMobile');
+    const accepted = (checkbox && checkbox.checked) || (mobileCheckbox && mobileCheckbox.checked);
+
+    if(!accepted){
+        alert('Please accept the Terms & Conditions before booking.');
+        return;
+    }
+
+    if(checkbox && mobileCheckbox){
+        checkbox.checked = mobileCheckbox.checked;
+    }
+
+    const hidden = document.getElementById('acceptTermsHidden');
+
+    if(hidden){
+        hidden.value = 'yes';
+    }
+
+    const m=document.getElementById('bookingModal');
+    if(!m)return;
+
+    m.classList.add('show');
+    m.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+}
+
+function closeBookingModal(){
+    const m=document.getElementById('bookingModal');
+    if(!m)return;
+
+    m.classList.remove('show');
+    m.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+}
+
+const bookingModal = document.getElementById('bookingModal');
+
+if(bookingModal){
+    bookingModal.addEventListener('click', function(e){
+        if(e.target === this){
+            closeBookingModal();
+        }
+    });
+
+    document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape'){
+            closeBookingModal();
+        }
+    });
+}
+
+
+/* ==================================================
+   BOOKING SUBMITTED / WHATSAPP RETURN STATE
+
+   The booking form submits to Flask and Flask redirects
+   to WhatsApp. When the user comes back from WhatsApp,
+   the browser can restore this page from its old state.
+   Keep a temporary flag so the page reloads and Flask
+   can render the real "Booking request sent" state.
+
+   This does not change the page UI or booking logic.
+================================================== */
+
+const propertyBookingConfirmForm =
+    document.getElementById('propertyBookingConfirmForm');
+
+const bookingReturnKey =
+    'goinn_booking_submitted_{{ property.id }}';
+
+function markBookingSubmitted(){
+    try{
+        sessionStorage.setItem(bookingReturnKey, '1');
+    }catch(error){
+        // Ignore storage restrictions.
+    }
+}
+
+function reloadAfterReturningFromWhatsApp(){
+    try{
+        if(sessionStorage.getItem(bookingReturnKey) === '1'){
+
+            // Remove first so the reload cannot loop forever.
+            sessionStorage.removeItem(bookingReturnKey);
+
+            // Flask will now detect the created booking and
+            // render "Booking request sent" + WhatsApp.
+            window.location.reload();
+        }
+    }catch(error){
+        // Ignore storage restrictions.
+    }
+}
+
+if(propertyBookingConfirmForm){
+
+    propertyBookingConfirmForm.addEventListener(
+        'submit',
+        function(){
+
+            // Remember that this booking was submitted.
+            markBookingSubmitted();
+
+            // Close the confirmation popup immediately.
+            closeBookingModal();
+
+            // Restore page scrolling.
+            document.body.style.overflow = '';
+
+        }
+    );
+}
+
+
+/*
+ * Mobile browsers/apps commonly return to this page through
+ * visibilitychange after WhatsApp is opened.
+ */
+document.addEventListener('visibilitychange', function(){
+
+    if(document.visibilityState === 'visible'){
+        reloadAfterReturningFromWhatsApp();
+    }
+
+});
+
+
+/*
+ * Desktop/mobile browser Back button may restore the page
+ * from the browser back-forward cache instead of reloading it.
+ */
+window.addEventListener('pageshow', function(event){
+
+    if(event.persisted){
+        reloadAfterReturningFromWhatsApp();
+    }
+
+});
+
+</script>
+
+
+<script>
+/* ==================================================
+   PROPERTY IMAGE PREVIEW
+================================================== */
+
+let propertyImagePreviewIndex = 0;
+
+function getPropertyGalleryImages(){
+    return Array.from(document.querySelectorAll('#propertyGallery img'));
+}
+
+function openPropertyImagePreview(index){
+    const images = getPropertyGalleryImages();
+
+    if(!images.length){
+        return;
+    }
+
+    propertyImagePreviewIndex =
+        Math.max(0, Math.min(index, images.length - 1));
+
+    updatePropertyImagePreview();
+
+    const modal = document.getElementById('imagePreviewModal');
+
+    if(modal){
+        modal.classList.add('show');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function updatePropertyImagePreview(){
+    const images = getPropertyGalleryImages();
+    const preview = document.getElementById('imagePreviewMain');
+    const counter = document.getElementById('imagePreviewCounter');
+
+    if(!images.length || !preview){
+        return;
+    }
+
+    const current = images[propertyImagePreviewIndex];
+
+    preview.src = current.src;
+    preview.alt = current.alt || 'Property image preview';
+
+    if(counter){
+        counter.textContent =
+            (propertyImagePreviewIndex + 1) + ' / ' + images.length;
+    }
+}
+
+function changePropertyImage(direction, event){
+    if(event){
+        event.stopPropagation();
+    }
+
+    const images = getPropertyGalleryImages();
+
+    if(!images.length){
+        return;
+    }
+
+    propertyImagePreviewIndex =
+        (propertyImagePreviewIndex + direction + images.length)
+        % images.length;
+
+    updatePropertyImagePreview();
+}
+
+function closePropertyImagePreview(event){
+    if(event && event.target !== event.currentTarget){
+        return;
+    }
+
+    const modal = document.getElementById('imagePreviewModal');
+
+    if(modal){
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+    }
+
+    document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(event){
+    const modal = document.getElementById('imagePreviewModal');
+
+    if(!modal || !modal.classList.contains('show')){
+        return;
+    }
+
+    if(event.key === 'ArrowLeft'){
+        changePropertyImage(-1);
+    }
+    else if(event.key === 'ArrowRight'){
+        changePropertyImage(1);
+    }
+    else if(event.key === 'Escape'){
+        closePropertyImagePreview();
+    }
+});
+</script>
+
+
+<script>
+const accommodationState = {};
+const accommodationOptions = Array.from(document.querySelectorAll('.accommodation-option')).map(card => ({
+    key: card.dataset.key,
+    label: card.querySelector('.accommodation-option-title')?.textContent.trim() || card.dataset.key,
+    price: Number(card.dataset.price || 0),
+    capacity: Number(card.dataset.capacity || 0),
+    count: Number(card.dataset.count || 0),
+    available: Number(card.dataset.count || 0)
+}));
+const targetGuests = Number({{ selected_guests|default(0)|int }} || 0);
+const propertyType = {{ (property.property_type or '')|tojson }};
+
+function getAccommodation(key){ return accommodationOptions.find(o => o.key === key); }
+function totalSelectedCapacity(){ return Object.entries(accommodationState).reduce((sum,[key,qty])=>{const o=getAccommodation(key);return sum+(o?o.capacity*qty:0)},0); }
+function totalSelectedPrice(){ return Object.entries(accommodationState).reduce((sum,[key,qty])=>{const o=getAccommodation(key);return sum+(o?o.price*qty:0)},0); }
+function totalSelectedCount(){ return Object.values(accommodationState).reduce((a,b)=>a+b,0); }
+function syncQty(key){ const el=document.getElementById('qty-'+key.replaceAll(':','-')); if(el) el.textContent=accommodationState[key]||0; }
+function changeAccommodation(key,delta){
+    const o=getAccommodation(key); if(!o) return;
+    const next=Math.max(0,Math.min(o.available,(accommodationState[key]||0)+delta));
+    accommodationState[key]=next; syncQty(key); renderAccommodationCart();
+}
+function addAccommodation(key){
+    const o=getAccommodation(key); if(!o) return;
+    if((accommodationState[key]||0)<o.available){ accommodationState[key]=(accommodationState[key]||0)+1; syncQty(key); renderAccommodationCart(); }
+}
+function renderAccommodationCart(){
+    const summary=document.getElementById('cartSummary'); if(!summary) return;
+    const rows=Object.entries(accommodationState).filter(([,q])=>q>0);
+    const capacity=totalSelectedCapacity(), price=totalSelectedPrice();
+    if(!rows.length){ summary.innerHTML='<strong>Your accommodation cart is empty.</strong><div class="cart-warning">Select at least one room, unit or flat to continue.</div>'; updateBookingButton(false); return; }
+    let html=rows.map(([key,q])=>{const o=getAccommodation(key);return `<div class="cart-row"><span>${o.label} × ${q}<br><small>Capacity ${o.capacity*q}</small></span><strong>₹${(o.price*q).toFixed(2)}/day</strong></div>`}).join('');
+    html += `<div class="cart-total"><span>Cart capacity: ${capacity} guests</span><span>₹${price.toFixed(2)}/day</span></div>`;
+    if(targetGuests && capacity<targetGuests) html += `<div class="cart-warning">You selected ${capacity} guest capacity, but your search is for ${targetGuests} guests. Add another accommodation or choose a larger one.</div>`;
+    else html += `<div class="cart-ok">✓ Your cart can accommodate ${capacity} guests.</div>`;
+    summary.innerHTML=html;
+    updateBookingButton(!targetGuests || capacity>=targetGuests);
+    updateModalSummary();
+    updateDynamicPricing();
+}
+function updateBookingButton(enabled){
+    const btn=document.querySelector('.whatsapp-submit'); if(btn) btn.disabled=!enabled;
+}
+function updateModalSummary(){
+    const priceEl=document.getElementById('modalPrice'), totalEl=document.getElementById('modalTotal'), list=document.getElementById('modalAccommodationList');
+    if(!priceEl || !totalEl) return;
+    if(propertyType!=='guesthouse' && propertyType!==''){
+        const p=totalSelectedPrice(); priceEl.textContent=p>0?'₹'+p.toFixed(2):'Select accommodation';
+        const nights={{ selected_nights|default(0)|int }}; totalEl.textContent=(p>0&&nights>0)?'₹'+(p*nights).toFixed(2):'Select accommodation';
+        if(list){ list.innerHTML=Object.entries(accommodationState).filter(([,q])=>q>0).map(([k,q])=>{const o=getAccommodation(k);return `<p><strong>${o.label}</strong> × ${q}</p>`}).join(''); }
+        const hidden=document.getElementById('selectedAccommodationsInput'); if(hidden) hidden.value=JSON.stringify(Object.entries(accommodationState).filter(([,q])=>q>0).map(([key,quantity])=>({key,quantity})));
+    }
+}
+function updateDynamicPricing(){
+    const box=document.getElementById('dynamicPricing');
+    if(!box) return;
+
+    if(propertyType==='guesthouse' || propertyType===''){
+        return;
+    }
+
+    const rows=Object.entries(accommodationState).filter(([,q])=>q>0);
+
+    if(!rows.length){
+        box.innerHTML='<div class="muted">Select your accommodation above to see the price.</div>';
+        return;
+    }
+
+    let html='<div class="dynamic-price-list">';
+    rows.forEach(([key,q])=>{
+        const o=getAccommodation(key);
+        if(!o) return;
+        html += `<div class="dynamic-price-row">
+                    <span>${o.label} × ${q}</span>
+                    <strong>₹${(o.price*q).toFixed(2)} / day</strong>
+                 </div>`;
+    });
+
+    const total=totalSelectedPrice();
+    const nights={{ selected_nights|default(0)|int }};
+
+    html += `<div class="dynamic-price-total">
+                <span>Total / day</span>
+                <strong>₹${total.toFixed(2)}</strong>
+             </div>`;
+
+    if(nights>0){
+        html += `<div class="dynamic-price-total" style="border-top:0;padding-top:0">
+                    <span>Total for ${nights} night${nights===1?'':'s'}</span>
+                    <strong>₹${(total*nights).toFixed(2)}</strong>
+                 </div>`;
+    }
+
+    html += '</div>';
+    box.innerHTML=html;
+}
+
+async function refreshAccommodationAvailability(){
+    if(!accommodationOptions.length) return;
+    const ci={{ selected_check_in|tojson }}, co={{ selected_check_out|tojson }};
+    if(!ci || !co) return;
+    try{
+        const response=await fetch(`{{ url_for('property_accommodation_availability', property_id=property.id) }}?check_in=${encodeURIComponent(ci)}&check_out=${encodeURIComponent(co)}`);
+        if(!response.ok) return;
+        const data=await response.json();
+        (data.options||[]).forEach(serverOpt=>{
+            const local=getAccommodation(serverOpt.key); if(!local) return;
+            local.available=Number(serverOpt.available||0);
+            const card=document.querySelector(`.accommodation-option[data-key="${CSS.escape(serverOpt.key)}"]`);
+            if(card){ const count=card.querySelector('.available-count'); if(count) count.textContent=local.available; }
+            if((accommodationState[local.key]||0)>local.available){ accommodationState[local.key]=local.available; syncQty(local.key); }
+        });
+        renderAccommodationCart();
+    }catch(e){ console.warn('Accommodation availability check failed',e); }
+}
+refreshAccommodationAvailability();
+renderAccommodationCart();
+updateDynamicPricing();
+</script>
+
+<script>
+/* ==================================================
+   CUSTOMER UI HELPERS
+================================================== */
+
+function toggleAllAmenities(){
+    const extras = document.querySelectorAll('.amenity-extra');
+    const button = document.getElementById('amenitiesMoreBtn');
+    const opening = button && button.dataset.open !== '1';
+
+    extras.forEach(el => el.style.display = opening ? 'block' : 'none');
+
+    if(button){
+        button.dataset.open = opening ? '1' : '0';
+        button.textContent = opening ? 'Show fewer amenities' : 'View all amenities';
+    }
+}
+
+/* ==================================================
+   ACCOMMODATION IMAGE PREVIEW
+================================================== */
+let accommodationImagePreviewIndex = 0;
+
+function getAccommodationGalleryImages(){
+    return Array.from(document.querySelectorAll('#accommodationGallery img'));
+}
+
+function openAccommodationImagePreview(index){
+    const images = getAccommodationGalleryImages();
+    if(!images.length) return;
+
+    accommodationImagePreviewIndex =
+        Math.max(0, Math.min(index, images.length - 1));
+
+    updateAccommodationImagePreview();
+
+    const modal = document.getElementById('accommodationPreviewModal');
+    if(modal){
+        modal.classList.add('show');
+        modal.setAttribute('aria-hidden','false');
+        document.body.style.overflow='hidden';
+    }
+}
+
+function updateAccommodationImagePreview(){
+    const images = getAccommodationGalleryImages();
+    const preview = document.getElementById('accommodationPreviewMain');
+    const counter = document.getElementById('accommodationPreviewCounter');
+
+    if(!images.length || !preview) return;
+
+    const current = images[accommodationImagePreviewIndex];
+    preview.src = current.src;
+    preview.alt = current.alt || 'Accommodation image preview';
+
+    if(counter){
+        counter.textContent =
+            (accommodationImagePreviewIndex + 1) + ' / ' + images.length;
+    }
+}
+
+function changeAccommodationImage(direction,event){
+    if(event) event.stopPropagation();
+
+    const images = getAccommodationGalleryImages();
+    if(!images.length) return;
+
+    accommodationImagePreviewIndex =
+        (accommodationImagePreviewIndex + direction + images.length)
+        % images.length;
+
+    updateAccommodationImagePreview();
+}
+
+function closeAccommodationImagePreview(event){
+    if(event && event.target !== event.currentTarget) return;
+
+    const modal = document.getElementById('accommodationPreviewModal');
+    if(modal){
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden','true');
+    }
+
+    document.body.style.overflow='';
+}
+
+document.addEventListener('keydown',function(event){
+    const modal=document.getElementById('accommodationPreviewModal');
+    if(!modal || !modal.classList.contains('show')) return;
+
+    if(event.key==='ArrowLeft') changeAccommodationImage(-1);
+    if(event.key==='ArrowRight') changeAccommodationImage(1);
+    if(event.key==='Escape') closeAccommodationImagePreview();
+});
+</script>
+
+
+<script>
+/* Mobile swipe support for both image viewers */
+(function(){
+  function addSwipe(modalId, changeFn){
+    const modal=document.getElementById(modalId);
+    if(!modal) return;
+    let startX=0,startY=0;
+    modal.addEventListener('touchstart',function(e){
+      if(!e.touches || !e.touches.length) return;
+      startX=e.touches[0].clientX;
+      startY=e.touches[0].clientY;
+    },{passive:true});
+    modal.addEventListener('touchend',function(e){
+      if(!e.changedTouches || !e.changedTouches.length) return;
+      const dx=e.changedTouches[0].clientX-startX;
+      const dy=e.changedTouches[0].clientY-startY;
+      if(Math.abs(dx)>55 && Math.abs(dx)>Math.abs(dy)){
+        changeFn(dx<0 ? 1 : -1);
+      }
+    },{passive:true});
+  }
+  addSwipe('imagePreviewModal', function(d){ changePropertyImage(d); });
+  addSwipe('accommodationPreviewModal', function(d){ changeAccommodationImage(d); });
+})();
+</script>
+
+</body>
+
+</html>
