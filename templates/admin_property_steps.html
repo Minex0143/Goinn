@@ -175,97 +175,233 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElement
 const savedGuestPricing={{ saved_guest_pricing|tojson }};
 function setPricingMethod(method){
   const pm=document.getElementById('pricingMethod');
-  if(!pm)return;
+  const ind=document.getElementById('individualPricing');
+  const grp=document.getElementById('groupPricing');
+  if(!pm || !ind || !grp) return;
+
   pm.value=method;
   document.getElementById('individualMethod')?.classList.toggle('active',method==='individual');
   document.getElementById('groupMethod')?.classList.toggle('active',method==='group');
-  const ind=document.getElementById('individualPricing'), grp=document.getElementById('groupPricing');
-  if(ind)ind.style.display=method==='individual'?'block':'none';
-  if(grp)grp.style.display=method==='group'?'block':'none';
-  if(method==='individual')renderIndividual();
-  else renderGroups();
+
+  ind.style.display=method==='individual'?'block':'none';
+  grp.style.display=method==='group'?'block':'none';
+
+  if(method==='individual'){
+    renderIndividual();
+  }else{
+    renderGroups();
+  }
+
+  updatePricingInputState();
 }
+
+function updatePricingInputState(){
+  const method=document.getElementById('pricingMethod')?.value || 'individual';
+  const ind=document.getElementById('individualPricing');
+  const grp=document.getElementById('groupPricing');
+
+  if(ind){
+    ind.querySelectorAll('input').forEach(input=>{
+      input.disabled = method !== 'individual';
+    });
+  }
+
+  if(grp){
+    grp.querySelectorAll('input').forEach(input=>{
+      input.disabled = method !== 'group';
+    });
+  }
+}
+
 function savedIndividualMap(){
   const map={};
   if(Array.isArray(savedGuestPricing)){
     savedGuestPricing.forEach(x=>{
-      if(x && x.guests!=null) map[String(x.guests)]=x.price ?? '';
+      if(x && x.guests!=null){
+        map[String(x.guests)] = x.price ?? '';
+      }
     });
   }
   return map;
 }
+
 function savedGroupRows(){
-  if(!Array.isArray(savedGuestPricing))return [];
+  if(!Array.isArray(savedGuestPricing)) return [];
   return savedGuestPricing
     .filter(x=>x && x.min_guests!=null && x.max_guests!=null)
-    .map(x=>({min_guests:Number(x.min_guests),max_guests:Number(x.max_guests),price:x.price ?? ''}));
+    .map(x=>({
+      min_guests:Number(x.min_guests),
+      max_guests:Number(x.max_guests),
+      price:x.price ?? ''
+    }));
 }
+
 function renderIndividual(){
-  const wrap=document.getElementById('individualPricing'); if(!wrap)return;
-  const max=Math.max(1,parseInt(document.getElementById('maxGuests')?.value||1,10));
+  const wrap=document.getElementById('individualPricing');
+  if(!wrap) return;
+
+  const max=Math.max(
+    1,
+    parseInt(document.getElementById('maxGuests')?.value || 1,10)
+  );
+
   const old={};
   wrap.querySelectorAll('input').forEach(i=>old[i.name]=i.value);
+
   const saved=savedIndividualMap();
+
   wrap.innerHTML='<div class="price-grid">'+Array.from({length:max},(_,i)=>{
     const g=i+1;
-    const value=Object.prototype.hasOwnProperty.call(old,'price_'+g) ? old['price_'+g] :
-      (Object.prototype.hasOwnProperty.call(saved,String(g)) ? saved[String(g)] : '');
-    return `<div class="price-item"><label>${g} Guest${g>1?'s':''}</label><input type="number" min="0" step="0.01" name="price_${g}" value="${value}" required></div>`;
+    const value=Object.prototype.hasOwnProperty.call(old,'price_'+g)
+      ? old['price_'+g]
+      : (Object.prototype.hasOwnProperty.call(saved,String(g))
+          ? saved[String(g)]
+          : '');
+
+    return `<div class="price-item">
+      <label>${g} Guest${g>1?'s':''}</label>
+      <input type="number" min="0" step="0.01"
+             name="price_${g}" value="${value}" required>
+    </div>`;
   }).join('')+'</div>';
+
+  updatePricingInputState();
 }
-function createGroupRow(data, index){
+
+function createGroupRow(data,index){
   const row=document.createElement('div');
   row.className='group-row';
-  row.innerHTML=`<div><label>From</label><input type="number" min="1" data-min name="group_${index}_min" value="${data.min_guests}" required></div>
-    <div><label>To</label><input type="number" min="1" data-max name="group_${index}_max" value="${data.max_guests}" required></div>
-    <div><label>Price / day</label><input type="number" min="0" step="0.01" name="group_${index}_price" value="${data.price}" required></div>
-    <button type="button" class="remove-group" onclick="removeGroup(this)">×</button>`;
+
+  row.innerHTML=`<div>
+      <label>From</label>
+      <input type="number" min="1" data-min
+             name="group_${index}_min"
+             value="${data.min_guests}" required>
+    </div>
+    <div>
+      <label>To</label>
+      <input type="number" min="1" data-max
+             name="group_${index}_max"
+             value="${data.max_guests}" required>
+    </div>
+    <div>
+      <label>Price / day</label>
+      <input type="number" min="0" step="0.01"
+             name="group_${index}_price"
+             value="${data.price}" required>
+    </div>
+    <button type="button" class="remove-group"
+            onclick="removeGroup(this)">×</button>`;
+
   document.getElementById('groupPricing').appendChild(row);
 }
+
 function renderGroups(){
-  const wrap=document.getElementById('groupPricing'); if(!wrap)return;
-  const max=Math.max(1,parseInt(document.getElementById('maxGuests')?.value||1,10));
+  const wrap=document.getElementById('groupPricing');
+  if(!wrap) return;
+
+  const max=Math.max(
+    1,
+    parseInt(document.getElementById('maxGuests')?.value || 1,10)
+  );
+
   const current=[...wrap.querySelectorAll('.group-row')].map(row=>({
     min_guests:parseInt(row.querySelector('[data-min]')?.value||0,10),
     max_guests:parseInt(row.querySelector('[data-max]')?.value||0,10),
     price:row.querySelector('[name$="_price"]')?.value||''
   })).filter(x=>x.min_guests>0 && x.max_guests>0);
+
   wrap.innerHTML='';
-  let rows=current.length?current:savedGroupRows();
-  if(!rows.length) rows=[{min_guests:1,max_guests:max,price:''}];
-  // Keep existing saved/current prices and make the groups contiguous for the current max.
-  let normalized=[], start=1;
+
+  let rows=current.length ? current : savedGroupRows();
+
+  if(!rows.length){
+    rows=[{min_guests:1,max_guests:max,price:''}];
+  }
+
+  let normalized=[];
+  let start=1;
+
   for(let i=0;i<rows.length && start<=max;i++){
-    let r=rows[i];
-    let to=Math.min(max,Math.max(start,Number(r.max_guests)||start));
-    if(i===rows.length-1) to=max;
-    normalized.push({min_guests:start,max_guests:to,price:r.price??''});
+    const r=rows[i];
+    let to=Math.min(
+      max,
+      Math.max(start,Number(r.max_guests)||start)
+    );
+
+    normalized.push({
+      min_guests:start,
+      max_guests:to,
+      price:r.price ?? ''
+    });
+
     start=to+1;
   }
-  if(start<=max) normalized.push({min_guests:start,max_guests:max,price:''});
-  normalized.forEach((r,i)=>createGroupRow(r,i+1));
-  normalizeGroups(false);
-}
-function addGroupRow(min=1,max=null){
-  const wrap=document.getElementById('groupPricing'); if(!wrap)return;
-  const rows=wrap.querySelectorAll('.group-row');
-  let start=min;
-  if(rows.length){
-    start=(parseInt(rows[rows.length-1].querySelector('[data-max]')?.value||start,10)+1);
+
+  if(start<=max){
+    normalized.push({
+      min_guests:start,
+      max_guests:max,
+      price:''
+    });
   }
-  const total=Math.max(1,parseInt(document.getElementById('maxGuests')?.value||1,10));
-  if(start>total)return;
-  createGroupRow({min_guests:start,max_guests:max==null?total:max,price:''},rows.length+1);
+
+  normalized.forEach((r,i)=>createGroupRow(r,i+1));
+
   normalizeGroups(false);
+  updatePricingInputState();
 }
-function removeGroup(btn){btn.closest('.group-row')?.remove();normalizeGroups(false)}
+
+function addGroupRow(){
+  const wrap=document.getElementById('groupPricing');
+  if(!wrap) return;
+
+  const rows=wrap.querySelectorAll('.group-row');
+  const total=Math.max(
+    1,
+    parseInt(document.getElementById('maxGuests')?.value||1,10)
+  );
+
+  let start=1;
+
+  if(rows.length){
+    start=parseInt(
+      rows[rows.length-1].querySelector('[data-max]')?.value || 0,
+      10
+    )+1;
+  }
+
+  if(start>total) return;
+
+  createGroupRow({
+    min_guests:start,
+    max_guests:total,
+    price:''
+  },rows.length+1);
+
+  normalizeGroups(false);
+  updatePricingInputState();
+}
+
+function removeGroup(btn){
+  btn.closest('.group-row')?.remove();
+  normalizeGroups(false);
+  updatePricingInputState();
+}
+
 function normalizeGroups(addButton=true){
   const rows=[...document.querySelectorAll('#groupPricing .group-row')];
-  const max=Math.max(1,parseInt(document.getElementById('maxGuests')?.value||1,10));
+  const max=Math.max(
+    1,
+    parseInt(document.getElementById('maxGuests')?.value||1,10)
+  );
+
   let start=1;
-  rows.forEach((row,i)=>{
-    const min=row.querySelector('[data-min]'),to=row.querySelector('[data-max]');
-    if(!min||!to)return;
+
+  rows.forEach(row=>{
+    const min=row.querySelector('[data-min]');
+    const to=row.querySelector('[data-max]');
+    if(!min || !to) return;
 
     min.value=start;
     min.readOnly=true;
@@ -276,14 +412,12 @@ function normalizeGroups(addButton=true){
     if(end<start) end=start;
     if(end>max) end=max;
 
-    // Do NOT force the final group to maximum guests.
-    // The admin can set 1-3 for a 5-guest property and then add 4-5.
     to.value=end;
     start=end+1;
   });
 
   const old=document.getElementById('addGroupBtn');
-  if(old)old.remove();
+  if(old) old.remove();
 
   if(rows.length && start<=max){
     const b=document.createElement('button');
@@ -294,24 +428,139 @@ function normalizeGroups(addButton=true){
     b.onclick=()=>addGroupRow();
     document.getElementById('groupPricing').appendChild(b);
   }
+
+  updatePricingInputState();
 }
+
 const mg=document.getElementById('maxGuests');
+
 if(mg){
   mg.addEventListener('input',()=>{
-    const method=document.getElementById('pricingMethod')?.value||'individual';
-    if(method==='individual')renderIndividual(); else renderGroups();
-  });
-  const initialMethod=document.getElementById('pricingMethod')?.value||'individual';
-  setPricingMethod(initialMethod);
+    const method=document.getElementById('pricingMethod')?.value || 'individual';
 
-  // When the admin changes the last group's "To" value (e.g. 5 -> 3),
-  // immediately expose the Add Guest Group button for the remaining guests.
-  document.getElementById('groupPricing')?.addEventListener('input', function(e){
-    if(e.target.matches('input[data-max]')){
-      normalizeGroups(true);
+    if(method==='individual'){
+      renderIndividual();
+    }else{
+      renderGroups();
     }
   });
 }
+
+document.getElementById('groupPricing')?.addEventListener('input',function(e){
+  if(e.target.matches('input[data-max]')){
+    normalizeGroups(true);
+  }
+});
+
+function initTimeDisplays(){
+  for(const [target,inputId,displayId] of [
+    ['checkin','checkinValue','checkinDisplay'],
+    ['checkout','checkoutValue','checkoutDisplay']
+  ]){
+    const input=document.getElementById(inputId);
+    const display=document.getElementById(displayId);
+
+    if(input && display){
+      const [h,m,ap]=parseTime(input.value);
+      display.textContent=format12(h,m,ap);
+    }
+  }
+}
+
+initTimeDisplays();
+
+const initialMethod=document.getElementById('pricingMethod')?.value || 'individual';
+setPricingMethod(initialMethod);
+
+const guestForm=document.getElementById('guestPricingForm');
+
+if(guestForm){
+  guestForm.addEventListener('submit',function(e){
+    const ci=document.getElementById('checkinValue')?.value || '';
+    const co=document.getElementById('checkoutValue')?.value || '';
+    const method=document.getElementById('pricingMethod')?.value || '';
+
+    if(
+      !/^([01]\d|2[0-3]):[0-5]\d$/.test(ci) ||
+      !/^([01]\d|2[0-3]):[0-5]\d$/.test(co)
+    ){
+      e.preventDefault();
+      alert('Please select valid check-in and check-out timings.');
+      return;
+    }
+
+    const max=parseInt(
+      document.getElementById('maxGuests')?.value || 1,
+      10
+    );
+
+    if(!Number.isInteger(max) || max<1){
+      e.preventDefault();
+      alert('Please enter a valid Maximum Guests value.');
+      return;
+    }
+
+    if(method==='individual'){
+      const inputs=[
+        ...document.querySelectorAll('#individualPricing input[name^="price_"]')
+      ];
+
+      if(inputs.length !== max || inputs.some(input=>input.value==='')){
+        e.preventDefault();
+        alert('Please enter a price for every guest count from 1 to '+max+'.');
+        return;
+      }
+    }
+
+    if(method==='group'){
+      const rows=[
+        ...document.querySelectorAll('#groupPricing .group-row')
+      ];
+
+      if(!rows.length){
+        e.preventDefault();
+        alert('Please add at least one guest group.');
+        return;
+      }
+
+      let expected=1;
+
+      for(const row of rows){
+        const a=parseInt(row.querySelector('[data-min]')?.value||0,10);
+        const b=parseInt(row.querySelector('[data-max]')?.value||0,10);
+        const price=row.querySelector('[name$="_price"]')?.value || '';
+
+        if(
+          a!==expected ||
+          b<a ||
+          b>max ||
+          price===''
+        ){
+          e.preventDefault();
+          alert(
+            'Guest groups must cover all guest counts from 1 to '+
+            max+
+            ' without gaps, with a price for every group.'
+          );
+          return;
+        }
+
+        expected=b+1;
+      }
+
+      if(expected!==max+1){
+        e.preventDefault();
+        alert(
+          'Guest groups must cover all guest counts from 1 to '+
+          max+
+          ' without gaps.'
+        );
+        return;
+      }
+    }
+  });
+}
+
 function initTimeDisplays(){for(const [target,inputId,displayId] of [['checkin','checkinValue','checkinDisplay'],['checkout','checkoutValue','checkoutDisplay']]){let input=document.getElementById(inputId),display=document.getElementById(displayId);if(input&&display){let [h,m,ap]=parseTime(input.value);display.textContent=format12(h,m,ap)}}}initTimeDisplays();
 const guestForm=document.getElementById('guestPricingForm');
 if(guestForm){
