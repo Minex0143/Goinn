@@ -240,6 +240,7 @@
 
     </style>
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='goinn-app.css') }}">
 </head>
 
 
@@ -1830,6 +1831,16 @@
 })();
 </script>
 
+
+<nav class="goinn-mobile-nav" aria-label="Mobile navigation">
+  <a href="{{ url_for('home') }}" class="active"><span>⌂</span><span>Home</span></a>
+  {% if current_user.is_authenticated %}
+  <a href="{{ url_for('user_dashboard') }}"><span>▣</span><span>Bookings</span></a>
+  <a href="{{ url_for('complete_profile') }}"><span>◉</span><span>Profile</span></a>
+  {% else %}
+  <a href="{{ url_for('login') }}"><span>→</span><span>Login</span></a>
+  {% endif %}
+</nav>
 </body>
 
 </html>
