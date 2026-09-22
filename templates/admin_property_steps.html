@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ property.property_name }} · Property Steps · Goinn</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f5f7fb;color:#172033;font-family:Inter,Arial,Helvetica,sans-serif}
+.header{height:68px;background:#111827;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:50;box-shadow:0 4px 20px rgba(15,23,42,.14)}
+.logo{font-size:24px;font-weight:900;letter-spacing:-.5px}.head-right{display:flex;align-items:center;gap:10px}.head-btn{color:#fff;text-decoration:none;background:#273142;border-radius:9px;padding:9px 13px;font-size:12px;font-weight:800}
+.container{max-width:1180px;margin:28px auto;padding:0 18px 60px}.back{display:inline-block;color:#64748b;text-decoration:none;font-size:13px;font-weight:800;margin-bottom:12px}.back:hover{color:#111827}
+.hero{background:#fff;border:1px solid #e6eaf0;border-radius:18px;padding:22px 24px;box-shadow:0 8px 30px rgba(15,23,42,.06);margin-bottom:18px}.hero-top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}.hero h1{margin:0;font-size:27px}.hero p{margin:7px 0 0;color:#64748b;font-size:13px}.status{padding:8px 12px;border-radius:999px;font-size:11px;font-weight:900;background:#fff7ed;color:#c2410c;white-space:nowrap}.status.live{background:#ecfdf5;color:#166534}
+.stepper{display:grid;grid-template-columns:repeat(8,1fr);gap:7px;margin-bottom:18px}.step-nav{border:1px solid #e2e8f0;background:#fff;border-radius:12px;padding:11px 8px;text-align:center;cursor:pointer}.step-nav .n{width:25px;height:25px;margin:0 auto 5px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#e2e8f0;color:#475569;font-size:11px;font-weight:900}.step-nav strong{display:block;font-size:10px;line-height:1.2}.step-nav.done .n{background:#166534;color:#fff}.step-nav.active{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.08)}.step-nav.active .n{background:#2563eb;color:#fff}
+.flash{padding:12px 14px;border-radius:10px;margin-bottom:12px;font-size:13px;font-weight:700}.flash-success{background:#ecfdf5;border:1px solid #a7f3d0;color:#166534}.flash-danger{background:#fff1f2;border:1px solid #fecdd3;color:#be123c}.flash-info{background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8}
+.step{background:#fff;border:1px solid #e4e8ef;border-radius:16px;margin-bottom:14px;overflow:hidden;box-shadow:0 5px 20px rgba(15,23,42,.04)}.step-head{width:100%;border:0;background:#fff;padding:17px 19px;display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer}.step-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#e9eef5;color:#475569;font-weight:900;font-size:12px;flex:0 0 auto}.step.done .step-num{background:#166534;color:#fff}.step.open .step-num{background:#2563eb;color:#fff}.step-title{flex:1}.step-title strong{display:block;font-size:15px}.step-title small{display:block;color:#64748b;font-size:11px;margin-top:3px}.chev{font-size:20px;color:#64748b}.step-body{display:none;border-top:1px solid #edf0f4;padding:20px}.step.open .step-body{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.field{margin-bottom:12px}.field label{display:block;font-size:11px;font-weight:900;color:#475569;text-transform:uppercase;letter-spacing:.35px;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;border:1px solid #d8dee8;border-radius:10px;padding:11px 12px;background:#fff;color:#172033;font:inherit;font-size:13px}.field textarea{min-height:180px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+.btn{border:0;border-radius:10px;padding:11px 15px;font-size:12px;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px}.btn.primary{background:#2563eb;color:#fff}.btn.dark{background:#111827;color:#fff}.btn.green{background:#15803d;color:#fff}.btn.gray{background:#eef2f7;color:#334155}.btn.red{background:#b91c1c;color:#fff}.btn:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}.note{padding:11px 13px;border-radius:10px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;font-size:12px;line-height:1.5;margin-bottom:13px}.warn{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+.choice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.choice{border:1px solid #dfe5ed;border-radius:12px;padding:13px;background:#fff;cursor:pointer}.choice input{margin-right:7px}.choice strong{font-size:13px}.choice small{display:block;color:#64748b;margin:5px 0 0 22px;line-height:1.4}
+.image-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.img-card{border:1px solid #e2e8f0;border-radius:11px;overflow:hidden;background:#f8fafc}.img-card img{width:100%;height:120px;object-fit:cover;display:block;background:#e5e7eb}.img-empty{height:120px;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:12px}.img-body{padding:8px}.img-title{font-weight:900;font-size:11px}.img-status{font-size:10px;font-weight:900;margin:4px 0}.approved{color:#166534}.pending{color:#a16207}.reupload{color:#b91c1c}.upload{margin-top:7px}.upload input{width:100%;font-size:10px}.mini-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}.mini-actions .btn{padding:6px 8px;font-size:10px}
+.table{width:100%;border-collapse:collapse}.table th,.table td{padding:10px;border-bottom:1px solid #edf0f4;text-align:left;font-size:12px}.table th{font-size:10px;text-transform:uppercase;color:#64748b}.table input{width:100%;border:1px solid #d8dee8;border-radius:8px;padding:9px}
+.unit-card{border:1px solid #e2e8f0;border-radius:13px;padding:14px;margin-bottom:12px;background:#fbfcfe}.unit-title{font-weight:900;font-size:14px;margin-bottom:10px}.subcard{border:1px solid #e8ecf2;border-radius:11px;padding:12px;background:#fff;margin-top:10px}.subcard h4{margin:0 0 9px;font-size:12px}
+/* custom time picker - intentionally not input[type=time] */
+.time-field{position:relative}.time-display{width:100%;border:1px solid #d8dee8;background:#fff;border-radius:14px;padding:14px 15px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:.18s;box-shadow:0 3px 10px rgba(15,23,42,.04)}.time-display:hover,.time-display:focus{border-color:#2563eb;box-shadow:0 0 0 4px rgba(37,99,235,.09);outline:none}.time-display .value{font-weight:900;font-size:16px}.time-display .hint{font-size:11px;color:#94a3b8}.time-modal{display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:18px}.time-modal.show{display:flex}.time-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.58);backdrop-filter:blur(3px)}.time-dialog{position:relative;width:min(520px,100%);max-height:min(760px,94vh);overflow:auto;background:#fff;border-radius:22px;padding:20px;box-shadow:0 30px 80px rgba(15,23,42,.35);animation:timePop .18s ease-out}.time-modal-open{overflow:hidden}@keyframes timePop{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}.time-dialog-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.time-dialog-head>div{display:flex;flex-direction:column;gap:3px}.time-kicker{font-size:10px;font-weight:900;letter-spacing:.12em;color:#64748b}.time-dialog-head strong{font-size:20px;color:#0f172a}.time-close{border:0;background:#f1f5f9;width:36px;height:36px;border-radius:11px;font-size:22px;cursor:pointer;color:#475569}.time-preview{border-radius:16px;padding:16px 18px;background:linear-gradient(135deg,#eff6ff,#f8fafc);border:1px solid #dbeafe;text-align:center;margin-bottom:13px}.time-preview span{display:block;font-size:31px;font-weight:950;letter-spacing:.02em;color:#0f172a}.time-preview small{display:block;margin-top:3px;color:#64748b;font-weight:800}.quick-times{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}.quick-times button{border:1px solid #dbe3ef;background:#fff;border-radius:10px;padding:8px 10px;font-weight:800;font-size:12px;cursor:pointer}.quick-times button:hover{background:#eff6ff;border-color:#93c5fd}.time-select-title{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin:13px 0 8px}.time-grid{display:grid;gap:7px}.hours-grid{grid-template-columns:repeat(6,1fr)}.minutes-grid{grid-template-columns:repeat(6,1fr)}.time-grid button,.ampm-grid button{border:1px solid #e2e8f0;background:#fff;color:#334155;border-radius:10px;padding:10px 5px;font-weight:850;cursor:pointer}.time-grid button:hover,.ampm-grid button:hover{background:#f8fafc;border-color:#94a3b8}.time-grid button.selected,.ampm-grid button.selected{background:#2563eb;border-color:#2563eb;color:#fff;box-shadow:0 5px 12px rgba(37,99,235,.22)}.ampm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.time-footer{margin-top:18px;padding-top:14px;border-top:1px solid #eef2f7;display:flex;justify-content:flex-end;gap:8px}.time-footer button{border:0;border-radius:11px;padding:11px 15px;font-weight:900;cursor:pointer}.time-cancel{background:#f1f5f9;color:#334155}.time-apply{background:#111827;color:#fff}.time-apply:hover{background:#2563eb}@media(max-width:520px){.time-modal{padding:10px}.time-dialog{padding:15px;border-radius:18px;max-height:96vh}.time-preview span{font-size:27px}.hours-grid,.minutes-grid{grid-template-columns:repeat(4,1fr)}.quick-times button{flex:1 1 28%}}
+.pricing-method{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:12px}.method{border:1px solid #dfe5ed;border-radius:10px;padding:10px 13px;background:#fff;cursor:pointer;font-size:12px;font-weight:900}.method.active{background:#111827;color:#fff;border-color:#111827}.pricing-area{border:1px solid #e6eaf0;border-radius:12px;padding:14px;background:#fbfcfe}.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.price-item{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:9px}.price-item label{display:block;font-size:10px;font-weight:900;color:#64748b;margin-bottom:5px}.price-item input{width:100%;border:1px solid #d8dee8;border-radius:8px;padding:9px}.group-row{display:grid;grid-template-columns:1fr 1fr 1.2fr auto;gap:8px;align-items:end;margin-bottom:8px}.group-row label{display:block;font-size:9px;font-weight:900;color:#64748b;margin-bottom:4px}.group-row input{width:100%;border:1px solid #d8dee8;border-radius:8px;padding:9px}.remove-group{border:0;background:#fee2e2;color:#991b1b;border-radius:8px;padding:9px;cursor:pointer;font-weight:900}.timing-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.timing-card{background:#fbfcfe;border:1px solid #e6eaf0;border-radius:13px;padding:14px}.timing-label{font-size:11px;font-weight:900;text-transform:uppercase;color:#64748b;margin-bottom:7px}
+.map-location-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;align-items:start}.map-card{border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;background:#fff}.map-card-head{padding:11px 13px;border-bottom:1px solid #edf0f4;font-size:12px;font-weight:900;color:#334155}.property-map{height:390px;background:#e5e7eb}.map-help{font-size:11px;color:#64748b;line-height:1.5;margin-top:8px}.coords-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.map-status{padding:10px 12px;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0;color:#475569;font-size:11px;margin-bottom:10px}.map-status.saved{background:#ecfdf5;border-color:#a7f3d0;color:#166534}@media(max-width:800px){.map-location-grid{grid-template-columns:1fr}.property-map{height:330px}}.complete{margin-top:16px;background:#111827;color:#fff;border-radius:14px;padding:17px;display:flex;align-items:center;justify-content:space-between;gap:15px}.complete h3{margin:0;font-size:15px}.complete p{margin:4px 0 0;color:#cbd5e1;font-size:11px}.complete .btn{background:#22c55e;color:#052e16}
+@media(max-width:900px){.stepper{grid-template-columns:repeat(4,1fr)}.image-grid{grid-template-columns:repeat(3,1fr)}.price-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.container{padding:0 10px 40px}.hero-top{display:block}.status{display:inline-block;margin-top:12px}.stepper{grid-template-columns:repeat(2,1fr)}.grid2,.timing-grid{grid-template-columns:1fr}.grid3,.choice-grid{grid-template-columns:1fr}.image-grid{grid-template-columns:repeat(2,1fr)}.price-grid{grid-template-columns:1fr}.group-row{grid-template-columns:1fr 1fr}.group-row .remove-group{grid-column:1/-1}.complete{display:block}.complete .btn{margin-top:12px;width:100%}.header{padding:0 14px}.head-btn{font-size:11px}}
+
+.existing-step-images{margin:12px 0 14px;padding:12px;border:1px solid #e5e7eb;border-radius:14px;background:#fafafa}.existing-step-images-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#667085;margin-bottom:10px}.step-image-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}.step-image-item{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:7px}.step-image-item img{display:block;width:100%;height:110px;object-fit:cover;border-radius:9px}.step-image-meta{font-size:11px;color:#667085;margin:7px 2px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.step-image-actions{display:flex;gap:6px}.step-image-actions a,.step-image-actions button{flex:1;border:0;border-radius:8px;padding:7px 6px;font-size:11px;font-weight:700;text-align:center;text-decoration:none;cursor:pointer}.step-image-view{background:#eef4ff;color:#3157a6}.step-image-delete{background:#fff0f0;color:#c62828}.no-step-images{font-size:12px;color:#98a2b3;padding:10px;border:1px dashed #d0d5dd;border-radius:10px;background:#fff}.upload-caption{font-size:11px;color:#667085;margin:0 0 8px}
+@media(max-width:640px){.step-image-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.step-image-item img{height:100px}}
+</style>
+</head>
+<body>
+<header class="header"><div class="logo">Goinn</div><div class="head-right"><a class="head-btn" href="{{ url_for('admin_dashboard', tab='pending-properties' if property.status == 'pending' else 'approved-properties') }}">← Admin Dashboard</a><a class="head-btn" href="{{ url_for('logout') }}">Logout</a></div></header>
+<main class="container">
+<a class="back" href="{{ url_for('admin_dashboard', tab='pending-properties' if property.status == 'pending' else 'approved-properties') }}">← Back to Properties</a>
+<section class="hero"><div class="hero-top"><div><h1>{{ property.property_name }}</h1><p>📍 {{ property.location }} · {{ property.property_address }}</p></div><span class="status {% if property.status == 'approved' %}live{% endif %}">{% if property.status == 'approved' %}✓ Property is Live{% else %}Pending Approval{% endif %}</span></div></section>
+
+{% with messages=get_flashed_messages(with_categories=true) %}{% for category,message in messages %}<div class="flash flash-{{ category }}">{{ message }}</div>{% endfor %}{% endwith %}
+
+{% set details = step_details or {} %}
+{% set amenities = property.amenities_data|fromjson if property.amenities_data else {} %}
+{% set approved_count = property.property_images|selectattr('status','equalto','approved')|list|length %}
+{% set pricing_ready = (property.property_type == 'guesthouse' and property.pricing_data) or (property.property_type != 'guesthouse' and property.type_pricing_data) %}
+{% set saved_guest_pricing = property.pricing_data|fromjson if property.pricing_data else [] %}
+
+<div class="stepper" id="stepper">
+{% for n,title,done in [(1,'Images',approved_count>0),(2,'Owner Type',property.availability_type),(3,'Amenities',property.amenities_data),(4,'Terms',property.terms_conditions),(5,'Property Type',property.property_type),(6,'Accommodation',property.property_details_data),(7,'Pricing & Timings',pricing_ready),(8,'Location',property.map_latitude is not none and property.map_longitude is not none)] %}
+<button type="button" class="step-nav {% if done %}done{% endif %}" data-step="{{ n }}" onclick="openStep({{ n }})"><span class="n">{{ n }}</span><strong>{{ title }}</strong></button>
+{% endfor %}
+</div>
+
+<!-- STEP 1 -->
+<section class="step open" id="step1"><button class="step-head" type="button" onclick="toggleStep(1)"><span class="step-num">1</span><span class="step-title"><strong>Review Property Images</strong><small>Approve the owner's property images before publishing.</small></span><span class="chev">⌄</span></button><div class="step-body">
+<div class="note">Approve acceptable images. If an image needs replacement, request re-upload. At least one approved owner image is required before publishing.</div>
+<div class="image-grid">
+{% for image in property.property_images %}<div class="img-card"><a href="{{ url_for('admin_view_property_image', image_id=image.id) }}" target="_blank"> <img src="{{ url_for('admin_view_property_image', image_id=image.id) }}" alt="Property image {{ image.slot }}"></a><div class="img-body"><div class="img-title">Slot {{ image.slot }}</div><div class="img-status {% if image.status=='approved' %}approved{% elif image.status=='reupload' %}reupload{% else %}pending{% endif %}">{{ image.status|title }}</div><div class="mini-actions"><a class="btn gray" href="{{ url_for('admin_download_property_image', image_id=image.id) }}">Download</a>{% if image.status != 'approved' %}<form method="POST" action="{{ url_for('approve_property_image', image_id=image.id) }}"><button class="btn green" type="submit">Approve</button></form>{% endif %}{% if image.status != 'reupload' %}<form method="POST" action="{{ url_for('request_property_image_reupload', image_id=image.id) }}"><button class="btn red" type="submit">Re-upload</button></form>{% endif %}</div><form class="upload" method="POST" enctype="multipart/form-data" action="{{ url_for('admin_upload_property_image', property_id=property.id, slot=image.slot) }}"><input type="file" name="image" accept="image/*" required><button class="btn dark" style="width:100%;margin-top:5px" type="submit">Replace Slot</button></form></div></div>{% endfor %}
+{% for slot in range((property.property_images|length)+1,11) %}<div class="img-card"><div class="img-empty">Empty slot {{ slot }}</div><div class="img-body"><div class="img-title">Upload image</div><form class="upload" method="POST" enctype="multipart/form-data" action="{{ url_for('admin_upload_property_image', property_id=property.id, slot=slot) }}"><input type="file" name="image" accept="image/*" required><button class="btn dark" style="width:100%;margin-top:5px" type="submit">Upload Slot {{ slot }}</button></form></div></div>{% endfor %}
+</div></div></section>
+
+<!-- STEP 2 -->
+<section class="step" id="step2"><button class="step-head" type="button" onclick="toggleStep(2)"><span class="step-num">2</span><span class="step-title"><strong>Owner Type</strong><small>Choose how availability will be managed.</small></span><span class="chev">⌄</span></button><div class="step-body"><form method="POST" action="{{ url_for('save_property_owner_type', property_id=property.id) }}"><div class="choice-grid">{% for value,label in [('type1','Type 1 · Owner Managed'),('type2','Type 2 · Goinn Managed'),('type3','Type 3 · Check Availability')] %}<label class="choice"><input type="radio" name="availability_type" value="{{ value }}" {% if property.availability_type==value %}checked{% endif %} required><strong>{{ label }}</strong><small>{% if value=='type1' %}Owner controls availability.{% elif value=='type2' %}Goinn/admin controls availability.{% else %}Availability is confirmed before booking.{% endif %}</small></label>{% endfor %}</div><div class="actions"><button class="btn primary" type="submit">Save Owner Type</button></div></form></div></section>
+
+<!-- STEP 3 -->
+<section class="step" id="step3"><button class="step-head" type="button" onclick="toggleStep(3)"><span class="step-num">3</span><span class="step-title"><strong>Amenities</strong><small>Select the amenities customers will see.</small></span><span class="chev">⌄</span></button><div class="step-body"><form method="POST" action="{{ url_for('save_property_amenities', property_id=property.id) }}"><div class="grid3">
+{% for category,items in {'Highlighted Amenities':['Gym','Restaurant','Lounge (Shared)','Bar'],'Basic Facilities':['Smoking Rooms','Room Service','Power Backup','Elevator/Lift','Telephone','Refrigerator','Housekeeping','Newspaper','Washing Machine','Umbrellas','Smoke Detector (In Room,Lobby)','Parking (Free)','Laundry Service (Paid)','Air Conditioning (Centralized)','Kitchenette','Wi-Fi (Free - Speed Suitable for working)'],'General Services':['Concierge','Wheelchair','Multilingual Staff','Luggage Assistance','Doctor on Call','Wheelchair accessible (Wheelchair)'],'Health and wellness':['Gym','Meditation Room','First-aid Services','Activity Centre'],'Transfers':['Airport Transfers (Paid)','Shuttle Service (Paid)'],'Room Amenities':['Coffee Machine (Available in some rooms)','Hairdryer','Air Conditioning','Dental Kit','Iron/Ironing Board','Work Desk','Mineral Water - additional charge','Minibar (Available in some rooms)','Balcony (Private)','Toiletries (Comb,Conditioner,Moisturiser,Premium,Shampoo,Shower Gel,Soap)'],'Food and Drinks':['Restaurant','Bar','Dining Area',"Kid's Menu"],'Payment Services':['Currency Exchange'],'Safety and Security':['CCTV','Fire Extinguishers','Security alarms','Security Guard'],'Media and technology':['TV (Cable,Flat screen)'],'Common Area':['Lounge (Shared)','Living Room','Reception','Balcony/Terrace'],'Business Center and Conferences':['Printer','Photocopying','Business Centre','Conference Room','Banquet','Fax Service'],'Other Facilities':['Cloak Room']}.items() %}<div class="subcard"><h4>{{ category }}</h4>{% for item in items %}<label style="display:block;margin:7px 0;font-size:12px"><input type="checkbox" name="amenities" value="{{ item }}" {% if item in amenities.get(category,[]) %}checked{% endif %}> {{ item }}</label>{% endfor %}</div>{% endfor %}</div><div class="actions"><button class="btn green" type="submit">Save Amenities</button></div></form></div></section>
+
+<!-- STEP 4 -->
+<section class="step" id="step4"><button class="step-head" type="button" onclick="toggleStep(4)"><span class="step-num">4</span><span class="step-title"><strong>Terms & Conditions</strong><small>Enter the terms customers must accept.</small></span><span class="chev">⌄</span></button><div class="step-body"><form method="POST" action="{{ url_for('save_property_terms', property_id=property.id) }}"><div class="field"><label>Terms & Conditions</label><textarea name="terms_conditions" required placeholder="Enter booking, cancellation, property and guest terms...">{{ property.terms_conditions or '' }}</textarea></div><button class="btn green" type="submit">Save Terms & Conditions</button></form></div></section>
+
+<!-- STEP 5 -->
+<section class="step" id="step5"><button class="step-head" type="button" onclick="toggleStep(5)"><span class="step-num">5</span><span class="step-title"><strong>Property Type</strong><small>Select Guesthouse/Farmhouse, Resort, Hotel or Service Apartment.</small></span><span class="chev">⌄</span></button><div class="step-body"><form method="POST" action="{{ url_for('save_property_type', property_id=property.id) }}"><div class="choice-grid">{% for value,label in property_types %}<label class="choice"><input type="radio" name="property_type" value="{{ value }}" {% if property.property_type==value %}checked{% endif %} required><strong>{{ label }}</strong><small>{% if value=='guesthouse' %}Single property with guest capacity pricing.{% elif value=='resort' %}Multiple units with unit-level pricing.{% elif value=='hotel' %}Room-type inventory and pricing.{% else %}BHK inventory and pricing.{% endif %}</small></label>{% endfor %}</div><div class="actions"><button class="btn primary" type="submit">Save Property Type</button></div></form></div></section>
+
+<!-- STEP 6 -->
+<section class="step" id="step6"><button class="step-head" type="button" onclick="toggleStep(6)"><span class="step-num">6</span><span class="step-title"><strong>Accommodation Details & Images</strong><small>Configure inventory and upload accommodation images.</small></span><span class="chev">⌄</span></button><div class="step-body">
+{% if not property.property_type %}<div class="note warn">Select the Property Type in Step 5 first.</div>{% else %}
+<form method="POST" action="{{ url_for('save_property_step_details', property_id=property.id) }}">
+{% if property.property_type=='guesthouse' %}<div class="grid2"><div class="field"><label>Bedrooms</label><input type="number" name="bedrooms" min="1" value="{{ details.get('bedrooms',1) }}" required></div><div class="field"><label>Washrooms</label><input type="number" name="washrooms" min="1" value="{{ details.get('washrooms',1) }}" required></div><div class="field"><label>Swimming Pool</label><select name="swimming_pool" required><option value="">Select</option><option value="yes" {% if details.get('swimming_pool')=='yes' %}selected{% endif %}>Yes</option><option value="no" {% if details.get('swimming_pool')=='no' %}selected{% endif %}>No</option></select></div><div class="field"><label>Kitchen</label><select name="kitchen" required><option value="">Select</option><option value="yes" {% if details.get('kitchen')=='yes' %}selected{% endif %}>Yes</option><option value="no" {% if details.get('kitchen')=='no' %}selected{% endif %}>No</option></select></div></div>
+{% elif property.property_type=='resort' %}<div class="field"><label>Total Units</label><input type="number" name="unit_count" min="1" max="100" value="{{ details.get('unit_count',1) }}" required></div>{% if details.get('units') %}{% for unit in details.get('units',[]) %}<div class="unit-card"><div class="unit-title">Unit {{ unit.get('unit') }}</div><div class="grid2"><div class="field"><label>Bedrooms</label><input type="number" name="unit_{{ unit.get('unit') }}_bedrooms" min="1" value="{{ unit.get('bedrooms',1) }}" required></div><div class="field"><label>Washrooms</label><input type="number" name="unit_{{ unit.get('unit') }}_washrooms" min="1" value="{{ unit.get('washrooms',1) }}" required></div><div class="field"><label>Swimming Pool</label><select name="unit_{{ unit.get('unit') }}_swimming_pool" required><option value="yes" {% if unit.get('swimming_pool')=='yes' %}selected{% endif %}>Yes</option><option value="no" {% if unit.get('swimming_pool')=='no' %}selected{% endif %}>No</option></select></div><div class="field"><label>Kitchen</label><select name="unit_{{ unit.get('unit') }}_kitchen" required><option value="yes" {% if unit.get('kitchen')=='yes' %}selected{% endif %}>Yes</option><option value="no" {% if unit.get('kitchen')=='no' %}selected{% endif %}>No</option></select></div></div></div>{% endfor %}{% endif %}
+{% elif property.property_type=='hotel' %}<div class="grid3">{% for key,label in hotel_room_types %}<div class="field"><label>{{ label }}</label><input type="number" name="room_{{ key }}" min="0" value="{{ details.get('room_types',{}).get(key,0) }}"></div>{% endfor %}</div>
+{% else %}<div class="grid3">{% for key,label in flat_types %}<div class="field"><label>{{ label }}</label><input type="number" name="flat_{{ key }}" min="0" value="{{ details.get('flat_types',{}).get(key,0) }}"></div>{% endfor %}</div>{% endif %}
+<button class="btn green" type="submit">Save Accommodation Details</button></form>
+
+{% if property.property_details_data %}
+<div class="subcard" style="margin-top:18px"><h4>Accommodation Images</h4>
+<p class="upload-caption">Previously uploaded accommodation images are shown below. Uploading new images for a category replaces only that category/unit's existing images.</p>
+{% macro step_gallery(category, target_key, unit_index=None) %}
+<div class="existing-step-images">
+  <div class="existing-step-images-title">Previously uploaded images</div>
+  {% set ns = namespace(found=false) %}
+  <div class="step-image-grid">
+  {% for img in property.step_images %}
+    {% if img.category == category and img.target_key == target_key and ((unit_index is none and img.unit_index is none) or (unit_index is not none and img.unit_index == unit_index)) %}
+      {% set ns.found = true %}
+      <div class="step-image-item">
+        <img src="{{ url_for('admin_property_step_image', image_id=img.id) }}" alt="{{ img.filename }}">
+        <div class="step-image-meta" title="{{ img.filename }}">{{ img.filename }}</div>
+        <div class="step-image-actions">
+          <a class="step-image-view" href="{{ url_for('admin_property_step_image', image_id=img.id) }}" target="_blank">View</a>
+          <form method="POST" action="{{ url_for('delete_property_step_image', image_id=img.id) }}" onsubmit="return confirm('Delete this accommodation image?');" style="flex:1;margin:0">
+            <button type="submit" class="step-image-delete" style="width:100%">Delete</button>
+          </form>
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+  </div>
+  {% if not ns.found %}<div class="no-step-images">No previously uploaded images for this accommodation section.</div>{% endif %}
+</div>
+{% endmacro %}
+
+{% if property.property_type=='guesthouse' %}<div class="grid2">{% for cat,label in [('bedroom','Bedroom Images'),('washroom','Washroom Images'),('swimming_pool','Swimming Pool Images'),('kitchen','Kitchen Images')] %}<div class="subcard"><h4>{{ label }}</h4>{{ step_gallery(cat,cat) }}<form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_property_step_image', property_id=property.id) }}"><input type="hidden" name="category" value="{{ cat }}"><input type="hidden" name="target_key" value="{{ cat }}"><input type="file" name="images" accept="image/*" multiple required><button class="btn dark" style="margin-top:8px" type="submit">Upload</button></form></div>{% endfor %}</div>
+{% elif property.property_type=='resort' %}{% for unit in details.get('units',[]) %}<div class="unit-card"><div class="unit-title">Unit {{ unit.get('unit') }} Images</div><div class="grid2">{% for cat,label in [('bedroom','Bedroom'),('washroom','Washroom'),('swimming_pool','Swimming Pool'),('kitchen','Kitchen')] %}<div class="subcard"><h4>{{ label }}</h4>{{ step_gallery(cat,cat,unit.get('unit')) }}<form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_property_step_image', property_id=property.id) }}"><input type="hidden" name="category" value="{{ cat }}"><input type="hidden" name="target_key" value="{{ cat }}"><input type="hidden" name="unit_index" value="{{ unit.get('unit') }}"><input type="file" name="images" accept="image/*" multiple required><button class="btn dark" style="margin-top:8px" type="submit">Upload</button></form></div>{% endfor %}</div></div>{% endfor %}
+{% elif property.property_type=='hotel' %}<div class="grid3">{% for key,label in hotel_room_types %}{% if details.get('room_types',{}).get(key,0)>0 %}<div class="subcard"><h4>{{ label }}</h4>{{ step_gallery('room',key) }}<form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_property_step_image', property_id=property.id) }}"><input type="hidden" name="category" value="room"><input type="hidden" name="target_key" value="{{ key }}"><input type="file" name="images" accept="image/*" multiple required><button class="btn dark" style="margin-top:8px" type="submit">Upload</button></form></div>{% endif %}{% endfor %}</div>
+{% else %}<div class="grid3">{% for key,label in flat_types %}{% if details.get('flat_types',{}).get(key,0)>0 %}<div class="subcard"><h4>{{ label }}</h4>{{ step_gallery('flat',key) }}<form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_property_step_image', property_id=property.id) }}"><input type="hidden" name="category" value="flat"><input type="hidden" name="target_key" value="{{ key }}"><input type="file" name="images" accept="image/*" multiple required><button class="btn dark" style="margin-top:8px" type="submit">Upload</button></form></div>{% endif %}{% endfor %}</div>{% endif %}
+</div>{% endif %}
+{% endif %}</div></section>
+
+<!-- STEP 7 -->
+<section class="step" id="step7"><button class="step-head" type="button" onclick="toggleStep(7)"><span class="step-num">7</span><span class="step-title"><strong>Pricing & Check-in / Check-out Timings</strong><small>Configure guest pricing or accommodation pricing and the property's timings.</small></span><span class="chev">⌄</span></button><div class="step-body">
+{% if not property.property_type or not property.property_details_data %}<div class="note warn">Complete Steps 5 and 6 first.</div>{% else %}
+{% if property.property_type=='guesthouse' %}
+<form method="POST" action="{{ url_for('set_property_price', property_id=property.id) }}" id="guestPricingForm"><input type="hidden" name="workflow" value="steps"><input type="hidden" name="availability_type" value="{{ property.availability_type or 'type1' }}"><div class="grid2"><div class="field"><label>Maximum Guests</label><input id="maxGuests" type="number" name="max_guests" min="1" max="100" value="{{ property.max_guests if property.max_guests is not none else '' }}" required></div><div class="field"><label>Pricing Method</label><div class="pricing-method"><button type="button" class="method" id="individualMethod" onclick="setPricingMethod('individual')">Individual</button><button type="button" class="method" id="groupMethod" onclick="setPricingMethod('group')">Group</button></div><input type="hidden" id="pricingMethod" name="pricing_method" value="{{ property.pricing_method or '' }}"></div></div><div class="pricing-area"><div id="individualPricing"></div><div id="groupPricing" style="display:none"></div></div>
+<div class="timing-grid" style="margin-top:16px"><div class="timing-card"><div class="timing-label">Check-in time</div><div class="time-field"><button type="button" class="time-display" onclick="openTimePicker('checkin')"><span class="value" id="checkinDisplay">Select time</span><span>⌄</span></button><input type="hidden" id="checkinValue" name="check_in_time" value="{{ details.get('check_in_time','') }}"></div></div><div class="timing-card"><div class="timing-label">Check-out time</div><div class="time-field"><button type="button" class="time-display" onclick="openTimePicker('checkout')"><span class="value" id="checkoutDisplay">Select time</span><span>⌄</span></button><input type="hidden" id="checkoutValue" name="check_out_time" value="{{ details.get('check_out_time','') }}"></div></div></div><div class="actions"><button class="btn green" type="submit">Save Guesthouse Pricing & Timings</button></div></form>
+{% else %}<form method="POST" action="{{ url_for('save_type_pricing', property_id=property.id) }}"><div class="timing-grid" style="margin-bottom:16px"><div class="timing-card"><div class="timing-label">Check-in time</div><button type="button" class="time-display" onclick="openTimePicker('checkin')"><span class="value" id="checkinDisplay">Select time</span><span>⌄</span></button><input type="hidden" id="checkinValue" name="check_in_time" value="{{ details.get('check_in_time','') }}"></div><div class="timing-card"><div class="timing-label">Check-out time</div><button type="button" class="time-display" onclick="openTimePicker('checkout')"><span class="value" id="checkoutDisplay">Select time</span><span>⌄</span></button><input type="hidden" id="checkoutValue" name="check_out_time" value="{{ details.get('check_out_time','') }}"></div></div>
+{% if property.property_type=='resort' %}{% for unit in details.get('units',[]) %}<div class="unit-card"><div class="unit-title">Unit {{ unit.get('unit') }}</div><div class="grid2"><div class="field"><label>Maximum Guests</label><input type="number" name="unit_{{ unit.get('unit') }}_max_guests" min="1" value="{{ type_pricing.get(unit.get('unit')|string,{}).get('max_guests','') }}" required></div><div class="field"><label>Price / Day</label><input type="number" step="0.01" min="0" name="unit_{{ unit.get('unit') }}_price" value="{{ type_pricing.get(unit.get('unit')|string,{}).get('price','') }}" required></div></div></div>{% endfor %}
+{% elif property.property_type=='hotel' %}<div class="grid2">{% for key,label in hotel_room_types %}{% if details.get('room_types',{}).get(key,0)>0 %}<div class="unit-card"><div class="unit-title">{{ label }} · {{ details.get('room_types',{}).get(key) }} rooms</div><div class="grid2"><div class="field"><label>Maximum Guests</label><input type="number" name="room_{{ key }}_max_guests" min="1" value="{{ type_pricing.get(key,{}).get('max_guests','') }}" required></div><div class="field"><label>Price / Day</label><input type="number" step="0.01" min="0" name="room_{{ key }}_price" value="{{ type_pricing.get(key,{}).get('price','') }}" required></div></div></div>{% endif %}{% endfor %}</div>
+{% else %}<div class="grid2">{% for key,label in flat_types %}{% if details.get('flat_types',{}).get(key,0)>0 %}<div class="unit-card"><div class="unit-title">{{ label }} · {{ details.get('flat_types',{}).get(key) }} flats</div><div class="grid2"><div class="field"><label>Maximum Guests</label><input type="number" name="flat_{{ key }}_max_guests" min="1" value="{{ type_pricing.get(key,{}).get('max_guests','') }}" required></div><div class="field"><label>Price / Day</label><input type="number" step="0.01" min="0" name="flat_{{ key }}_price" value="{{ type_pricing.get(key,{}).get('price','') }}" required></div></div></div>{% endif %}{% endfor %}</div>{% endif %}<div class="actions"><button class="btn green" type="submit">Save Pricing & Timings</button></div></form>{% endif %}
+{% endif %}
+</div></section>
+
+
+<!-- STEP 8 -->
+<section class="step" id="step8">
+<button class="step-head" type="button" onclick="toggleStep(8)">
+<span class="step-num">8</span>
+<span class="step-title">
+<strong>Property Location on Map</strong>
+<small>Set the exact map location that customers will use to find the property.</small>
+</span>
+<span class="chev">⌄</span>
+</button>
+<div class="step-body">
+<div class="note">
+Click the exact property position on the map, or drag the marker to the correct location.
+You can also paste a Google Maps link for reference. The selected latitude and longitude are saved with the property.
+</div>
+
+<div class="map-location-grid">
+  <div class="map-card">
+    <div class="map-card-head">📍 Select Property Location</div>
+    <div id="propertyMap" class="property-map"></div>
+  </div>
+
+  <form method="POST" action="{{ url_for('save_property_location', property_id=property.id) }}">
+    <div class="map-status {% if property.map_latitude is not none and property.map_longitude is not none %}saved{% endif %}" id="mapStatus">
+      {% if property.map_latitude is not none and property.map_longitude is not none %}
+        ✓ Location saved: {{ "%.6f"|format(property.map_latitude) }}, {{ "%.6f"|format(property.map_longitude) }}
+      {% else %}
+        Location not saved yet. Click the map to select it.
+      {% endif %}
+    </div>
+
+    <div class="field">
+      <label>Google Maps / Map Link (Optional)</label>
+      <input type="url" id="mapLocationUrl" name="map_location_url"
+             value="{{ property.map_location_url or '' }}"
+             placeholder="Paste Google Maps link">
+    </div>
+
+    <div class="coords-grid">
+      <div class="field">
+        <label>Latitude</label>
+        <input type="number" id="mapLatitude" name="map_latitude"
+               step="any" min="-90" max="90"
+               value="{{ property.map_latitude if property.map_latitude is not none else '' }}"
+               required>
+      </div>
+      <div class="field">
+        <label>Longitude</label>
+        <input type="number" id="mapLongitude" name="map_longitude"
+               step="any" min="-180" max="180"
+               value="{{ property.map_longitude if property.map_longitude is not none else '' }}"
+               required>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn gray" id="findAddressBtn">Find Property Address</button>
+      <button type="submit" class="btn green">Save Map Location</button>
+    </div>
+
+    <div class="map-help">
+      Property address: <strong>{{ property.property_address }}</strong><br>
+      Search may use the address above as an approximate starting point. Always verify the marker is exactly at the property before saving.
+    </div>
+  </form>
+</div>
+</div>
+</section>
+
+
+<!-- STEP 9 -->
+<section class="step" id="step9">
+<button class="step-head" type="button" onclick="toggleStep(9)">
+<span class="step-num">9</span>
+<span class="step-title">
+<strong>Assistance Phone Number</strong>
+<small>Add one or more assistance contacts that customers can use after booking.</small>
+</span>
+<span class="chev">⌄</span>
+</button>
+
+<div class="step-body">
+<div class="note">
+Add the assistance contact name and a valid 10-digit phone number. You can add one contact or multiple contacts.
+Only numeric 10-digit phone numbers are accepted.
+</div>
+
+<form method="POST"
+      action="{{ url_for('save_property_assistance', property_id=property.id) }}"
+      id="assistanceForm"
+      onsubmit="return validateAssistanceContacts();">
+
+<div id="assistanceContacts">
+{% set assistance_contacts = step_details.get('assistance_contacts', []) %}
+
+{% if assistance_contacts %}
+    {% for contact in assistance_contacts %}
+    <div class="unit-card assistance-contact-row">
+        <div class="grid2">
+            <div class="field">
+                <label>Contact Name</label>
+                <input type="text"
+                       name="assistance_name[]"
+                       value="{{ contact.get('name','') }}"
+                       maxlength="120"
+                       placeholder="e.g. Reception"
+                       required>
+            </div>
+
+            <div class="field">
+                <label>Phone Number</label>
+                <input type="tel"
+                       name="assistance_phone[]"
+                       value="{{ contact.get('phone','') }}"
+                       inputmode="numeric"
+                       autocomplete="tel"
+                       maxlength="10"
+                       pattern="[0-9]{10}"
+                       title="Enter exactly 10 digits"
+                       placeholder="10-digit phone number"
+                       oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)"
+                       required>
+            </div>
+        </div>
+
+        <div class="mini-actions">
+            <button type="button" class="btn gray" onclick="removeAssistanceContact(this)">Remove</button>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="unit-card assistance-contact-row">
+        <div class="grid2">
+            <div class="field">
+                <label>Contact Name</label>
+                <input type="text"
+                       name="assistance_name[]"
+                       maxlength="120"
+                       placeholder="e.g. Reception"
+                       required>
+            </div>
+
+            <div class="field">
+                <label>Phone Number</label>
+                <input type="tel"
+                       name="assistance_phone[]"
+                       inputmode="numeric"
+                       autocomplete="tel"
+                       maxlength="10"
+                       pattern="[0-9]{10}"
+                       title="Enter exactly 10 digits"
+                       placeholder="10-digit phone number"
+                       oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)"
+                       required>
+            </div>
+        </div>
+    </div>
+{% endif %}
+</div>
+
+<div class="actions" style="margin-top:12px;">
+    <button type="button" class="btn gray" onclick="addAssistanceContact()">+ Add Another Contact</button>
+    <button type="submit" class="btn green">Save Assistance Contacts</button>
+</div>
+
+<div class="map-help">
+Customers will see these contacts in the booking details after the booking is approved/booked.
+</div>
+
+</form>
+</div>
+</section>
+
+{% if property.status != 'approved' %}<div class="complete"><div><h3>Ready to publish?</h3><p>All nine steps must be complete, including the property map location, assistance contact, at least one approved owner image and pricing.</p></div><form method="POST" action="{{ url_for('approve_property_from_steps', property_id=property.id) }}"><button class="btn" type="submit">✓ Approve & Publish Property</button></form></div>{% else %}<div class="complete"><div><h3>Property is Live</h3><p>You can continue to edit these nine steps without taking the property offline.</p></div><a class="btn" href="{{ url_for('property_details', property_id=property.id) }}">View Live Property</a></div>{% endif %}
+
+<!-- Custom time picker: completely custom UI, no native/system time picker -->
+<div class="time-modal" id="timeModal" aria-hidden="true">
+  <div class="time-backdrop" onclick="closeTimePicker()"></div>
+  <div class="time-dialog" role="dialog" aria-modal="true" aria-labelledby="timePickerTitle">
+    <div class="time-dialog-head">
+      <div><span class="time-kicker">PROPERTY TIMING</span><strong id="timePickerTitle">Select time</strong></div>
+      <button type="button" class="time-close" onclick="closeTimePicker()" aria-label="Close">×</button>
+    </div>
+    <div class="time-preview"><span id="timePreview">02:00 PM</span><small id="timePreviewTarget">Check-in</small></div>
+    <div class="quick-times">
+      <button type="button" onclick="quickTime(9,0,'AM')">09:00 AM</button>
+      <button type="button" onclick="quickTime(11,0,'AM')">11:00 AM</button>
+      <button type="button" onclick="quickTime(12,0,'PM')">12:00 PM</button>
+      <button type="button" onclick="quickTime(2,0,'PM')">02:00 PM</button>
+      <button type="button" onclick="quickTime(3,0,'PM')">03:00 PM</button>
+    </div>
+    <div class="time-select-title">Choose hour</div>
+    <div class="time-grid hours-grid" id="hours"></div>
+    <div class="time-select-title">Choose minutes</div>
+    <div class="time-grid minutes-grid" id="minutes"></div>
+    <div class="time-select-title">AM / PM</div>
+    <div class="ampm-grid" id="ampm"></div>
+    <div class="time-footer"><button type="button" class="time-cancel" onclick="closeTimePicker()">Cancel</button><button type="button" class="time-apply" onclick="applyTime()">✓ Use this time</button></div>
+  </div>
+</div>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function () {
+  const latInput = document.getElementById('mapLatitude');
+  const lngInput = document.getElementById('mapLongitude');
+  const urlInput = document.getElementById('mapLocationUrl');
+  const statusBox = document.getElementById('mapStatus');
+  const mapEl = document.getElementById('propertyMap');
+
+  if (!latInput || !lngInput || !mapEl || typeof L === 'undefined') return;
+
+  const savedLat = parseFloat(latInput.value);
+  const savedLng = parseFloat(lngInput.value);
+
+  // Hyderabad/India is only the initial visual center when no coordinates exist.
+  // It is NOT saved unless the admin clicks the map.
+  let initialLat = Number.isFinite(savedLat) ? savedLat : 20.5937;
+  let initialLng = Number.isFinite(savedLng) ? savedLng : 78.9629;
+  let initialZoom = Number.isFinite(savedLat) && Number.isFinite(savedLng) ? 15 : 5;
+
+  const map = L.map(mapEl).setView([initialLat, initialLng], initialZoom);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  let marker = null;
+
+  function setLocation(lat, lng, updateUrl) {
+    lat = Number(lat);
+    lng = Number(lng);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return;
+
+    latInput.value = lat.toFixed(6);
+    lngInput.value = lng.toFixed(6);
+
+    if (!marker) {
+      marker = L.marker([lat, lng], {draggable: true}).addTo(map);
+      marker.on('dragend', function () {
+        const p = marker.getLatLng();
+        setLocation(p.lat, p.lng, true);
+      });
+    } else {
+      marker.setLatLng([lat, lng]);
+    }
+
+    map.setView([lat, lng], Math.max(map.getZoom(), 15));
+
+    if (updateUrl || !urlInput.value.trim()) {
+      urlInput.value = 'https://www.google.com/maps?q=' +
+        lat.toFixed(6) + ',' + lng.toFixed(6);
+    }
+
+    statusBox.className = 'map-status saved';
+    statusBox.textContent = '✓ Selected location: ' +
+      lat.toFixed(6) + ', ' + lng.toFixed(6);
+  }
+
+  if (Number.isFinite(savedLat) && Number.isFinite(savedLng)) {
+    setLocation(savedLat, savedLng, false);
+  }
+
+  map.on('click', function (e) {
+    setLocation(e.latlng.lat, e.latlng.lng, true);
+  });
+
+  function extractCoords(value) {
+    if (!value) return null;
+
+    // Handles common Google Maps URLs such as:
+    // .../@17.385044,78.486671,15z
+    // ...?q=17.385044,78.486671
+    // .../search/17.385044,78.486671
+    const patterns = [
+      /@(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)/,
+      /[?&](?:q|query|ll|center)=(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)/i,
+      /\/(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)(?:[/?#]|$)/
+    ];
+
+    for (const pattern of patterns) {
+      const match = value.match(pattern);
+      if (match) {
+        const lat = parseFloat(match[1]);
+        const lng = parseFloat(match[2]);
+        if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+          return [lat, lng];
+        }
+      }
+    }
+    return null;
+  }
+
+  if (urlInput) {
+    urlInput.addEventListener('change', function () {
+      const coords = extractCoords(urlInput.value.trim());
+      if (coords) {
+        setLocation(coords[0], coords[1], false);
+      }
+    });
+  }
+
+  const findBtn = document.getElementById('findAddressBtn');
+  if (findBtn) {
+    findBtn.addEventListener('click', async function () {
+      const query = {{ (property.property_address ~ ', ' ~ property.location)|tojson }};
+      const oldText = findBtn.textContent;
+      findBtn.disabled = true;
+      findBtn.textContent = 'Finding…';
+
+      try {
+        const response = await fetch(
+          'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=' +
+          encodeURIComponent(query),
+          {
+            headers: { 'Accept': 'application/json' }
+          }
+        );
+
+        if (!response.ok) throw new Error('Search failed');
+        const results = await response.json();
+
+        if (!results.length) {
+          alert('Address could not be found. Please click the exact location on the map.');
+          return;
+        }
+
+        setLocation(
+          parseFloat(results[0].lat),
+          parseFloat(results[0].lon),
+          true
+        );
+      } catch (error) {
+        alert('Unable to find the address automatically. Please click the exact property location on the map.');
+      } finally {
+        findBtn.disabled = false;
+        findBtn.textContent = oldText;
+      }
+    });
+  }
+
+  // Leaflet needs a size refresh when its section is initially collapsed.
+  const step = document.getElementById('step8');
+  if (step) {
+    const observer = new MutationObserver(function () {
+      if (step.classList.contains('open')) {
+        setTimeout(function () { map.invalidateSize(); }, 120);
+      }
+    });
+    observer.observe(step, {attributes:true, attributeFilter:['class']});
+  }
+
+  window.addEventListener('resize', function () {
+    map.invalidateSize();
+  });
+})();
+</script>
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+
+  // ---------------- STEP NAVIGATION ----------------
+  window.toggleStep = function (n) {
+    const el = $('step' + n);
+    if (el) el.classList.toggle('open');
+  };
+
+  window.openStep = function (n) {
+    document.querySelectorAll('.step').forEach(function (x) {
+      x.classList.remove('open');
+    });
+    const el = $('step' + n);
+    if (el) {
+      el.classList.add('open');
+      setTimeout(function () {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 0);
+    }
+  };
+
+  // ---------------- CUSTOM TIME PICKER ----------------
+  let pickerTarget = null;
+  let pickerHour = 12;
+  let pickerMinute = 0;
+  let pickerAmpm = 'AM';
+
+  function parseTime(v) {
+    if (!v) return [12, 0, 'AM'];
+
+    const parts = String(v).split(':');
+    let h = parseInt(parts[0], 10);
+    let m = parseInt(parts[1], 10);
+
+    if (isNaN(h) || h < 0 || h > 23) h = 12;
+    if (isNaN(m) || m < 0 || m > 59) m = 0;
+
+    return [h % 12 || 12, m, h >= 12 ? 'PM' : 'AM'];
+  }
+
+  function format12(h, m, ap) {
+    return String(h).padStart(2, '0') + ':' +
+           String(m).padStart(2, '0') + ' ' + ap;
+  }
+
+  function updateTimePreview() {
+    if ($('timePreview')) {
+      $('timePreview').textContent =
+        format12(pickerHour, pickerMinute, pickerAmpm);
+    }
+    if ($('timePreviewTarget')) {
+      $('timePreviewTarget').textContent =
+        pickerTarget === 'checkin' ? 'Check-in' : 'Check-out';
+    }
+  }
+
+  function renderTimeButtons() {
+    const hs = $('hours');
+    const ms = $('minutes');
+    const as = $('ampm');
+
+    if (!hs || !ms || !as) return;
+
+    hs.innerHTML = '';
+    ms.innerHTML = '';
+    as.innerHTML = '';
+
+    for (let h = 1; h <= 12; h++) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = String(h).padStart(2, '0');
+      if (h === pickerHour) b.className = 'selected';
+
+      b.onclick = function () {
+        pickerHour = h;
+        renderTimeButtons();
+        updateTimePreview();
+      };
+
+      hs.appendChild(b);
+    }
+
+    for (let m = 0; m < 60; m += 5) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = String(m).padStart(2, '0');
+      if (m === pickerMinute) b.className = 'selected';
+
+      b.onclick = function () {
+        pickerMinute = m;
+        renderTimeButtons();
+        updateTimePreview();
+      };
+
+      ms.appendChild(b);
+    }
+
+    ['AM', 'PM'].forEach(function (ap) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = ap;
+      if (ap === pickerAmpm) b.className = 'selected';
+
+      b.onclick = function () {
+        pickerAmpm = ap;
+        renderTimeButtons();
+        updateTimePreview();
+      };
+
+      as.appendChild(b);
+    });
+  }
+
+  window.openTimePicker = function (target) {
+    pickerTarget = target;
+
+    const input = $(target === 'checkin'
+      ? 'checkinValue'
+      : 'checkoutValue');
+
+    const parsed = parseTime(input ? input.value : '');
+    pickerHour = parsed[0];
+    pickerMinute = Math.floor(parsed[1] / 5) * 5;
+    pickerAmpm = parsed[2];
+
+    if ($('timePickerTitle')) {
+      $('timePickerTitle').textContent =
+        target === 'checkin'
+          ? 'Select check-in time'
+          : 'Select check-out time';
+    }
+
+    updateTimePreview();
+    renderTimeButtons();
+
+    const modal = $('timeModal');
+    if (modal) {
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('time-modal-open');
+    }
+  };
+
+  window.closeTimePicker = function () {
+    const modal = $('timeModal');
+
+    if (modal) {
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    document.body.classList.remove('time-modal-open');
+    pickerTarget = null;
+  };
+
+  window.quickTime = function (h, m, ap) {
+    pickerHour = h;
+    pickerMinute = m;
+    pickerAmpm = ap;
+    renderTimeButtons();
+    updateTimePreview();
+  };
+
+  window.applyTime = function () {
+    if (!pickerTarget) return;
+
+    let h = pickerHour % 12;
+    if (pickerAmpm === 'PM') h += 12;
+
+    const value =
+      String(h).padStart(2, '0') + ':' +
+      String(pickerMinute).padStart(2, '0');
+
+    const input = $(
+      pickerTarget === 'checkin'
+        ? 'checkinValue'
+        : 'checkoutValue'
+    );
+
+    const display = $(
+      pickerTarget === 'checkin'
+        ? 'checkinDisplay'
+        : 'checkoutDisplay'
+    );
+
+    if (input) input.value = value;
+    if (display) {
+      display.textContent =
+        format12(pickerHour, pickerMinute, pickerAmpm);
+    }
+
+    window.closeTimePicker();
+  };
+
+  document.addEventListener('keydown', function (e) {
+    if (
+      e.key === 'Escape' &&
+      $('timeModal') &&
+      $('timeModal').classList.contains('show')
+    ) {
+      window.closeTimePicker();
+    }
+  });
+
+  function initTimeDisplays() {
+    [
+      ['checkinValue', 'checkinDisplay'],
+      ['checkoutValue', 'checkoutDisplay']
+    ].forEach(function (pair) {
+      const input = $(pair[0]);
+      const display = $(pair[1]);
+
+      if (!input || !display) return;
+
+      if (!input.value) {
+        display.textContent = 'Select time';
+        return;
+      }
+
+      const parsed = parseTime(input.value);
+      display.textContent =
+        format12(parsed[0], parsed[1], parsed[2]);
+    });
+  }
+
+  // ---------------- GUESTHOUSE PRICING ----------------
+  const savedGuestPricing = {{ saved_guest_pricing|tojson|safe }};
+
+  function savedIndividualMap() {
+    const map = {};
+
+    if (Array.isArray(savedGuestPricing)) {
+      savedGuestPricing.forEach(function (x) {
+        if (x && x.guests != null) {
+          map[String(x.guests)] =
+            x.price == null ? '' : x.price;
+        }
+      });
+    }
+
+    return map;
+  }
+
+  function savedGroupRows() {
+    if (!Array.isArray(savedGuestPricing)) return [];
+
+    return savedGuestPricing
+      .filter(function (x) {
+        return x &&
+          x.min_guests != null &&
+          x.max_guests != null;
+      })
+      .map(function (x) {
+        return {
+          min_guests: Number(x.min_guests),
+          max_guests: Number(x.max_guests),
+          price: x.price == null ? '' : x.price
+        };
+      });
+  }
+
+  function updatePricingInputState() {
+    const method =
+      $('pricingMethod')
+        ? $('pricingMethod').value
+        : 'individual';
+
+    document.querySelectorAll(
+      '#individualPricing input, #groupPricing input'
+    ).forEach(function (input) {
+      input.disabled = true;
+      input.removeAttribute('required');
+    });
+
+    if (method === 'individual') {
+      document.querySelectorAll(
+        '#individualPricing input'
+      ).forEach(function (input) {
+        input.disabled = false;
+        input.required = true;
+      });
+    }
+
+    if (method === 'group') {
+      document.querySelectorAll(
+        '#groupPricing input'
+      ).forEach(function (input) {
+        input.disabled = false;
+        input.required = true;
+      });
+    }
+  }
+
+  function renderIndividual() {
+    const wrap = $('individualPricing');
+    if (!wrap) return;
+
+    const max = Math.max(
+      1,
+      parseInt($('maxGuests')?.value || '1', 10) || 1
+    );
+
+    const old = {};
+
+    wrap.querySelectorAll('input').forEach(function (input) {
+      old[input.name] = input.value;
+    });
+
+    const saved = savedIndividualMap();
+
+    let html = '<div class="price-grid">';
+
+    for (let guest = 1; guest <= max; guest++) {
+      const key = 'price_' + guest;
+
+      let value = '';
+
+      if (Object.prototype.hasOwnProperty.call(old, key)) {
+        value = old[key];
+      } else if (
+        Object.prototype.hasOwnProperty.call(
+          saved,
+          String(guest)
+        )
+      ) {
+        value = saved[String(guest)];
+      }
+
+      html +=
+        '<div class="price-item">' +
+          '<label>' +
+            guest + ' Guest' + (guest > 1 ? 's' : '') +
+          '</label>' +
+          '<input type="number" min="0" step="0.01" ' +
+            'name="' + key + '" value="' +
+            String(value).replace(/"/g, '&quot;') +
+            '" required>' +
+        '</div>';
+    }
+
+    wrap.innerHTML = html + '</div>';
+
+    updatePricingInputState();
+  }
+
+  function createGroupRow(data, index) {
+    const row = document.createElement('div');
+    row.className = 'group-row';
+
+    row.innerHTML =
+      '<div>' +
+        '<label>From</label>' +
+        '<input type="number" min="1" data-min ' +
+          'name="group_' + index + '_min" ' +
+          'value="' + (data.min_guests || '') + '">' +
+      '</div>' +
+      '<div>' +
+        '<label>To</label>' +
+        '<input type="number" min="1" data-max ' +
+          'name="group_' + index + '_max" ' +
+          'value="' + (data.max_guests || '') + '">' +
+      '</div>' +
+      '<div>' +
+        '<label>Price / day</label>' +
+        '<input type="number" min="0" step="0.01" ' +
+          'name="group_' + index + '_price" ' +
+          'value="' +
+            String(data.price == null ? '' : data.price)
+              .replace(/"/g, '&quot;') +
+          '">' +
+      '</div>' +
+      '<button type="button" class="remove-group">×</button>';
+
+    row.querySelector('.remove-group').onclick =
+      function () {
+        row.remove();
+        renumberGroupRows();
+        updatePricingInputState();
+      };
+
+    $('groupPricing').appendChild(row);
+  }
+
+  function renumberGroupRows() {
+    const rows =
+      Array.from(
+        document.querySelectorAll(
+          '#groupPricing .group-row'
+        )
+      );
+
+    rows.forEach(function (row, index) {
+      row.querySelector('[data-min]').name =
+        'group_' + (index + 1) + '_min';
+
+      row.querySelector('[data-max]').name =
+        'group_' + (index + 1) + '_max';
+
+      row.querySelector('[name$="_price"]').name =
+        'group_' + (index + 1) + '_price';
+    });
+  }
+
+  function renderGroups() {
+    const wrap = $('groupPricing');
+    if (!wrap) return;
+
+    // IMPORTANT:
+    // Do not create any predefined guest groups.
+    // Do not populate From / To / Price automatically.
+    wrap.innerHTML =
+      '<div class="note">' +
+        'Add guest groups below and enter the ranges and prices ' +
+        'manually. No values are pre-filled.' +
+      '</div>' +
+      '<button type="button" class="btn gray" ' +
+        'id="addGroupBtn">+ Add guest group</button>';
+
+    const saved = savedGroupRows();
+
+    // Only restore genuinely saved values.
+    saved.forEach(function (row, index) {
+      createGroupRow(row, index + 1);
+    });
+
+    renumberGroupRows();
+
+    const addButton = $('addGroupBtn');
+
+    if (addButton) {
+      addButton.onclick = function () {
+        const count =
+          document.querySelectorAll(
+            '#groupPricing .group-row'
+          ).length;
+
+        createGroupRow({}, count + 1);
+        renumberGroupRows();
+        updatePricingInputState();
+      };
+
+      // Keep the button at the bottom.
+      $('groupPricing').appendChild(addButton);
+    }
+
+    updatePricingInputState();
+  }
+
+  window.setPricingMethod = function (method) {
+    const pm = $('pricingMethod');
+    if (!pm) return;
+
+    pm.value = method;
+
+    if ($('individualMethod')) {
+      $('individualMethod').classList.toggle(
+        'active',
+        method === 'individual'
+      );
+    }
+
+    if ($('groupMethod')) {
+      $('groupMethod').classList.toggle(
+        'active',
+        method === 'group'
+      );
+    }
+
+    if ($('individualPricing')) {
+      $('individualPricing').style.display =
+        method === 'individual' ? 'block' : 'none';
+    }
+
+    if ($('groupPricing')) {
+      $('groupPricing').style.display =
+        method === 'group' ? 'block' : 'none';
+    }
+
+    if (method === 'individual') {
+      renderIndividual();
+    } else {
+      renderGroups();
+    }
+
+    updatePricingInputState();
+  };
+
+  const maxGuests = $('maxGuests');
+
+  if (maxGuests) {
+    maxGuests.addEventListener('input', function () {
+      const method =
+        $('pricingMethod')?.value || '';
+
+      if (method === 'individual') {
+        renderIndividual();
+      } else if (method === 'group') {
+        updatePricingInputState();
+      }
+    });
+  }
+
+  if ($('pricingMethod') && $('pricingMethod').value) {
+    window.setPricingMethod($('pricingMethod').value);
+  }
+
+  // ---------------- SAVE VALIDATION ----------------
+  const guestForm = $('guestPricingForm');
+
+  if (guestForm) {
+    guestForm.addEventListener('submit', function (e) {
+      updatePricingInputState();
+
+      const max = parseInt(
+        $('maxGuests')?.value || '0',
+        10
+      );
+
+      const method =
+        $('pricingMethod')?.value || '';
+
+      const checkIn =
+        $('checkinValue')?.value || '';
+
+      const checkOut =
+        $('checkoutValue')?.value || '';
+
+      if (!max || max < 1) {
+        e.preventDefault();
+        alert('Please enter Maximum Guests.');
+        return;
+      }
+
+      if (!checkIn || !checkOut) {
+        e.preventDefault();
+        alert(
+          'Please select both Check-in and Check-out timings.'
+        );
+        return;
+      }
+
+      if (
+        !/^([01]\d|2[0-3]):[0-5]\d$/.test(checkIn) ||
+        !/^([01]\d|2[0-3]):[0-5]\d$/.test(checkOut)
+      ) {
+        e.preventDefault();
+        alert(
+          'Please select valid Check-in and Check-out timings.'
+        );
+        return;
+      }
+
+      if (method === 'individual') {
+        for (
+          let guest = 1;
+          guest <= max;
+          guest++
+        ) {
+          const input =
+            $('individualPricing')
+              ?.querySelector(
+                '[name="price_' + guest + '"]'
+              );
+
+          if (!input || input.value.trim() === '') {
+            e.preventDefault();
+            alert(
+              'Please enter the price for ' +
+              guest +
+              ' guest' +
+              (guest > 1 ? 's' : '') +
+              '.'
+            );
+            input?.focus();
+            return;
+          }
+        }
+
+        return;
+      }
+
+      if (method === 'group') {
+        const rows = Array.from(
+          document.querySelectorAll(
+            '#groupPricing .group-row'
+          )
+        );
+
+        if (!rows.length) {
+          e.preventDefault();
+          alert(
+            'Please add at least one guest group.'
+          );
+          return;
+        }
+
+        let expectedStart = 1;
+
+        for (let i = 0; i < rows.length; i++) {
+          const min = parseInt(
+            rows[i].querySelector('[data-min]')?.value || '',
+            10
+          );
+
+          const maxValue = parseInt(
+            rows[i].querySelector('[data-max]')?.value || '',
+            10
+          );
+
+          const price =
+            rows[i]
+              .querySelector('[name$="_price"]')
+              ?.value
+              ?.trim() || '';
+
+          if (
+            !min ||
+            !maxValue ||
+            price === ''
+          ) {
+            e.preventDefault();
+            alert(
+              'Please complete From, To and Price ' +
+              'for every guest group.'
+            );
+            return;
+          }
+
+          if (min !== expectedStart) {
+            e.preventDefault();
+            alert(
+              'Guest groups must start at ' +
+              expectedStart +
+              ' and continue without gaps.'
+            );
+            return;
+          }
+
+          if (
+            maxValue < min ||
+            maxValue > max
+          ) {
+            e.preventDefault();
+            alert(
+              'Guest group ' +
+              (i + 1) +
+              ' must be between 1 and ' +
+              max + '.'
+            );
+            return;
+          }
+
+          expectedStart = maxValue + 1;
+        }
+
+        if (expectedStart !== max + 1) {
+          e.preventDefault();
+          alert(
+            'Guest groups must cover all guest counts ' +
+            'from 1 to ' + max + '.'
+          );
+        }
+      }
+    });
+  }
+
+  initTimeDisplays();
+})();
+
+function addAssistanceContact() {
+    const container = document.getElementById("assistanceContacts");
+    if (!container) return;
+
+    const row = document.createElement("div");
+    row.className = "unit-card assistance-contact-row";
+    row.innerHTML = `
+        <div class="grid2">
+            <div class="field">
+                <label>Contact Name</label>
+                <input type="text"
+                       name="assistance_name[]"
+                       maxlength="120"
+                       placeholder="e.g. Reception"
+                       required>
+            </div>
+            <div class="field">
+                <label>Phone Number</label>
+                <input type="tel"
+                       name="assistance_phone[]"
+                       inputmode="numeric"
+                       autocomplete="tel"
+                       maxlength="10"
+                       pattern="[0-9]{10}"
+                       title="Enter exactly 10 digits"
+                       placeholder="10-digit phone number"
+                       oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)"
+                       required>
+            </div>
+        </div>
+        <div class="mini-actions">
+            <button type="button" class="btn gray" onclick="removeAssistanceContact(this)">Remove</button>
+        </div>
+    `;
+    container.appendChild(row);
+}
+
+function removeAssistanceContact(button) {
+    const container = document.getElementById("assistanceContacts");
+    const rows = container.querySelectorAll(".assistance-contact-row");
+
+    if (rows.length <= 1) {
+        const inputs = rows[0].querySelectorAll("input");
+        inputs.forEach(input => input.value = "");
+        return;
+    }
+
+    button.closest(".assistance-contact-row").remove();
+}
+
+function validateAssistanceContacts() {
+    const rows = document.querySelectorAll("#assistanceContacts .assistance-contact-row");
+
+    if (!rows.length) {
+        alert("Please add at least one assistance contact.");
+        return false;
+    }
+
+    for (let i = 0; i < rows.length; i++) {
+        const name = rows[i].querySelector('input[name="assistance_name[]"]');
+        const phone = rows[i].querySelector('input[name="assistance_phone[]"]');
+
+        if (!name.value.trim()) {
+            alert(`Please enter the name for Assistance Contact ${i + 1}.`);
+            name.focus();
+            return false;
+        }
+
+        if (!/^\d{10}$/.test(phone.value.trim())) {
+            alert(`Assistance Contact ${i + 1} phone number must contain exactly 10 digits.`);
+            phone.focus();
+            return false;
+        }
+    }
+
+    return true;
+}
+
+</script>
+
+</body></html>
