@@ -713,7 +713,7 @@
 </head>
 
 
-<body>
+<body class="goinn-nav-page">
 
 
 <!-- ==================================================
@@ -1790,16 +1790,18 @@
     });
 })();
 </script>
-
-<nav class="goinn-mobile-nav" aria-label="Mobile navigation">
-  <a href="{{ url_for('home') }}" class="active"><span>⌂</span><span>Home</span></a>
-  {% if current_user.is_authenticated %}
-  <a href="{{ url_for('user_dashboard') }}"><span>▣</span><span>Bookings</span></a>
-  <a href="{{ url_for('complete_profile') }}"><span>◉</span><span>Profile</span></a>
-  {% else %}
-  <a href="{{ url_for('login') }}"><span>→</span><span>Login</span></a>
-  {% endif %}
+<nav class="goinn-bottom-nav" aria-label="Goinn navigation">
+  <a href="{{ url_for('home') }}" class="{{ 'active' if request.endpoint == 'home' else '' }}">
+    <span>⌂</span><small>Home</small>
+  </a>
+  <a href="{{ url_for('user_dashboard') }}#bookings" class="{{ 'active' if request.endpoint == 'user_dashboard' else '' }}">
+    <span>▣</span><small>Bookings</small>
+  </a>
+  <a href="{{ url_for('user_dashboard') }}#profile" class="{{ 'active' if request.endpoint == 'user_dashboard' else '' }}">
+    <span>◉</span><small>Profile</small>
+  </a>
 </nav>
+
 </body>
 
 </html>
