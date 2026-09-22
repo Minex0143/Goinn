@@ -1947,7 +1947,7 @@
             <div class="booking-modal-summary" id="bookingModalSummary">
                 <p><strong>Nights:</strong> <span id="modalNights">{{ selected_nights if selected_nights is not none else '—' }}</span></p>
                 <p><strong>Price per day:</strong> <span id="modalPrice">{% if selected_price is defined and selected_price is not none %}₹{{ "%.2f"|format(selected_price) }}{% else %}Not configured{% endif %}</span></p>
-                <p><strong>Estimated total:</strong> <span id="modalTotal">{% if selected_total is not none %}₹{{ "%.2f"|format(selected_total) }}{% else %}Not available{% endif %}</span></p>
+                <p><strong>Estimated total:</strong> <span id="modalTotal">{% if selected_total is defined and selected_total is not none %}₹{{ "%.2f"|format(selected_total) }}{% else %}Not available{% endif %}</span></p>
                 <div id="modalAccommodationList"></div>
             </div>
             <input type="hidden" name="check_in" value="{{ selected_check_in }}">
