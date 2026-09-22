@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Manage Property Calendar - Goinn</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#172033;font-family:Inter,Arial,sans-serif}.header{height:68px;background:#111827;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 28px}.logo{font-size:24px;font-weight:900}.head-btn{color:#fff;text-decoration:none;background:#273142;border-radius:9px;padding:9px 13px;font-size:12px;font-weight:800}.head-right{display:flex;gap:8px}.container{max-width:1200px;margin:28px auto;padding:0 16px 60px}.card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 7px 25px rgba(15,23,42,.05)}h1{margin:0;font-size:26px}.muted{color:#64748b;font-size:13px}.selector{display:flex;gap:10px;align-items:center;flex-wrap:wrap}select{padding:10px 12px;border:1px solid #d7dde6;border-radius:9px;min-width:320px;background:#fff}.notice{padding:12px 14px;border-radius:10px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;font-size:12px;line-height:1.5;margin-top:12px}.notice.warn{background:#fff7ed;border-color:#fed7aa;color:#9a3412}.inventory-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.inventory-btn{border:1px solid #dbe2ea;background:#fff;border-radius:10px;padding:9px 12px;cursor:pointer;font-weight:800;font-size:12px}.inventory-btn.active{background:#111827;color:#fff;border-color:#111827}.inventory-meta{font-size:11px;color:#64748b;margin-top:8px}.calendar-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.month{font-size:20px;font-weight:900}.nav{border:0;background:#111827;color:#fff;border-radius:9px;padding:9px 13px;cursor:pointer;font-weight:800}.grid{display:grid;grid-template-columns:repeat(7,1fr)}.wd{font-size:11px;font-weight:900;color:#64748b;text-align:center;padding:9px}.day{min-height:88px;border:1px solid #edf0f4;padding:5px;background:#fff}.day button{width:100%;height:100%;min-height:76px;border:0;border-radius:9px;padding:8px;text-align:left;cursor:pointer;background:#ecfdf5;color:#166534}.day button.blocked{background:#fff7ed;color:#c2410c}.day button.booked{background:#fee2e2;color:#b91c1c;cursor:not-allowed}.day button.pending{background:#fef9c3;color:#854d0e;cursor:not-allowed}.day button.past,.day button.outside{background:#f3f4f6;color:#9ca3af;cursor:not-allowed}.num{font-weight:900;font-size:12px}.status{display:block;margin-top:7px;font-size:10px;font-weight:800;line-height:1.3}.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid #edf0f4;font-size:11px;font-weight:800}.dot{display:inline-block;width:12px;height:12px;border-radius:4px;vertical-align:-2px;margin-right:4px}.g{background:#dcfce7}.o{background:#ffedd5}.r{background:#fee2e2}.y{background:#fef9c3}@media(max-width:700px){.grid{grid-template-columns:repeat(7,minmax(42px,1fr));overflow:auto}.calendar-wrap{overflow-x:auto}.day{min-width:42px}.day button{padding:5px}select{min-width:240px}}
+</style></head><body>
+<header class="header"><div class="logo">Goinn</div><div class="head-right"><a class="head-btn" href="{{ url_for('admin_dashboard') }}">← Back</a><a class="head-btn" href="{{ url_for('logout') }}">Logout</a></div></header>
+<main class="container">
+<div class="card"><h1>Manage Property Calendar</h1><p class="muted">{{ selected_property.property_name }} · {{ selected_property.location }}</p>
+<div class="selector"><strong>Property</strong><select onchange="changeProperty(this.value)">{% for p in properties %}<option value="{{ p.id }}" {% if selected_property and p.id==selected_property.id %}selected{% endif %}>{{ p.property_name }} — {{ p.property_type|replace('_',' ')|title }}</option>{% endfor %}</select></div>
+<div id="modeNotice" class="notice"></div></div>
+<div class="card"><strong>Select inventory</strong><div id="inventoryList" class="inventory-list"><div class="notice" style="margin:0;width:100%">Loading inventory…</div></div><div id="inventoryMeta" class="inventory-meta"></div></div>
+<div class="card"><div class="calendar-head"><button class="nav" onclick="moveMonth(-1)">←</button><div id="monthTitle" class="month"></div><div style="display:flex;gap:7px"><button class="nav" type="button" onclick="goToToday()">Today</button><button class="nav" onclick="moveMonth(1)">→</button></div></div><div class="calendar-wrap"><div class="grid">{% for d in ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] %}<div class="wd">{{ d }}</div>{% endfor %}</div><div id="calendarGrid" class="grid"></div></div><div class="legend"><span><i class="dot g"></i>Available</span><span><i class="dot o"></i>Blocked</span><span><i class="dot r"></i>Booked</span><span><i class="dot y"></i>Pending request</span></div></div>
+</main>
+<script>
+const propertyId={{ selected_property.id if selected_property else 'null' }};
+const adminMode=true;let current=new Date();current.setDate(1);let data=null;let selectedInventory=null;
+function changeProperty(id){if(!id)return;window.location.href = '/admin/property/' + id + '/calendar';}
+function moveMonth(delta){current.setMonth(current.getMonth()+delta);loadCalendar()}
+function daysInMonth(y,m){return new Date(y,m+1,0).getDate()}
+function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function same(a,b){return a===b}
+function chooseInventory(key){
+    if(!key)return;
+    selectedInventory=key;
+    renderInventory();
+    renderCalendar();
+}
+function renderInventory(){
+    const wrap=document.getElementById('inventoryList');
+    const meta=document.getElementById('inventoryMeta');
+    wrap.innerHTML='';
+    if(!data){
+        wrap.innerHTML='<div class="notice" style="margin:0;width:100%">Loading inventory…</div>';
+        meta.textContent='';
+        return;
+    }
+    const list=Array.isArray(data.inventory)?data.inventory:[];
+    if(!list.length){
+        wrap.innerHTML='<div class="notice warn" style="margin:0;width:100%">No inventory is configured for this property. Complete the accommodation details first.</div>';
+        meta.textContent='';
+        return;
+    }
+    list.forEach(x=>{
+        const b=document.createElement('button');
+        b.type='button';
+        b.className='inventory-btn '+(selectedInventory===x.key?'active':'');
+        b.textContent=x.label;
+        b.onclick=()=>chooseInventory(x.key);
+        wrap.appendChild(b);
+    });
+    const x=list.find(v=>v.key===selectedInventory);
+    meta.textContent=x?('Inventory: '+x.label+' · '+(x.group||'')):'';
+}
+
+function modeText(){if(!data)return '';if(data.property_type==='guesthouse')return 'Guesthouse/Farmhouse: one property-level calendar. '+(adminMode?'Admin can manage dates for this property.':'Owner controls Type 1 availability.');if(data.availability_type==='type1')return 'Type 1 — Owner Managed. '+(adminMode?'Admin can view the inventory; the owner manages blocking.':'You can block/unblock each unit, room or flat separately.');if(data.availability_type==='type2')return 'Type 2 — Goinn Managed. '+(adminMode?'Admin can block/unblock each individual unit, room or flat.':'Availability is managed by Goinn Admin.');return 'Type 3 — Check Availability. Calendar shows pending/approved requests; availability is confirmed from the booking request.'}
+function renderCalendar(){const grid=document.getElementById('calendarGrid');grid.innerHTML='';if(!data||!selectedInventory)return;const inv=data.inventory.find(x=>x.key===selectedInventory);if(!inv)return;const y=data.year,m=data.month-1;document.getElementById('monthTitle').textContent=new Date(y,m,1).toLocaleString('en-US',{month:'long',year:'numeric'});const first=(new Date(y,m,1).getDay()+6)%7;for(let i=0;i<first;i++)grid.appendChild(Object.assign(document.createElement('div'),{className:'day'}));for(let day=1;day<=daysInMonth(y,m);day++){const ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');const cell=document.createElement('div');cell.className='day';const btn=document.createElement('button');const past=ds<data.today;let status='Available';let cls='';if(inv.booked_dates.includes(ds)){status='Booked';cls='booked'}else if(inv.pending_dates.includes(ds)){status='Pending';cls='pending'}else if(inv.blocked_dates.includes(ds)){status='Blocked';cls='blocked'}else if(past){status='Past';cls='past'}btn.className=cls;btn.innerHTML='<span class="num">'+day+'</span><span class="status">'+status+'</span>';const canChange=!past&&!inv.booked_dates.includes(ds)&&!inv.pending_dates.includes(ds)&&((adminMode&&data.availability_type==='type2')||(!adminMode&&data.availability_type==='type1'));if(canChange)btn.onclick=()=>toggleDate(ds,inv.blocked_dates.includes(ds));else btn.disabled=true;cell.appendChild(btn);grid.appendChild(cell)}document.getElementById('modeNotice').textContent=modeText()}
+let lastGoodData=null;
+let loadSequence=0;
+
+async function loadCalendar(attempt=0){
+    const requestId=++loadSequence;
+    const y=current.getFullYear(),m=current.getMonth()+1;
+    const grid=document.getElementById('calendarGrid');
+    const url='{{ url_for('admin_type2_calendar_data', property_id=selected_property.id) }}'+'?year='+y+'&month='+m;
+
+    if(!data){
+        grid.innerHTML='<div style="grid-column:1/-1;padding:24px;text-align:center;color:#64748b">Loading calendar…</div>';
+        renderInventory();
+    }else{
+        grid.innerHTML='<div style="grid-column:1/-1;padding:18px;text-align:center;color:#64748b">Updating calendar…</div>';
+    }
+
+    try{
+        const controller=new AbortController();
+        const timer=setTimeout(()=>controller.abort(),30000);
+        const r=await fetch(url,{
+            method:'GET',
+            credentials:'same-origin',
+            cache:'no-store',
+            headers:{'Accept':'application/json','X-Requested-With':'XMLHttpRequest'},
+            signal:controller.signal
+        });
+        clearTimeout(timer);
+
+        if(requestId!==loadSequence)return;
+        if(r.redirected || !r.headers.get('content-type')?.toLowerCase().includes('application/json')){
+            throw new Error('Session expired or server returned a non-JSON response');
+        }
+        if(!r.ok)throw new Error('Calendar request failed ('+r.status+')');
+
+        const next=await r.json();
+        if(next.status!=='ok')throw new Error(next.message||'Calendar error');
+        if(requestId!==loadSequence)return;
+
+        data=next;
+        lastGoodData=next;
+        const list=Array.isArray(data.inventory)?data.inventory:[];
+        if(!selectedInventory || !list.some(x=>x.key===selectedInventory)){
+            selectedInventory=list[0]?.key||null;
+        }
+        renderInventory();
+        renderCalendar();
+    }catch(e){
+        if(requestId!==loadSequence)return;
+        console.error('Calendar load failed:',e);
+
+        if(attempt<4){
+            const delay=Math.min(5000,800*Math.pow(2,attempt));
+            setTimeout(()=>loadCalendar(attempt+1),delay);
+            return;
+        }
+
+        if(lastGoodData){
+            data=lastGoodData;
+            renderInventory();
+            renderCalendar();
+            document.getElementById('modeNotice').textContent='Showing the last successfully loaded calendar. The selected month could not be refreshed. Please use Retry.';
+            grid.insertAdjacentHTML('beforeend','<div style="grid-column:1/-1;padding:12px;text-align:center;color:#b45309;font-size:12px">Calendar refresh failed. <button type="button" class="nav" onclick="loadCalendar()">Retry</button></div>');
+        }else{
+            data=null;
+            selectedInventory=null;
+            grid.innerHTML='<div style="grid-column:1/-1;padding:24px;text-align:center;color:#b91c1c">Unable to load calendar right now. <button type="button" class="nav" onclick="loadCalendar()">Retry</button></div>';
+            renderInventory();
+            document.getElementById('modeNotice').textContent='Calendar data could not be loaded. Your property inventory has not been removed.';
+        }
+    }
+}
+
+function goToToday(){current=new Date();current.setDate(1);loadCalendar()}
+async function toggleDate(ds,blocked){const endpoint=blocked?'{{ url_for('admin_type2_unblock_date', property_id=selected_property.id) }}':'{{ url_for('admin_type2_block_date', property_id=selected_property.id) }}';const fd=new FormData();fd.append('block_date',ds);fd.append('inventory_key',selectedInventory);try{const r=await fetch(endpoint,{method:'POST',body:fd});if(!r.ok)throw Error();await loadCalendar()}catch(e){alert('Unable to update the calendar. Please try again.')}}
+loadCalendar();
+</script></body></html>
