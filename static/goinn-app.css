@@ -200,3 +200,41 @@ body, main, .content, .dashboard, .page { overflow-x: clip; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
 }
+
+
+/* Goinn navigation safety */
+.goinn-anchor-target{scroll-margin-top:90px;}
+@media (max-width: 767px){
+  body{padding-bottom:0 !important;}
+  .goinn-bottom-nav{z-index:1000;}
+  .goinn-bottom-nav a{min-height:56px;}
+  /* Never overlay booking/property action areas: these pages intentionally do not render the nav. */
+}
+@media (min-width:768px){.goinn-bottom-nav{display:none !important;}}
+
+
+/* Final Goinn bottom navigation */
+.goinn-bottom-nav{
+  display:flex;
+  align-items:stretch;
+  justify-content:space-around;
+  gap:6px;
+  position:fixed;
+  left:12px; right:12px; bottom:max(10px,env(safe-area-inset-bottom));
+  z-index:3000;
+  min-height:64px; padding:7px;
+  background:rgba(255,255,255,.96);
+  border:1px solid var(--goinn-border); border-radius:20px;
+  box-shadow:0 12px 34px rgba(24,32,56,.16);
+  backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+}
+.goinn-bottom-nav a{
+  flex:1; min-width:0; min-height:50px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:3px; border-radius:14px;
+  color:#70778a; text-decoration:none; font-size:.72rem; font-weight:700;
+}
+.goinn-bottom-nav a span{font-size:1.15rem; line-height:1;}
+.goinn-bottom-nav a.active{color:var(--goinn-primary); background:rgba(91,92,240,.09);}
+.goinn-anchor-target{scroll-margin-top:80px;}
+@media (min-width:768px){.goinn-bottom-nav{display:none!important;}}
+@media (max-width:767px){body{padding-bottom:0!important;} body.goinn-nav-page{padding-bottom:86px!important;}}
