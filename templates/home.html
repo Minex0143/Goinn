@@ -1794,10 +1794,10 @@
   <a href="{{ url_for('home') }}" class="{{ 'active' if request.endpoint == 'home' else '' }}">
     <span>⌂</span><small>Home</small>
   </a>
-  <a href="{{ url_for('user_dashboard') }}#bookings" class="{{ 'active' if request.endpoint == 'user_dashboard' else '' }}">
+  <a href="{{ url_for('user_bookings') }}" class="{{ 'active' if request.endpoint == 'user_bookings' else '' }}">
     <span>▣</span><small>Bookings</small>
   </a>
-  <a href="{{ url_for('user_dashboard') }}#profile" class="{{ 'active' if request.endpoint == 'user_dashboard' else '' }}">
+  <a href="{{ url_for('user_dashboard') }}" class="{{ 'active' if request.endpoint == 'user_dashboard' else '' }}">
     <span>◉</span><small>Profile</small>
   </a>
 </nav>

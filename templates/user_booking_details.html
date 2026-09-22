@@ -116,13 +116,13 @@
         {% if user.role == "owner" %}
             <a href="{{ url_for('owner_dashboard') }}">Owner Profile</a>
         {% endif %}
-        <a href="{{ url_for('user_dashboard') }}">User Profile</a>
+        <a href="{{ url_for('user_bookings') }}">My Bookings</a>
         <a href="{{ url_for('logout') }}">Logout</a>
     </div>
 </header>
 
 <main class="container">
-    <a class="back" href="{{ url_for('user_dashboard') }}">← Back to User Profile</a>
+    <a class="back" href="{{ url_for('user_bookings') }}">← Back to My Bookings</a>
 
     <section class="hero">
         <h1>{{ property.property_name }}</h1>

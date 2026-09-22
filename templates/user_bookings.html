@@ -11,7 +11,7 @@
     >
 
     <title>
-        User Profile - Goinn
+        My Bookings - Goinn
     </title>
 
 
@@ -1399,14 +1399,14 @@
 
         <h1>
 
-            User Profile
+            My Bookings
 
         </h1>
 
 
         <p>
 
-            Manage your Goinn profile and account details.
+            View and manage all your booking requests.
 
         </p>
 
@@ -1415,34 +1415,33 @@
 
 
     <!-- ==================================================
-         PROFILE
+         MY BOOKINGS
     ================================================== -->
 
-    <section id="profile" class="profile-card">
+    <section id="bookings" class="bookings-card">
 
 
-        <div class="profile-header">
+        <div class="card-header">
 
 
-            <div class="large-avatar">
-
-                {{ (user.name or 'User')[0]|upper }}
-
+            <div class="card-icon">
+                📅
             </div>
 
 
             <div>
 
-                <div class="profile-name">
+                <div class="card-title">
 
-                    {{ user.name or 'User' }}
+                    My Bookings
 
                 </div>
 
 
-                <div class="profile-email">
+                <div class="card-subtitle">
 
-                    {{ user.email }}
+                    Track your booking requests
+                    and their current status.
 
                 </div>
 
@@ -1451,190 +1450,456 @@
 
         </div>
 
-        <div style="margin-top:18px;">
-            <button type="button" class="primary-btn" onclick="openEditProfile()">
-                Edit Profile
-            </button>
-        </div>
 
 
-        <div class="profile-info">
+        {% if bookings %}
 
 
-            <div class="info-box">
-
-                <div class="info-label">
-                    Name
-                </div>
-
-                <div class="info-value">
-                    {{ user.name or 'User' }}
-                </div>
-
-            </div>
+            <div class="booking-list">
 
 
-            <div class="info-box">
-
-                <div class="info-label">
-                    Contact
-                </div>
-
-                <div class="info-value">
-
-                    {% if user.contact %}
-
-                        {{ user.contact }}
-
-                    {% else %}
-
-                        Not added yet
-
-                    {% endif %}
-
-                </div>
-
-            </div>
-
-        </div>
+                {% for booking in bookings %}
 
 
-    </section>
+                    <div class="booking-card booking-clickable"
+                         onclick="window.location.href='{{ url_for('user_booking_details', booking_id=booking.id) }}'"
+                         role="button"
+                         tabindex="0"
+                         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.href='{{ url_for('user_booking_details', booking_id=booking.id) }}';}">
+
+
+                        <!-- ==================================================
+                             BOOKING HEADER
+                        ================================================== -->
+
+                        <div class="booking-top">
+
+
+                            <div>
+
+                                <div class="booking-property">
+
+                                    {{ booking.property.property_name }}
+
+                                </div>
+
+
+                                <div class="booking-location">
+
+                                    📍
+                                    {{ booking.property.location }}
+
+                                </div>
+
+                            </div>
+
+
+                            {% if booking.status == "approved" %}
+
+                                <span
+                                    class="status status-approved"
+                                >
+                                    Approved
+                                </span>
+
+                            {% elif booking.status == "rejected" %}
+
+                                <span
+                                    class="status status-rejected"
+                                >
+                                    Rejected
+                                </span>
+
+                            {% elif booking.status == "cancelled" %}
+
+                                <span
+                                    class="status status-cancelled"
+                                >
+                                    Released
+                                </span>
+
+                            {% else %}
+
+                                <span
+                                    class="status status-pending"
+                                >
+                                    Pending
+                                </span>
+
+                            {% endif %}
+
+
+                        </div>
 
 
 
-    <!-- ==================================================
-         OTHER DASHBOARD CARDS
-    ================================================== -->
+                        <!-- ==================================================
+                             BOOKING DETAILS
+                        ================================================== -->
 
-    <section class="dashboard-grid">
-
-        <!-- ==================================================
-             OWNER
-        ================================================== -->
-
-        {% if user.role == "user" %}
-        <div class="dashboard-card owner-card">
+                        <div class="booking-details">
 
 
-            <div class="card-header">
+                            <div class="booking-info">
+
+                                <div class="booking-info-label">
+                                    Booking ID
+                                </div>
+
+                                <div class="booking-info-value">
+
+                                    #{{ booking.id }}
+
+                                </div>
+
+                            </div>
 
 
-                <div class="card-icon">
-                    🏠
-                </div>
+                            <div class="booking-info">
+
+                                <div class="booking-info-label">
+                                    Check-in
+                                </div>
+
+                                <div class="booking-info-value">
+
+                                    {{ booking.check_in.strftime("%d-%m-%Y") }}
+
+                                </div>
+
+                            </div>
 
 
-                <div>
+                            <div class="booking-info">
 
-                    <div class="card-title">
+                                <div class="booking-info-label">
+                                    Check-out
+                                </div>
 
-                        List Your Property
+                                <div class="booking-info-value">
+
+                                    {{ booking.check_out.strftime("%d-%m-%Y") }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="booking-info">
+
+                                <div class="booking-info-label">
+                                    Guests
+                                </div>
+
+                                <div class="booking-info-value">
+
+                                    {{ booking.guests }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="booking-info">
+
+                                <div class="booking-info-label">
+                                    Nights
+                                </div>
+
+                                <div class="booking-info-value">
+
+                                    {{ booking.nights }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="booking-info">
+
+                                <div class="booking-info-label">
+                                    Price / Day
+                                </div>
+
+                                <div class="booking-info-value">
+
+                                    ₹{{ "%.2f"|format(booking.price_per_day) }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="booking-info">
+
+                                <div class="booking-info-label">
+                                    Customer
+                                </div>
+
+                                <div class="booking-info-value">
+
+                                    {{ booking.customer_name }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="booking-info">
+
+                                <div class="booking-info-label">
+                                    Contact
+                                </div>
+
+                                <div class="booking-info-value">
+
+                                    {{ booking.customer_contact }}
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- ==================================================
+                             PRICE
+                        ================================================== -->
+
+                        <div class="booking-price">
+
+
+                            <div>
+
+                                <div class="price-label">
+                                    Estimated Booking Total
+                                </div>
+
+                                <div class="price-label">
+
+                                    {{ booking.nights }}
+                                    night{% if booking.nights != 1 %}s{% endif %}
+                                    ×
+                                    ₹{{ "%.2f"|format(booking.price_per_day) }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="total-price">
+
+                                ₹{{ "%.2f"|format(booking.total_price) }}
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- ==================================================
+                             WHATSAPP ACTIONS
+                        ================================================== -->
+
+                        {% if booking.status != "cancelled" %}
+
+                            <div class="booking-actions">
+
+                                <a
+                                    href="{{ url_for('user_booking_whatsapp', booking_id=booking.id) }}"
+                                    class="booking-whatsapp-btn"
+                                    target="_blank"
+                                    rel="noopener"
+                                    onclick="event.stopPropagation();"
+                                    onkeydown="event.stopPropagation();"
+                                >
+                                    💬 WhatsApp
+                                </a>
+
+                                {% if booking.status in ["pending", "availability_requested"] %}
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for('user_release_booking', booking_id=booking.id) }}"
+                                        onsubmit="event.stopPropagation(); return confirm('Did you return without sending the WhatsApp message? Release this booking request and make these dates available again?');"
+                                    >
+                                        <button
+                                            type="submit"
+                                            class="booking-release-btn"
+                                            onclick="event.stopPropagation();"
+                                        >
+                                            Release dates
+                                        </button>
+                                    </form>
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- ==================================================
+                             STATUS MESSAGE
+                        ================================================== -->
+
+                        {% if booking.status == "approved" %}
+
+                            <div
+                                class="
+                                    status-message
+                                    approved-message
+                                "
+                            >
+
+                                <strong>
+                                    Booking approved.
+                                </strong>
+
+                                The property owner has approved
+                                your booking request. You can
+                                contact the owner to finalize
+                                the booking details and price.
+
+                                {% if booking.property.owner
+                                      and booking.property.owner.contact %}
+
+                                    <br><br>
+
+                                    Owner Contact:
+                                    <strong>
+                                        {{ booking.property.owner.contact }}
+                                    </strong>
+
+                                {% endif %}
+
+                            </div>
+
+
+                        {% elif booking.status == "rejected" %}
+
+                            <div
+                                class="
+                                    status-message
+                                    rejected-message
+                                "
+                            >
+
+                                <strong>
+                                    Booking rejected.
+                                </strong>
+
+                                Unfortunately, this booking
+                                request was rejected by the
+                                administrator/property management.
+
+                                You can explore other available
+                                properties on Goinn.
+
+                            </div>
+
+
+                        {% elif booking.status == "cancelled" %}
+
+                            <div
+                                class="
+                                    status-message
+                                    cancelled-message
+                                "
+                            >
+
+                                <strong>
+                                    Booking request released.
+                                </strong>
+
+                                The WhatsApp booking request was
+                                released, so the selected dates
+                                are available for other users again.
+
+                            </div>
+
+
+                        {% else %}
+
+                            <div
+                                class="
+                                    status-message
+                                    pending-message
+                                "
+                            >
+
+                                <strong>
+                                    Booking request submitted.
+                                </strong>
+
+                                Your booking is currently waiting
+                                for administrator approval.
+                                This page will show the updated
+                                status once the booking is reviewed.
+
+                            </div>
+
+                        {% endif %}
+
 
                     </div>
 
 
-                    <div class="card-subtitle">
-
-                        Become a Goinn property owner.
-
-                    </div>
-
-                </div>
+                {% endfor %}
 
 
             </div>
 
 
-            <div class="owner-description">
-
-                Have a property you'd like to list?
-                Join Goinn and make your property
-                available to guests.
-
-            </div>
+        {% else %}
 
 
-            <div class="owner-features">
+            <div class="booking-empty">
 
 
-                <div class="owner-feature">
+                <div class="booking-empty-icon">
+                    🏡
+                </div>
 
-                    <span class="check">
-                        ✓
-                    </span>
 
-                    List your property
+                <div class="booking-empty-title">
+
+                    No bookings yet
 
                 </div>
 
 
-                <div class="owner-feature">
+                <div class="booking-empty-text">
 
-                    <span class="check">
-                        ✓
-                    </span>
-
-                    Manage your property
+                    You haven't made any booking requests yet.
+                    Explore available properties and find
+                    your next stay.
 
                 </div>
 
 
-                <div class="owner-feature">
+                <a
+                    href="{{ url_for('home') }}"
+                    class="primary-btn"
+                >
 
-                    <span class="check">
-                        ✓
-                    </span>
+                    Explore Properties
 
-                    Receive booking requests
-
-                </div>
+                </a>
 
 
             </div>
 
 
-            <a
-                href="{{ url_for('become_owner') }}"
-                class="owner-btn"
-            >
-
-                Become a Property Owner
-
-            </a>
-
-
-        </div>
         {% endif %}
 
 
     </section>
 
 
-    <div id="editProfileModal" class="edit-profile-modal" onclick="if(event.target===this) closeEditProfile()">
-        <div class="edit-profile-box">
-            <h2>Edit Profile</h2>
-            <div class="edit-profile-note">You can update your name and contact number. Email is linked to your account and cannot be changed here.</div>
-            <form method="POST" action="{{ url_for('edit_user_profile') }}">
-                <div class="edit-field">
-                    <label for="profileName">Name</label>
-                    <input id="profileName" type="text" name="name" value="{{ user.name }}" maxlength="120" required>
-                </div>
-                <div class="edit-field">
-                    <label for="profileContact">Contact</label>
-                    <input id="profileContact" type="tel" name="contact" value="{{ user.contact or '' }}" maxlength="30" required>
-                </div>
-                <div class="edit-actions">
-                    <button type="button" class="secondary-btn" onclick="closeEditProfile()">Cancel</button>
-                    <button type="submit" class="primary-btn" style="border:0;cursor:pointer;">Save Changes</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- ==================================================
-         FOOTER
-    ================================================== -->
 
     <div class="footer">
 
