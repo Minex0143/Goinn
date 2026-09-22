@@ -1150,6 +1150,19 @@
 
 <body>
 
+{% set selected_check_in = selected_check_in|default('', true) %}
+{% set selected_check_out = selected_check_out|default('', true) %}
+{% set selected_guests = selected_guests|default(0, true) %}
+{% set selected_nights = selected_nights|default(0, true) %}
+{% set selected_price = selected_price|default(none, true) %}
+{% set selected_total = selected_total|default(none, true) %}
+{% set selected_booking_state = selected_booking_state|default('', true) %}
+{% set booking_request_sent = booking_request_sent|default(false, true) %}
+{% set search_location = search_location|default('', true) %}
+{% set edit_error = edit_error|default('', true) %}
+{% set terms_error = terms_error|default('', true) %}
+{% set booking_whatsapp_url = booking_whatsapp_url|default('', true) %}
+
 
 <!-- ==================================================
      HEADER
@@ -2525,7 +2538,7 @@ function updateModalSummary(){
 }
 async function refreshAccommodationAvailability(){
     if(!accommodationOptions.length) return;
-    const ci={{ selected_check_in|tojson }}, co={{ selected_check_out|tojson }};
+    const ci={{ selected_check_in|default('', true)|tojson }}, co={{ selected_check_out|default('', true)|tojson }};
     if(!ci || !co) return;
     try{
         const response=await fetch(`{{ url_for('property_accommodation_availability', property_id=property.id) }}?check_in=${encodeURIComponent(ci)}&check_out=${encodeURIComponent(co)}`);
