@@ -202,18 +202,12 @@ body, main, .content, .dashboard, .page { overflow-x: clip; }
 }
 
 
-/* Goinn navigation safety */
-.goinn-anchor-target{scroll-margin-top:90px;}
-@media (max-width: 767px){
-  body{padding-bottom:0 !important;}
-  .goinn-bottom-nav{z-index:1000;}
-  .goinn-bottom-nav a{min-height:56px;}
-  /* Never overlay booking/property action areas: these pages intentionally do not render the nav. */
+/* Separate user navigation: Home / My Bookings / Profile */
+.goinn-anchor-target{scroll-margin-top:80px;}
+@media (min-width:768px){.goinn-bottom-nav{display:none!important;}}
+@media (max-width:767px){
+  body.goinn-nav-page{padding-bottom:86px!important;}
 }
-@media (min-width:768px){.goinn-bottom-nav{display:none !important;}}
-
-
-/* Final Goinn bottom navigation */
 .goinn-bottom-nav{
   display:flex;
   align-items:stretch;
@@ -235,6 +229,3 @@ body, main, .content, .dashboard, .page { overflow-x: clip; }
 }
 .goinn-bottom-nav a span{font-size:1.15rem; line-height:1;}
 .goinn-bottom-nav a.active{color:var(--goinn-primary); background:rgba(91,92,240,.09);}
-.goinn-anchor-target{scroll-margin-top:80px;}
-@media (min-width:768px){.goinn-bottom-nav{display:none!important;}}
-@media (max-width:767px){body{padding-bottom:0!important;} body.goinn-nav-page{padding-bottom:86px!important;}}
