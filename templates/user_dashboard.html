@@ -1321,14 +1321,14 @@
 </head>
 
 
-<body class="goinn-nav-page">
+<body class="goinn-nav-page goinn-profile-page">
 
 
 <!-- ==================================================
      HEADER
 ================================================== -->
 
-<header class="header">
+<header class="header goinn-profile-header">
 
 
     <div class="logo">
@@ -1640,6 +1640,13 @@
 
         Goinn · Your stay, your way.
 
+    </div>
+
+    <!-- Mobile-only logout: kept at the bottom of the Profile page. -->
+    <div class="mobile-profile-logout-wrap">
+        <a href="{{ url_for('logout') }}" class="mobile-profile-logout">
+            Logout
+        </a>
     </div>
 
 
