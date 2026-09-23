@@ -732,6 +732,76 @@
 }
 </style>
 
+
+<style>
+.property-filter-panel {
+    margin: 0 0 22px;
+    padding: 14px;
+    background: #fff;
+    border: 1px solid #e7e9ee;
+    border-radius: 16px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.05);
+}
+.property-filter-label {
+    margin: 0 0 10px;
+    font-size: 13px;
+    font-weight: 800;
+    color: #374151;
+}
+.property-filter-row {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+}
+.property-filter-row + .property-filter-row {
+    margin-top: 9px;
+}
+.property-filter-btn {
+    border: 1px solid #dfe3ea;
+    background: #f8fafc;
+    color: #263244;
+    border-radius: 999px;
+    padding: 9px 13px;
+    min-height: 40px;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.property-filter-btn:hover {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+}
+.property-filter-btn.active {
+    background: #111827;
+    color: #fff;
+    border-color: #111827;
+}
+.property-card.is-filter-hidden {
+    display: none !important;
+}
+@media (max-width: 600px) {
+    .property-filter-panel {
+        margin-left: 0;
+        margin-right: 0;
+        padding: 12px;
+        overflow: hidden;
+    }
+    .property-filter-row {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 3px;
+        scrollbar-width: none;
+    }
+    .property-filter-row::-webkit-scrollbar {
+        display: none;
+    }
+    .property-filter-btn {
+        flex: 0 0 auto;
+    }
+}
+</style>
+
 </head>
 
 
@@ -964,14 +1034,49 @@
     {% if properties %}
 
 
+
+        <div class="property-filter-panel" aria-label="Property filters">
+            <div class="property-filter-label">Filter &amp; Sort</div>
+
+            <div class="property-filter-row">
+                <button type="button" class="property-filter-btn active" data-sort="default">
+                    All
+                </button>
+                <button type="button" class="property-filter-btn" data-sort="low">
+                    Price: Low to High
+                </button>
+                <button type="button" class="property-filter-btn" data-sort="high">
+                    Price: High to Low
+                </button>
+            </div>
+
+            <div class="property-filter-row property-type-filter-row">
+                <button type="button" class="property-filter-btn" data-type="guesthouse">
+                    Guesthouse / Farmhouse
+                </button>
+                <button type="button" class="property-filter-btn" data-type="resort">
+                    Resort
+                </button>
+                <button type="button" class="property-filter-btn" data-type="hotel">
+                    Hotel
+                </button>
+                <button type="button" class="property-filter-btn" data-type="service_apartment">
+                    Service Apartment
+                </button>
+            </div>
+        </div>
+
         <div class="property-grid">
 
 
             {% for property in properties %}
 
 
+                {% set card_price = get_property_price(property, search_guests|int) if search_guests else none %}
                 <div class="property-card"
                      data-property-url="{{ url_for('property_details', property_id=property.id) }}"
+                     data-price="{{ card_price if card_price is not none else 999999999 }}"
+                     data-property-type="{{ (property.property_type or 'guesthouse')|lower|replace(' ', '_') }}"
                      role="link"
                      tabindex="0"
                      aria-label="View {{ property.property_name|e }}">
@@ -1784,6 +1889,79 @@ document.addEventListener("DOMContentLoaded", function () {
             if (url) window.location.href = url;
         });
     });
+});
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const grid = document.querySelector(".property-grid");
+    const panel = document.querySelector(".property-filter-panel");
+    if (!grid || !panel) return;
+
+    const cards = Array.from(grid.querySelectorAll(".property-card[data-property-url]"));
+    const buttons = Array.from(panel.querySelectorAll(".property-filter-btn"));
+    let selectedType = "all";
+    let selectedSort = "default";
+
+    function applyPropertyFilters() {
+        const visible = [];
+
+        cards.forEach(function (card) {
+            const type = (card.dataset.propertyType || "guesthouse").toLowerCase();
+            const matchesType = selectedType === "all" || type === selectedType;
+
+            card.classList.toggle("is-filter-hidden", !matchesType);
+
+            if (matchesType) visible.push(card);
+        });
+
+        if (selectedSort === "low") {
+            visible.sort(function (a, b) {
+                return Number(a.dataset.price || 999999999) -
+                       Number(b.dataset.price || 999999999);
+            });
+        } else if (selectedSort === "high") {
+            visible.sort(function (a, b) {
+                return Number(b.dataset.price || 999999999) -
+                       Number(a.dataset.price || 999999999);
+            });
+        }
+
+        visible.forEach(function (card) {
+            grid.appendChild(card);
+        });
+
+        buttons.forEach(function (button) {
+            const sort = button.dataset.sort;
+            const type = button.dataset.type;
+
+            let active = false;
+            if (sort) active = sort === selectedSort && selectedType === "all";
+            if (type) active = type === selectedType;
+
+            button.classList.toggle("active", active);
+        });
+    }
+
+    buttons.forEach(function (button) {
+        button.addEventListener("click", function () {
+            if (button.dataset.sort) {
+                selectedSort = button.dataset.sort;
+                selectedType = "all";
+            } else if (button.dataset.type) {
+                selectedType =
+                    selectedType === button.dataset.type
+                        ? "all"
+                        : button.dataset.type;
+                selectedSort = "default";
+            }
+
+            applyPropertyFilters();
+        });
+    });
+
+    applyPropertyFilters();
 });
 </script>
 

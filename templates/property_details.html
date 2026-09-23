@@ -1384,6 +1384,27 @@
 </style>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='goinn-app.css') }}">
+
+<style>
+/* Property details: app-style bottom navigation on mobile.
+   The existing Book bar sits immediately above it. */
+@media (max-width: 850px) {
+    body {
+        padding-bottom: 78px;
+    }
+    .mobile-book-bar {
+        bottom: 76px !important;
+        z-index: 1999 !important;
+    }
+    .goinn-bottom-nav {
+        z-index: 2100 !important;
+    }
+    .container {
+        padding-bottom: 185px !important;
+    }
+}
+</style>
+
 </head>
 
 
@@ -1429,28 +1450,7 @@
 ================================================== -->
 
 <main class="container">
-
-
-    <!-- ==================================================
-         BREADCRUMB
-    ================================================== -->
-
-    <div class="breadcrumb">
-
-        <a href="/">
-            Home
-        </a>
-
-        <span>
-            &nbsp; / &nbsp;
-        </span>
-
-        Property Details
-
-    </div>
-
-
-    <!-- ==================================================
+<!-- ==================================================
          HERO
     ================================================== -->
 
@@ -1979,26 +1979,6 @@
 
 
     </div>
-
-
-    <!-- ==================================================
-         BACK
-    ================================================== -->
-
-    <div class="footer">
-
-        <a
-            href="/"
-            class="back-link"
-        >
-
-            ← Back to all properties
-
-        </a>
-
-    </div>
-
-
 </main>
 
 
@@ -3049,6 +3029,22 @@ document.addEventListener('keydown',function(event){
   addSwipe('accommodationPreviewModal', function(d){ changeAccommodationImage(d); });
 })();
 </script>
+
+<nav class="goinn-bottom-nav" aria-label="Goinn navigation">
+    <a href="{{ url_for('home') }}" class="{{ 'active' if request.endpoint == 'home' else '' }}">
+        <span>⌂</span>
+        <small>Home</small>
+    </a>
+    <a href="{{ url_for('user_bookings') }}" class="{{ 'active' if request.endpoint == 'user_bookings' else '' }}">
+        <span>▣</span>
+        <small>Bookings</small>
+    </a>
+    <a href="{{ url_for('user_dashboard') }}" class="{{ 'active' if request.endpoint == 'user_dashboard' else '' }}">
+        <span>◉</span>
+        <small>Profile</small>
+    </a>
+</nav>
+
 </body>
 
 </html>
