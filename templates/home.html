@@ -887,6 +887,7 @@
     <form
         method="GET"
         action="{{ url_for('home') }}"
+        id="goinnSearchForm"
         class="search-box"
     >
 
@@ -1013,7 +1014,7 @@
 
         <a
             href="{{ url_for('home') }}"
-            class="clear-search"
+            id="goinnClearSearch" class="clear-search"
         >
             Clear search
         </a>
@@ -1122,22 +1123,7 @@
                             📍 {{ property.location }}
 
                         </div>
-
-
-                        <div class="guest-info">
-
-                            Maximum guests:
-
-                            <strong>
-
-                                {{ property.max_guests }}
-
-                            </strong>
-
-                        </div>
-
-
-                        <!-- PRICE FOR SEARCHED GUESTS -->
+<!-- PRICE FOR SEARCHED GUESTS -->
 
                         {% if search_guests %}
 
@@ -1962,6 +1948,85 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     applyPropertyFilters();
+});
+</script>
+
+
+<script>
+/* ------------------------------------------------------------
+   Persist the last Home search while the user moves around Goinn.
+   Search values are restored when returning to Home.
+   ------------------------------------------------------------ */
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("goinnSearchForm");
+    if (!form) return;
+
+    const locationInput = document.getElementById("location");
+    const checkIn = document.getElementById("check_in");
+    const checkOut = document.getElementById("check_out");
+    const guests = document.getElementById("guests");
+    const clearSearch = document.getElementById("goinnClearSearch");
+
+    const STORAGE_KEY = "goinn_home_search_v1";
+
+    function readValues() {
+        return {
+            location: locationInput ? locationInput.value.trim() : "",
+            check_in: checkIn ? checkIn.value : "",
+            check_out: checkOut ? checkOut.value : "",
+            guests: guests ? guests.value : ""
+        };
+    }
+
+    function saveValues() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(readValues()));
+        } catch (e) {}
+    }
+
+    function restoreValues() {
+        let saved = null;
+        try {
+            saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+        } catch (e) {
+            saved = null;
+        }
+
+        if (!saved) return;
+
+        /* If Home was opened with an actual search query, the server
+           values are authoritative. Otherwise restore the last search. */
+        const hasServerSearch =
+            (locationInput && locationInput.value.trim()) ||
+            (checkIn && checkIn.value) ||
+            (checkOut && checkOut.value) ||
+            (guests && guests.value);
+
+        if (hasServerSearch) return;
+
+        if (locationInput && saved.location) locationInput.value = saved.location;
+        if (checkIn && saved.check_in) checkIn.value = saved.check_in;
+        if (checkOut && saved.check_out) checkOut.value = saved.check_out;
+        if (guests && saved.guests) guests.value = saved.guests;
+    }
+
+    restoreValues();
+
+    [locationInput, checkIn, checkOut, guests].forEach(function (field) {
+        if (!field) return;
+        field.addEventListener("input", saveValues);
+        field.addEventListener("change", saveValues);
+    });
+
+    form.addEventListener("submit", function () {
+        saveValues();
+    });
+
+    if (clearSearch) {
+        clearSearch.addEventListener("click", function () {
+            try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+        });
+    }
 });
 </script>
 

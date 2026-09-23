@@ -1458,11 +1458,7 @@
                 Owner Profile
             </a>
         {% endif %}
-
-        <a href="{{ url_for('logout') }}" class="logout">
-            Logout
-        </a>
-    </div>
+</div>
 </header>
 
 
@@ -1771,7 +1767,7 @@
                         {% if booking.status != "cancelled" %}
 
                             <div class="booking-actions">
-
+                                {% if booking.status == "pending" %}
                                 <a
                                     href="{{ url_for('user_booking_whatsapp', booking_id=booking.id) }}"
                                     class="booking-whatsapp-btn"
@@ -1782,6 +1778,7 @@
                                 >
                                     💬 WhatsApp
                                 </a>
+                                {% endif %}
 
                                 {% if booking.status in ["pending", "availability_requested"] %}
 
@@ -2218,7 +2215,7 @@
                         {% if booking.status != "cancelled" %}
 
                             <div class="booking-actions">
-
+                                {% if booking.status == "pending" %}
                                 <a
                                     href="{{ url_for('user_booking_whatsapp', booking_id=booking.id) }}"
                                     class="booking-whatsapp-btn"
@@ -2229,6 +2226,7 @@
                                 >
                                     💬 WhatsApp
                                 </a>
+                                {% endif %}
 
                                 {% if booking.status in ["pending", "availability_requested"] %}
 
@@ -2665,7 +2663,7 @@
                         {% if booking.status != "cancelled" %}
 
                             <div class="booking-actions">
-
+                                {% if booking.status == "pending" %}
                                 <a
                                     href="{{ url_for('user_booking_whatsapp', booking_id=booking.id) }}"
                                     class="booking-whatsapp-btn"
@@ -2676,6 +2674,7 @@
                                 >
                                     💬 WhatsApp
                                 </a>
+                                {% endif %}
 
                                 {% if booking.status in ["pending", "availability_requested"] %}
 
