@@ -107,8 +107,72 @@
 
     </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='goinn-app.css') }}">
+
+<style>
+.location-card .location-details {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+}
+.location-address { flex:1; min-width:0; }
+.address-text {
+    margin-top:6px;
+    color:#666;
+    font-size:13px;
+    line-height:1.5;
+    word-break:break-word;
+}
+.maps-button {
+    flex:0 0 auto;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 16px;
+    border-radius:12px;
+    background:#111827;
+    color:#fff !important;
+    text-decoration:none !important;
+    font-weight:700;
+}
+.maps-button:hover { background:#263244; }
+.maps-button small {
+    display:block;
+    margin-top:2px;
+    font-size:10px;
+    font-weight:500;
+    opacity:.8;
+}
+.maps-icon {
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,255,255,.14);
+    font-size:20px;
+}
+@media (max-width:768px) {
+    body.user-booking-details-page .header { display:none !important; }
+    body.user-booking-details-page .container {
+        padding-top:18px !important;
+        padding-bottom:105px !important;
+    }
+    body.user-booking-details-page .back { display:none !important; }
+    .location-card .location-details {
+        flex-direction:column;
+        align-items:stretch;
+    }
+    .maps-button {
+        justify-content:center;
+        width:100%;
+    }
+}
+</style>
+
 </head>
-<body>
+<body class="user-booking-details-page">
 <header class="header">
     <div class="logo">Goinn</div>
     <div class="header-right">
@@ -122,9 +186,7 @@
 </header>
 
 <main class="container">
-    <a class="back" href="{{ url_for('user_bookings') }}">← Back to My Bookings</a>
-
-    <section class="hero">
+<section class="hero">
         <h1>{{ property.property_name }}</h1>
         <div class="muted">📍 {{ property.location }} · {{ property.property_address }}</div>
         <div style="margin-top:13px;">
@@ -257,17 +319,58 @@
                 {% endif %}
             </section>
 
-            {% if property.owner %}
-            <section class="card">
-                <h2>Property Owner</h2>
-                <div class="info-grid">
-                    <div class="info"><div class="label">Name</div><div class="value">{{ property.owner.name }}</div></div>
-                    {% if property.owner.contact %}<div class="info"><div class="label">Contact</div><div class="value">{{ property.owner.contact }}</div></div>{% endif %}
+            <section class="card location-card">
+                <h2>Location</h2>
+                <div class="location-details">
+                    <div class="location-address">
+                        <div class="label">Property Location</div>
+                        <div class="value">{{ property.location }}</div>
+                        {% if property.property_address %}
+                        <div class="address-text">{{ property.property_address }}</div>
+                        {% endif %}
+                    </div>
+
+                    {% if property.map_location_url %}
+                    <a class="maps-button" href="{{ property.map_location_url }}"
+                       target="_blank" rel="noopener noreferrer"
+                       aria-label="Open property location in Google Maps">
+                        <span class="maps-icon">↗</span>
+                        <span><strong>Navigate</strong><small>Open in Google Maps</small></span>
+                    </a>
+                    {% elif property.map_latitude is not none and property.map_longitude is not none %}
+                    <a class="maps-button"
+                       href="https://www.google.com/maps?q={{ property.map_latitude }},{{ property.map_longitude }}"
+                       target="_blank" rel="noopener noreferrer"
+                       aria-label="Open property location in Google Maps">
+                        <span class="maps-icon">↗</span>
+                        <span><strong>Navigate</strong><small>Open in Google Maps</small></span>
+                    </a>
+                    {% else %}
+                    <a class="maps-button"
+                       href="https://www.google.com/maps/search/?api=1&query={{ (property.location ~ ' ' ~ property.property_address)|urlencode }}"
+                       target="_blank" rel="noopener noreferrer"
+                       aria-label="Search property location in Google Maps">
+                        <span class="maps-icon">↗</span>
+                        <span><strong>Navigate</strong><small>Open in Google Maps</small></span>
+                    </a>
+                    {% endif %}
                 </div>
             </section>
-            {% endif %}
-        </div>
+</div>
     </div>
 </main>
+
+<nav class="goinn-bottom-nav" aria-label="Goinn navigation">
+  <a href="{{ url_for('home') }}" class="{{ 'active' if request.endpoint == 'home' else '' }}">
+    <span>⌂</span><small>Home</small>
+  </a>
+  <a href="{{ url_for('user_bookings') }}" class="{{ 'active' if request.endpoint == 'user_bookings' else '' }}">
+    <span>▣</span><small>Bookings</small>
+  </a>
+  <a href="{{ url_for('user_dashboard') }}" class="{{ 'active' if request.endpoint == 'user_dashboard' else '' }}">
+    <span>◉</span><small>Profile</small>
+  </a>
+</nav>
+
 </body>
 </html>
