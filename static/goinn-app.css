@@ -229,3 +229,55 @@ body, main, .content, .dashboard, .page { overflow-x: clip; }
 }
 .goinn-bottom-nav a span{font-size:1.15rem; line-height:1;}
 .goinn-bottom-nav a.active{color:var(--goinn-primary); background:rgba(91,92,240,.09);}
+
+
+/* Mobile navigation cleanup
+   Desktop/tablet keeps the existing top navigation.
+   Phone layout uses the bottom navigation and keeps action pages uncluttered. */
+.mobile-profile-logout-wrap {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  /* Home: keep the Goinn brand, remove Profile/Owner Profile/Logout from the top. */
+  .goinn-home-page .navbar .profile-nav-link {
+    display: none !important;
+  }
+
+  /* Property details: no top header on phones. */
+  .goinn-property-page .goinn-property-header {
+    display: none !important;
+  }
+
+  /* Profile: no top header on phones. */
+  .goinn-profile-page .goinn-profile-header {
+    display: none !important;
+  }
+
+  /* Logout belongs at the end of the Profile page on phones. */
+  .goinn-profile-page .mobile-profile-logout-wrap {
+    display: block;
+    margin: 24px 0 8px;
+    padding-bottom: 96px;
+  }
+
+  .goinn-profile-page .mobile-profile-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 50px;
+    padding: 12px 20px;
+    border-radius: 14px;
+    background: #111827;
+    color: #fff !important;
+    text-decoration: none !important;
+    font-size: 1rem;
+    font-weight: 700;
+    box-shadow: 0 8px 20px rgba(17,24,39,.14);
+  }
+
+  .goinn-profile-page .mobile-profile-logout:active {
+    transform: scale(.98);
+  }
+}
