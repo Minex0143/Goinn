@@ -710,6 +710,28 @@
 
 <style>.property-image img{width:100%;height:190px;object-fit:cover;display:block}</style>
     <link rel="stylesheet" href="{{ url_for('static', filename='goinn-app.css') }}">
+
+<style>
+/* Search result cards: click anywhere in the card content to open the property.
+   Property images remain non-navigating so the image slider remains usable. */
+.property-card[data-property-url] {
+    cursor: pointer;
+}
+.property-card[data-property-url]:focus-visible {
+    outline: 3px solid rgba(79, 70, 229, .35);
+    outline-offset: 3px;
+}
+.property-card[data-property-url] .property-content {
+    cursor: pointer;
+}
+.property-card[data-property-url] .property-slider,
+.property-card[data-property-url] .property-slider img,
+.property-card[data-property-url] .slider-arrow,
+.property-card[data-property-url] .slider-dot {
+    cursor: default;
+}
+</style>
+
 </head>
 
 
@@ -939,57 +961,6 @@
 
 <div class="container">
 
-
-    <div class="results-title">
-
-        <h2>
-            Available Properties
-        </h2>
-
-
-        {% if search_location %}
-
-            <p>
-
-                Properties available in
-                <strong>
-                    {{ search_location }}
-                </strong>
-
-                {% if check_in and check_out %}
-
-                    from
-                    <strong>
-                        {{ check_in }}
-                    </strong>
-
-                    to
-
-                    <strong>
-                        {{ check_out }}
-                    </strong>
-
-                {% endif %}
-
-
-                {% if search_guests %}
-
-                    for
-
-                    <strong>
-                        {{ search_guests }}
-                        guest{% if search_guests|int > 1 %}s{% endif %}
-                    </strong>
-
-                {% endif %}
-
-            </p>
-
-        {% endif %}
-
-    </div>
-
-
     {% if properties %}
 
 
@@ -999,7 +970,11 @@
             {% for property in properties %}
 
 
-                <div class="property-card">
+                <div class="property-card"
+                     data-property-url="{{ url_for('property_details', property_id=property.id) }}"
+                     role="link"
+                     tabindex="0"
+                     aria-label="View {{ property.property_name|e }}">
 
 
                     <!-- PROPERTY IMAGE -->
@@ -1123,34 +1098,7 @@
                                 ✓ Available for selected dates
                             </span>
                         {% endif %}
-
-                        <span class="availability-type-badge">
-                            {% if property.availability_type == "type2" %}
-                                Type 2 · Goinn Managed
-                            {% elif property.availability_type == "type3" %}
-                                Type 3 · Check Availability
-                            {% else %}
-                                Type 1 · Owner Managed
-                            {% endif %}
-                        </span>
-
-
-                        <!-- VIEW PROPERTY -->
-
-                        <a
-                            href="{{ url_for(
-                                'property_details',
-                                property_id=property.id
-                            ) }}"
-                            class="view-button"
-                        >
-
-                            View Property
-
-                        </a>
-
-
-                    </div>
+</div>
 
                 </div>
 
@@ -1801,6 +1749,43 @@
     <span>◉</span><small>Profile</small>
   </a>
 </nav>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".property-card[data-property-url]").forEach(function (card) {
+        function openProperty(event) {
+            const target = event.target;
+
+            // The image/slider area is intentionally NOT clickable.
+            if (target.closest(".property-slider, img, .slider-arrow, .slider-dot")) {
+                return;
+            }
+
+            // Preserve normal behavior for any future real controls/links.
+            if (target.closest("a, button, input, select, textarea, label")) {
+                return;
+            }
+
+            const url = card.dataset.propertyUrl;
+            if (url) {
+                window.location.href = url;
+            }
+        }
+
+        card.addEventListener("click", openProperty);
+
+        card.addEventListener("keydown", function (event) {
+            if (event.key !== "Enter" && event.key !== " ") return;
+            if (event.target.closest(".property-slider, img, .slider-arrow, .slider-dot")) return;
+
+            event.preventDefault();
+            const url = card.dataset.propertyUrl;
+            if (url) window.location.href = url;
+        });
+    });
+});
+</script>
 
 </body>
 
