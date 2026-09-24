@@ -1117,6 +1117,96 @@ select{
 }
 </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='goinn-app.css') }}">
+
+<style>
+.lost-account-request-card {
+    border: 1px solid #e4e7ec;
+}
+.lost-code-alert {
+    margin: 16px 0;
+    padding: 16px;
+    border-radius: 14px;
+    background: #ecfdf3;
+    border: 1px solid #b7e4c7;
+    color: #14532d;
+}
+.lost-code-value {
+    display: inline-block;
+    margin: 0 8px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: #111827;
+    color: #fff;
+    font-size: 22px;
+    letter-spacing: 5px;
+    font-weight: 800;
+}
+.lost-code-alert small {
+    display: block;
+    margin-top: 8px;
+}
+.lost-account-grid,
+.lost-property-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+}
+.lost-account-grid > div,
+.lost-property-grid > div {
+    padding: 11px 12px;
+    border-radius: 10px;
+    background: #f7f8fa;
+}
+.lost-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: #737983;
+    text-transform: uppercase;
+}
+.lost-value {
+    margin-top: 4px;
+    font-weight: 700;
+    color: #172033;
+}
+.lost-break {
+    word-break: break-all;
+}
+.lost-properties {
+    margin-top: 20px;
+}
+.lost-properties h3 {
+    margin-bottom: 10px;
+}
+.lost-property {
+    margin-top: 10px;
+    padding: 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 13px;
+}
+.lost-property-title {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+.lost-action-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 18px;
+}
+@media (max-width: 700px) {
+    .lost-account-grid,
+    .lost-property-grid {
+        grid-template-columns: 1fr;
+    }
+    .lost-code-value {
+        display: block;
+        width: fit-content;
+        margin: 10px 0;
+    }
+}
+</style>
+
 </head>
 
 <body>
@@ -1177,6 +1267,13 @@ select{
             Accounts
             <span class="count">
                 {{ users|length }}
+            </span>
+        </button>
+
+        <button type="button" class="tab-button" data-tab="lost-account">
+            Lost Account
+            <span class="count">
+                {{ lost_account_requests|length }}
             </span>
         </button>
 
@@ -2018,6 +2115,199 @@ select{
 
                     <div class="empty">
                         No pending properties.
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         LOST ACCOUNT / OWNER ACCOUNT MIGRATION
+    =================================================== -->
+
+    <section id="lost-account" class="tab-content">
+
+        <div class="section-card">
+
+            <div class="section-header">
+                <div>
+                    <h2>Lost Account Requests</h2>
+                    <span>
+                        Verify the owner details and generate a one-time 6-digit migration code.
+                    </span>
+                </div>
+            </div>
+
+            {% if generated_lost_account_code %}
+                <div class="lost-code-alert">
+                    <strong>Verification code generated.</strong>
+                    Request #{{ generated_lost_account_code.request_id }}
+                    <span class="lost-code-value">
+                        {{ generated_lost_account_code.code }}
+                    </span>
+                    <small>
+                        Give this code to the verified owner. It expires in 30 minutes.
+                        The code is not stored in plain text.
+                    </small>
+                </div>
+            {% endif %}
+
+            <div class="list">
+
+                {% for recovery_request in lost_account_requests %}
+
+                    {% set recovery_user = recovery_request.user %}
+                    {% set owner_properties = properties
+                        |selectattr('owner_id', 'equalto', recovery_user.id)
+                        |list %}
+
+                    <div class="card lost-account-request-card">
+
+                        <div class="top">
+                            <div>
+                                <div class="name">
+                                    Recovery Request #{{ recovery_request.id }}
+                                </div>
+                                <div class="muted">
+                                    {{ recovery_request.status|replace('_', ' ')|title }}
+                                    · {{ recovery_request.created_at }}
+                                </div>
+                            </div>
+
+                            <span class="status">
+                                {{ recovery_request.status|replace('_', ' ')|title }}
+                            </span>
+                        </div>
+
+                        <div class="lost-account-grid">
+
+                            <div>
+                                <div class="lost-label">Owner ID</div>
+                                <div class="lost-value">#{{ recovery_user.id }}</div>
+                            </div>
+
+                            <div>
+                                <div class="lost-label">Name</div>
+                                <div class="lost-value">{{ recovery_user.name }}</div>
+                            </div>
+
+                            <div>
+                                <div class="lost-label">Previous Email</div>
+                                <div class="lost-value">{{ recovery_request.previous_email }}</div>
+                            </div>
+
+                            <div>
+                                <div class="lost-label">Previous Contact</div>
+                                <div class="lost-value">{{ recovery_request.previous_contact }}</div>
+                            </div>
+
+                            <div>
+                                <div class="lost-label">Requested Email</div>
+                                <div class="lost-value">{{ recovery_request.requested_email }}</div>
+                            </div>
+
+                            <div>
+                                <div class="lost-label">Requested Contact</div>
+                                <div class="lost-value">{{ recovery_request.requested_contact }}</div>
+                            </div>
+
+                            <div>
+                                <div class="lost-label">Current Role</div>
+                                <div class="lost-value">{{ recovery_user.role }}</div>
+                            </div>
+
+                            <div>
+                                <div class="lost-label">Google Account ID</div>
+                                <div class="lost-value lost-break">
+                                    {{ recovery_user.google_id }}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="lost-properties">
+                            <h3>Owner Property Details</h3>
+
+                            {% if owner_properties %}
+
+                                {% for property in owner_properties %}
+
+                                    <div class="lost-property">
+                                        <div class="lost-property-title">
+                                            {{ property.property_name }}
+                                        </div>
+
+                                        <div class="lost-property-grid">
+                                            <div>
+                                                <strong>Property ID:</strong>
+                                                #{{ property.id }}
+                                            </div>
+                                            <div>
+                                                <strong>Status:</strong>
+                                                {{ property.status|title }}
+                                            </div>
+                                            <div>
+                                                <strong>Location:</strong>
+                                                {{ property.location }}
+                                            </div>
+                                            <div>
+                                                <strong>Address:</strong>
+                                                {{ property.property_address }}
+                                            </div>
+                                            <div>
+                                                <strong>Property Type:</strong>
+                                                {{ property.property_type or "Not configured" }}
+                                            </div>
+                                            <div>
+                                                <strong>Availability Type:</strong>
+                                                {{ property.availability_type or "Not configured" }}
+                                            </div>
+                                            <div>
+                                                <strong>Created:</strong>
+                                                {{ property.created_at }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                {% endfor %}
+
+                            {% else %}
+
+                                <div class="empty">
+                                    No properties are currently linked to this owner account.
+                                </div>
+
+                            {% endif %}
+                        </div>
+
+                        <div class="lost-action-row">
+
+                            {% if recovery_request.status in ["pending_admin", "code_generated"] %}
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('admin_generate_lost_account_code', request_id=recovery_request.id) }}"
+                                >
+                                    <button type="submit" class="btn dark">
+                                        Generate 6-Digit Code
+                                    </button>
+                                </form>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty">
+                        No pending lost account requests.
                     </div>
 
                 {% endfor %}

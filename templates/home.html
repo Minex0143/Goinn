@@ -802,6 +802,25 @@
 }
 </style>
 
+
+<style>
+.goinn-footer-recovery {
+    margin-bottom: 12px;
+}
+.goinn-footer-recovery a {
+    display: inline-block;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    border: 1px solid rgba(255,255,255,.35);
+    border-radius: 999px;
+    padding: 9px 15px;
+}
+.goinn-footer-recovery a:hover {
+    background: rgba(255,255,255,.08);
+}
+</style>
+
 </head>
 
 
@@ -1278,6 +1297,12 @@
 ================================================== -->
 
 <footer class="footer">
+
+    <div class="goinn-footer-recovery">
+        <a href="{{ url_for('lost_account') }}">
+            Lost Account / Recover Owner Account
+        </a>
+    </div>
 
     © 2026 Goinn.
     All rights reserved.

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost Account - Goinn</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+        .topbar {
+            background: #111827;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-size: 25px; font-weight: 800; }
+        .topbar a { color: white; text-decoration: none; font-weight: 700; }
+        .wrap {
+            width: min(760px, calc(100% - 30px));
+            margin: 35px auto 80px;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 26px;
+            box-shadow: 0 8px 30px rgba(15,23,42,.07);
+            margin-bottom: 18px;
+        }
+        h1 { margin: 0 0 8px; font-size: 30px; }
+        h2 { margin: 0 0 10px; }
+        .muted { color: #697386; line-height: 1.55; }
+        .notice {
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: #eef2ff;
+            color: #243b73;
+            margin: 18px 0;
+            line-height: 1.5;
+        }
+        .success {
+            padding: 18px;
+            border-radius: 14px;
+            background: #ecfdf3;
+            color: #14532d;
+            line-height: 1.6;
+        }
+        .error {
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: #fef2f2;
+            color: #991b1b;
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            margin: 16px 0 7px;
+            font-weight: 800;
+        }
+        input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #d8dde6;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+        }
+        input:focus { border-color: #111827; }
+        button {
+            margin-top: 20px;
+            border: 0;
+            border-radius: 12px;
+            background: #111827;
+            color: white;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            width: 100%;
+        }
+        .account-box {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f7f8fa;
+            border-radius: 13px;
+        }
+        .account-box div { margin: 5px 0; }
+        .locked-note {
+            margin-top: 12px;
+            color: #6b7280;
+            font-size: 13px;
+        }
+        .step {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #667085;
+            margin-bottom: 7px;
+        }
+        .code-input {
+            text-align: center;
+            letter-spacing: 9px;
+            font-size: 27px;
+            font-weight: 800;
+        }
+        .bottom-link {
+            text-align: center;
+            margin-top: 18px;
+        }
+        .bottom-link a {
+            color: #111827;
+            font-weight: 800;
+            text-decoration: none;
+        }
+        @media (max-width: 600px) {
+            .topbar { padding: 14px 17px; }
+            .wrap { margin-top: 20px; }
+            .card { padding: 20px; border-radius: 17px; }
+            h1 { font-size: 26px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="logo">Goinn</div>
+        <a href="{{ url_for('home') }}">Home</a>
+    </header>
+
+    <main class="wrap">
+
+        {% if completed %}
+
+            <section class="card">
+                <div class="success">
+                    <h1>Account Retrieved</h1>
+                    <p>
+                        Your owner account has been migrated successfully.
+                    </p>
+                    <p>
+                        <strong>Email:</strong> {{ recovered_email }}<br>
+                        <strong>Contact:</strong> {{ recovered_contact }}
+                    </p>
+                    <p>
+                        You can now sign in using the updated Google account/email.
+                    </p>
+                </div>
+
+                <div class="bottom-link">
+                    <a href="{{ url_for('login') }}">Go to Login</a>
+                </div>
+            </section>
+
+        {% elif recovery_request %}
+
+            <section class="card">
+                <div class="step">Final verification</div>
+                <h1>Enter the 6-Digit Code</h1>
+                <p class="muted">
+                    Your recovery request has been reviewed by the Goinn administrator.
+                    The administrator will provide the 6-digit code after confirming
+                    your owner details.
+                </p>
+
+                <div class="notice">
+                    <strong>Keep this page open.</strong>
+                    Enter the code here when the administrator gives it to you.
+                    The code is valid for 30 minutes.
+                </div>
+
+                {% if error %}
+                    <div class="error">{{ error }}</div>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('lost_account_verify_code') }}">
+                    <label for="verification_code">6-digit verification code</label>
+                    <input
+                        id="verification_code"
+                        name="verification_code"
+                        class="code-input"
+                        inputmode="numeric"
+                        autocomplete="one-time-code"
+                        maxlength="6"
+                        pattern="[0-9]{6}"
+                        placeholder="000000"
+                        required
+                    >
+                    <button type="submit">Verify &amp; Retrieve Account</button>
+                </form>
+            </section>
+
+        {% elif recovery_user and session.get("lost_account_verified") %}
+
+            <section class="card">
+                <div class="step">Step 2</div>
+                <h1>Update Account Details</h1>
+                <p class="muted">
+                    Your existing owner account is active. Choose the email and/or
+                    contact you want to migrate to. Leave a field unchanged if you
+                    do not want to update it.
+                </p>
+
+                {% if error %}
+                    <div class="error">{{ error }}</div>
+                {% endif %}
+
+                <div class="account-box">
+                    <div><strong>Name:</strong> {{ recovery_user.name }}</div>
+                    <div><strong>Current Email:</strong> {{ recovery_user.email }}</div>
+                    <div><strong>Current Contact:</strong> {{ recovery_user.contact }}</div>
+                    <div><strong>Role:</strong> {{ recovery_user.role }}</div>
+                </div>
+
+                <form method="POST" action="{{ url_for('lost_account_request') }}">
+                    <label for="new_email">New email</label>
+                    <input
+                        id="new_email"
+                        name="new_email"
+                        type="email"
+                        placeholder="{{ recovery_user.email }}"
+                    >
+
+                    <label for="new_contact">New contact</label>
+                    <input
+                        id="new_contact"
+                        name="new_contact"
+                        inputmode="numeric"
+                        maxlength="10"
+                        placeholder="{{ recovery_user.contact or '10-digit contact' }}"
+                    >
+
+                    <button type="submit">Send Recovery Request to Admin</button>
+                </form>
+
+                <div class="locked-note">
+                    After the administrator verifies the owner details and generates
+                    the code, enter the code on this page to complete the migration.
+                </div>
+            </section>
+
+        {% else %}
+
+            <section class="card">
+                <div class="step">Owner account recovery</div>
+                <h1>Lost Account</h1>
+                <p class="muted">
+                    This recovery process is only for Goinn property owners.
+                    Enter the previous email and contact number registered on
+                    your owner account. Goinn will verify both before allowing
+                    an account migration request.
+                </p>
+
+                {% if error %}
+                    <div class="error">{{ error }}</div>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('lost_account') }}">
+                    <label for="previous_email">Previous email</label>
+                    <input
+                        id="previous_email"
+                        name="previous_email"
+                        type="email"
+                        autocomplete="email"
+                        required
+                    >
+
+                    <label for="previous_contact">Previous contact</label>
+                    <input
+                        id="previous_contact"
+                        name="previous_contact"
+                        inputmode="numeric"
+                        maxlength="10"
+                        autocomplete="tel"
+                        required
+                    >
+
+                    <button type="submit">Verify Account</button>
+                </form>
+            </section>
+
+        {% endif %}
+
+        {% if message %}
+            <section class="card">
+                <div class="notice">{{ message }}</div>
+            </section>
+        {% endif %}
+
+        <div class="bottom-link">
+            <a href="{{ url_for('home') }}">← Back to Goinn</a>
+        </div>
+
+    </main>
+</body>
+</html>
